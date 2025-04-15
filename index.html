@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cánticos De Victoria</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 10px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 1.8em;
+            margin: 20px 0;
+            color: #000;
+        }
+
+        .accordion {
+            background: #fff;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 4px;
+        }
+
+        .accordion-header {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            cursor: pointer;
+            position: relative;
+            user-select: none;
+        }
+
+        .play-btn {
+            background: none;
+            border: none;
+            font-size: 1.2em;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+        }
+
+        .accordion-title {
+            flex: 1;
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: #000;
+            width: 0;
+            transition: width 0.1s linear;
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            padding: 0 15px;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+
+        .accordion-content p {
+            padding: 15px 0;
+            font-size: 1em;
+            line-height: 1.5;
+        }
+
+        .accordion-content.open {
+            max-height: 200px;
+            padding: 15px;
+        }
+
+        @media (max-width: 400px) {
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .accordion-title {
+                font-size: 1em;
+            }
+
+            .play-btn {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Cánticos De Victoria</h1>
+        <div class="accordion">
+            <div class="accordion-header">
+                <button class="play-btn" data-audio="audio1.mp3">▶</button>
+                <div class="accordion-title">Jehová Está En Su Templo</div>
+                <div class="progress-bar"></div>
+            </div>
+            <div class="accordion-content">
+                <p>
+                    //Jehová está en su templo,<br>
+                    Alábale que El vive//.<br><br>
+                    //Alábale, alábale,<br>
+                    Alábale que El vive//.
+                </p>
+            </div>
+        </div>
+        <div class="accordion">
+            <div class="accordion-header">
+                <button class="play-btn" data-audio="audio2.mp3">▶</button>
+                <div class="accordion-title">Estas Son Las Fiestas De Los Pentecostales</div>
+                <div class="progress-bar"></div>
+            </div>
+            <div class="accordion-content">
+                <p>Contenido sobre "Estas Son Las Fiestas De Los Pentecostales". Letras, historia o detalles del cántico pueden ir aquí.</p>
+            </div>
+        </div>
+        <div class="accordion">
+            <div class="accordion-header">
+                <button class="play-btn" data-audio="audio3.mp3">▶</button>
+                <div class="accordion-title">Si La Víbora Te Picó Sacúdela En El Fuego</div>
+                <div class="progress-bar"></div>
+            </div>
+            <div class="accordion-content">
+                <p>Contenido sobre "Si La Víbora Te Picó Sacúdela En El Fuego". Letras, historia o detalles del cántico pueden ir aquí.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const accordions = document.querySelectorAll('.accordion');
+        let currentAudio = null;
+        let currentButton = null;
+
+        accordions.forEach(accordion => {
+            const header = accordion.querySelector('.accordion-header');
+            const content = accordion.querySelector('.accordion-content');
+            const playBtn = accordion.querySelector('.play-btn');
+            const progressBar = accordion.querySelector('.progress-bar');
+            const audioSrc = playBtn.getAttribute('data-audio');
+            const audio = new Audio(audioSrc);
+
+            // Toggle accordion content
+            header.addEventListener('click', (e) => {
+                if (e.target !== playBtn) {
+                    const isOpen = content.classList.contains('open');
+                    document.querySelectorAll('.accordion-content').forEach(c => c.classList.remove('open'));
+                    if (!isOpen) {
+                        content.classList.add('open');
+                    }
+                }
+            });
+
+            // Handle play/stop audio with reset
+            playBtn.addEventListener('click', () => {
+                // Stop and reset any currently playing audio
+                if (currentAudio && currentAudio !== audio) {
+                    currentAudio.pause();
+                    currentAudio.currentTime = 0;
+                    currentButton.innerHTML = '▶';
+                    currentButton.parentElement.querySelector('.progress-bar').style.width = '0%';
+                }
+
+                // Reset the current audio
+                audio.currentTime = 0;
+                progressBar.style.width = '0%';
+
+                if (audio.paused) {
+                    audio.play();
+                    playBtn.innerHTML = '◼';
+                    currentAudio = audio;
+                    currentButton = playBtn;
+                } else {
+                    audio.pause();
+                    playBtn.innerHTML = '▶';
+                    currentAudio = null;
+                    currentButton = null;
+                }
+            });
+
+            // Update progress bar
+            audio.addEventListener('timeupdate', () => {
+                const progress = (audio.currentTime / audio.duration) * 100;
+                progressBar.style.width = `${progress}%`;
+            });
+
+            // Reset on audio end
+            audio.addEventListener('ended', () => {
+                playBtn.innerHTML = '▶';
+                progressBar.style.width = '0%';
+                audio.currentTime = 0;
+                currentAudio = null;
+                currentButton = null;
+            });
+        });
+    </script>
+</body>
+</html>
