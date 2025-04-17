@@ -1,223 +1,545 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cánticos De Victoria</title>
     <style>
+        :root {
+            --background-color: #ffffff;
+            --text-color: #000000;
+            --border-color: #e0e0e0;
+            --hover-color: #f5f5f5;
+            --active-color: #ebebeb;
+        }
+
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            background: #f5f5f5;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            padding: 10px;
-        }
-
-        .container {
-            width: 100%;
+            background-color: var(--background-color);
+            color: var(--text-color);
             max-width: 600px;
             margin: 0 auto;
+            padding: 16px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 24px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-color);
         }
 
         h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .file-input-container {
+            margin-bottom: 24px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
             text-align: center;
-            font-size: 1.8em;
-            margin: 20px 0;
-            color: #000;
+        }
+
+        .file-input-container p {
+            margin-bottom: 16px;
+            font-size: 16px;
+        }
+
+        .file-input-label {
+            display: inline-block;
+            padding: 10px 16px;
+            background-color: var(--text-color);
+            color: var(--background-color);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #fileInput {
+            display: none;
         }
 
         .accordion {
-            background: #fff;
-            border-radius: 4px;
+            width: 100%;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 4px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .accordion-item {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .accordion-item:last-child {
+            border-bottom: none;
         }
 
         .accordion-header {
-            display: flex;
-            align-items: center;
-            padding: 15px;
+            padding: 16px;
             cursor: pointer;
             position: relative;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            font-size: 16px;
             user-select: none;
         }
-
-        .play-btn {
-            background: none;
-            border: none;
-            font-size: 1.2em;
-            cursor: pointer;
-            width: 30px;
-            height: 30px;
+        
+        .play-button {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            background-color: transparent;
+            border: 2px solid var(--text-color);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 10px;
+            margin-right: 12px;
+            flex-shrink: 0;
+            cursor: pointer;
+            color: var(--text-color);
+            position: relative;
+            transition: all 0.2s ease;
         }
-
-        .accordion-title {
-            flex: 1;
-            font-size: 1.1em;
-            font-weight: 500;
+        
+        .play-button:hover {
+            background-color: rgba(0, 0, 0, 0.05);
         }
-
-        .progress-bar {
+        
+        .play-button:active {
+            transform: scale(0.95);
+        }
+        
+        .play-icon, .pause-icon {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            height: 3px;
-            background: #000;
-            width: 0;
-            transition: width 0.1s linear;
+            transition: opacity 0.2s ease, transform 0.2s ease;
         }
+        
+        .play-icon {
+            height: 0;
+            width: 0;
+            border-style: solid;
+            border-width: 8px 0 8px 12px;
+            border-color: transparent transparent transparent var(--text-color);
+            margin-left: 2px;
+        }
+        
+        .pause-icon {
+            display: none;
+            width: 12px;
+            height: 14px;
+            background: repeating-linear-gradient(
+                to right,
+                var(--text-color),
+                var(--text-color) 4px,
+                transparent 4px,
+                transparent 8px
+            );
+        }
+        
+        .title-text {
+            flex-grow: 1;
+        }
+
+        .accordion-header:hover {
+            background-color: var(--hover-color);
+        }
+
+        .accordion-header:active {
+            background-color: var(--active-color);
+        }
+
+        /* Removed + and - icons */
 
         .accordion-content {
             max-height: 0;
             overflow: hidden;
-            padding: 0 15px;
-            transition: max-height 0.3s ease, padding 0.3s ease;
+            transition: max-height 0.3s ease;
+            padding: 0 16px;
+            white-space: pre-wrap;
         }
 
-        .accordion-content p {
-            padding: 15px 0;
-            font-size: 1em;
-            line-height: 1.5;
+        .accordion-item.active .accordion-content {
+            max-height: 1000px;
+            padding: 16px;
         }
 
-        .accordion-content.open {
-            max-height: 200px;
-            padding: 15px;
+        .loading {
+            text-align: center;
+            margin: 24px 0;
+            display: none;
         }
 
-        @media (max-width: 400px) {
+        .loading::after {
+            content: "...";
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { content: "."; }
+            33% { content: ".."; }
+            66% { content: "..."; }
+        }
+        
+        .search-container {
+            margin-bottom: 24px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+        
+        .search-input:focus {
+            border-color: var(--text-color);
+        }
+        
+        .search-status {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #666;
+            min-height: 20px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+            }
+            
             h1 {
-                font-size: 1.5em;
+                font-size: 24px;
             }
-
-            .accordion-title {
-                font-size: 1em;
+            
+            .accordion-header {
+                padding: 14px;
+                font-size: 15px;
             }
-
-            .play-btn {
-                font-size: 1em;
+            
+            .accordion-item.active .accordion-content {
+                padding: 14px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <header>
         <h1>Cánticos De Victoria</h1>
-        <div class="accordion">
-            <div class="accordion-header">
-                <button class="play-btn" data-audio="audio1.mp3">▶</button>
-                <div class="accordion-title">Jehová Está En Su Templo</div>
-                <div class="progress-bar"></div>
-            </div>
-            <div class="accordion-content">
-                <p>
-                    //Jehová está en su templo,<br>
-                    Alábale que El vive//.<br><br>
-                    //Alábale, alábale,<br>
-                    Alábale que El vive//.
-                </p>
-            </div>
-        </div>
-        <div class="accordion">
-            <div class="accordion-header">
-                <button class="play-btn" data-audio="audio2.mp3">▶</button>
-                <div class="accordion-title">Estas Son Las Fiestas De Los Pentecostales</div>
-                <div class="progress-bar"></div>
-            </div>
-            <div class="accordion-content">
-                <p>Contenido sobre "Estas Son Las Fiestas De Los Pentecostales". Letras, historia o detalles del cántico pueden ir aquí.</p>
-            </div>
-        </div>
-        <div class="accordion">
-            <div class="accordion-header">
-                <button class="play-btn" data-audio="audio3.mp3">▶</button>
-                <div class="accordion-title">Si La Víbora Te Picó Sacúdela En El Fuego</div>
-                <div class="progress-bar"></div>
-            </div>
-            <div class="accordion-content">
-                <p>Contenido sobre "Si La Víbora Te Picó Sacúdela En El Fuego". Letras, historia o detalles del cántico pueden ir aquí.</p>
-            </div>
-        </div>
+    </header>
+
+    <div class="file-input-container">
+        <p>Upload a text file to load the canticles:</p>
+        <label for="fileInput" class="file-input-label">Select File</label>
+        <input type="file" id="fileInput" accept=".txt">
     </div>
 
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search" class="search-input">
+        <div id="searchStatus" class="search-status"></div>
+    </div>
+
+    <div id="loading" class="loading">Loading canticles</div>
+    <div id="accordion" class="accordion"></div>
+
     <script>
-        const accordions = document.querySelectorAll('.accordion');
-        let currentAudio = null;
-        let currentButton = null;
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('fileInput');
+            const accordion = document.getElementById('accordion');
+            const loading = document.getElementById('loading');
 
-        accordions.forEach(accordion => {
-            const header = accordion.querySelector('.accordion-header');
-            const content = accordion.querySelector('.accordion-content');
-            const playBtn = accordion.querySelector('.play-btn');
-            const progressBar = accordion.querySelector('.progress-bar');
-            const audioSrc = playBtn.getAttribute('data-audio');
-            const audio = new Audio(audioSrc);
+            fileInput.addEventListener('change', handleFileSelect);
 
-            // Toggle accordion content
-            header.addEventListener('click', (e) => {
-                if (e.target !== playBtn) {
-                    const isOpen = content.classList.contains('open');
-                    document.querySelectorAll('.accordion-content').forEach(c => c.classList.remove('open'));
-                    if (!isOpen) {
-                        content.classList.add('open');
+            function handleFileSelect(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                loading.style.display = 'block';
+                accordion.innerHTML = '';
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const content = e.target.result;
+                    parseFileContent(content);
+                    loading.style.display = 'none';
+                };
+                reader.readAsText(file);
+            }
+
+            function parseFileContent(content) {
+                // Split the content by empty lines to identify different sections
+                const rawSections = content.split(/\n\s*\n/);
+                
+                // Process each section to extract title and content
+                rawSections.forEach((section, index) => {
+                    if (!section.trim()) return; // Skip empty sections
+                    
+                    // Try to find a title pattern (assuming titles are on their own line or marked somehow)
+                    let lines = section.split('\n');
+                    let title = lines[0].trim(); // Default: use first line as title
+                    let contentLines = lines.slice(1); // Default: rest is content
+                    let audioPath = '';
+                    
+                    // Check for audio file path in the content
+                    for (let i = 0; i < contentLines.length; i++) {
+                        if (contentLines[i].trim().toLowerCase().startsWith('audio:')) {
+                            audioPath = contentLines[i].substring(6).trim();
+                            contentLines.splice(i, 1); // Remove the audio line from content
+                            break;
+                        }
                     }
+                    
+                    // If no audio path found, use the title to construct the filename
+                    if (!audioPath) {
+                        // Function to normalize Spanish accented characters to non-accented equivalents
+                        const normalizeSpanishChars = (text) => {
+                            const charMap = {
+                                'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u',
+                                'Á': 'A', 'É': 'E', 'Í': 'I', 'Ó': 'O', 'Ú': 'U',
+                                'ñ': 'n', 'Ñ': 'N',
+                                'ü': 'u', 'Ü': 'U',
+                                'ç': 'c', 'Ç': 'C'
+                            };
+                            
+                            // Replace each special character with its equivalent
+                            return text.replace(/[áéíóúÁÉÍÓÚñÑüÜçÇ]/g, match => charMap[match] || match);
+                        };
+                        
+                        // Convert title to a valid filename by replacing special characters
+                        // with their non-accented equivalents and replacing spaces with underscores
+                        const normalizedTitle = normalizeSpanishChars(title);
+                        const safeFilename = normalizedTitle
+                            .toLowerCase()
+                            .replace(/[^\w\s-]/g, '') // Remove remaining special characters
+                            .replace(/\s+/g, '_')     // Replace spaces with underscores
+                            .trim();
+                            
+                        audioPath = `audio/${safeFilename}.mp3`;
+                    }
+                    
+                    // If title contains "TITLE:" prefix, handle it
+                    if (title.toUpperCase().startsWith('TITLE:')) {
+                        title = title.substring(6).trim();
+                    }
+                    
+                    // Create accordion item
+                    createAccordionItem(title, contentLines.join('\n').trim(), audioPath);
+                });
+                
+                // If no items were created, show a message
+                if (accordion.children.length === 0) {
+                    accordion.innerHTML = '<div class="accordion-item"><div class="accordion-header"><span class="title-text">No canticles found</span></div></div>';
                 }
-            });
+                
+                // Setup accordion functionality
+                setupAccordion();
+            }
 
-            // Handle play/stop audio with reset
-            playBtn.addEventListener('click', () => {
-                // Stop and reset any currently playing audio
-                if (currentAudio && currentAudio !== audio) {
+            // Global audio object to manage playback
+            let currentAudio = null;
+            let currentPlayButton = null;
+            
+            function createAccordionItem(title, content, audioPath) {
+                const item = document.createElement('div');
+                item.className = 'accordion-item';
+                
+                const header = document.createElement('div');
+                header.className = 'accordion-header';
+                
+                // Create play button
+                const playButton = document.createElement('div');
+                playButton.className = 'play-button';
+                playButton.dataset.audioPath = audioPath;
+                
+                // Add play icon
+                const playIcon = document.createElement('div');
+                playIcon.className = 'play-icon';
+                
+                // Add pause icon
+                const pauseIcon = document.createElement('div');
+                pauseIcon.className = 'pause-icon';
+                
+                playButton.appendChild(playIcon);
+                playButton.appendChild(pauseIcon);
+                
+                playButton.addEventListener('click', function(e) {
+                    e.stopPropagation(); // Prevent accordion toggle
+                    toggleAudio(this, audioPath);
+                });
+                
+                // Create title text span
+                const titleText = document.createElement('span');
+                titleText.className = 'title-text';
+                titleText.textContent = title;
+                
+                header.appendChild(playButton);
+                header.appendChild(titleText);
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'accordion-content';
+                contentDiv.textContent = content;
+                
+                item.appendChild(header);
+                item.appendChild(contentDiv);
+                accordion.appendChild(item);
+            }
+            
+            function toggleAudio(button, audioPath) {
+                const playIcon = button.querySelector('.play-icon');
+                const pauseIcon = button.querySelector('.pause-icon');
+                
+                // Function to reset button to play state
+                const resetButtonToPlay = (btn) => {
+                    const playIco = btn.querySelector('.play-icon');
+                    const pauseIco = btn.querySelector('.pause-icon');
+                    
+                    playIco.style.display = 'block';
+                    pauseIco.style.display = 'none';
+                };
+                
+                // Function to set button to pause state
+                const setButtonToPause = (btn) => {
+                    const playIco = btn.querySelector('.play-icon');
+                    const pauseIco = btn.querySelector('.pause-icon');
+                    
+                    playIco.style.display = 'none';
+                    pauseIco.style.display = 'block';
+                };
+                
+                // If there's currently playing audio, stop it
+                if (currentAudio) {
                     currentAudio.pause();
                     currentAudio.currentTime = 0;
-                    currentButton.innerHTML = '▶';
-                    currentButton.parentElement.querySelector('.progress-bar').style.width = '0%';
+                    resetButtonToPlay(currentPlayButton);
+                    
+                    // If clicking the same button that's currently playing, just stop it
+                    if (currentPlayButton === button) {
+                        currentAudio = null;
+                        currentPlayButton = null;
+                        return;
+                    }
                 }
-
-                // Reset the current audio
-                audio.currentTime = 0;
-                progressBar.style.width = '0%';
-
-                if (audio.paused) {
-                    audio.play();
-                    playBtn.innerHTML = '◼';
-                    currentAudio = audio;
-                    currentButton = playBtn;
-                } else {
-                    audio.pause();
-                    playBtn.innerHTML = '▶';
+                
+                // Start playing the new audio
+                const audio = new Audio(audioPath);
+                
+                audio.addEventListener('ended', function() {
+                    resetButtonToPlay(button);
                     currentAudio = null;
-                    currentButton = null;
-                }
-            });
+                    currentPlayButton = null;
+                });
+                
+                audio.addEventListener('error', function(e) {
+                    console.error('Audio error:', e);
+                    resetButtonToPlay(button);
+                    alert('Could not play audio file: ' + audioPath);
+                    currentAudio = null;
+                    currentPlayButton = null;
+                });
+                
+                audio.play().then(() => {
+                    setButtonToPause(button);
+                    currentAudio = audio;
+                    currentPlayButton = button;
+                }).catch(err => {
+                    console.error('Audio play error:', err);
+                    resetButtonToPlay(button);
+                    
+                    // Show a more user-friendly error on mobile
+                    if (err.name === 'NotAllowedError') {
+                        alert('Please interact with the page first before playing audio.');
+                    } else {
+                        alert('Could not play audio file: ' + audioPath);
+                    }
+                });
+            }
 
-            // Update progress bar
-            audio.addEventListener('timeupdate', () => {
-                const progress = (audio.currentTime / audio.duration) * 100;
-                progressBar.style.width = `${progress}%`;
-            });
-
-            // Reset on audio end
-            audio.addEventListener('ended', () => {
-                playBtn.innerHTML = '▶';
-                progressBar.style.width = '0%';
-                audio.currentTime = 0;
-                currentAudio = null;
-                currentButton = null;
-            });
+            function setupAccordion() {
+                const accordionItems = document.querySelectorAll('.accordion-item');
+                
+                accordionItems.forEach(item => {
+                    const header = item.querySelector('.accordion-header');
+                    
+                    header.addEventListener('click', () => {
+                        // Toggle current item
+                        const isActive = item.classList.contains('active');
+                        
+                        // Close all items
+                        accordionItems.forEach(otherItem => {
+                            otherItem.classList.remove('active');
+                        });
+                        
+                        // If the clicked item wasn't active, open it
+                        if (!isActive) {
+                            item.classList.add('active');
+                        }
+                    });
+                });
+                
+                // Setup search functionality
+                setupSearch();
+            }
+            
+            function setupSearch() {
+                const searchInput = document.getElementById('searchInput');
+                const searchStatus = document.getElementById('searchStatus');
+                
+                if (!searchInput) return;
+                
+                searchInput.addEventListener('input', function() {
+                    const query = this.value.toLowerCase().trim();
+                    const items = document.querySelectorAll('.accordion-item');
+                    let matchCount = 0;
+                    
+                    // Show all if query is empty
+                    if (query === '') {
+                        items.forEach(item => {
+                            item.classList.remove('hidden');
+                        });
+                        searchStatus.textContent = '';
+                        return;
+                    }
+                    
+                    // Filter items based on search query
+                    items.forEach(item => {
+                        const titleElement = item.querySelector('.title-text');
+                        if (!titleElement) return;
+                        
+                        const title = titleElement.textContent.toLowerCase();
+                        if (title.includes(query)) {
+                            item.classList.remove('hidden');
+                            matchCount++;
+                        } else {
+                            item.classList.add('hidden');
+                        }
+                    });
+                    
+                    // Update status message
+                    if (matchCount === 0) {
+                        searchStatus.textContent = 'No matches found';
+                    } else if (matchCount === 1) {
+                        searchStatus.textContent = '1 canticle found';
+                    } else {
+                        searchStatus.textContent = `${matchCount} canticles found`;
+                    }
+                });
+            }
         });
     </script>
 </body>
