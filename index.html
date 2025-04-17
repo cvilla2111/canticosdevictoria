@@ -41,32 +41,7 @@
             margin-bottom: 8px;
         }
 
-        .file-input-container {
-            margin-bottom: 24px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 16px;
-            text-align: center;
-        }
-
-        .file-input-container p {
-            margin-bottom: 16px;
-            font-size: 16px;
-        }
-
-        .file-input-label {
-            display: inline-block;
-            padding: 10px 16px;
-            background-color: var(--text-color);
-            color: var(--background-color);
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        #fileInput {
-            display: none;
-        }
+        /* File input styles removed */
 
         .accordion {
             width: 100%;
@@ -244,11 +219,7 @@
         <h1>Cánticos De Victoria</h1>
     </header>
 
-    <div class="file-input-container">
-        <p>Upload a text file to load the canticles:</p>
-        <label for="fileInput" class="file-input-label">Select File</label>
-        <input type="file" id="fileInput" accept=".txt">
-    </div>
+    <!-- File input section removed -->
 
     <div class="search-container">
         <input type="text" id="searchInput" placeholder="Search" class="search-input">
@@ -260,26 +231,44 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const fileInput = document.getElementById('fileInput');
             const accordion = document.getElementById('accordion');
             const loading = document.getElementById('loading');
-
-            fileInput.addEventListener('change', handleFileSelect);
-
-            function handleFileSelect(event) {
-                const file = event.target.files[0];
-                if (!file) return;
-
+            
+            // Path to the text file (update this to point to your actual file)
+            const txtFilePath = 'canticos.txt';
+            
+            // Load the text file on page load
+            loadTextFile(txtFilePath);
+            
+            function loadTextFile(filePath) {
                 loading.style.display = 'block';
                 accordion.innerHTML = '';
-
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const content = e.target.result;
-                    parseFileContent(content);
-                    loading.style.display = 'none';
-                };
-                reader.readAsText(file);
+                
+                fetch(filePath)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to load text file');
+                        }
+                        return response.text();
+                    })
+                    .then(content => {
+                        parseFileContent(content);
+                        loading.style.display = 'none';
+                    })
+                    .catch(error => {
+                        console.error('Error loading text file:', error);
+                        loading.style.display = 'none';
+                        accordion.innerHTML = `
+                            <div class="accordion-item">
+                                <div class="accordion-header">
+                                    <span class="title-text">Error loading canticles</span>
+                                </div>
+                                <div class="accordion-content" style="max-height: none; padding: 16px;">
+                                    Could not load the canticles file. Please check that "${filePath}" exists.
+                                </div>
+                            </div>
+                        `;
+                    });
             }
 
             function parseFileContent(content) {
