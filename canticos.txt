@@ -1,9 +1,3 @@
-Tres Cosas Quiero Yo
-Lugar donde va la letra del corito
-
-Tercera Persona De La Trinidad
-Lugar donde va la letra del corito
-
 A Mi No Me Cambia Nadie
 Lugar donde va la letra del corito
 
@@ -186,6 +180,9 @@ Lugar donde va la letra del corito
 Estas Seguro De Que Sabes Que Te Espera
 Lugar donde va la letra del corito
 
+Estas Son Las Fiestas
+Lugar donde va la letra del corito
+
 Este Es El Cristo Que Yo Predico
 Lugar donde va la letra del corito
 
@@ -196,6 +193,9 @@ Fuego Ha Bajado Del Cielo
 Lugar donde va la letra del corito
 
 Fuego Pentecostal
+Lugar donde va la letra del corito
+
+Gozo Yo Quiería
 Lugar donde va la letra del corito
 
 Guiado Por Tu Espíritu, Ese Paracleto
@@ -216,7 +216,7 @@ Lugar donde va la letra del corito
 Hay Un Río De Vida
 Lugar donde va la letra del corito
 
-Haz Cambiado Mi Lamento En Baile
+Has Cambiado Mi Lamento En Baile
 Lugar donde va la letra del corito
 
 He Batallado Contra Viento Y Marea
@@ -228,6 +228,9 @@ Lugar donde va la letra del corito
 Herido Fue Por Nuestras Rebeliones
 Lugar donde va la letra del corito
 
+Hermano Si Estás Seguro
+Lugar donde va la letra del corito
+
 Jehová Esta En Su Templo
 Lugar donde va la letra del corito
 
@@ -237,13 +240,16 @@ Lugar donde va la letra del corito
 Jehová, Jesús, Espíritu De Poder
 Lugar donde va la letra del corito
 
+Jehová Está Conmigo
+Lugar donde va la letra del corito
+
 Jerusalem Que Bonita Eres
 Lugar donde va la letra del corito
 
 Jesús Esta Pasando Por Aqui
 Lugar donde va la letra del corito
 
-Jesús Resucito, La Tumba Esta Vacía
+La Tumba Esta Vacía
 Lugar donde va la letra del corito
 
 Jesús Viene En Las Nubes
@@ -264,6 +270,9 @@ Lugar donde va la letra del corito
 La Necesito Si La Necesito
 Lugar donde va la letra del corito
 
+La Trompeta Está Sonando
+Lugar donde va la letra del corito
+
 La Sangre De Cristo Lava Lavo Mi Ser
 Lugar donde va la letra del corito
 
@@ -280,6 +289,9 @@ Lo Que El Espíritu Diga Eso Se Hará
 Lugar donde va la letra del corito
 
 Los Que Esperan En Jehová
+Lugar donde va la letra del corito
+
+Marta Le Dijo A Jesús
 Lugar donde va la letra del corito
 
 Me Empujaron Con Violencia
@@ -301,6 +313,9 @@ No Hay Nadie Como Mi Dios No Hay Nadie
 Lugar donde va la letra del corito
 
 No Importa La Iglesia Que Vallas
+Lugar donde va la letra del corito
+
+Oh Engrandece Mi Alma Al Señor
 Lugar donde va la letra del corito
 
 Oh Gloria Dios Hay Que Nacer Del Agua
@@ -397,6 +412,12 @@ Toda Maldad Sea Reprendida
 Lugar donde va la letra del corito
 
 Todavia Me Queda Dios Todavia Me Queda Fuego
+Lugar donde va la letra del corito
+
+Tres Cosas Quiero Yo
+Lugar donde va la letra del corito
+
+Tercera Persona De La Trinidad
 Lugar donde va la letra del corito
 
 Tu Eres El Alfarero
