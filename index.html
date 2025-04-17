@@ -72,7 +72,7 @@
         .play-button {
             width: 32px;
             height: 32px;
-            border-radius: 4px;
+            border-radius: 50%; /* Changed to circular */
             background-color: transparent;
             border: 2px solid var(--text-color);
             display: flex;
@@ -97,6 +97,7 @@
         .play-icon, .pause-icon {
             position: absolute;
             transition: opacity 0.2s ease, transform 0.2s ease;
+            z-index: 2;
         }
         
         .play-icon {
@@ -119,6 +120,28 @@
                 transparent 4px,
                 transparent 8px
             );
+        }
+        
+        /* Progress circle styles */
+        .progress-circle {
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            width: 32px;
+            height: 32px;
+            z-index: 1;
+        }
+        
+        .progress-circle circle {
+            fill: transparent;
+            stroke-width: 2px;
+            stroke: var(--text-color);
+            stroke-dasharray: 95; /* Approximately 2πr where r ≈ 15px */
+            stroke-dashoffset: 95; /* Start with full offset (no progress) */
+            transform: rotate(-90deg);
+            transform-origin: center;
+            transition: stroke-dashoffset 0.1s linear;
+            opacity: 0.5;
         }
         
         .title-text {
@@ -364,8 +387,21 @@
                 const pauseIcon = document.createElement('div');
                 pauseIcon.className = 'pause-icon';
                 
+                // Add progress circle (SVG)
+                const progressSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                progressSvg.classList.add('progress-circle');
+                progressSvg.setAttribute('viewBox', '0 0 32 32');
+                
+                const progressCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                progressCircle.setAttribute('cx', '16');
+                progressCircle.setAttribute('cy', '16');
+                progressCircle.setAttribute('r', '15');
+                
+                progressSvg.appendChild(progressCircle);
+                
                 playButton.appendChild(playIcon);
                 playButton.appendChild(pauseIcon);
+                playButton.appendChild(progressSvg);
                 
                 playButton.addEventListener('click', function(e) {
                     e.stopPropagation(); // Prevent accordion toggle
@@ -392,14 +428,29 @@
             function toggleAudio(button, audioPath) {
                 const playIcon = button.querySelector('.play-icon');
                 const pauseIcon = button.querySelector('.pause-icon');
+                const progressCircle = button.querySelector('.progress-circle circle');
+                const CIRCLE_CIRCUMFERENCE = 95; // Should match the stroke-dasharray value in CSS
+                let progressInterval;
                 
                 // Function to reset button to play state
                 const resetButtonToPlay = (btn) => {
                     const playIco = btn.querySelector('.play-icon');
                     const pauseIco = btn.querySelector('.pause-icon');
+                    const progressCir = btn.querySelector('.progress-circle circle');
                     
                     playIco.style.display = 'block';
                     pauseIco.style.display = 'none';
+                    
+                    // Reset progress circle
+                    if (progressCir) {
+                        progressCir.style.strokeDashoffset = CIRCLE_CIRCUMFERENCE;
+                    }
+                    
+                    // Clear progress update interval
+                    if (progressInterval) {
+                        clearInterval(progressInterval);
+                        progressInterval = null;
+                    }
                 };
                 
                 // Function to set button to pause state
@@ -409,6 +460,19 @@
                     
                     playIco.style.display = 'none';
                     pauseIco.style.display = 'block';
+                };
+                
+                // Function to update progress circle
+                const updateProgress = (audio, progressCircle) => {
+                    if (!audio || !progressCircle) return;
+                    
+                    const currentTime = audio.currentTime;
+                    const duration = audio.duration || 1; // Avoid division by 0
+                    const progress = currentTime / duration;
+                    
+                    // Calculate stroke-dashoffset based on progress (from full circle to 0)
+                    const dashOffset = CIRCLE_CIRCUMFERENCE - (progress * CIRCLE_CIRCUMFERENCE);
+                    progressCircle.style.strokeDashoffset = dashOffset;
                 };
                 
                 // If there's currently playing audio, stop it
@@ -440,6 +504,13 @@
                     alert('Could not play audio file: ' + audioPath);
                     currentAudio = null;
                     currentPlayButton = null;
+                });
+                
+                audio.addEventListener('loadedmetadata', function() {
+                    // Set up progress updates at regular intervals once we have audio metadata
+                    progressInterval = setInterval(() => {
+                        updateProgress(audio, progressCircle);
+                    }, 100); // Update every 100ms for smooth progress
                 });
                 
                 audio.play().then(() => {
