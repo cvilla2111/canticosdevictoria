@@ -84,6 +84,7 @@
             color: var(--text-color);
             position: relative;
             transition: all 0.2s ease;
+            overflow: hidden; /* Contain the progress bar */
         }
         
         .play-button:hover {
@@ -92,6 +93,18 @@
         
         .play-button:active {
             transform: scale(0.95);
+        }
+        
+        /* Progress bar inside play button */
+        .button-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0%; /* Initially 0% width */
+            height: 100%;
+            background-color: rgba(93, 92, 222, 0.25); /* Light purple background */
+            z-index: 0; /* Behind the play/pause icons */
+            transition: width 0.3s ease;
         }
         
         .play-icon, .pause-icon {
@@ -132,16 +145,7 @@
             z-index: 2;
         }
         
-        .progress-bar {
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%; /* Fill the exact height of the title container */
-            width: 0%; /* Initially 0% width */
-            background-color: rgba(93, 92, 222, 0.25); /* Slightly darker purple background for better visibility */
-            z-index: 1;
-            transition: width 0.3s ease;
-        }
+        /* Progress bar now inside button only */
 
         .accordion-header:hover {
             background-color: var(--hover-color);
@@ -374,6 +378,10 @@
                 playButton.className = 'play-button';
                 playButton.dataset.audioPath = audioPath;
                 
+                // Add progress bar inside button
+                const buttonProgress = document.createElement('div');
+                buttonProgress.className = 'button-progress';
+                
                 // Add play icon
                 const playIcon = document.createElement('div');
                 playIcon.className = 'play-icon';
@@ -382,6 +390,7 @@
                 const pauseIcon = document.createElement('div');
                 pauseIcon.className = 'pause-icon';
                 
+                playButton.appendChild(buttonProgress);
                 playButton.appendChild(playIcon);
                 playButton.appendChild(pauseIcon);
                 
@@ -390,13 +399,9 @@
                     toggleAudio(this, audioPath);
                 });
                 
-                // Create title container with progress bar
+                // Create title container without progress bar
                 const titleContainer = document.createElement('div');
                 titleContainer.className = 'title-container';
-                
-                // Create progress bar
-                const progressBar = document.createElement('div');
-                progressBar.className = 'progress-bar';
                 
                 // Create title text span
                 const titleText = document.createElement('span');
@@ -404,7 +409,6 @@
                 titleText.textContent = title;
                 
                 // Add to DOM
-                titleContainer.appendChild(progressBar);
                 titleContainer.appendChild(titleText);
                 
                 header.appendChild(playButton);
@@ -422,18 +426,15 @@
             function toggleAudio(button, audioPath) {
                 const playIcon = button.querySelector('.play-icon');
                 const pauseIcon = button.querySelector('.pause-icon');
-                // Get the header container (parent of the button)
-                const header = button.parentNode;
-                // Get the progress bar from the title container
-                const progressBar = header.querySelector('.progress-bar');
+                // Get the button progress bar
+                const buttonProgress = button.querySelector('.button-progress');
                 let progressInterval;
                 
                 // Function to reset button to play state
                 const resetButtonToPlay = (btn) => {
-                    const header = btn.parentNode;
                     const playIco = btn.querySelector('.play-icon');
                     const pauseIco = btn.querySelector('.pause-icon');
-                    const progress = header.querySelector('.progress-bar');
+                    const progress = btn.querySelector('.button-progress');
                     
                     playIco.style.display = 'block';
                     pauseIco.style.display = 'none';
@@ -504,7 +505,7 @@
                 audio.addEventListener('loadedmetadata', function() {
                     // Set up progress updates once we have audio metadata
                     progressInterval = setInterval(() => {
-                        updateProgressBar(audio, progressBar);
+                        updateProgressBar(audio, buttonProgress);
                     }, 100); // Update every 100ms for smooth progress
                 });
                 
