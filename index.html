@@ -306,6 +306,9 @@
                 // Split the content by empty lines to identify different sections
                 const rawSections = content.split(/\n\s*\n/);
                 
+                // Array to collect all items before sorting
+                const items = [];
+                
                 // Process each section to extract title and content
                 rawSections.forEach((section, index) => {
                     if (!section.trim()) return; // Skip empty sections
@@ -358,8 +361,20 @@
                         title = title.substring(6).trim();
                     }
                     
-                    // Create accordion item
-                    createAccordionItem(title, contentLines.join('\n').trim(), audioPath);
+                    // Store item data in array instead of creating immediately
+                    items.push({
+                        title: title,
+                        content: contentLines.join('\n').trim(),
+                        audioPath: audioPath
+                    });
+                });
+                
+                // Sort items alphabetically by title
+                items.sort((a, b) => a.title.localeCompare(b.title, undefined, { sensitivity: 'base' }));
+                
+                // Create accordion items in alphabetical order
+                items.forEach(item => {
+                    createAccordionItem(item.title, item.content, item.audioPath);
                 });
                 
                 // If no items were created, show a message
