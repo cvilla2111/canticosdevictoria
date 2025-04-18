@@ -136,13 +136,12 @@
             position: absolute;
             top: 0;
             left: 0;
-            height: 100%; /* Keep full height */
+            height: 100%; /* Fill the exact height of the title container */
             width: 0%; /* Initially 0% width */
             background-color: rgba(93, 92, 222, 0.25); /* Slightly darker purple background for better visibility */
             z-index: 1;
             transition: width 0.3s ease;
-            transform: scaleY(1.4); /* Make progress bar 40% taller - doubled from previous 1.2 */
-            transform-origin: center; /* Center the scaling */
+            /* Removed the scaleY transformation to keep the height at exactly 100% of the row */
         }
 
         .accordion-header:hover {
