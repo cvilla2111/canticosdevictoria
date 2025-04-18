@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cánticos De Victoria</title>
-    <!-- Import Chewy font from Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Chewy&display=swap" rel="stylesheet">
+    <!-- Import fonts from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --background-color: #ffffff;
@@ -70,6 +70,7 @@
             font-weight: 500;
             font-size: 16px;
             user-select: none;
+            font-family: 'Quicksand', sans-serif;
         }
         
         .play-button {
@@ -146,6 +147,8 @@
         .title-text {
             position: relative;
             z-index: 2;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 600; /* Semi-bold for better readability */
         }
         
         /* Progress bar now inside button only */
@@ -166,6 +169,9 @@
             transition: max-height 0.3s ease;
             padding: 0 16px;
             white-space: pre-wrap;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 15px;
+            line-height: 1.5; /* Improved line height for readability */
         }
 
         .accordion-item.active .accordion-content {
