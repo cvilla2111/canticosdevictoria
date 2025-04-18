@@ -99,6 +99,21 @@
             transform: scale(0.95);
         }
         
+        .play-button.disabled {
+            border-color: #ccc;
+            color: #ccc;
+            cursor: default;
+            opacity: 0.7;
+        }
+        
+        .play-button.disabled:hover {
+            background-color: transparent;
+        }
+        
+        .play-button.disabled:active {
+            transform: none;
+        }
+        
         /* Progress bar inside play button */
         .button-progress {
             position: absolute;
@@ -390,7 +405,20 @@
             let currentAudio = null;
             let currentPlayButton = null;
             
-            function createAccordionItem(title, content, audioPath) {
+            // Function to check if a file exists
+            function checkAudioFile(url) {
+                return new Promise(resolve => {
+                    fetch(url, { method: 'HEAD' })
+                        .then(response => {
+                            resolve(response.ok);
+                        })
+                        .catch(() => {
+                            resolve(false);
+                        });
+                });
+            }
+            
+            async function createAccordionItem(title, content, audioPath) {
                 const item = document.createElement('div');
                 item.className = 'accordion-item';
                 
@@ -418,10 +446,25 @@
                 playButton.appendChild(playIcon);
                 playButton.appendChild(pauseIcon);
                 
-                playButton.addEventListener('click', function(e) {
-                    e.stopPropagation(); // Prevent accordion toggle
-                    toggleAudio(this, audioPath);
-                });
+                // Check if the audio file exists
+                try {
+                    const audioExists = await checkAudioFile(audioPath);
+                    if (!audioExists) {
+                        // If audio doesn't exist, disable the button
+                        playButton.classList.add('disabled');
+                        // The disabled button doesn't do anything when clicked
+                    } else {
+                        // Only add click event if audio file exists
+                        playButton.addEventListener('click', function(e) {
+                            e.stopPropagation(); // Prevent accordion toggle
+                            toggleAudio(this, audioPath);
+                        });
+                    }
+                } catch (error) {
+                    console.error("Error checking audio file:", error);
+                    // If error checking, assume file doesn't exist
+                    playButton.classList.add('disabled');
+                }
                 
                 // Create title container without progress bar
                 const titleContainer = document.createElement('div');
@@ -521,9 +564,14 @@
                 audio.addEventListener('error', function(e) {
                     console.error('Audio error:', e);
                     resetButtonToPlay(button);
-                    alert('Could not play audio file: ' + audioPath);
+                    // No alert - just silently reset the button
                     currentAudio = null;
                     currentPlayButton = null;
+                    
+                    // Mark the button as disabled for future interactions
+                    button.classList.add('disabled');
+                    // Remove click event listener
+                    button.replaceWith(button.cloneNode(true));
                 });
                 
                 audio.addEventListener('loadedmetadata', function() {
@@ -541,11 +589,17 @@
                     console.error('Audio play error:', err);
                     resetButtonToPlay(button);
                     
-                    // Show a more user-friendly error on mobile
+                    // Mark the button as disabled for future interactions
+                    button.classList.add('disabled');
+                    // Remove click event listener
+                    button.replaceWith(button.cloneNode(true));
+                    
+                    // Handle permissions error differently (required by browsers)
                     if (err.name === 'NotAllowedError') {
                         alert('Please interact with the page first before playing audio.');
                     } else {
-                        alert('Could not play audio file: ' + audioPath);
+                        // Silently handle other errors - no alert
+                        console.log('Could not play audio file:', audioPath);
                     }
                 });
             }
