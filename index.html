@@ -52,8 +52,6 @@
 
         .accordion-item {
             border-bottom: 1px solid var(--border-color);
-            position: relative; /* Add position relative to contain the absolute positioned progress bar */
-            overflow: hidden; /* Ensure progress bar doesn't overflow */
         }
 
         .accordion-item:last-child {
@@ -138,12 +136,11 @@
             position: absolute;
             top: 0;
             left: 0;
-            height: 100%; /* Fill full height of the accordion item */
+            height: 100%; /* Fill the exact height of the title container */
             width: 0%; /* Initially 0% width */
-            background-color: rgba(93, 92, 222, 0.25); /* Purple background */
-            z-index: 0; /* Lower z-index to stay behind all content */
+            background-color: rgba(93, 92, 222, 0.25); /* Slightly darker purple background for better visibility */
+            z-index: 1;
             transition: width 0.3s ease;
-            pointer-events: none; /* Allow clicks to pass through to the elements behind it */
         }
 
         .accordion-header:hover {
@@ -369,10 +366,6 @@
                 const item = document.createElement('div');
                 item.className = 'accordion-item';
                 
-                // Create progress bar as a direct child of the accordion item
-                const progressBar = document.createElement('div');
-                progressBar.className = 'progress-bar';
-                
                 const header = document.createElement('div');
                 header.className = 'accordion-header';
                 
@@ -397,9 +390,13 @@
                     toggleAudio(this, audioPath);
                 });
                 
-                // Create title container
+                // Create title container with progress bar
                 const titleContainer = document.createElement('div');
                 titleContainer.className = 'title-container';
+                
+                // Create progress bar
+                const progressBar = document.createElement('div');
+                progressBar.className = 'progress-bar';
                 
                 // Create title text span
                 const titleText = document.createElement('span');
@@ -407,6 +404,7 @@
                 titleText.textContent = title;
                 
                 // Add to DOM
+                titleContainer.appendChild(progressBar);
                 titleContainer.appendChild(titleText);
                 
                 header.appendChild(playButton);
@@ -416,8 +414,6 @@
                 contentDiv.className = 'accordion-content';
                 contentDiv.textContent = content;
                 
-                // Add progress bar as first child so it appears behind other content
-                item.appendChild(progressBar);
                 item.appendChild(header);
                 item.appendChild(contentDiv);
                 accordion.appendChild(item);
@@ -428,19 +424,16 @@
                 const pauseIcon = button.querySelector('.pause-icon');
                 // Get the header container (parent of the button)
                 const header = button.parentNode;
-                // Get the accordion item (parent of the header)
-                const item = header.parentNode;
-                // Get the progress bar from the accordion item
-                const progressBar = item.querySelector('.progress-bar');
+                // Get the progress bar from the title container
+                const progressBar = header.querySelector('.progress-bar');
                 let progressInterval;
                 
                 // Function to reset button to play state
                 const resetButtonToPlay = (btn) => {
                     const header = btn.parentNode;
-                    const item = header.parentNode;
                     const playIco = btn.querySelector('.play-icon');
                     const pauseIco = btn.querySelector('.pause-icon');
-                    const progress = item.querySelector('.progress-bar');
+                    const progress = header.querySelector('.progress-bar');
                     
                     playIco.style.display = 'block';
                     pauseIco.style.display = 'none';
