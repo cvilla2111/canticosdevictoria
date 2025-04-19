@@ -232,12 +232,19 @@
         }
         
         .search-clear-btn {
+            /* Positioning */
             position: absolute;
             right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 18px;
-            height: 18px;
+            top: 0;
+            height: 34px;  /* Same height as the search input */
+            width: 20px;
+            
+            /* Display as flex for centering */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            /* Other properties */
             cursor: pointer;
             opacity: 0;
             visibility: hidden;
@@ -245,26 +252,13 @@
             user-select: none;
         }
         
-        /* Create X with CSS */
-        .search-clear-btn::before,
+        /* Wrapper for X to center it perfectly */
         .search-clear-btn::after {
-            content: '';
-            position: absolute;
-            width: 16px;
-            height: 2px;
-            background-color: #666;
-            top: 50%;
-            left: 50%;
-            margin-top: -1px;   /* Half the height to center vertically */
-            margin-left: -8px;  /* Half the width to center horizontally */
-        }
-        
-        .search-clear-btn::before {
-            transform: rotate(45deg);
-        }
-        
-        .search-clear-btn::after {
-            transform: rotate(-45deg);
+            content: "×";  /* Using the × character directly */
+            font-size: 22px;
+            font-weight: bold;
+            color: red;
+            line-height: 1;
         }
         
         .search-clear-btn:hover {
