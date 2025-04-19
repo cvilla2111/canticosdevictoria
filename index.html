@@ -236,21 +236,24 @@
             right: 12px;
             top: 50%;
             transform: translateY(-50%);
-            width: 26px;
-            height: 26px;
+            width: 24px;
+            height: 24px;
             background: none;
             border: none;
             cursor: pointer;
             color: #555;
-            font-size: 26px;
-            font-weight: normal;
-            line-height: 20px;
+            font-size: 20px;
+            text-align: center;
+            padding: 0;
+            margin: 0;
             opacity: 0;
             visibility: hidden;
             transition: all 0.2s ease;
             user-select: none;
-            padding: 0;
-            margin: 0;
+            /* Fix for vertical centering of × symbol */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .search-clear-btn:hover {
@@ -302,7 +305,7 @@
 
     <div class="search-container">
         <input type="text" id="searchInput" placeholder="Search" class="search-input">
-        <button type="button" class="search-clear-btn" id="searchClearBtn" aria-label="Clear search">×</button>
+        <button type="button" class="search-clear-btn" id="searchClearBtn" aria-label="Clear search">&times;</button>
         <div id="searchStatus" class="search-status"></div>
     </div>
 
