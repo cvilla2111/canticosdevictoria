@@ -280,6 +280,20 @@
         .hidden {
             display: none;
         }
+        
+        .copyright-footer {
+            margin-top: 24px;
+            padding: 16px 0;
+            text-align: center;
+            font-size: 14px;
+            color: #888;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .copyright-footer p {
+            margin: 0;
+            font-family: 'Quicksand', sans-serif;
+        }
 
         @media (max-width: 480px) {
             body {
@@ -316,6 +330,10 @@
 
     <div id="loading" class="loading">Loading canticles</div>
     <div id="accordion" class="accordion"></div>
+    
+    <footer class="copyright-footer">
+        <p>ɔ 2025 Cánticos De Victoria. Ministerio Monte de Dios. Manatí, P.R.</p>
+    </footer>
 
     <script>
         /**
@@ -326,6 +344,8 @@
             // DOM elements
             const accordion = document.getElementById('accordion');
             const loading = document.getElementById('loading');
+            
+            // Year in footer is static (2025)
             
             // Global state for audio playback
             let currentAudio = null;
