@@ -384,10 +384,9 @@
                     });
                 });
                 
-                // Sort items alphabetically by title 
-                items.sort((a, b) => a.title.localeCompare(b.title));
+                // Alphabetical sorting disabled - items will appear in original order
                 
-                // Create accordion items in alphabetical order
+                // Create accordion items in original order
                 items.forEach(item => {
                     createAccordionItem(item.title, item.content, item.audioPath);
                 });
