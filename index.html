@@ -325,14 +325,27 @@
                 const rawSections = content.split(/\n\s*\n/);
                 
                 // Track if we've created any items
-                let itemsCreated = 0;
+                let itemCount = 0;
                 
-                // Process and immediately add each section in the original order
-                for (let index = 0; index < rawSections.length; index++) {
-                    const section = rawSections[index];
-                    if (!section.trim()) continue; // Skip empty sections
+                // Function to normalize Spanish accented characters to non-accented equivalents
+                const normalizeSpanishChars = (text) => {
+                    const charMap = {
+                        'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u',
+                        'Á': 'A', 'É': 'E', 'Í': 'I', 'Ó': 'O', 'Ú': 'U',
+                        'ñ': 'n', 'Ñ': 'N',
+                        'ü': 'u', 'Ü': 'U',
+                        'ç': 'c', 'Ç': 'C'
+                    };
                     
-                    // Try to find a title pattern (assuming titles are on their own line or marked somehow)
+                    // Replace each special character with its equivalent
+                    return text.replace(/[áéíóúÁÉÍÓÚñÑüÜçÇ]/g, match => charMap[match] || match);
+                };
+                
+                // Process all sections first (no network requests yet)
+                const processedItems = rawSections.map(section => {
+                    if (!section.trim()) return null; // Skip empty sections
+                    
+                    // Try to find a title pattern
                     let lines = section.split('\n');
                     let title = lines[0].trim(); // Default: use first line as title
                     let contentLines = lines.slice(1); // Default: rest is content
@@ -349,22 +362,7 @@
                     
                     // If no audio path found, use the title to construct the filename
                     if (!audioPath) {
-                        // Function to normalize Spanish accented characters to non-accented equivalents
-                        const normalizeSpanishChars = (text) => {
-                            const charMap = {
-                                'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u',
-                                'Á': 'A', 'É': 'E', 'Í': 'I', 'Ó': 'O', 'Ú': 'U',
-                                'ñ': 'n', 'Ñ': 'N',
-                                'ü': 'u', 'Ü': 'U',
-                                'ç': 'c', 'Ç': 'C'
-                            };
-                            
-                            // Replace each special character with its equivalent
-                            return text.replace(/[áéíóúÁÉÍÓÚñÑüÜçÇ]/g, match => charMap[match] || match);
-                        };
-                        
-                        // Convert title to a valid filename by replacing special characters
-                        // with their non-accented equivalents and replacing spaces with underscores
+                        // Convert title to a valid filename
                         const normalizedTitle = normalizeSpanishChars(title);
                         const safeFilename = normalizedTitle
                             .toLowerCase()
@@ -380,19 +378,120 @@
                         title = title.substring(6).trim();
                     }
                     
-                    // Create and add each accordion item immediately
-                    // This ensures strict preservation of the original order from the text file
-                    await createAccordionItem(title, contentLines.join('\n').trim(), audioPath);
-                    itemsCreated++;
-                }
+                    return {
+                        title: title,
+                        content: contentLines.join('\n').trim(),
+                        audioPath: audioPath
+                    };
+                }).filter(item => item !== null); // Remove null items
+                
+                // Update count of valid items
+                itemCount = processedItems.length;
+                
+                // Create all accordion items immediately with no audio check for fast initial render
+                processedItems.forEach(item => {
+                    createAccordionItemFast(item.title, item.content, item.audioPath);
+                });
                 
                 // Check if any items were created
-                if (itemsCreated === 0) {
+                if (itemCount === 0) {
                     accordion.innerHTML = '<div class="accordion-item"><div class="accordion-header"><span class="title-text">No canticles found</span></div></div>';
+                    return;
                 }
                 
-                // Setup accordion functionality
+                // After fast rendering, check audio files in the background
+                setTimeout(() => {
+                    checkAudioFilesAsync();
+                }, 100);
+                
+                // Setup accordion functionality immediately
                 setupAccordion();
+            }
+            
+            // Function to create accordion items quickly without audio check
+            function createAccordionItemFast(title, content, audioPath) {
+                const item = document.createElement('div');
+                item.className = 'accordion-item';
+                
+                const header = document.createElement('div');
+                header.className = 'accordion-header';
+                
+                // Create play button
+                const playButton = document.createElement('div');
+                playButton.className = 'play-button';
+                playButton.dataset.audioPath = audioPath;
+                
+                // Add progress bar inside button
+                const buttonProgress = document.createElement('div');
+                buttonProgress.className = 'button-progress';
+                
+                // Add play icon
+                const playIcon = document.createElement('div');
+                playIcon.className = 'play-icon';
+                
+                // Add pause icon
+                const pauseIcon = document.createElement('div');
+                pauseIcon.className = 'pause-icon';
+                
+                playButton.appendChild(buttonProgress);
+                playButton.appendChild(playIcon);
+                playButton.appendChild(pauseIcon);
+                
+                // Add a dummy click handler that will be replaced later
+                playButton.addEventListener('click', function(e) {
+                    e.stopPropagation(); // Prevent accordion toggle
+                });
+                
+                // Create title container without progress bar
+                const titleContainer = document.createElement('div');
+                titleContainer.className = 'title-container';
+                
+                // Create title text span
+                const titleText = document.createElement('span');
+                titleText.className = 'title-text';
+                titleText.textContent = title;
+                
+                // Add to DOM
+                titleContainer.appendChild(titleText);
+                
+                header.appendChild(playButton);
+                header.appendChild(titleContainer);
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'accordion-content';
+                contentDiv.textContent = content;
+                
+                item.appendChild(header);
+                item.appendChild(contentDiv);
+                accordion.appendChild(item);
+            }
+            
+            // Check audio files and update UI after initial render
+            async function checkAudioFilesAsync() {
+                const playButtons = document.querySelectorAll('.play-button');
+                
+                const buttonChecks = Array.from(playButtons).map(async (button) => {
+                    const audioPath = button.dataset.audioPath;
+                    try {
+                        const audioExists = await checkAudioFile(audioPath);
+                        if (!audioExists) {
+                            // If audio doesn't exist, disable the button
+                            button.classList.add('disabled');
+                        } else {
+                            // Add real click handler once we know the file exists
+                            button.addEventListener('click', function(e) {
+                                e.stopPropagation(); // Prevent accordion toggle
+                                toggleAudio(this, audioPath);
+                            });
+                        }
+                    } catch (error) {
+                        console.error("Error checking audio file:", error);
+                        button.classList.add('disabled');
+                    }
+                });
+                
+                // Run all checks in parallel
+                await Promise.all(buttonChecks);
             }
 
             // Global audio object to manage playback
