@@ -705,6 +705,37 @@
                     setButtonToPause(button);
                     currentAudio = audio;
                     currentPlayButton = button;
+                    
+                    // Create an observer for the item containing this button
+                    // This ensures audio stops when scrolling away, even if the item is closed
+                    const audioItem = button.closest('.accordion-item');
+                    if (audioItem) {
+                        // Create a new Intersection Observer for this playing item
+                        const audioObserver = new IntersectionObserver((entries) => {
+                            entries.forEach(entry => {
+                                if (!entry.isIntersecting && currentAudio) {
+                                    // Item with playing audio is out of view - stop audio
+                                    currentAudio.pause();
+                                    currentAudio.currentTime = 0;
+                                    resetButtonToPlay(currentPlayButton);
+                                    currentAudio = null;
+                                    currentPlayButton = null;
+                                    console.log('Audio stopped - playing item scrolled out of view');
+                                    
+                                    // Disconnect this observer
+                                    audioObserver.disconnect();
+                                }
+                            });
+                        }, {
+                            threshold: 0.1 // Trigger when less than 10% is visible
+                        });
+                        
+                        // Start observing the item with playing audio
+                        audioObserver.observe(audioItem);
+                        
+                        // Store the observer on the audio object so we can clean it up later
+                        audio.observer = audioObserver;
+                    }
                 }).catch(err => {
                     console.error('Audio play error:', err);
                     resetButtonToPlay(button);
