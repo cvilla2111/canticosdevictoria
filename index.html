@@ -2,8 +2,11 @@
 <html lang="en" class="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#ffffff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>Cánticos De Victoria</title>
     <!-- Import fonts from Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
@@ -377,6 +380,85 @@
             pointer-events: none;
         }
         
+        /* Fullscreen button */
+        .fullscreen-btn {
+            position: fixed;
+            bottom: 16px;
+            left: 16px;
+            width: 36px;
+            height: 36px;
+            background-color: white;
+            border: 1px solid #888;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0.8;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .fullscreen-btn:hover {
+            opacity: 1;
+            background-color: #f8f8f8;
+        }
+        
+        .fullscreen-btn:active {
+            transform: scale(0.95);
+        }
+        
+        /* Fullscreen button icons */
+        .fullscreen-enter,
+        .fullscreen-exit {
+            width: 14px;
+            height: 14px;
+            position: relative;
+        }
+        
+        .fullscreen-enter::before,
+        .fullscreen-enter::after,
+        .fullscreen-exit::before,
+        .fullscreen-exit::after {
+            content: '';
+            position: absolute;
+            background-color: #888;
+        }
+        
+        /* Enter fullscreen icon (four arrows pointing outward) */
+        .fullscreen-enter::before {
+            width: 14px;
+            height: 2px;
+            left: 0;
+            top: 6px;
+        }
+        
+        .fullscreen-enter::after {
+            width: 2px;
+            height: 14px;
+            left: 6px;
+            top: 0;
+        }
+        
+        /* Exit fullscreen icon (four arrows pointing inward) */
+        .fullscreen-exit {
+            display: none;
+        }
+        
+        .fullscreen-exit::before {
+            width: 14px;
+            height: 2px;
+            left: 0;
+            top: 6px;
+        }
+        
+        .fullscreen-exit::after {
+            width: 2px;
+            height: 14px;
+            left: 6px;
+            top: 0;
+        }
+        
         .return-to-top.visible {
             opacity: 0.8; /* More subtle */
             transform: translateY(0);
@@ -447,6 +529,12 @@
     
     <!-- Return to top button -->
     <div id="returnToTop" class="return-to-top" aria-label="Return to top" role="button" tabindex="0"></div>
+    
+    <!-- Fullscreen button -->
+    <div id="fullscreenBtn" class="fullscreen-btn" aria-label="Toggle fullscreen" role="button" tabindex="0">
+        <div class="fullscreen-enter"></div>
+        <div class="fullscreen-exit"></div>
+    </div>
 
     <script>
         /**
@@ -472,6 +560,12 @@
             
             // Setup return to top button
             setupReturnToTopButton();
+            
+            // Setup fullscreen functionality
+            setupFullscreenButton();
+            
+            // Try to go fullscreen automatically if allowed
+            tryAutoFullscreen();
             
             //=============================================================================
             // DATA LOADING & PROCESSING
@@ -981,6 +1075,116 @@
                 
                 // Initialize search functionality
                 setupSearch();
+            }
+            
+            /**
+             * Setup fullscreen button and functionality
+             */
+            function setupFullscreenButton() {
+                const fullscreenBtn = document.getElementById('fullscreenBtn');
+                const enterIcon = fullscreenBtn.querySelector('.fullscreen-enter');
+                const exitIcon = fullscreenBtn.querySelector('.fullscreen-exit');
+                
+                if (!fullscreenBtn) return;
+                
+                // Check if fullscreen is supported
+                const doc = window.document;
+                const docEl = doc.documentElement;
+                
+                const requestFullscreen = 
+                    docEl.requestFullscreen || 
+                    docEl.mozRequestFullScreen || 
+                    docEl.webkitRequestFullscreen || 
+                    docEl.msRequestFullscreen;
+                
+                const exitFullscreen = 
+                    doc.exitFullscreen ||
+                    doc.mozCancelFullScreen ||
+                    doc.webkitExitFullscreen ||
+                    doc.msExitFullscreen;
+                
+                // Update button to reflect current fullscreen state
+                function updateFullscreenButton() {
+                    if (document.fullscreenElement || 
+                        document.webkitFullscreenElement || 
+                        document.mozFullScreenElement ||
+                        document.msFullscreenElement) {
+                        // We're in fullscreen mode
+                        enterIcon.style.display = 'none';
+                        exitIcon.style.display = 'block';
+                    } else {
+                        // We're not in fullscreen mode
+                        enterIcon.style.display = 'block';
+                        exitIcon.style.display = 'none';
+                    }
+                }
+                
+                // Toggle fullscreen when button is clicked
+                fullscreenBtn.addEventListener('click', () => {
+                    if (document.fullscreenElement || 
+                        document.webkitFullscreenElement || 
+                        document.mozFullScreenElement ||
+                        document.msFullscreenElement) {
+                        // Exit fullscreen
+                        if (exitFullscreen) {
+                            exitFullscreen.call(doc)
+                                .then(() => updateFullscreenButton())
+                                .catch(err => {
+                                    console.error('Error exiting fullscreen:', err);
+                                });
+                        }
+                    } else {
+                        // Enter fullscreen
+                        if (requestFullscreen) {
+                            requestFullscreen.call(docEl)
+                                .then(() => updateFullscreenButton())
+                                .catch(err => {
+                                    console.error('Error entering fullscreen:', err);
+                                });
+                        }
+                    }
+                });
+                
+                // Handle keyboard navigation
+                fullscreenBtn.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        fullscreenBtn.click();
+                    }
+                });
+                
+                // Listen for fullscreen change events
+                document.addEventListener('fullscreenchange', updateFullscreenButton);
+                document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
+                document.addEventListener('mozfullscreenchange', updateFullscreenButton);
+                document.addEventListener('MSFullscreenChange', updateFullscreenButton);
+                
+                // Initial button state
+                updateFullscreenButton();
+            }
+            
+            /**
+             * Try to automatically enter fullscreen mode
+             * Note: Most browsers require user interaction before allowing fullscreen
+             */
+            function tryAutoFullscreen() {
+                // This might be blocked by browsers without user interaction
+                const doc = window.document;
+                const docEl = doc.documentElement;
+                
+                const requestFullscreen = 
+                    docEl.requestFullscreen || 
+                    docEl.mozRequestFullScreen || 
+                    docEl.webkitRequestFullscreen || 
+                    docEl.msRequestFullscreen;
+                
+                if (requestFullscreen) {
+                    // Try to request fullscreen mode
+                    requestFullscreen.call(docEl).catch(err => {
+                        // This will likely fail, but we're trying anyway
+                        console.log('Auto fullscreen not allowed without user interaction');
+                    });
+                }
             }
             
             /**
