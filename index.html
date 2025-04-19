@@ -419,13 +419,21 @@
                 // Log items after sort for debugging
                 console.log("After sort:", items.map(i => i.title));
                 
-                // Create accordion items in alphabetical order (collect all promises)
-                const createPromises = items.map(item => 
-                    createAccordionItem(item.title, item.content, item.audioPath)
-                );
+                // Clear the accordion first to ensure consistent rendering
+                accordion.innerHTML = '';
                 
-                // Wait for all items to be created
-                await Promise.all(createPromises);
+                // Create all accordion items at once in memory first
+                const itemsToAdd = [];
+                
+                for (const item of items) {
+                    const accordionItem = await createAccordionItemInMemory(item.title, item.content, item.audioPath);
+                    itemsToAdd.push(accordionItem);
+                }
+                
+                // Add all items to the DOM at once to maintain sort order
+                itemsToAdd.forEach(element => {
+                    accordion.appendChild(element);
+                });
                 
                 // Only after all items are processed, check if any were created
                 if (items.length === 0) {
@@ -453,6 +461,82 @@
                 });
             }
             
+            // This function creates the accordion item DOM element but doesn't add it to DOM
+            async function createAccordionItemInMemory(title, content, audioPath) {
+                const item = document.createElement('div');
+                item.className = 'accordion-item';
+                
+                const header = document.createElement('div');
+                header.className = 'accordion-header';
+                
+                // Create play button
+                const playButton = document.createElement('div');
+                playButton.className = 'play-button';
+                playButton.dataset.audioPath = audioPath;
+                
+                // Add progress bar inside button
+                const buttonProgress = document.createElement('div');
+                buttonProgress.className = 'button-progress';
+                
+                // Add play icon
+                const playIcon = document.createElement('div');
+                playIcon.className = 'play-icon';
+                
+                // Add pause icon
+                const pauseIcon = document.createElement('div');
+                pauseIcon.className = 'pause-icon';
+                
+                playButton.appendChild(buttonProgress);
+                playButton.appendChild(playIcon);
+                playButton.appendChild(pauseIcon);
+                
+                // Check if the audio file exists
+                try {
+                    const audioExists = await checkAudioFile(audioPath);
+                    if (!audioExists) {
+                        // If audio doesn't exist, disable the button
+                        playButton.classList.add('disabled');
+                        // The disabled button doesn't do anything when clicked
+                    } else {
+                        // Only add click event if audio file exists
+                        playButton.addEventListener('click', function(e) {
+                            e.stopPropagation(); // Prevent accordion toggle
+                            toggleAudio(this, audioPath);
+                        });
+                    }
+                } catch (error) {
+                    console.error("Error checking audio file:", error);
+                    // If error checking, assume file doesn't exist
+                    playButton.classList.add('disabled');
+                }
+                
+                // Create title container without progress bar
+                const titleContainer = document.createElement('div');
+                titleContainer.className = 'title-container';
+                
+                // Create title text span
+                const titleText = document.createElement('span');
+                titleText.className = 'title-text';
+                titleText.textContent = title;
+                
+                // Add to DOM structure
+                titleContainer.appendChild(titleText);
+                
+                header.appendChild(playButton);
+                header.appendChild(titleContainer);
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'accordion-content';
+                contentDiv.textContent = content;
+                
+                item.appendChild(header);
+                item.appendChild(contentDiv);
+                
+                // Return the created element instead of adding it to the DOM
+                return item;
+            }
+            
+            // This function is kept for compatibility but no longer used directly
             async function createAccordionItem(title, content, audioPath) {
                 const item = document.createElement('div');
                 item.className = 'accordion-item';
