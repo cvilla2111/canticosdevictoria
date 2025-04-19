@@ -758,6 +758,7 @@
                 // Function to update search results
                 const updateSearch = () => {
                     const query = searchInput.value.toLowerCase().trim();
+                    const normalizedQuery = normalizeSpanishChars(query);
                     const items = document.querySelectorAll('.accordion-item');
                     let matchCount = 0;
                     
@@ -777,7 +778,9 @@
                         if (!titleElement) return;
                         
                         const title = titleElement.textContent.toLowerCase();
-                        if (title.includes(query)) {
+                        const normalizedTitle = normalizeSpanishChars(title);
+                        
+                        if (normalizedTitle.includes(normalizedQuery)) {
                             item.classList.remove('hidden');
                             matchCount++;
                         } else {
