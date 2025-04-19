@@ -384,28 +384,40 @@
                     });
                 });
                 
-                // Sort items alphabetically by title with more robust sorting
-                items.sort((a, b) => {
-                    // Convert to lowercase for case-insensitive comparison
-                    const titleA = a.title.toLowerCase();
-                    const titleB = b.title.toLowerCase();
+                // Clean up title for sorting
+                const cleanForSort = (title) => {
+                    // Remove any leading numbers with dots/parentheses (like "1. " or "1) ")
+                    let cleaned = title.replace(/^\d+[\.\)]\s*/, '');
                     
-                    // Remove accents and diacritics for consistent comparison
-                    const normalizeString = (str) => {
-                        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                    };
+                    // Force to lowercase and trim whitespace
+                    cleaned = cleaned.toLowerCase().trim();
                     
-                    const normalizedA = normalizeString(titleA);
-                    const normalizedB = normalizeString(titleB);
+                    // Remove all non-alphanumeric characters except spaces
+                    cleaned = cleaned.replace(/[^a-z0-9\s]/g, '');
                     
-                    // Basic ASCII sort after normalization
-                    if (normalizedA < normalizedB) return -1;
-                    if (normalizedA > normalizedB) return 1;
+                    // Replace multiple spaces with single space
+                    cleaned = cleaned.replace(/\s+/g, ' ');
                     
-                    // If normalized strings are equal, compare original lowercase strings
-                    // to maintain consistent ordering with accents as secondary sort key
-                    return titleA.localeCompare(titleB);
+                    return cleaned;
+                };
+                
+                // Create sort keys for all items
+                items.forEach(item => {
+                    item.sortKey = cleanForSort(item.title);
                 });
+                
+                // Log items before sort for debugging
+                console.log("Before sort:", items.map(i => i.title));
+                
+                // Extremely simple and reliable sorting
+                items.sort((a, b) => {
+                    if (a.sortKey < b.sortKey) return -1;
+                    if (a.sortKey > b.sortKey) return 1;
+                    return 0;
+                });
+                
+                // Log items after sort for debugging
+                console.log("After sort:", items.map(i => i.title));
                 
                 // Create accordion items in alphabetical order (collect all promises)
                 const createPromises = items.map(item => 
