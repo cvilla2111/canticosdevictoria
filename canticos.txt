@@ -360,6 +360,9 @@ Lugar donde va la letra del corito
 Pon Aceite En Mi Lampara
 Lugar donde va la letra del corito
 
+Por Mucho Tiempo El Enemigo Ha Querido
+Lugar donde va la letra del corito
+
 Por Qué Buscais Entre Los Muertos Al Que Vive
 Lugar donde va la letra del corito
 
@@ -529,9 +532,6 @@ Yo Vine Aqui Para Buscar Poder
 Lugar donde va la letra del corito
 
 Ya Que Haz Puesto La Mano En El Arado
-Lugar donde va la letra del corito
-
-Por Mucho Tiempo El Enemigo Ha Querido
 Lugar donde va la letra del corito
 
 Yo Se Que A La Muerte Has Vencido
