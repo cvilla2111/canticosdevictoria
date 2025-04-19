@@ -1167,20 +1167,11 @@
                     doc.webkitExitFullscreen ||
                     doc.msExitFullscreen;
                 
-                // Update button to reflect current fullscreen state
+                // Keep the same icon regardless of fullscreen state
                 function updateFullscreenButton() {
-                    if (document.fullscreenElement || 
-                        document.webkitFullscreenElement || 
-                        document.mozFullScreenElement ||
-                        document.msFullscreenElement) {
-                        // We're in fullscreen mode
-                        enterIcon.style.display = 'none';
-                        exitIcon.style.display = 'block';
-                    } else {
-                        // We're not in fullscreen mode
-                        enterIcon.style.display = 'block';
-                        exitIcon.style.display = 'none';
-                    }
+                    // Always show the enter icon
+                    enterIcon.style.display = 'block';
+                    exitIcon.style.display = 'none';
                 }
                 
                 // Toggle fullscreen when button is clicked
