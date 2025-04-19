@@ -803,8 +803,15 @@
                                         // Item is in viewport - apply blur to others
                                         accordion.classList.add('blur-others');
                                     } else {
-                                        // Item is not in viewport - remove blur
+                                        // Item is not in viewport - close it completely
                                         accordion.classList.remove('blur-others');
+                                        
+                                        // Close the item (remove active class)
+                                        item.classList.remove('active');
+                                        
+                                        // Disconnect observer as we're done with it
+                                        currentObserver.disconnect();
+                                        currentObserver = null;
                                     }
                                 });
                             }, {
