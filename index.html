@@ -809,15 +809,15 @@
                                         // Close the item (remove active class)
                                         item.classList.remove('active');
                                         
-                                        // Stop audio if it's playing from this item
-                                        const playButton = item.querySelector('.play-button');
-                                        if (playButton && currentPlayButton && playButton === currentPlayButton) {
-                                            // Stop the currently playing audio
-                                            if (currentAudio) {
-                                                currentAudio.pause();
-                                                currentAudio.currentTime = 0;
-                                                
-                                                // Reset the play button state
+                                        // Always stop audio when any item scrolls out of view
+                                        // This ensures we don't have audio continuing to play out of view
+                                        if (currentAudio) {
+                                            // Stop the audio
+                                            currentAudio.pause();
+                                            currentAudio.currentTime = 0;
+                                            
+                                            // Reset the play button state if we have one
+                                            if (currentPlayButton) {
                                                 const playIco = currentPlayButton.querySelector('.play-icon');
                                                 const pauseIco = currentPlayButton.querySelector('.pause-icon');
                                                 const progress = currentPlayButton.querySelector('.button-progress');
@@ -825,11 +825,13 @@
                                                 if (playIco) playIco.style.display = 'block';
                                                 if (pauseIco) pauseIco.style.display = 'none';
                                                 if (progress) progress.style.width = '0%';
-                                                
-                                                // Clear any ongoing progress updates
-                                                currentAudio = null;
-                                                currentPlayButton = null;
                                             }
+                                            
+                                            // Clear global audio state
+                                            currentAudio = null;
+                                            currentPlayButton = null;
+                                            
+                                            console.log('Audio stopped due to item scrolling out of view');
                                         }
                                         
                                         // Disconnect observer as we're done with it
