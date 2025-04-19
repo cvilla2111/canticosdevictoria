@@ -250,11 +250,13 @@
         .search-clear-btn::after {
             content: '';
             position: absolute;
-            width: 18px;
+            width: 16px;
             height: 2px;
             background-color: #666;
-            top: 8px;
-            left: 0;
+            top: 50%;
+            left: 50%;
+            margin-top: -1px;   /* Half the height to center vertically */
+            margin-left: -8px;  /* Half the width to center horizontally */
         }
         
         .search-clear-btn::before {
