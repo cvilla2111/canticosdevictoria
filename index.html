@@ -276,25 +276,39 @@
     <div id="accordion" class="accordion"></div>
 
     <script>
+        /**
+         * Main application for Canticos De Victoria
+         * Fast loading accordion with search and audio playback
+         */
         document.addEventListener('DOMContentLoaded', function() {
+            // DOM elements
             const accordion = document.getElementById('accordion');
             const loading = document.getElementById('loading');
             
-            // Path to the text file (update this to point to your actual file)
+            // Global state for audio playback
+            let currentAudio = null;
+            let currentPlayButton = null;
+            
+            // Configuration
             const txtFilePath = 'canticos.txt';
             
-            // Load the text file on page load
+            // Initialize application
             loadTextFile(txtFilePath);
             
+            //=============================================================================
+            // DATA LOADING & PROCESSING
+            //=============================================================================
+            
+            /**
+             * Load and process the text file containing canticles
+             */
             function loadTextFile(filePath) {
                 loading.style.display = 'block';
                 accordion.innerHTML = '';
                 
                 fetch(filePath)
                     .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Failed to load text file');
-                        }
+                        if (!response.ok) throw new Error('Failed to load text file');
                         return response.text();
                     })
                     .then(content => {
@@ -304,183 +318,228 @@
                     .catch(error => {
                         console.error('Error loading text file:', error);
                         loading.style.display = 'none';
-                        accordion.innerHTML = `
-                            <div class="accordion-item">
-                                <div class="accordion-header">
-                                    <span class="title-text">Error loading canticles</span>
-                                </div>
-                                <div class="accordion-content" style="max-height: none; padding: 16px;">
-                                    Could not load the canticles file. Please check that "${filePath}" exists.
-                                </div>
-                            </div>
-                        `;
+                        showErrorMessage(filePath);
                     });
             }
-
+            
+            /**
+             * Display error message when text file can't be loaded
+             */
+            function showErrorMessage(filePath) {
+                accordion.innerHTML = `
+                    <div class="accordion-item">
+                        <div class="accordion-header">
+                            <span class="title-text">Error loading canticles</span>
+                        </div>
+                        <div class="accordion-content" style="max-height: none; padding: 16px;">
+                            Could not load the canticles file. Please check that "${filePath}" exists.
+                        </div>
+                    </div>
+                `;
+            }
+            
+            /**
+             * Parse file content and create accordion items
+             */
             async function parseFileContent(content) {
                 // Clear accordion before adding any items
                 accordion.innerHTML = '';
                 
-                // Split the content by empty lines to identify different sections
-                const rawSections = content.split(/\n\s*\n/);
+                // Process content into structured data
+                const items = processContentIntoItems(content);
                 
-                // Track if we've created any items
-                let itemCount = 0;
-                
-                // Function to normalize Spanish accented characters to non-accented equivalents
-                const normalizeSpanishChars = (text) => {
-                    const charMap = {
-                        'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u',
-                        'Á': 'A', 'É': 'E', 'Í': 'I', 'Ó': 'O', 'Ú': 'U',
-                        'ñ': 'n', 'Ñ': 'N',
-                        'ü': 'u', 'Ü': 'U',
-                        'ç': 'c', 'Ç': 'C'
-                    };
-                    
-                    // Replace each special character with its equivalent
-                    return text.replace(/[áéíóúÁÉÍÓÚñÑüÜçÇ]/g, match => charMap[match] || match);
-                };
-                
-                // Process all sections first (no network requests yet)
-                const processedItems = rawSections.map(section => {
-                    if (!section.trim()) return null; // Skip empty sections
-                    
-                    // Try to find a title pattern
-                    let lines = section.split('\n');
-                    let title = lines[0].trim(); // Default: use first line as title
-                    let contentLines = lines.slice(1); // Default: rest is content
-                    let audioPath = '';
-                    
-                    // Check for audio file path in the content
-                    for (let i = 0; i < contentLines.length; i++) {
-                        if (contentLines[i].trim().toLowerCase().startsWith('audio:')) {
-                            audioPath = contentLines[i].substring(6).trim();
-                            contentLines.splice(i, 1); // Remove the audio line from content
-                            break;
-                        }
-                    }
-                    
-                    // If no audio path found, use the title to construct the filename
-                    if (!audioPath) {
-                        // Convert title to a valid filename
-                        const normalizedTitle = normalizeSpanishChars(title);
-                        const safeFilename = normalizedTitle
-                            .toLowerCase()
-                            .replace(/[^\w\s-]/g, '') // Remove remaining special characters
-                            .replace(/\s+/g, '_')     // Replace spaces with underscores
-                            .trim();
-                            
-                        audioPath = `audio/${safeFilename}.mp3`;
-                    }
-                    
-                    // If title contains "TITLE:" prefix, handle it
-                    if (title.toUpperCase().startsWith('TITLE:')) {
-                        title = title.substring(6).trim();
-                    }
-                    
-                    return {
-                        title: title,
-                        content: contentLines.join('\n').trim(),
-                        audioPath: audioPath
-                    };
-                }).filter(item => item !== null); // Remove null items
-                
-                // Update count of valid items
-                itemCount = processedItems.length;
-                
-                // Create all accordion items immediately with no audio check for fast initial render
-                processedItems.forEach(item => {
-                    createAccordionItemFast(item.title, item.content, item.audioPath);
+                // Quick visual rendering (without audio checks)
+                items.forEach(item => {
+                    createAccordionItem(item.title, item.content, item.audioPath);
                 });
                 
-                // Check if any items were created
-                if (itemCount === 0) {
+                // Handle empty state
+                if (items.length === 0) {
                     accordion.innerHTML = '<div class="accordion-item"><div class="accordion-header"><span class="title-text">No canticles found</span></div></div>';
                     return;
                 }
                 
-                // After fast rendering, check audio files in the background
-                setTimeout(() => {
-                    checkAudioFilesAsync();
-                }, 100);
-                
-                // Setup accordion functionality immediately
+                // Setup accordion functionality immediately for good UX
                 setupAccordion();
+                
+                // Check audio files in the background after UI is rendered
+                setTimeout(() => checkAudioFilesAsync(), 100);
             }
             
-            // Function to create accordion items quickly without audio check
-            function createAccordionItemFast(title, content, audioPath) {
+            /**
+             * Process raw content into structured item objects
+             */
+            function processContentIntoItems(content) {
+                // Split the content by empty lines to identify different sections
+                const rawSections = content.split(/\n\s*\n/);
+                
+                // Process all sections
+                return rawSections
+                    .map(section => {
+                        if (!section.trim()) return null; // Skip empty sections
+                        
+                        // Extract title and content
+                        let lines = section.split('\n');
+                        let title = lines[0].trim();
+                        let contentLines = lines.slice(1);
+                        let audioPath = '';
+                        
+                        // Find and remove audio path from content
+                        for (let i = 0; i < contentLines.length; i++) {
+                            if (contentLines[i].trim().toLowerCase().startsWith('audio:')) {
+                                audioPath = contentLines[i].substring(6).trim();
+                                contentLines.splice(i, 1);
+                                break;
+                            }
+                        }
+                        
+                        // Generate audio path if not explicitly provided
+                        if (!audioPath) {
+                            audioPath = generateAudioPathFromTitle(title);
+                        }
+                        
+                        // Handle title prefix if present
+                        if (title.toUpperCase().startsWith('TITLE:')) {
+                            title = title.substring(6).trim();
+                        }
+                        
+                        return {
+                            title: title,
+                            content: contentLines.join('\n').trim(),
+                            audioPath: audioPath
+                        };
+                    })
+                    .filter(item => item !== null); // Remove empty items
+            }
+            
+            /**
+             * Generate an audio file path from a title
+             */
+            function generateAudioPathFromTitle(title) {
+                // Normalize Spanish characters
+                const normalizedTitle = normalizeSpanishChars(title);
+                
+                // Create safe filename
+                const safeFilename = normalizedTitle
+                    .toLowerCase()
+                    .replace(/[^\w\s-]/g, '')
+                    .replace(/\s+/g, '_')
+                    .trim();
+                    
+                return `audio/${safeFilename}.mp3`;
+            }
+            
+            /**
+             * Convert accented characters to their non-accented equivalents
+             */
+            function normalizeSpanishChars(text) {
+                const charMap = {
+                    'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u',
+                    'Á': 'A', 'É': 'E', 'Í': 'I', 'Ó': 'O', 'Ú': 'U',
+                    'ñ': 'n', 'Ñ': 'N', 'ü': 'u', 'Ü': 'U',
+                    'ç': 'c', 'Ç': 'C'
+                };
+                
+                return text.replace(/[áéíóúÁÉÍÓÚñÑüÜçÇ]/g, match => charMap[match] || match);
+            }
+            
+            //=============================================================================
+            // UI RENDERING
+            //=============================================================================
+            
+            /**
+             * Create an accordion item and add it to the DOM
+             */
+            function createAccordionItem(title, content, audioPath) {
                 const item = document.createElement('div');
                 item.className = 'accordion-item';
                 
+                // Create header with play button
                 const header = document.createElement('div');
                 header.className = 'accordion-header';
                 
-                // Create play button
-                const playButton = document.createElement('div');
-                playButton.className = 'play-button';
-                playButton.dataset.audioPath = audioPath;
+                // Create play button (initially enabled, will be checked later)
+                const playButton = createPlayButton(audioPath);
                 
-                // Add progress bar inside button
-                const buttonProgress = document.createElement('div');
-                buttonProgress.className = 'button-progress';
-                
-                // Add play icon
-                const playIcon = document.createElement('div');
-                playIcon.className = 'play-icon';
-                
-                // Add pause icon
-                const pauseIcon = document.createElement('div');
-                pauseIcon.className = 'pause-icon';
-                
-                playButton.appendChild(buttonProgress);
-                playButton.appendChild(playIcon);
-                playButton.appendChild(pauseIcon);
-                
-                // Add a dummy click handler that will be replaced later
-                playButton.addEventListener('click', function(e) {
-                    e.stopPropagation(); // Prevent accordion toggle
-                });
-                
-                // Create title container without progress bar
+                // Create title container
                 const titleContainer = document.createElement('div');
                 titleContainer.className = 'title-container';
                 
-                // Create title text span
                 const titleText = document.createElement('span');
                 titleText.className = 'title-text';
                 titleText.textContent = title;
                 
-                // Add to DOM
                 titleContainer.appendChild(titleText);
                 
+                // Assemble header elements
                 header.appendChild(playButton);
                 header.appendChild(titleContainer);
                 
+                // Create content area
                 const contentDiv = document.createElement('div');
                 contentDiv.className = 'accordion-content';
                 contentDiv.textContent = content;
                 
+                // Add completed elements to DOM
                 item.appendChild(header);
                 item.appendChild(contentDiv);
                 accordion.appendChild(item);
             }
             
-            // Check audio files and update UI after initial render
+            /**
+             * Create a play button with initial state
+             */
+            function createPlayButton(audioPath) {
+                const playButton = document.createElement('div');
+                playButton.className = 'play-button';
+                playButton.dataset.audioPath = audioPath;
+                
+                // Add progress bar
+                const buttonProgress = document.createElement('div');
+                buttonProgress.className = 'button-progress';
+                
+                // Add play/pause icons
+                const playIcon = document.createElement('div');
+                playIcon.className = 'play-icon';
+                
+                const pauseIcon = document.createElement('div');
+                pauseIcon.className = 'pause-icon';
+                
+                // Add all elements to button
+                playButton.appendChild(buttonProgress);
+                playButton.appendChild(playIcon);
+                playButton.appendChild(pauseIcon);
+                
+                // Add temporary click handler to prevent accordion toggle
+                playButton.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+                
+                return playButton;
+            }
+            
+            //=============================================================================
+            // AUDIO FUNCTIONALITY
+            //=============================================================================
+            
+            /**
+             * Check if audio files exist and update buttons accordingly
+             */
             async function checkAudioFilesAsync() {
                 const playButtons = document.querySelectorAll('.play-button');
                 
+                // Process all buttons in parallel
                 const buttonChecks = Array.from(playButtons).map(async (button) => {
                     const audioPath = button.dataset.audioPath;
                     try {
                         const audioExists = await checkAudioFile(audioPath);
                         if (!audioExists) {
-                            // If audio doesn't exist, disable the button
+                            // Disable button if audio doesn't exist
                             button.classList.add('disabled');
                         } else {
-                            // Add real click handler once we know the file exists
+                            // Add real click handler for existing audio
                             button.addEventListener('click', function(e) {
-                                e.stopPropagation(); // Prevent accordion toggle
+                                e.stopPropagation();
                                 toggleAudio(this, audioPath);
                             });
                         }
@@ -490,155 +549,35 @@
                     }
                 });
                 
-                // Run all checks in parallel
+                // Wait for all checks to complete
                 await Promise.all(buttonChecks);
             }
-
-            // Global audio object to manage playback
-            let currentAudio = null;
-            let currentPlayButton = null;
             
-            // Function to check if a file exists
+            /**
+             * Check if a file exists using HEAD request
+             */
             function checkAudioFile(url) {
                 return new Promise(resolve => {
                     fetch(url, { method: 'HEAD' })
-                        .then(response => {
-                            resolve(response.ok);
-                        })
-                        .catch(() => {
-                            resolve(false);
-                        });
+                        .then(response => resolve(response.ok))
+                        .catch(() => resolve(false));
                 });
             }
             
-            // Main function to create accordion items
-            async function createAccordionItem(title, content, audioPath) {
-                const item = document.createElement('div');
-                item.className = 'accordion-item';
-                
-                const header = document.createElement('div');
-                header.className = 'accordion-header';
-                
-                // Create play button
-                const playButton = document.createElement('div');
-                playButton.className = 'play-button';
-                playButton.dataset.audioPath = audioPath;
-                
-                // Add progress bar inside button
-                const buttonProgress = document.createElement('div');
-                buttonProgress.className = 'button-progress';
-                
-                // Add play icon
-                const playIcon = document.createElement('div');
-                playIcon.className = 'play-icon';
-                
-                // Add pause icon
-                const pauseIcon = document.createElement('div');
-                pauseIcon.className = 'pause-icon';
-                
-                playButton.appendChild(buttonProgress);
-                playButton.appendChild(playIcon);
-                playButton.appendChild(pauseIcon);
-                
-                // Check if the audio file exists
-                try {
-                    const audioExists = await checkAudioFile(audioPath);
-                    if (!audioExists) {
-                        // If audio doesn't exist, disable the button
-                        playButton.classList.add('disabled');
-                        // The disabled button doesn't do anything when clicked
-                    } else {
-                        // Only add click event if audio file exists
-                        playButton.addEventListener('click', function(e) {
-                            e.stopPropagation(); // Prevent accordion toggle
-                            toggleAudio(this, audioPath);
-                        });
-                    }
-                } catch (error) {
-                    console.error("Error checking audio file:", error);
-                    // If error checking, assume file doesn't exist
-                    playButton.classList.add('disabled');
-                }
-                
-                // Create title container without progress bar
-                const titleContainer = document.createElement('div');
-                titleContainer.className = 'title-container';
-                
-                // Create title text span
-                const titleText = document.createElement('span');
-                titleText.className = 'title-text';
-                titleText.textContent = title;
-                
-                // Add to DOM
-                titleContainer.appendChild(titleText);
-                
-                header.appendChild(playButton);
-                header.appendChild(titleContainer);
-                
-                const contentDiv = document.createElement('div');
-                contentDiv.className = 'accordion-content';
-                contentDiv.textContent = content;
-                
-                item.appendChild(header);
-                item.appendChild(contentDiv);
-                accordion.appendChild(item);
-            }
-            
+            /**
+             * Toggle audio playback
+             */
             function toggleAudio(button, audioPath) {
-                const playIcon = button.querySelector('.play-icon');
-                const pauseIcon = button.querySelector('.pause-icon');
-                // Get the button progress bar
                 const buttonProgress = button.querySelector('.button-progress');
                 let progressInterval;
                 
-                // Function to reset button to play state
-                const resetButtonToPlay = (btn) => {
-                    const playIco = btn.querySelector('.play-icon');
-                    const pauseIco = btn.querySelector('.pause-icon');
-                    const progress = btn.querySelector('.button-progress');
-                    
-                    playIco.style.display = 'block';
-                    pauseIco.style.display = 'none';
-                    
-                    // Reset progress bar
-                    if (progress) {
-                        progress.style.width = '0%';
-                    }
-                    
-                    // Clear any progress intervals
-                    if (progressInterval) {
-                        clearInterval(progressInterval);
-                        progressInterval = null;
-                    }
-                };
-                
-                // Function to set button to pause state
-                const setButtonToPause = (btn) => {
-                    const playIco = btn.querySelector('.play-icon');
-                    const pauseIco = btn.querySelector('.pause-icon');
-                    
-                    playIco.style.display = 'none';
-                    pauseIco.style.display = 'block';
-                };
-                
-                // Function to update progress bar
-                const updateProgressBar = (audio, progressBar) => {
-                    if (!audio || !progressBar) return;
-                    
-                    const currentTime = audio.currentTime;
-                    const duration = audio.duration || 1; // Avoid division by zero
-                    const progress = (currentTime / duration) * 100;
-                    
-                    progressBar.style.width = `${progress}%`;
-                };
-                
-                // If there's currently playing audio, stop it
+                // Stop currently playing audio if any
                 if (currentAudio) {
                     currentAudio.pause();
                     currentAudio.currentTime = 0;
                     resetButtonToPlay(currentPlayButton);
                     
-                    // If clicking the same button that's currently playing, just stop it
+                    // If clicking same button that's playing, just stop
                     if (currentPlayButton === button) {
                         currentAudio = null;
                         currentPlayButton = null;
@@ -646,9 +585,10 @@
                     }
                 }
                 
-                // Start playing the new audio
+                // Create and play new audio
                 const audio = new Audio(audioPath);
                 
+                // Add audio event listeners
                 audio.addEventListener('ended', function() {
                     resetButtonToPlay(button);
                     currentAudio = null;
@@ -658,23 +598,19 @@
                 audio.addEventListener('error', function(e) {
                     console.error('Audio error:', e);
                     resetButtonToPlay(button);
-                    // No alert - just silently reset the button
                     currentAudio = null;
                     currentPlayButton = null;
-                    
-                    // Mark the button as disabled for future interactions
-                    button.classList.add('disabled');
-                    // Remove click event listener
-                    button.replaceWith(button.cloneNode(true));
+                    disableButton(button);
                 });
                 
                 audio.addEventListener('loadedmetadata', function() {
-                    // Set up progress updates once we have audio metadata
+                    // Setup progress updates
                     progressInterval = setInterval(() => {
                         updateProgressBar(audio, buttonProgress);
-                    }, 100); // Update every 100ms for smooth progress
+                    }, 100);
                 });
                 
+                // Start playback
                 audio.play().then(() => {
                     setButtonToPause(button);
                     currentAudio = audio;
@@ -683,21 +619,65 @@
                     console.error('Audio play error:', err);
                     resetButtonToPlay(button);
                     
-                    // Mark the button as disabled for future interactions
-                    button.classList.add('disabled');
-                    // Remove click event listener
-                    button.replaceWith(button.cloneNode(true));
-                    
-                    // Handle permissions error differently (required by browsers)
                     if (err.name === 'NotAllowedError') {
                         alert('Please interact with the page first before playing audio.');
                     } else {
-                        // Silently handle other errors - no alert
                         console.log('Could not play audio file:', audioPath);
+                        disableButton(button);
                     }
                 });
+                
+                // Helper function to disable button
+                function disableButton(btn) {
+                    btn.classList.add('disabled');
+                    btn.replaceWith(btn.cloneNode(true));
+                }
+                
+                // Helper function to reset button to play state
+                function resetButtonToPlay(btn) {
+                    const playIco = btn.querySelector('.play-icon');
+                    const pauseIco = btn.querySelector('.pause-icon');
+                    const progress = btn.querySelector('.button-progress');
+                    
+                    playIco.style.display = 'block';
+                    pauseIco.style.display = 'none';
+                    
+                    if (progress) progress.style.width = '0%';
+                    
+                    if (progressInterval) {
+                        clearInterval(progressInterval);
+                        progressInterval = null;
+                    }
+                }
+                
+                // Helper function to set button to pause state
+                function setButtonToPause(btn) {
+                    const playIco = btn.querySelector('.play-icon');
+                    const pauseIco = btn.querySelector('.pause-icon');
+                    
+                    playIco.style.display = 'none';
+                    pauseIco.style.display = 'block';
+                }
+                
+                // Helper function to update progress bar
+                function updateProgressBar(audio, progressBar) {
+                    if (!audio || !progressBar) return;
+                    
+                    const currentTime = audio.currentTime;
+                    const duration = audio.duration || 1;
+                    const progress = (currentTime / duration) * 100;
+                    
+                    progressBar.style.width = `${progress}%`;
+                }
             }
-
+            
+            //=============================================================================
+            // INTERACTION & EVENTS
+            //=============================================================================
+            
+            /**
+             * Setup accordion expand/collapse functionality
+             */
             function setupAccordion() {
                 const accordionItems = document.querySelectorAll('.accordion-item');
                 
@@ -705,7 +685,6 @@
                     const header = item.querySelector('.accordion-header');
                     
                     header.addEventListener('click', () => {
-                        // Toggle current item
                         const isActive = item.classList.contains('active');
                         
                         // Close all items
@@ -720,10 +699,13 @@
                     });
                 });
                 
-                // Setup search functionality
+                // Initialize search functionality
                 setupSearch();
             }
             
+            /**
+             * Setup search functionality
+             */
             function setupSearch() {
                 const searchInput = document.getElementById('searchInput');
                 const searchStatus = document.getElementById('searchStatus');
@@ -735,11 +717,9 @@
                     const items = document.querySelectorAll('.accordion-item');
                     let matchCount = 0;
                     
-                    // Show all if query is empty
+                    // Show all items if query is empty
                     if (query === '') {
-                        items.forEach(item => {
-                            item.classList.remove('hidden');
-                        });
+                        items.forEach(item => item.classList.remove('hidden'));
                         searchStatus.textContent = '';
                         return;
                     }
