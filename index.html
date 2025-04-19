@@ -380,10 +380,10 @@
             pointer-events: none;
         }
         
-        /* Fullscreen button - top right corner */
+        /* Fullscreen button - positioned higher */
         .fullscreen-btn {
-            position: fixed;
-            top: 16px;
+            position: absolute;
+            top: 0;
             right: 16px;
             width: 36px;
             height: 36px;
@@ -395,7 +395,6 @@
             justify-content: center;
             cursor: pointer;
             opacity: 0.8;
-            z-index: 100;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         
@@ -411,52 +410,109 @@
         /* Fullscreen button icons */
         .fullscreen-enter,
         .fullscreen-exit {
-            width: 14px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
             position: relative;
         }
         
+        /* Enter fullscreen icon (four corner arrows pointing outward) */
         .fullscreen-enter::before,
         .fullscreen-enter::after,
         .fullscreen-exit::before,
         .fullscreen-exit::after {
             content: '';
             position: absolute;
-            background-color: #888;
+            border-color: #888;
+            border-style: solid;
         }
         
-        /* Enter fullscreen icon (four arrows pointing outward) */
+        /* Top-left arrow */
         .fullscreen-enter::before {
-            width: 14px;
-            height: 2px;
-            left: 0;
-            top: 6px;
-        }
-        
-        .fullscreen-enter::after {
-            width: 2px;
-            height: 14px;
-            left: 6px;
+            width: 6px;
+            height: 6px;
             top: 0;
+            left: 0;
+            border-width: 2px 0 0 2px;
         }
         
-        /* Exit fullscreen icon (four arrows pointing inward) */
+        /* Bottom-right arrow */
+        .fullscreen-enter::after {
+            width: 6px;
+            height: 6px;
+            bottom: 0;
+            right: 0;
+            border-width: 0 2px 2px 0;
+        }
+        
+        /* Top-right arrow - using pseudo-elements of a child div */
+        .fullscreen-enter .top-right {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            top: 0;
+            right: 0;
+            border-width: 2px 2px 0 0;
+            border-color: #888;
+            border-style: solid;
+        }
+        
+        /* Bottom-left arrow - using pseudo-elements of a child div */
+        .fullscreen-enter .bottom-left {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            bottom: 0;
+            left: 0;
+            border-width: 0 0 2px 2px;
+            border-color: #888;
+            border-style: solid;
+        }
+        
+        /* Exit fullscreen icon (four corner arrows pointing inward) */
         .fullscreen-exit {
             display: none;
         }
         
+        /* Top-left arrow */
         .fullscreen-exit::before {
-            width: 14px;
-            height: 2px;
-            left: 0;
-            top: 6px;
+            width: 6px;
+            height: 6px;
+            top: 2px;
+            left: 2px;
+            border-width: 2px 0 0 2px;
         }
         
+        /* Bottom-right arrow */
         .fullscreen-exit::after {
-            width: 2px;
-            height: 14px;
-            left: 6px;
-            top: 0;
+            width: 6px;
+            height: 6px;
+            bottom: 2px;
+            right: 2px;
+            border-width: 0 2px 2px 0;
+        }
+        
+        /* Top-right arrow - using pseudo-elements of a child div */
+        .fullscreen-exit .top-right {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            top: 2px;
+            right: 2px;
+            border-width: 2px 2px 0 0;
+            border-color: #888;
+            border-style: solid;
+        }
+        
+        /* Bottom-left arrow - using pseudo-elements of a child div */
+        .fullscreen-exit .bottom-left {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            bottom: 2px;
+            left: 2px;
+            border-width: 0 0 2px 2px;
+            border-color: #888;
+            border-style: solid;
         }
         
         .return-to-top.visible {
@@ -509,7 +565,21 @@
 </head>
 <body>
     <header>
-        <h1>Cánticos De Victoria</h1>
+        <div style="position: relative;">
+            <h1>Cánticos De Victoria</h1>
+            
+            <!-- Fullscreen button -->
+            <div id="fullscreenBtn" class="fullscreen-btn" aria-label="Toggle fullscreen" role="button" tabindex="0">
+                <div class="fullscreen-enter">
+                    <div class="top-right"></div>
+                    <div class="bottom-left"></div>
+                </div>
+                <div class="fullscreen-exit">
+                    <div class="top-right"></div>
+                    <div class="bottom-left"></div>
+                </div>
+            </div>
+        </div>
     </header>
 
     <!-- File input section removed -->
@@ -529,12 +599,6 @@
     
     <!-- Return to top button -->
     <div id="returnToTop" class="return-to-top" aria-label="Return to top" role="button" tabindex="0"></div>
-    
-    <!-- Fullscreen button -->
-    <div id="fullscreenBtn" class="fullscreen-btn" aria-label="Toggle fullscreen" role="button" tabindex="0">
-        <div class="fullscreen-enter"></div>
-        <div class="fullscreen-exit"></div>
-    </div>
 
     <script>
         /**
