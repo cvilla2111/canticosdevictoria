@@ -193,17 +193,29 @@
         .accordion-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.3s ease;
+            transition: max-height 0.5s ease-out, padding 0.4s ease-out;
             padding: 0 16px;
             white-space: pre-wrap;
             font-family: 'Quicksand', sans-serif;
             font-size: 15px;
             line-height: 1.5; /* Improved line height for readability */
+            opacity: 0;
+            transform: translateY(-8px);
+            transition-property: max-height, padding, opacity, transform;
         }
 
         .accordion-item.active .accordion-content {
             max-height: 1000px;
             padding: 16px;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Styling for the closing animation */
+        .accordion-item.closing .accordion-content {
+            opacity: 0.5;
+            transform: translateY(-4px);
+            transition: max-height 0.4s ease-in, opacity 0.25s ease-out, transform 0.25s ease-out;
         }
         
         /* Blur effect for inactive items when an item is active */
@@ -834,11 +846,19 @@
                                         // Item is in viewport - apply blur to others
                                         accordion.classList.add('blur-others');
                                     } else {
-                                        // Item is not in viewport - close it completely
+                                        // Item is not in viewport - close it with a slight delay for smoother transition
+                                        // First remove blur immediately for better visual feedback
                                         accordion.classList.remove('blur-others');
                                         
-                                        // Close the item (remove active class)
-                                        item.classList.remove('active');
+                                        // Add closing class to animate the item closing
+                                        item.classList.add('closing');
+                                        
+                                        // Wait a short moment before completely closing the item
+                                        setTimeout(() => {
+                                            // Close the item (remove active class)
+                                            item.classList.remove('active');
+                                            item.classList.remove('closing');
+                                        }, 200);
                                         
                                         // Always stop audio when any item scrolls out of view
                                         // This ensures we don't have audio continuing to play out of view
