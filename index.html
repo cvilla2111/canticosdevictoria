@@ -318,15 +318,19 @@
             }
 
             async function parseFileContent(content) {
+                // Clear accordion before adding any items
+                accordion.innerHTML = '';
+                
                 // Split the content by empty lines to identify different sections
                 const rawSections = content.split(/\n\s*\n/);
                 
-                // Array to collect all items before sorting
-                const items = [];
+                // Track if we've created any items
+                let itemsCreated = 0;
                 
-                // Process each section to extract title and content
-                rawSections.forEach((section, index) => {
-                    if (!section.trim()) return; // Skip empty sections
+                // Process and immediately add each section in the original order
+                for (let index = 0; index < rawSections.length; index++) {
+                    const section = rawSections[index];
+                    if (!section.trim()) continue; // Skip empty sections
                     
                     // Try to find a title pattern (assuming titles are on their own line or marked somehow)
                     let lines = section.split('\n');
@@ -376,23 +380,14 @@
                         title = title.substring(6).trim();
                     }
                     
-                    // Store item data in array instead of creating immediately
-                    items.push({
-                        title: title,
-                        content: contentLines.join('\n').trim(),
-                        audioPath: audioPath
-                    });
-                });
+                    // Create and add each accordion item immediately
+                    // This ensures strict preservation of the original order from the text file
+                    await createAccordionItem(title, contentLines.join('\n').trim(), audioPath);
+                    itemsCreated++;
+                }
                 
-                // Alphabetical sorting disabled - items will appear in original order
-                
-                // Create accordion items in original order
-                items.forEach(item => {
-                    createAccordionItem(item.title, item.content, item.audioPath);
-                });
-                
-                // Only after all items are processed, check if any were created
-                if (items.length === 0) {
+                // Check if any items were created
+                if (itemsCreated === 0) {
                     accordion.innerHTML = '<div class="accordion-item"><div class="accordion-header"><span class="title-text">No canticles found</span></div></div>';
                 }
                 
