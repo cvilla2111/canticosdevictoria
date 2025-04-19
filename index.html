@@ -770,12 +770,19 @@
              */
             function setupAccordion() {
                 const accordionItems = document.querySelectorAll('.accordion-item');
+                let currentObserver = null;
                 
                 accordionItems.forEach(item => {
                     const header = item.querySelector('.accordion-header');
                     
                     header.addEventListener('click', () => {
                         const isActive = item.classList.contains('active');
+                        
+                        // Disconnect any existing observer
+                        if (currentObserver) {
+                            currentObserver.disconnect();
+                            currentObserver = null;
+                        }
                         
                         // Remove active class from all items
                         accordionItems.forEach(otherItem => {
@@ -787,6 +794,25 @@
                             // Opening an item - apply blur effect to other items
                             item.classList.add('active');
                             accordion.classList.add('blur-others');
+                            
+                            // Create an Intersection Observer for the active item
+                            currentObserver = new IntersectionObserver((entries) => {
+                                // Handle intersection changes
+                                entries.forEach(entry => {
+                                    if (entry.isIntersecting) {
+                                        // Item is in viewport - apply blur to others
+                                        accordion.classList.add('blur-others');
+                                    } else {
+                                        // Item is not in viewport - remove blur
+                                        accordion.classList.remove('blur-others');
+                                    }
+                                });
+                            }, {
+                                threshold: 0.1 // Trigger when at least 10% is visible
+                            });
+                            
+                            // Start observing the active item
+                            currentObserver.observe(item);
                         } else {
                             // Closing the active item - remove blur effect
                             accordion.classList.remove('blur-others');
