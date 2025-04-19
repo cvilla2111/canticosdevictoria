@@ -809,6 +809,29 @@
                                         // Close the item (remove active class)
                                         item.classList.remove('active');
                                         
+                                        // Stop audio if it's playing from this item
+                                        const playButton = item.querySelector('.play-button');
+                                        if (playButton && currentPlayButton && playButton === currentPlayButton) {
+                                            // Stop the currently playing audio
+                                            if (currentAudio) {
+                                                currentAudio.pause();
+                                                currentAudio.currentTime = 0;
+                                                
+                                                // Reset the play button state
+                                                const playIco = currentPlayButton.querySelector('.play-icon');
+                                                const pauseIco = currentPlayButton.querySelector('.pause-icon');
+                                                const progress = currentPlayButton.querySelector('.button-progress');
+                                                
+                                                if (playIco) playIco.style.display = 'block';
+                                                if (pauseIco) pauseIco.style.display = 'none';
+                                                if (progress) progress.style.width = '0%';
+                                                
+                                                // Clear any ongoing progress updates
+                                                currentAudio = null;
+                                                currentPlayButton = null;
+                                            }
+                                        }
+                                        
                                         // Disconnect observer as we're done with it
                                         currentObserver.disconnect();
                                         currentObserver = null;
