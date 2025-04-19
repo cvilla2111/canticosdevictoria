@@ -354,6 +354,53 @@
             font-family: 'Quicksand', sans-serif;
         }
         
+        /* Return to top button */
+        .return-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 48px;
+            height: 48px;
+            background-color: white;
+            border: 2px solid #5D5CDE;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.2s ease;
+            z-index: 100;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+            pointer-events: none;
+        }
+        
+        .return-to-top.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        
+        .return-to-top:hover {
+            background-color: #f2f2ff;
+        }
+        
+        .return-to-top:active {
+            transform: scale(0.95);
+        }
+        
+        .return-to-top::before {
+            content: '';
+            width: 16px;
+            height: 16px;
+            border-style: solid;
+            border-width: 3px 3px 0 0;
+            border-color: #5D5CDE;
+            transform: translateY(3px) rotate(-45deg);
+            display: block;
+        }
+        
 
 
         @media (max-width: 480px) {
@@ -395,6 +442,9 @@
     <footer class="copyright-footer">
         <p>ɔ 2025 Cánticos De Victoria. Ministerio Monte de Dios. Manatí, P.R.</p>
     </footer>
+    
+    <!-- Return to top button -->
+    <div id="returnToTop" class="return-to-top" aria-label="Return to top" role="button" tabindex="0"></div>
 
     <script>
         /**
@@ -417,6 +467,9 @@
             
             // Initialize application
             loadTextFile(txtFilePath);
+            
+            // Setup return to top button
+            setupReturnToTopButton();
             
             //=============================================================================
             // DATA LOADING & PROCESSING
@@ -926,6 +979,50 @@
                 
                 // Initialize search functionality
                 setupSearch();
+            }
+            
+            /**
+             * Setup return to top button functionality
+             */
+            function setupReturnToTopButton() {
+                const returnToTopBtn = document.getElementById('returnToTop');
+                
+                if (!returnToTopBtn) return;
+                
+                // Show button when page is scrolled down
+                const toggleReturnToTopButton = () => {
+                    // Show button when scrolled down 300px or more
+                    if (window.scrollY > 300) {
+                        returnToTopBtn.classList.add('visible');
+                    } else {
+                        returnToTopBtn.classList.remove('visible');
+                    }
+                };
+                
+                // Smooth scroll to top when button is clicked
+                returnToTopBtn.addEventListener('click', () => {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+                
+                // Handle keyboard navigation
+                returnToTopBtn.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        window.scrollTo({
+                            top: 0,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+                
+                // Check scroll position on load
+                toggleReturnToTopButton();
+                
+                // Listen for scroll events
+                window.addEventListener('scroll', toggleReturnToTopButton);
             }
             
             /**
