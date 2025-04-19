@@ -236,24 +236,33 @@
             right: 12px;
             top: 50%;
             transform: translateY(-50%);
-            width: 24px;
-            height: 24px;
-            background: none;
-            border: none;
+            width: 18px;
+            height: 18px;
             cursor: pointer;
-            color: #555;
-            font-size: 20px;
-            text-align: center;
-            padding: 0;
-            margin: 0;
             opacity: 0;
             visibility: hidden;
             transition: all 0.2s ease;
             user-select: none;
-            /* Fix for vertical centering of × symbol */
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        }
+        
+        /* Create X with CSS */
+        .search-clear-btn::before,
+        .search-clear-btn::after {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 2px;
+            background-color: #666;
+            top: 8px;
+            left: 0;
+        }
+        
+        .search-clear-btn::before {
+            transform: rotate(45deg);
+        }
+        
+        .search-clear-btn::after {
+            transform: rotate(-45deg);
         }
         
         .search-clear-btn:hover {
@@ -305,7 +314,7 @@
 
     <div class="search-container">
         <input type="text" id="searchInput" placeholder="Search" class="search-input">
-        <button type="button" class="search-clear-btn" id="searchClearBtn" aria-label="Clear search">&times;</button>
+        <span class="search-clear-btn" id="searchClearBtn" role="button" tabindex="0" aria-label="Clear search"></span>
         <div id="searchStatus" class="search-status"></div>
     </div>
 
