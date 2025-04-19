@@ -233,23 +233,24 @@
         
         .search-clear-btn {
             position: absolute;
-            right: 15px;
+            right: 12px;
             top: 50%;
             transform: translateY(-50%);
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: none;
+            border: none;
             cursor: pointer;
             color: #555;
-            font-size: 24px; 
-            font-weight: bold;
-            line-height: 1;
+            font-size: 26px;
+            font-weight: normal;
+            line-height: 20px;
             opacity: 0;
             visibility: hidden;
             transition: all 0.2s ease;
             user-select: none;
+            padding: 0;
+            margin: 0;
         }
         
         .search-clear-btn:hover {
@@ -301,7 +302,7 @@
 
     <div class="search-container">
         <input type="text" id="searchInput" placeholder="Search" class="search-input">
-        <div class="search-clear-btn" id="searchClearBtn">×</div>
+        <button type="button" class="search-clear-btn" id="searchClearBtn" aria-label="Clear search">×</button>
         <div id="searchStatus" class="search-status"></div>
     </div>
 
