@@ -384,8 +384,28 @@
                     });
                 });
                 
-                // Sort items alphabetically by title
-                items.sort((a, b) => a.title.localeCompare(b.title, undefined, { sensitivity: 'base' }));
+                // Sort items alphabetically by title with more robust sorting
+                items.sort((a, b) => {
+                    // Convert to lowercase for case-insensitive comparison
+                    const titleA = a.title.toLowerCase();
+                    const titleB = b.title.toLowerCase();
+                    
+                    // Remove accents and diacritics for consistent comparison
+                    const normalizeString = (str) => {
+                        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                    };
+                    
+                    const normalizedA = normalizeString(titleA);
+                    const normalizedB = normalizeString(titleB);
+                    
+                    // Basic ASCII sort after normalization
+                    if (normalizedA < normalizedB) return -1;
+                    if (normalizedA > normalizedB) return 1;
+                    
+                    // If normalized strings are equal, compare original lowercase strings
+                    // to maintain consistent ordering with accents as secondary sort key
+                    return titleA.localeCompare(titleB);
+                });
                 
                 // Create accordion items in alphabetical order (collect all promises)
                 const createPromises = items.map(item => 
