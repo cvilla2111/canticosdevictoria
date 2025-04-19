@@ -213,11 +213,13 @@
         
         .search-container {
             margin-bottom: 2px; /* Reduced from 6px to 2px - minimal space */
+            position: relative; /* For positioning the clear button */
         }
         
         .search-input {
             width: 100%;
             padding: 8px 16px; /* Reduced top/bottom padding from 12px to 8px */
+            padding-right: 38px; /* Add space for the clear button */
             font-size: 16px;
             border: 1px solid var(--border-color);
             border-radius: 20px; /* Much more rounded borders */
@@ -227,6 +229,36 @@
         
         .search-input:focus {
             border-color: var(--text-color);
+        }
+        
+        .search-clear-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background-color: #dddddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #666;
+            font-size: 14px;
+            line-height: 1;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+        }
+        
+        .search-clear-btn:hover {
+            background-color: #cccccc;
+        }
+        
+        .search-clear-btn.visible {
+            opacity: 1;
+            visibility: visible;
         }
         
         .search-status {
@@ -269,6 +301,7 @@
 
     <div class="search-container">
         <input type="text" id="searchInput" placeholder="Search" class="search-input">
+        <div class="search-clear-btn" id="searchClearBtn">×</div>
         <div id="searchStatus" class="search-status"></div>
     </div>
 
@@ -709,19 +742,24 @@
             function setupSearch() {
                 const searchInput = document.getElementById('searchInput');
                 const searchStatus = document.getElementById('searchStatus');
+                const clearButton = document.getElementById('searchClearBtn');
                 
-                if (!searchInput) return;
+                if (!searchInput || !clearButton) return;
                 
-                searchInput.addEventListener('input', function() {
-                    const query = this.value.toLowerCase().trim();
+                // Function to update search results
+                const updateSearch = () => {
+                    const query = searchInput.value.toLowerCase().trim();
                     const items = document.querySelectorAll('.accordion-item');
                     let matchCount = 0;
                     
-                    // Show all items if query is empty
+                    // Toggle clear button visibility
                     if (query === '') {
+                        clearButton.classList.remove('visible');
                         items.forEach(item => item.classList.remove('hidden'));
                         searchStatus.textContent = '';
                         return;
+                    } else {
+                        clearButton.classList.add('visible');
                     }
                     
                     // Filter items based on search query
@@ -745,6 +783,25 @@
                         searchStatus.textContent = '1 canticle found';
                     } else {
                         searchStatus.textContent = `${matchCount} canticles found`;
+                    }
+                };
+                
+                // Listen for input changes
+                searchInput.addEventListener('input', updateSearch);
+                
+                // Setup clear button functionality
+                clearButton.addEventListener('click', () => {
+                    searchInput.value = '';
+                    searchInput.focus();
+                    updateSearch();
+                });
+                
+                // Handle Escape key press
+                searchInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        searchInput.value = '';
+                        updateSearch();
+                        searchInput.blur(); // Remove focus
                     }
                 });
             }
