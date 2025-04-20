@@ -89,6 +89,33 @@
             font-family: 'Quicksand', sans-serif;
         }
         
+        .close-btn {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 20px;
+            color: #888;
+            transition: opacity 0.3s ease, color 0.2s ease;
+            z-index: 3;
+        }
+        
+        .close-btn:hover {
+            color: #333;
+        }
+        
+        .accordion-item.active .close-btn {
+            opacity: 1;
+        }
+        
         .play-button {
             width: 32px;
             height: 32px;
@@ -803,9 +830,35 @@
                 
                 titleContainer.appendChild(titleText);
                 
+                // Create close button (X)
+                const closeBtn = document.createElement('div');
+                closeBtn.className = 'close-btn';
+                closeBtn.innerHTML = 'X';
+                closeBtn.setAttribute('aria-label', 'Close');
+                closeBtn.setAttribute('role', 'button');
+                closeBtn.setAttribute('tabindex', '0');
+                
+                // Add click handler to close button
+                closeBtn.addEventListener('click', function(e) {
+                    e.stopPropagation(); // Prevent the accordion toggle
+                    item.classList.remove('active');
+                    accordion.classList.remove('blur-others');
+                });
+                
+                // Add keyboard support for close button
+                closeBtn.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        item.classList.remove('active');
+                        accordion.classList.remove('blur-others');
+                    }
+                });
+                
                 // Assemble header elements
                 header.appendChild(playButton);
                 header.appendChild(titleContainer);
+                header.appendChild(closeBtn);
                 
                 // Create content area
                 const contentDiv = document.createElement('div');
