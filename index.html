@@ -407,7 +407,6 @@
         
         /* Return to top button with mountain icon and text - circular shape */
         .return-to-top {
-            /* Default styling for mobile (fixed position) */
             position: fixed;
             bottom: 16px;
             right: 16px;
@@ -423,34 +422,11 @@
             cursor: pointer;
             opacity: 0;
             transform: translateY(20px);
-            transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.2s ease, position 0.3s ease;
+            transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.2s ease;
             z-index: 100;
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
             pointer-events: none;
             padding: 4px 4px 2px; /* Adjusted padding for centered content */
-        }
-        
-        /* Large screen styling - position within accordion container */
-        @media (min-width: 768px) {
-            .return-to-top {
-                position: absolute; /* Position relative to nearest positioned ancestor */
-                bottom: auto;
-                top: 10px;
-                right: 10px;
-                z-index: 10;
-                transform: translateY(0); /* No transform needed for positioned element */
-                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Slightly less prominent shadow */
-            }
-            
-            /* When visible, don't translate */
-            .return-to-top.visible {
-                transform: translateY(0);
-            }
-            
-            /* Make accordion position relative so it can contain the absolutely positioned button */
-            .accordion {
-                position: relative;
-            }
         }
         
         /* Mountain SVG in return to top button */
