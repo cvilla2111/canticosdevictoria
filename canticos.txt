@@ -640,10 +640,10 @@ Yo soy testigo del poder de Dios,
 por el milagro que Él ha hecho en mí,
 yo era ciego y ahora veo la luz,
 la luz gloriosa que me dio Jesús.
-/nunca, nunca, nunca me ha dejado, 
+//nunca, nunca, nunca me ha dejado, 
 nunca, nunca, me ha desamparado.
 En la noche oscura o en el día de prueba.
-Jesucristo nunca me desamparará./
+Jesucristo nunca me desamparará.//
 
 Yo Tengo Gozo
 Lugar donde va la letra del corito
