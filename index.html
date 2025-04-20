@@ -67,10 +67,10 @@
         }
 
         h1 {
-            font-size: 52px; /* Increased from 42px to 52px */
-            font-family: 'Chewy', cursive; /* Restored to original font */
+            font-size: 42px; /* Reduced from 52px to 42px */
+            font-family: 'Chewy', cursive;
             margin-bottom: 8px;
-            color: black; /* Changed to black as requested */
+            color: black;
         }
 
         /* File input styles removed */
@@ -405,17 +405,18 @@
             font-family: 'Quicksand', sans-serif;
         }
         
-        /* Return to top button - smaller and gray */
+        /* Return to top button with mountain icon and text */
         .return-to-top {
             position: fixed;
             bottom: 16px;
             right: 16px;
-            width: 36px;
-            height: 36px;
+            width: 50px; /* Increased to fit text below */
+            height: 56px; /* Increased to fit text below */
             background-color: white;
             border: 1px solid #888;
-            border-radius: 50%;
+            border-radius: 8px; /* Changed to rounded rectangle */
             display: flex;
+            flex-direction: column; /* Stack icon and text */
             align-items: center;
             justify-content: center;
             cursor: pointer;
@@ -425,6 +426,22 @@
             z-index: 100;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             pointer-events: none;
+            padding: 6px 4px 4px; /* Add padding to position content */
+        }
+        
+        /* Mountain SVG in return to top button */
+        .return-to-top .up-icon {
+            width: 24px;
+            height: auto;
+            margin-bottom: 2px;
+        }
+        
+        /* "Up" text below icon */
+        .return-to-top .up-text {
+            font-size: 11px;
+            font-weight: 500;
+            color: #555;
+            font-family: 'Quicksand', sans-serif;
         }
         
         /* Fullscreen button - icon only - positioned more to right */
@@ -573,16 +590,7 @@
             transform: scale(0.95);
         }
         
-        .return-to-top::before {
-            content: '';
-            width: 10px;
-            height: 10px;
-            border-style: solid;
-            border-width: 2px 2px 0 0;
-            border-color: #888;
-            transform: translateY(2px) rotate(-45deg);
-            display: block;
-        }
+
         
 
 
@@ -592,7 +600,7 @@
             }
             
             h1 {
-                font-size: 32px; /* Increased from 24px to 32px for better visibility on mobile */
+                font-size: 26px; /* Reduced from 32px to 26px */
             }
             
             .accordion-header {
@@ -661,8 +669,30 @@
         </div>
     </footer>
     
-    <!-- Return to top button -->
-    <div id="returnToTop" class="return-to-top" aria-label="Return to top" role="button" tabindex="0"></div>
+    <!-- Return to top button with mountain icon and "Up" text -->
+    <div id="returnToTop" class="return-to-top" aria-label="Return to top" role="button" tabindex="0">
+        <!-- Mountain SVG for up button -->
+        <svg width="510.2" height="411.55" fill="none" stroke-linecap="square" stroke-miterlimit="10" version="1.1" viewBox="0 0 510.2 411.55" xmlns="http://www.w3.org/2000/svg" class="up-icon">
+            <defs>
+                <clipPath id="clipPath411-up">
+                    <path d="m129.72-5.7707h800v600h-800z"/>
+                </clipPath>
+                <clipPath id="clipPath417-up">
+                    <path d="m129.72-5.7707h800v600h-800z"/>
+                </clipPath>
+                <clipPath id="clipPath423-up">
+                    <path d="m129.72-5.7707h800v600h-800z"/>
+                </clipPath>
+            </defs>
+            <g fill-rule="evenodd">
+                <path transform="translate(-133.27 -88.454)" d="m376.97 88.454c-57.43 69.504-138.67 206.23-243.7 411.55h510.2c-93.146-103.81-182.14-240.98-266.49-411.55z" clip-path="url(#clipPath423-up)" fill="#46b961"/>
+                <path transform="translate(-133.27 -88.454)" d="m376.97 205.97c-28.441 8.7006-109.68 106.54-243.7 294.03h510.2c-107.62-134.9-196.63-233.21-266.49-294.03z" clip-path="url(#clipPath417-up)" fill="#3b5e2f"/>
+                <path transform="translate(-133.27 -88.454)" d="m243.99 205.97c-46.564 87.807-83.811 185.65-110.72 294.03 37.776-9.3852 99.08-14.061 184.08-14.061 84.983 0 193.64 4.6759 326.12 14.061-99.345-39.328-232.33-137.19-399.48-294.03z" clip-path="url(#clipPath411-up)" fill="#c7ce49"/>
+            </g>
+        </svg>
+        <!-- "Up" text -->
+        <span class="up-text">Up</span>
+    </div>
 
     <script>
         /**
