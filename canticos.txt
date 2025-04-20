@@ -361,7 +361,8 @@ No Importa La Iglesia Que Vallas
 Lugar donde va la letra del corito
 
 Oh Engrandece Mi Alma Al Señor
-Lugar donde va la letra del corito
+//Oh Engrandece Mi Alma Al Señor, Oh Engrandece Mi Alma Al Señor//
+//Y mi espíritu se regocija en Jehová mi salvador//
 
 Oh Gloria Dios Hay Que Nacer Del Agua
 Lugar donde va la letra del corito
