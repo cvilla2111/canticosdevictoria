@@ -189,7 +189,25 @@ Lugar donde va la letra del corito
 El Cristo Que Yo Predico
 Lugar donde va la letra del corito
 
+El Esta Sobre Mi Me Guarda Con Poder
+Lugar donde va la letra del corito
+
+El Maestro De Galilea
+Lugar donde va la letra del corito
+
+El Que Le Sirve A Jesús Satanas Lo Sarandea
+Lugar donde va la letra del corito
+
+En El Altar De Dios El Fuego Esta Encendido
+Lugar donde va la letra del corito
+
 En El Apocalipsis Del 1 Al 7 Está
+Lugar donde va la letra del corito
+
+En El Monte Del Carmelo Los Profetas De Baal
+Lugar donde va la letra del corito
+
+En El Principio El Espíritu De Dios
 Lugar donde va la letra del corito
 
 En La Cruz Yo Primero Vi La Luz
@@ -221,37 +239,19 @@ Y las manchas de mi alma yo lavé;
 Fue allí por fe yo vi a Jesús,
 Y siempre feliz con El seré.
 
-El Esta Sobre Mi Me Guarda Con Poder
-Lugar donde va la letra del corito
-
-El Maestro De Galilea
-Lugar donde va la letra del corito
-
-El Que Le Sirve A Jesús Satanas Lo Sarandea
-Lugar donde va la letra del corito
-
-En El Altar De Dios El Fuego Esta Encendido
-Lugar donde va la letra del corito
-
-En El Monte Del Carmelo Los Profetas De Baal
-Lugar donde va la letra del corito
-
-En El Principio El Espíritu De Dios
-Lugar donde va la letra del corito
-
 En La Viña Del Señor
 Lugar donde va la letra del corito
 
 En Victoria Estoy
 Lugar donde va la letra del corito
 
-Envía La Paloma
-Lugar donde va la letra del corito
-
 En Mi Corazón He Guardado
 Lugar donde va la letra del corito
 
 Es Necesario Nacer De Nuevo
+Lugar donde va la letra del corito
+
+Envía La Paloma
 Lugar donde va la letra del corito
 
 Espíritu De Dios Te Invito A Esta Fiesta
@@ -304,22 +304,22 @@ Lugar donde va la letra del corito
 Ha Bajado El Aceite, El Aceite De La Unción
 Lugar donde va la letra del corito
 
+Has Cambiado Mi Lamento En Baile
+Lugar donde va la letra del corito
+
 Hasta Que Lo Sientas
 Lugar donde va la letra del corito
 
-Hay Motivo Que Es De Grande Gozo
+Hay Un Cántico En Mi Ser Que Los Angeles No Cantan
 Lugar donde va la letra del corito
 
-Hay Victoria En La Sangre De Jesús
-Lugar donde va la letra del corito
-
-Hay Un Cantico En Mi Ser Que Los Angeles No Cantan
+Hay Un Motivo Que Es De Grande Gozo
 Lugar donde va la letra del corito
 
 Hay Un Río De Vida
 Lugar donde va la letra del corito
 
-Has Cambiado Mi Lamento En Baile
+Hay Victoria En La Sangre De Jesús
 Lugar donde va la letra del corito
 
 He Batallado Contra Viento Y Marea
@@ -334,19 +334,19 @@ Lugar donde va la letra del corito
 Hermano Si Estás Seguro
 Lugar donde va la letra del corito
 
-Jehová Esta En Su Templo
-Lugar donde va la letra del corito
-
-Jehová Me Dijo A Mi Que No Me Preocupara
-Lugar donde va la letra del corito
-
-Jehová, Jesús, Espíritu De Poder
+Jehová Está En Su Templo
 Lugar donde va la letra del corito
 
 Jehová Está Conmigo
 Lugar donde va la letra del corito
 
-Jerusalem Que Bonita Eres
+Jehová, Jesús, Espíritu De Poder
+Lugar donde va la letra del corito
+
+Jehová Me Dijo A Mi Que No Me Preocupara
+Lugar donde va la letra del corito
+
+Jerusalén Que Bonita Eres
 Lugar donde va la letra del corito
 
 Jesús Esta Pasando Por Aqui
@@ -355,7 +355,7 @@ Lugar donde va la letra del corito
 Jesús Viene En Las Nubes
 Lugar donde va la letra del corito
 
-Juan Vio El Numero De Los Redimidos
+Juan Vio El Número De Los Redimidos
 Lugar donde va la letra del corito
 
 La Biblia Es Cual Martillo
@@ -370,22 +370,22 @@ Lugar donde va la letra del corito
 La Necesito Si La Necesito
 Lugar donde va la letra del corito
 
+La Sangre De Cristo Lava, Lavo Mi Ser
+Lugar donde va la letra del corito
+
 La Trompeta Está Sonando
 Lugar donde va la letra del corito
 
 La Tumba Esta Vacía
 Lugar donde va la letra del corito
 
-La Sangre De Cristo Lava Lavo Mi Ser
-Lugar donde va la letra del corito
-
 Las Aguas Del Rio Del Jordán
 Lugar donde va la letra del corito
 
-Librate De La Ira Que Vendrá
+Líbrate De La Ira Que Vendrá
 Lugar donde va la letra del corito
 
-Libre Tu Me Hiciste Libre
+Libre, Tu Me Hiciste Libre
 Lugar donde va la letra del corito
 
 Lo Que El Espíritu Diga Eso Se Hará
@@ -466,10 +466,10 @@ Lugar donde va la letra del corito
 Pronto Vendra El Señor
 Lugar donde va la letra del corito
 
-Quien Dijo Que No
+Quién Dijo Que No
 Lugar donde va la letra del corito
 
-Quien Subirá Al Trono De Jehov
+Quién Subirá Al Trono De Jehová
 Lugar donde va la letra del corito
 
 Quita La Piedra, Deja El Agua Correr
@@ -648,9 +648,6 @@ Lugar donde va la letra del corito
 Yo Veo Una Paloma Blanca
 Lugar donde va la letra del corito
 
-Yo Vine Aqui Para Buscar Poder
-Lugar donde va la letra del corito
-
 Ya Que Haz Puesto La Mano En El Arado
 Lugar donde va la letra del corito
 
@@ -681,6 +678,9 @@ Lugar donde va la letra del corito
 Yo Tengo Un Cristo De Poder
 //Yo tengo un Cristo de poder que de la tumba se levantó//
 //se levantó, se levantó, de la tumba se levantó//
+
+Yo Vine Aqui Para Buscar Poder
+Lugar donde va la letra del corito
 
 Yo Vivo Señor Porque Tu Vives
 Lugar donde va la letra del corito
