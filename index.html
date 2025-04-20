@@ -458,11 +458,11 @@
             font-family: 'Quicksand', sans-serif;
         }
         
-        /* Fullscreen button - icon only - positioned more to right */
+        /* Fullscreen button - icon only - fixed position */
         .fullscreen-btn {
-            position: absolute;
-            top: 8px; /* Moved down from -8px to 8px */
-            right: 4px;
+            position: fixed;
+            top: 16px;
+            right: 16px;
             width: 36px;
             height: 36px;
             display: flex;
@@ -470,7 +470,10 @@
             justify-content: center;
             cursor: pointer;
             opacity: 0.8;
-            background: none;
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+            border-radius: 50%; /* Circular shape */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            z-index: 90; /* High z-index but below the return-to-top button */
         }
         
         .fullscreen-btn:hover {
