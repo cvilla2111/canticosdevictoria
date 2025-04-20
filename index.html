@@ -410,11 +410,11 @@
             position: fixed;
             bottom: 16px;
             right: 16px;
-            width: 50px; /* Increased to fit text below */
-            height: 56px; /* Increased to fit text below */
+            width: 56px; /* Increased to fit the larger icon */
+            height: 60px; /* Increased height slightly */
             background-color: white;
-            border: 1px solid #888;
-            border-radius: 8px; /* Changed to rounded rectangle */
+            border: none; /* Removed border */
+            border-radius: 8px; /* Kept rounded rectangle */
             display: flex;
             flex-direction: column; /* Stack icon and text */
             align-items: center;
@@ -424,16 +424,16 @@
             transform: translateY(20px);
             transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.2s ease;
             z-index: 100;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15); /* Enhanced shadow without border */
             pointer-events: none;
-            padding: 6px 4px 4px; /* Add padding to position content */
+            padding: 6px 4px 4px; /* Kept padding */
         }
         
         /* Mountain SVG in return to top button */
         .return-to-top .up-icon {
-            width: 24px;
+            width: 32px; /* Increased from 24px to 32px */
             height: auto;
-            margin-bottom: 2px;
+            margin-bottom: 3px; /* Increased spacing a bit */
         }
         
         /* "Up" text below icon */
