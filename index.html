@@ -53,14 +53,11 @@
             text-align: center; /* Center the h1 */
         }
         
-        /* SVG Container and styling - positioned at left edge */
+        /* SVG Container and styling - centered in footer */
         .svg-container {
-            position: absolute;
-            left: 0;
-            top: 40%; /* Moved up from 50% to 40% */
-            transform: translateY(-50%);
-            width: 30px; /* Reduced from 40px to 30px */
-            z-index: 1;
+            display: block;
+            width: 30px;
+            margin: 12px auto 0;
         }
         
         .mountain-svg {
@@ -611,28 +608,6 @@
 </head>
 <body>
     <header>
-        <!-- Mountain SVG positioned at left edge -->
-        <div class="svg-container">
-            <svg width="510.2" height="411.55" fill="none" stroke-linecap="square" stroke-miterlimit="10" version="1.1" viewBox="0 0 510.2 411.55" xmlns="http://www.w3.org/2000/svg" class="mountain-svg">
-             <defs>
-              <clipPath id="clipPath411-mountain">
-               <path d="m129.72-5.7707h800v600h-800z"/>
-              </clipPath>
-              <clipPath id="clipPath417-mountain">
-               <path d="m129.72-5.7707h800v600h-800z"/>
-              </clipPath>
-              <clipPath id="clipPath423-mountain">
-               <path d="m129.72-5.7707h800v600h-800z"/>
-              </clipPath>
-             </defs>
-             <g fill-rule="evenodd">
-              <path transform="translate(-133.27 -88.454)" d="m376.97 88.454c-57.43 69.504-138.67 206.23-243.7 411.55h510.2c-93.146-103.81-182.14-240.98-266.49-411.55z" clip-path="url(#clipPath423-mountain)" fill="#CCCCCC"/>
-              <path transform="translate(-133.27 -88.454)" d="m376.97 205.97c-28.441 8.7006-109.68 106.54-243.7 294.03h510.2c-107.62-134.9-196.63-233.21-266.49-294.03z" clip-path="url(#clipPath417-mountain)" fill="#000000"/>
-              <path transform="translate(-133.27 -88.454)" d="m243.99 205.97c-46.564 87.807-83.811 185.65-110.72 294.03 37.776-9.3852 99.08-14.061 184.08-14.061 84.983 0 193.64 4.6759 326.12 14.061-99.345-39.328-232.33-137.19-399.48-294.03z" clip-path="url(#clipPath411-mountain)" fill="#888888"/>
-             </g>
-            </svg>
-        </div>
-        
         <!-- Centered h1 title -->
         <h1>Cánticos De Victoria</h1>
         
@@ -662,6 +637,28 @@
     
     <footer class="copyright-footer">
         <p>Work in progress ɔ 2025 Cánticos De Victoria. <span style="color: green;">Ministerio Monte de Dios</span>. Manatí, P.R.</p>
+        
+        <!-- Mountain SVG centered in footer -->
+        <div class="svg-container">
+            <svg width="510.2" height="411.55" fill="none" stroke-linecap="square" stroke-miterlimit="10" version="1.1" viewBox="0 0 510.2 411.55" xmlns="http://www.w3.org/2000/svg" class="mountain-svg">
+             <defs>
+              <clipPath id="clipPath411-mountain">
+               <path d="m129.72-5.7707h800v600h-800z"/>
+              </clipPath>
+              <clipPath id="clipPath417-mountain">
+               <path d="m129.72-5.7707h800v600h-800z"/>
+              </clipPath>
+              <clipPath id="clipPath423-mountain">
+               <path d="m129.72-5.7707h800v600h-800z"/>
+              </clipPath>
+             </defs>
+             <g fill-rule="evenodd">
+              <path transform="translate(-133.27 -88.454)" d="m376.97 88.454c-57.43 69.504-138.67 206.23-243.7 411.55h510.2c-93.146-103.81-182.14-240.98-266.49-411.55z" clip-path="url(#clipPath423-mountain)" fill="#46b961"/>
+              <path transform="translate(-133.27 -88.454)" d="m376.97 205.97c-28.441 8.7006-109.68 106.54-243.7 294.03h510.2c-107.62-134.9-196.63-233.21-266.49-294.03z" clip-path="url(#clipPath417-mountain)" fill="#3b5e2f"/>
+              <path transform="translate(-133.27 -88.454)" d="m243.99 205.97c-46.564 87.807-83.811 185.65-110.72 294.03 37.776-9.3852 99.08-14.061 184.08-14.061 84.983 0 193.64 4.6759 326.12 14.061-99.345-39.328-232.33-137.19-399.48-294.03z" clip-path="url(#clipPath411-mountain)" fill="#c7ce49"/>
+             </g>
+            </svg>
+        </div>
     </footer>
     
     <!-- Return to top button -->
