@@ -47,10 +47,29 @@
         }
 
         header {
-            text-align: center;
             margin-bottom: 8px; /* Reduced from 16px to 8px */
             padding: 8px 0; /* Reduced from 12px to 8px */
-            /* Removed border-bottom */
+            position: relative;
+        }
+        
+        .header-container {
+            display: flex;
+            align-items: center;
+            text-align: left; /* Left align for the title */
+        }
+        
+        /* SVG Container and styling */
+        .svg-container {
+            display: inline-block;
+            vertical-align: middle;
+            width: 60px; /* Sized proportionally to the title */
+            margin-right: 12px;
+        }
+        
+        .mountain-svg {
+            width: 100%;
+            height: auto;
+            display: block;
         }
 
         h1 {
@@ -595,19 +614,41 @@
 </head>
 <body>
     <header>
-        <div style="position: relative;">
-            <h1>Cánticos De Victoria</h1>
+        <div class="header-container">
+            <!-- Mountain SVG -->
+            <div class="svg-container">
+                <svg width="510.2" height="411.55" fill="none" stroke-linecap="square" stroke-miterlimit="10" version="1.1" viewBox="0 0 510.2 411.55" xmlns="http://www.w3.org/2000/svg" class="mountain-svg">
+                 <defs>
+                  <clipPath id="clipPath411-mountain">
+                   <path d="m129.72-5.7707h800v600h-800z"/>
+                  </clipPath>
+                  <clipPath id="clipPath417-mountain">
+                   <path d="m129.72-5.7707h800v600h-800z"/>
+                  </clipPath>
+                  <clipPath id="clipPath423-mountain">
+                   <path d="m129.72-5.7707h800v600h-800z"/>
+                  </clipPath>
+                 </defs>
+                 <g fill-rule="evenodd">
+                  <path transform="translate(-133.27 -88.454)" d="m376.97 88.454c-57.43 69.504-138.67 206.23-243.7 411.55h510.2c-93.146-103.81-182.14-240.98-266.49-411.55z" clip-path="url(#clipPath423-mountain)" fill="#46b961"/>
+                  <path transform="translate(-133.27 -88.454)" d="m376.97 205.97c-28.441 8.7006-109.68 106.54-243.7 294.03h510.2c-107.62-134.9-196.63-233.21-266.49-294.03z" clip-path="url(#clipPath417-mountain)" fill="#3b5e2f"/>
+                  <path transform="translate(-133.27 -88.454)" d="m243.99 205.97c-46.564 87.807-83.811 185.65-110.72 294.03 37.776-9.3852 99.08-14.061 184.08-14.061 84.983 0 193.64 4.6759 326.12 14.061-99.345-39.328-232.33-137.19-399.48-294.03z" clip-path="url(#clipPath411-mountain)" fill="#c7ce49"/>
+                 </g>
+                </svg>
+            </div>
             
-            <!-- Fullscreen button -->
-            <div id="fullscreenBtn" class="fullscreen-btn" aria-label="Toggle fullscreen" role="button" tabindex="0">
-                <div class="fullscreen-enter">
-                    <div class="top-right"></div>
-                    <div class="bottom-left"></div>
-                </div>
-                <div class="fullscreen-exit">
-                    <div class="top-right"></div>
-                    <div class="bottom-left"></div>
-                </div>
+            <h1>Cánticos De Victoria</h1>
+        </div>
+        
+        <!-- Fullscreen button -->
+        <div id="fullscreenBtn" class="fullscreen-btn" aria-label="Toggle fullscreen" role="button" tabindex="0">
+            <div class="fullscreen-enter">
+                <div class="top-right"></div>
+                <div class="bottom-left"></div>
+            </div>
+            <div class="fullscreen-exit">
+                <div class="top-right"></div>
+                <div class="bottom-left"></div>
             </div>
         </div>
     </header>
