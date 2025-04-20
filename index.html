@@ -95,21 +95,28 @@
             top: 50%;
             transform: translateY(-50%);
             width: 20px;
-            height: 20px;
+            height: 34px; /* Match search clear button height */
             display: flex;
             align-items: center;
             justify-content: center;
             opacity: 0;
             cursor: pointer;
-            font-weight: bold;
-            font-size: 20px;
-            color: #888;
+            color: black; /* Match search clear button color */
             transition: opacity 0.3s ease, color 0.2s ease;
             z-index: 3;
+            line-height: 1;
+        }
+        
+        /* Match the search clear button styling with ::after */
+        .close-btn::after {
+            content: "×"; /* Using the × character directly like the search clear button */
+            font-size: 28px; /* Match search clear button size */
+            font-weight: 300; /* Match search clear button weight - thinner */
+            line-height: 1;
         }
         
         .close-btn:hover {
-            color: #333;
+            color: #555; /* Match search clear button hover color */
         }
         
         .accordion-item.active .close-btn {
@@ -830,10 +837,10 @@
                 
                 titleContainer.appendChild(titleText);
                 
-                // Create close button (X)
+                // Create close button (X) - uses ::after for the X character
                 const closeBtn = document.createElement('div');
                 closeBtn.className = 'close-btn';
-                closeBtn.innerHTML = 'X';
+                // No innerHTML needed as we're using ::after pseudo-element
                 closeBtn.setAttribute('aria-label', 'Close');
                 closeBtn.setAttribute('role', 'button');
                 closeBtn.setAttribute('tabindex', '0');
