@@ -69,8 +69,22 @@
         h1 {
             font-size: 42px; /* Reduced from 52px to 42px */
             font-family: 'Chewy', cursive;
-            margin-bottom: 8px;
+            margin-bottom: 4px; /* Reduced to be closer to subtitle */
             color: black;
+        }
+        
+        /* Subtitle styling */
+        .subtitle {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        
+        /* Make the item count slightly bolder */
+        #itemCount {
+            font-weight: 600;
         }
 
         /* File input styles removed */
@@ -619,6 +633,9 @@
         <!-- Centered h1 title -->
         <h1>Cánticos De Victoria</h1>
         
+        <!-- Subtitle with item count -->
+        <p id="itemCountSubtitle" class="subtitle">Una colección de <span id="itemCount">0</span> coritos</p>
+        
         <!-- Fullscreen button -->
         <div id="fullscreenBtn" class="fullscreen-btn" aria-label="Toggle fullscreen" role="button" tabindex="0">
             <div class="fullscreen-enter">
@@ -764,14 +781,30 @@
                 // Handle empty state
                 if (items.length === 0) {
                     accordion.innerHTML = '<div class="accordion-item"><div class="accordion-header"><span class="title-text">No canticles found</span></div></div>';
+                    
+                    // Update item count to 0
+                    updateItemCount(0);
                     return;
                 }
+                
+                // Update the item count in the subtitle
+                updateItemCount(items.length);
                 
                 // Setup accordion functionality immediately for good UX
                 setupAccordion();
                 
                 // Check audio files in the background after UI is rendered
                 setTimeout(() => checkAudioFilesAsync(), 100);
+            }
+            
+            /**
+             * Update the item count displayed in the subtitle
+             */
+            function updateItemCount(count) {
+                const itemCountElement = document.getElementById('itemCount');
+                if (itemCountElement) {
+                    itemCountElement.textContent = count;
+                }
             }
             
             /**
