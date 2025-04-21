@@ -200,7 +200,10 @@
             height: 100%;
             background-color: rgba(93, 92, 222, 0.4); /* Darker purple background for better visibility */
             z-index: 0; /* Behind the play/pause icons */
-            transition: width 0.3s ease;
+            transform-origin: left center;
+            will-change: transform, width; /* Optimize for animations */
+            transition: width 0.2s linear; /* Smoother linear transition with shorter duration */
+            backface-visibility: hidden; /* Reduce flickering */
         }
         
         .play-icon, .pause-icon {
@@ -1398,11 +1401,18 @@
                 function updateProgressBar(audio, progressBar) {
                     if (!audio || !progressBar) return;
                     
-                    const currentTime = audio.currentTime;
-                    const duration = audio.duration || 1;
-                    const progress = (currentTime / duration) * 100;
-                    
-                    progressBar.style.width = `${progress}%`;
+                    // Use requestAnimationFrame for smoother updates
+                    requestAnimationFrame(() => {
+                        const currentTime = audio.currentTime;
+                        const duration = audio.duration || 1;
+                        const progress = Math.min((currentTime / duration) * 100, 100); // Cap at 100%
+                        
+                        // Only update if there's a meaningful change (>= 0.5%)
+                        const currentWidth = parseFloat(progressBar.style.width) || 0;
+                        if (Math.abs(progress - currentWidth) >= 0.5) {
+                            progressBar.style.width = `${progress}%`;
+                        }
+                    });
                 }
             }
             
