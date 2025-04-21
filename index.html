@@ -16,8 +16,9 @@
             --background-color: #ffffff;
             --text-color: #000000;
             --border-color: #e0e0e0;
-            --hover-color: #f5f5f5;
+            --focus-color: rgba(93, 92, 222, 0.35);
             --active-color: #ebebeb;
+            --focus-outline: 2px solid var(--focus-color);
         }
         
         /* Override any potential dark mode preferences */
@@ -26,8 +27,9 @@
                 --background-color: #ffffff;
                 --text-color: #000000;
                 --border-color: #e0e0e0;
-                --hover-color: #f5f5f5;
+                --focus-color: rgba(93, 92, 222, 0.35);
                 --active-color: #ebebeb;
+                --focus-outline: 2px solid var(--focus-color);
             }
         }
 
@@ -41,16 +43,16 @@
         body {
             background-color: var(--background-color);
             color: var(--text-color);
-            max-width: 800px; /* Adjusted to 800px as requested */
+            max-width: 800px;
             margin: 0 auto;
             padding: 16px;
         }
 
         header {
             margin-bottom: 8px;
-            padding: 24px 0 8px; /* Increased top padding from 8px to 24px */
+            padding: 24px 0 8px;
             position: relative;
-            text-align: center; /* Center the h1 */
+            text-align: center;
         }
         
         /* SVG Container and styling - centered in footer */
@@ -67,16 +69,16 @@
         }
 
         h1 {
-            font-size: 42px; /* Reduced from 52px to 42px */
+            font-size: 42px;
             font-family: 'Chewy', cursive;
-            margin-bottom: 4px; /* Reduced to be closer to subtitle */
+            margin-bottom: 4px;
             color: black;
         }
         
         /* Subtitle styling */
         .subtitle {
             font-family: 'Quicksand', sans-serif;
-            font-size: 14px; /* Reduced from 16px to 14px */
+            font-size: 14px;
             color: #555;
             margin-bottom: 12px;
             text-align: center;
@@ -86,8 +88,6 @@
         #itemCount {
             font-weight: 600;
         }
-
-        /* File input styles removed */
 
         .accordion {
             width: 100%;
@@ -111,34 +111,47 @@
             display: flex;
             align-items: center;
             font-weight: 500;
-            font-size: 19px; /* Increased from 16px to 19px */
+            font-size: 19px;
             user-select: none;
             font-family: 'Quicksand', sans-serif;
+            outline: none; /* Remove default focus outline */
+        }
+        
+        /* Add subtle focus effect to accordion header */
+        .accordion-header:focus {
+            background-color: var(--focus-color);
         }
         
         .close-btn {
             position: absolute;
             right: 16px;
-            top: 35%; /* Moved up from 50% to 35% */
+            top: 35%;
             transform: translateY(-50%);
             width: 20px;
-            height: 34px; /* Match search clear button height */
+            height: 34px;
             display: flex;
             align-items: center;
             justify-content: center;
             opacity: 0;
             cursor: pointer;
-            color: black; /* Match search clear button color */
+            color: black;
             transition: opacity 0.3s ease;
             z-index: 3;
             line-height: 1;
+            outline: none; /* Remove default focus outline */
+        }
+        
+        /* Add subtle focus effect to close button */
+        .close-btn:focus {
+            opacity: 1;
+            color: #5D5CDE;
         }
         
         /* Match the search clear button styling with ::after */
         .close-btn::after {
-            content: "×"; /* Using the × character directly like the search clear button */
-            font-size: 28px; /* Match search clear button size */
-            font-weight: 300; /* Match search clear button weight - thinner */
+            content: "×";
+            font-size: 28px;
+            font-weight: 300;
             line-height: 1;
         }
         
@@ -161,7 +174,14 @@
             color: var(--text-color);
             position: relative;
             transition: all 0.2s ease;
-            overflow: hidden; /* Contain the progress bar */
+            overflow: hidden;
+            outline: none; /* Remove default focus outline */
+        }
+        
+        /* Add subtle focus effect to play button */
+        .play-button:focus {
+            border-color: #5D5CDE;
+            box-shadow: 0 0 0 2px var(--focus-color);
         }
         
         .play-button:active {
@@ -184,10 +204,10 @@
             position: absolute;
             bottom: 0;
             left: 0;
-            width: 0%; /* Initially 0% width */
+            width: 0%;
             height: 100%;
-            background-color: rgba(93, 92, 222, 0.4); /* Darker purple background for better visibility */
-            z-index: 0; /* Behind the play/pause icons */
+            background-color: rgba(93, 92, 222, 0.4);
+            z-index: 0;
             transition: width 0.3s ease;
         }
         
@@ -222,23 +242,20 @@
             flex-grow: 1;
             position: relative;
             overflow: hidden;
-            padding-right: 32px; /* Base padding to prevent text from touching the close button */
+            padding-right: 32px;
         }
         
         .title-text {
             position: relative;
             z-index: 2;
             font-family: 'Quicksand', sans-serif;
-            font-weight: 600; /* Semi-bold for better readability */
+            font-weight: 600;
         }
         
-        /* Progress bar now inside button only */
 
         .accordion-header:active {
             background-color: var(--active-color);
         }
-
-        /* Removed + and - icons */
 
         .accordion-content {
             max-height: 0;
@@ -247,8 +264,8 @@
             padding: 0 16px;
             white-space: pre-wrap;
             font-family: 'Quicksand', sans-serif;
-            font-size: 18px; /* Increased from 15px to 18px */
-            line-height: 1.5; /* Maintained the same line height ratio */
+            font-size: 18px;
+            line-height: 1.5;
             opacity: 0;
             transform: translateY(-8px);
             transition-property: max-height, padding, opacity, transform;
@@ -257,13 +274,13 @@
         /* Content wrapper for text and corner icon */
         .content-wrapper {
             position: relative;
-            min-height: 50px; /* Ensure enough space for the icon */
+            min-height: 50px;
         }
         
         /* Text content within the wrapper */
         .text-content {
             white-space: pre-wrap;
-            padding-top: 30px; /* Space for the icon at the top now */
+            padding-top: 30px;
         }
         
         /* Corner icon positioning - now at top right */
@@ -271,23 +288,31 @@
             position: absolute;
             right: 5px;
             top: 5px;
-            opacity: 0.7; /* Slightly more visible */
+            opacity: 0.7;
             transition: opacity 0.2s ease, transform 0.2s ease;
-            cursor: pointer; /* Show pointer cursor to indicate it's clickable */
-            padding: 0; /* Removed padding that was creating larger hit area */
-            z-index: 5; /* Ensure it's above text */
-            display: flex; /* Center the SVG precisely */
+            cursor: pointer;
+            padding: 0;
+            z-index: 5;
+            display: flex;
             align-items: center;
             justify-content: center;
-            width: 18px; /* Match the SVG size exactly */
+            width: 18px;
             height: 18px;
+            outline: none; /* Remove default focus outline */
+        }
+        
+        /* Add subtle focus effect to corner icon */
+        .corner-icon:focus {
+            opacity: 1;
+            box-shadow: 0 0 0 2px var(--focus-color);
+            border-radius: 3px;
         }
         
         /* Style the SVG */
         .corner-svg {
-            width: 18px; /* Reduced from 24px to 18px */
-            height: 18px; /* Reduced from 24px to 18px */
-            fill: #000000; /* Black as requested */
+            width: 18px;
+            height: 18px;
+            fill: #000000;
         }
         
         /* Active/pressed state */
@@ -314,7 +339,7 @@
             filter: blur(3px);
             transition: filter 0.3s ease, opacity 0.3s ease;
             pointer-events: none;
-            opacity: 0.5; /* Darker opacity */
+            opacity: 0.5;
             position: relative;
         }
         
@@ -326,7 +351,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(0, 0, 0, 0.15); /* Black tint */
+            background-color: rgba(0, 0, 0, 0.15);
             z-index: 5;
             pointer-events: none;
             transition: opacity 0.3s ease;
@@ -362,51 +387,54 @@
         }
         
         .search-container {
-            margin-bottom: 2px; /* Reduced from 6px to 2px - minimal space */
-            position: relative; /* For positioning the clear button */
+            margin-bottom: 2px;
+            position: relative;
         }
         
         .search-input {
             width: 100%;
-            padding: 8px 16px; /* Reduced top/bottom padding from 12px to 8px */
-            padding-right: 38px; /* Add space for the clear button */
+            padding: 8px 16px;
+            padding-right: 38px;
             font-size: 16px;
             border: 1px solid var(--border-color);
-            border-radius: 20px; /* Much more rounded borders */
+            border-radius: 20px;
             outline: none;
-            transition: border-color 0.2s ease;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
         
+        /* Enhanced focus effect for search input */
         .search-input:focus {
-            border-color: var(--text-color);
+            border-color: #5D5CDE;
+            box-shadow: 0 0 0 2px var(--focus-color);
         }
         
         .search-clear-btn {
-            /* Positioning */
             position: absolute;
             right: 12px;
             top: 0;
-            height: 34px;  /* Same height as the search input */
+            height: 34px;
             width: 20px;
-            
-            /* Display as flex for centering */
             display: flex;
             align-items: center;
             justify-content: center;
-            
-            /* Other properties */
             cursor: pointer;
             opacity: 0;
             visibility: hidden;
             transition: all 0.2s ease;
             user-select: none;
+            outline: none; /* Remove default focus outline */
+        }
+        
+        /* Add subtle focus effect to search clear button when visible */
+        .search-clear-btn:focus {
+            color: #5D5CDE;
         }
         
         /* Wrapper for X to center it perfectly */
         .search-clear-btn::after {
-            content: "×";  /* Using the × character directly */
+            content: "×";
             font-size: 28px;
-            font-weight: 300; /* Thinner font */
+            font-weight: 300;
             color: black;
             line-height: 1;
         }
@@ -429,11 +457,10 @@
         
         .copyright-footer {
             margin-top: 24px;
-            padding: 16px 0 48px; /* Added bottom padding to create space below the footer */
+            padding: 16px 0 48px;
             text-align: center;
             font-size: 12px;
             color: #888;
-            /* Removed border-top */
         }
         
         .copyright-footer p {
@@ -446,11 +473,11 @@
             position: fixed;
             bottom: 16px;
             right: 16px;
-            width: 56px; /* Equal width and height for circle */
-            height: 56px; /* Made same as width for perfect circle */
+            width: 56px;
+            height: 56px;
             background-color: white;
             border: none;
-            border-radius: 50%; /* Changed to circle */
+            border-radius: 50%;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -458,18 +485,24 @@
             cursor: pointer;
             opacity: 0;
             transform: translateY(20px);
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.2s ease;
             z-index: 100;
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
             pointer-events: none;
-            padding: 4px 4px 2px; /* Adjusted padding for centered content */
+            padding: 4px 4px 2px;
+            outline: none; /* Remove default focus outline */
+        }
+        
+        /* Add subtle focus effect to return to top button */
+        .return-to-top:focus {
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15), 0 0 0 3px var(--focus-color);
         }
         
         /* Mountain SVG in return to top button */
         .return-to-top .up-icon {
-            width: 32px; /* Increased from 24px to 32px */
+            width: 32px;
             height: auto;
-            margin-bottom: 3px; /* Increased spacing a bit */
+            margin-bottom: 3px;
         }
         
         /* "Up" text below icon */
@@ -492,8 +525,15 @@
             justify-content: center;
             cursor: pointer;
             opacity: 0.8;
-            z-index: 90; /* High z-index but below the return-to-top button */
-            background: none; /* No background */
+            z-index: 90;
+            background: none;
+            border-radius: 50%;
+            outline: none; /* Remove default focus outline */
+        }
+        
+        /* Add subtle focus effect to fullscreen button */
+        .fullscreen-btn:focus {
+            box-shadow: 0 0 0 3px var(--focus-color);
         }
         
         .fullscreen-btn:active {
@@ -609,7 +649,7 @@
         }
         
         .return-to-top.visible {
-            opacity: 0.8; /* More subtle */
+            opacity: 0.8;
             transform: translateY(0);
             pointer-events: auto;
         }
@@ -624,12 +664,12 @@
             }
             
             h1 {
-                font-size: 26px; /* Reduced from 32px to 26px */
+                font-size: 26px;
             }
             
             .accordion-header {
                 padding: 14px;
-                font-size: 17px; /* Increased to match larger font sizes on mobile */
+                font-size: 17px;
             }
             
             .accordion-item.active .accordion-content {
@@ -638,27 +678,34 @@
             
             /* Adjust title container padding on smaller screens */
             .title-container {
-                padding-right: 24px; /* Less padding needed on mobile */
+                padding-right: 24px;
             }
             
             /* Adjust close button position on small screens */
             .close-btn {
-                right: 10px; /* Move closer to the edge */
+                right: 10px;
             }
         }
         
         /* For very small screens, adjust padding further */
         @media (max-width: 360px) {
             .title-container {
-                padding-right: 20px; /* Even less padding on very small screens */
+                padding-right: 20px;
             }
         }
         
         /* For larger screens, add more padding for better aesthetics */
         @media (min-width: 768px) {
             .title-container {
-                padding-right: 40px; /* More padding on larger screens */
+                padding-right: 40px;
             }
+        }
+
+        /* Hide focus outlines when using mouse, but show them when using keyboard */
+        /* This uses a JavaScript-based approach where a class is toggled on body */
+        body.using-mouse *:focus {
+            outline: none !important;
+            box-shadow: none !important;
         }
     </style>
 </head>
@@ -682,8 +729,6 @@
             </div>
         </div>
     </header>
-
-    <!-- File input section removed -->
 
     <div class="search-container">
         <input type="text" id="searchInput" placeholder="Search" class="search-input">
@@ -753,6 +798,31 @@
             
             // Try to go fullscreen automatically if allowed
             tryAutoFullscreen();
+            
+            // Setup keyboard/mouse detection for focus styles
+            setupKeyboardFocusDetection();
+            
+            //=============================================================================
+            // KEYBOARD/MOUSE DETECTION FOR FOCUS STYLES
+            //=============================================================================
+            
+            /**
+             * Setup detection for keyboard vs mouse navigation to show focus styles
+             * only when using keyboard navigation
+             */
+            function setupKeyboardFocusDetection() {
+                // Add a class to the body when mouse is used
+                document.body.addEventListener('mousedown', function() {
+                    document.body.classList.add('using-mouse');
+                });
+                
+                // Remove the class when tab key is pressed to enable focus styles
+                document.body.addEventListener('keydown', function(e) {
+                    if (e.key === 'Tab') {
+                        document.body.classList.remove('using-mouse');
+                    }
+                });
+            }
             
             //=============================================================================
             // DATA LOADING & PROCESSING
@@ -932,6 +1002,7 @@
                 // Create header with play button
                 const header = document.createElement('div');
                 header.className = 'accordion-header';
+                header.setAttribute('tabindex', '0'); // Make header focusable
                 
                 // Create play button (initially enabled, will be checked later)
                 const playButton = createPlayButton(audioPath);
@@ -1112,6 +1183,7 @@
                 const playButton = document.createElement('div');
                 playButton.className = 'play-button';
                 playButton.dataset.audioPath = audioPath;
+                playButton.setAttribute('tabindex', '0'); // Make button focusable
                 
                 // Add progress bar
                 const buttonProgress = document.createElement('div');
@@ -1132,6 +1204,15 @@
                 // Add temporary click handler to prevent accordion toggle
                 playButton.addEventListener('click', function(e) {
                     e.stopPropagation();
+                });
+                
+                // Add keyboard support
+                playButton.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        this.click(); // Trigger the click handler
+                    }
                 });
                 
                 return playButton;
@@ -1354,6 +1435,15 @@
                 
                 accordionItems.forEach(item => {
                     const header = item.querySelector('.accordion-header');
+                    
+                    // Add keyboard support for accordion headers
+                    header.addEventListener('keydown', function(e) {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            this.click(); // Trigger the click handler
+                        }
+                    });
                     
                     header.addEventListener('click', () => {
                         const isActive = item.classList.contains('active');
@@ -1650,6 +1740,16 @@
                     searchInput.value = '';
                     searchInput.focus();
                     updateSearch();
+                });
+                
+                // Add keyboard support for clear button
+                clearButton.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        searchInput.value = '';
+                        searchInput.focus();
+                        updateSearch();
+                    }
                 });
                 
                 // Handle Escape key press
