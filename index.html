@@ -296,9 +296,9 @@
         
         /* Style the SVG */
         .corner-svg {
-            width: 24px;
-            height: 24px;
-            fill: #000000; /* Changed to black as requested */
+            width: 18px; /* Reduced from 24px to 18px */
+            height: 18px; /* Reduced from 24px to 18px */
+            fill: #000000; /* Black as requested */
         }
         
         /* Hover effect on the icon */
@@ -993,6 +993,9 @@
                     e.stopPropagation(); // Prevent the accordion toggle
                     item.classList.remove('active');
                     accordion.classList.remove('blur-others');
+                    
+                    // Stop clave audio when closing an item
+                    stopClaveAudio();
                 });
                 
                 // Add keyboard support for close button
@@ -1031,6 +1034,20 @@
                 iconContainer.setAttribute('aria-label', 'Play metronome sound');
                 iconContainer.setAttribute('tabindex', '0');
                 
+                // Create an observer for the icon to stop clave when it scrolls out of view
+                const iconObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        // If the icon is no longer visible and clave audio is playing from this icon
+                        if (!entry.isIntersecting && window.claveAudio && window.currentClaveIcon === iconContainer) {
+                            stopClaveAudio();
+                            console.log('Clave audio stopped - item scrolled out of view');
+                        }
+                    });
+                }, { threshold: 0.1 });
+                
+                // Start observing the icon for visibility changes
+                iconObserver.observe(iconContainer);
+                
                 // SVG for top right corner
                 iconContainer.innerHTML = `
                     <svg fill="#000000" height="24px" width="24px" version="1.1" xmlns="http://www.w3.org/2000/svg" 
@@ -1058,45 +1075,50 @@
                     </svg>
                 `;
                 
-                // Add click event to play clave240bpm.mp3
-                let claveAudio = null; // Store audio instance globally to control it
+                // Store clave audio globally for the entire app
+                // This allows us to control it from multiple places
+                window.claveAudio = window.claveAudio || null;
+                window.currentClaveIcon = window.currentClaveIcon || null;
                 
+                // Add click event to play clave240bpm.mp3
                 iconContainer.addEventListener('click', function() {
-                    // If audio is already playing, stop it
-                    if (claveAudio) {
-                        claveAudio.pause();
-                        claveAudio.currentTime = 0;
-                        claveAudio = null;
-                        
-                        // Reset the pen icon (no visual change for now, but we could add a class)
-                        this.classList.remove('playing');
+                    // If any clave audio is playing, stop it first
+                    stopClaveAudio();
+                    
+                    // If we just stopped this icon's audio, return without starting a new one
+                    if (window.currentClaveIcon === this) {
+                        window.currentClaveIcon = null;
                         return;
                     }
                     
                     // Create and play the clave audio
-                    claveAudio = new Audio('clave240bpm.mp3');
+                    window.claveAudio = new Audio('clave240bpm.mp3');
+                    window.currentClaveIcon = this;
                     
                     // Add visual feedback
                     this.classList.add('playing');
                     
                     // Handle completion
-                    claveAudio.addEventListener('ended', () => {
-                        claveAudio = null;
+                    window.claveAudio.addEventListener('ended', () => {
                         this.classList.remove('playing');
+                        window.claveAudio = null;
+                        window.currentClaveIcon = null;
                     });
                     
                     // Handle errors
-                    claveAudio.addEventListener('error', () => {
+                    window.claveAudio.addEventListener('error', () => {
                         console.error('Error playing clave240bpm.mp3');
-                        claveAudio = null;
                         this.classList.remove('playing');
+                        window.claveAudio = null;
+                        window.currentClaveIcon = null;
                     });
                     
                     // Start playback
-                    claveAudio.play().catch(err => {
+                    window.claveAudio.play().catch(err => {
                         console.error('Could not play clave audio:', err);
-                        claveAudio = null;
                         this.classList.remove('playing');
+                        window.claveAudio = null;
+                        window.currentClaveIcon = null;
                     });
                 });
                 
@@ -1196,11 +1218,31 @@
             }
             
             /**
+             * Global function to stop clave audio playback
+             */
+            function stopClaveAudio() {
+                if (window.claveAudio) {
+                    window.claveAudio.pause();
+                    window.claveAudio.currentTime = 0;
+                    
+                    // Remove playing class from icon
+                    if (window.currentClaveIcon) {
+                        window.currentClaveIcon.classList.remove('playing');
+                    }
+                    
+                    window.claveAudio = null;
+                }
+            }
+            
+            /**
              * Toggle audio playback
              */
             function toggleAudio(button, audioPath) {
                 const buttonProgress = button.querySelector('.button-progress');
                 let progressInterval;
+                
+                // Stop clave audio when starting song audio
+                stopClaveAudio();
                 
                 // Stop currently playing audio if any
                 if (currentAudio) {
