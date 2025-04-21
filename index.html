@@ -285,13 +285,18 @@
         /* Corner icon positioning - now at top right */
         .corner-icon {
             position: absolute;
-            right: 0;
-            top: 0;
+            right: 5px;
+            top: 5px;
             opacity: 0.7; /* Slightly more visible */
             transition: opacity 0.2s ease, transform 0.2s ease;
             cursor: pointer; /* Show pointer cursor to indicate it's clickable */
-            padding: 5px; /* Larger hit area for better touch targets */
+            padding: 0; /* Removed padding that was creating larger hit area */
             z-index: 5; /* Ensure it's above text */
+            display: flex; /* Center the SVG precisely */
+            align-items: center;
+            justify-content: center;
+            width: 18px; /* Match the SVG size exactly */
+            height: 18px;
         }
         
         /* Style the SVG */
