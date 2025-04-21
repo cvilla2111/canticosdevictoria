@@ -1099,6 +1099,28 @@
                         return;
                     }
                     
+                    // Stop any song audio that might be playing
+                    if (currentAudio) {
+                        currentAudio.pause();
+                        currentAudio.currentTime = 0;
+                        
+                        // Reset the play button state
+                        if (currentPlayButton) {
+                            const playIco = currentPlayButton.querySelector('.play-icon');
+                            const pauseIco = currentPlayButton.querySelector('.pause-icon');
+                            const progress = currentPlayButton.querySelector('.button-progress');
+                            
+                            if (playIco) playIco.style.display = 'block';
+                            if (pauseIco) pauseIco.style.display = 'none';
+                            if (progress) progress.style.width = '0%';
+                        }
+                        
+                        // Clear globals
+                        currentAudio = null;
+                        currentPlayButton = null;
+                        console.log('Song audio stopped to play clave');
+                    }
+                    
                     // Create and play the clave audio
                     window.claveAudio = new Audio('clave240bpm.m4a');
                     window.currentClaveIcon = this;
