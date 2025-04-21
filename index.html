@@ -234,7 +234,7 @@
             flex-grow: 1;
             position: relative;
             overflow: hidden;
-            padding-right: 32px; /* Add padding to prevent text from touching the close button */
+            padding-right: 32px; /* Base padding to prevent text from touching the close button */
         }
         
         .title-text {
@@ -626,6 +626,30 @@
             
             .accordion-item.active .accordion-content {
                 padding: 14px;
+            }
+            
+            /* Adjust title container padding on smaller screens */
+            .title-container {
+                padding-right: 24px; /* Less padding needed on mobile */
+            }
+            
+            /* Adjust close button position on small screens */
+            .close-btn {
+                right: 10px; /* Move closer to the edge */
+            }
+        }
+        
+        /* For very small screens, adjust padding further */
+        @media (max-width: 360px) {
+            .title-container {
+                padding-right: 20px; /* Even less padding on very small screens */
+            }
+        }
+        
+        /* For larger screens, add more padding for better aesthetics */
+        @media (min-width: 768px) {
+            .title-container {
+                padding-right: 40px; /* More padding on larger screens */
             }
         }
     </style>
