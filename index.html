@@ -279,28 +279,37 @@
         /* Text content within the wrapper */
         .text-content {
             white-space: pre-wrap;
-            padding-bottom: 30px; /* Space for the icon */
+            padding-top: 30px; /* Space for the icon at the top now */
         }
         
-        /* Corner icon positioning */
+        /* Corner icon positioning - now at top right */
         .corner-icon {
             position: absolute;
             right: 0;
-            bottom: 0;
-            opacity: 0.5; /* Semi-transparent */
-            transition: opacity 0.2s ease;
+            top: 0;
+            opacity: 0.7; /* Slightly more visible */
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            cursor: pointer; /* Show pointer cursor to indicate it's clickable */
+            padding: 5px; /* Larger hit area for better touch targets */
+            z-index: 5; /* Ensure it's above text */
         }
         
         /* Style the SVG */
         .corner-svg {
             width: 24px;
             height: 24px;
-            fill: #5D5CDE; /* Match primary color */
+            fill: #000000; /* Changed to black as requested */
         }
         
         /* Hover effect on the icon */
         .corner-icon:hover {
-            opacity: 0.8;
+            opacity: 1;
+            transform: scale(1.1); /* Slight scale effect on hover */
+        }
+        
+        /* Active/pressed state */
+        .corner-icon:active {
+            transform: scale(0.95);
         }
 
         .accordion-item.active .accordion-content {
@@ -1018,8 +1027,11 @@
                 // Add SVG icon
                 const iconContainer = document.createElement('div');
                 iconContainer.className = 'corner-icon';
+                iconContainer.setAttribute('role', 'button');
+                iconContainer.setAttribute('aria-label', 'Play metronome sound');
+                iconContainer.setAttribute('tabindex', '0');
                 
-                // SVG for bottom right corner
+                // SVG for top right corner
                 iconContainer.innerHTML = `
                     <svg fill="#000000" height="24px" width="24px" version="1.1" xmlns="http://www.w3.org/2000/svg" 
                         viewBox="0 0 512.001 512.001" class="corner-svg">
@@ -1045,6 +1057,56 @@
                         </g>
                     </svg>
                 `;
+                
+                // Add click event to play clave240bpm.mp3
+                let claveAudio = null; // Store audio instance globally to control it
+                
+                iconContainer.addEventListener('click', function() {
+                    // If audio is already playing, stop it
+                    if (claveAudio) {
+                        claveAudio.pause();
+                        claveAudio.currentTime = 0;
+                        claveAudio = null;
+                        
+                        // Reset the pen icon (no visual change for now, but we could add a class)
+                        this.classList.remove('playing');
+                        return;
+                    }
+                    
+                    // Create and play the clave audio
+                    claveAudio = new Audio('clave240bpm.mp3');
+                    
+                    // Add visual feedback
+                    this.classList.add('playing');
+                    
+                    // Handle completion
+                    claveAudio.addEventListener('ended', () => {
+                        claveAudio = null;
+                        this.classList.remove('playing');
+                    });
+                    
+                    // Handle errors
+                    claveAudio.addEventListener('error', () => {
+                        console.error('Error playing clave240bpm.mp3');
+                        claveAudio = null;
+                        this.classList.remove('playing');
+                    });
+                    
+                    // Start playback
+                    claveAudio.play().catch(err => {
+                        console.error('Could not play clave audio:', err);
+                        claveAudio = null;
+                        this.classList.remove('playing');
+                    });
+                });
+                
+                // Add keyboard support
+                iconContainer.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.click(); // Trigger the click handler
+                    }
+                });
                 
                 contentWrapper.appendChild(iconContainer);
                 contentDiv.appendChild(contentWrapper);
