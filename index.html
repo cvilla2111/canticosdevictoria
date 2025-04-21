@@ -129,7 +129,7 @@
             opacity: 0;
             cursor: pointer;
             color: black; /* Match search clear button color */
-            transition: opacity 0.3s ease, color 0.2s ease;
+            transition: opacity 0.3s ease;
             z-index: 3;
             line-height: 1;
         }
@@ -140,10 +140,6 @@
             font-size: 28px; /* Match search clear button size */
             font-weight: 300; /* Match search clear button weight - thinner */
             line-height: 1;
-        }
-        
-        .close-btn:hover {
-            color: #555; /* Match search clear button hover color */
         }
         
         .accordion-item.active .close-btn {
@@ -168,10 +164,6 @@
             overflow: hidden; /* Contain the progress bar */
         }
         
-        .play-button:hover {
-            background-color: rgba(0, 0, 0, 0.05);
-        }
-        
         .play-button:active {
             transform: scale(0.95);
         }
@@ -181,10 +173,6 @@
             color: #ccc;
             cursor: default;
             opacity: 0.7;
-        }
-        
-        .play-button.disabled:hover {
-            background-color: transparent;
         }
         
         .play-button.disabled:active {
@@ -246,10 +234,6 @@
         
         /* Progress bar now inside button only */
 
-        .accordion-header:hover {
-            background-color: var(--hover-color);
-        }
-
         .accordion-header:active {
             background-color: var(--active-color);
         }
@@ -304,12 +288,6 @@
             width: 18px; /* Reduced from 24px to 18px */
             height: 18px; /* Reduced from 24px to 18px */
             fill: #000000; /* Black as requested */
-        }
-        
-        /* Hover effect on the icon */
-        .corner-icon:hover {
-            opacity: 1;
-            transform: scale(1.1); /* Slight scale effect on hover */
         }
         
         /* Active/pressed state */
@@ -433,10 +411,6 @@
             line-height: 1;
         }
         
-        .search-clear-btn:hover {
-            color: #555;
-        }
-        
         .search-clear-btn.visible {
             opacity: 1;
             visibility: visible;
@@ -484,7 +458,7 @@
             cursor: pointer;
             opacity: 0;
             transform: translateY(20px);
-            transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.2s ease;
+            transition: opacity 0.3s ease, transform 0.3s ease;
             z-index: 100;
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
             pointer-events: none;
@@ -520,10 +494,6 @@
             opacity: 0.8;
             z-index: 90; /* High z-index but below the return-to-top button */
             background: none; /* No background */
-        }
-        
-        .fullscreen-btn:hover {
-            opacity: 1;
         }
         
         .fullscreen-btn:active {
@@ -644,19 +614,10 @@
             pointer-events: auto;
         }
         
-        .return-to-top:hover {
-            opacity: 1;
-            background-color: #f8f8f8;
-        }
-        
         .return-to-top:active {
             transform: scale(0.95);
         }
         
-
-        
-
-
         @media (max-width: 480px) {
             body {
                 padding: 12px;
@@ -1085,7 +1046,7 @@
                 window.claveAudio = window.claveAudio || null;
                 window.currentClaveIcon = window.currentClaveIcon || null;
                 
-                // Add click event to play clave240bpm.mp3
+                // Add click event to play clave240bpm.m4a
                 iconContainer.addEventListener('click', function() {
                     // If any clave audio is playing, stop it first
                     stopClaveAudio();
