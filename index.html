@@ -1122,7 +1122,7 @@
                     }
                     
                     // Create and play the clave audio
-                    window.claveAudio = new Audio('clave240bpm.m4a');
+                    window.claveAudio = new Audio('clave240bpm.mp3');
                     window.currentClaveIcon = this;
                     
                     // Add visual feedback
@@ -1137,7 +1137,7 @@
                     
                     // Handle errors
                     window.claveAudio.addEventListener('error', () => {
-                        console.error('Error playing clave240bpm.m4a');
+                        console.error('Error playing clave240bpm.mp3');
                         this.classList.remove('playing');
                         window.claveAudio = null;
                         window.currentClaveIcon = null;
