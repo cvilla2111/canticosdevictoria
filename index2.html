@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="mobile-web-app-capable" content="yes">
-    <title>Cánticos De Victoria (beta)</title>
+    <title>Cánticos De Victoria</title>
     <!-- Import fonts from Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
@@ -808,7 +808,7 @@
 <body>
     <header>
         <!-- Centered h1 title -->
-        <h1>Cánticos De Victoria</h1>
+        <h1>Cánticos De Victoria (beta)</h1>
         
         <!-- Subtitle with item count -->
         <p id="itemCountSubtitle" class="subtitle">Una colección de <span id="itemCount">0</span> coritos</p>
@@ -1144,11 +1144,14 @@
                 textContent.textContent = content;
                 contentWrapper.appendChild(textContent);
                 
+                // Create a protection flag to prevent stopping audio too early
+                let recentlyActivated = false;
+
                 // Create an observer for the icon to stop clave when it scrolls out of view
                 const iconObserver = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         // If the icon is no longer visible and clave audio is playing from this icon
-                        if (!entry.isIntersecting && window.claveAudio && window.currentClaveIcon === iconContainer) {
+                        if (!entry.isIntersecting && window.claveAudio && window.currentClaveIcon === iconContainer && !recentlyActivated) {
                             stopClaveAudio();
                             console.log('Clave audio stopped - item scrolled out of view');
                         }
@@ -1192,6 +1195,9 @@
                 
                 // Add simple click event to play clave audio directly
                 iconContainer.addEventListener('click', function() {
+                    // Set the protection flag to prevent early stopping
+                    recentlyActivated = true;
+                    
                     // Always reset state completely first
                     const wasPlayingSameIcon = window.currentClaveIcon === this;
                     
@@ -1214,6 +1220,11 @@
                         currentAudio = null;
                         currentPlayButton = null;
                     }
+                    
+                    // Clear the protection flag after 2 seconds
+                    setTimeout(() => {
+                        recentlyActivated = false;
+                    }, 2000);
                     
                     // Stop any existing clave audio
                     if (window.claveAudio) {
