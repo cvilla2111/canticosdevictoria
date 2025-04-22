@@ -1265,51 +1265,59 @@
                         }
                     });
                     
-                    // Try three different file paths/extensions in sequence
+                    // Use a direct, straightforward approach
                     console.log('Attempting to play clave audio...');
                     
-                    // First, try with MP3 format with leading slash
-                    window.claveAudio.src = '/clave240bpm.mp3';
+                    // For debugging - log the full URL of the file
+                    const audioPath = 'clave240bpm.mp3';
+                    const fullUrl = new URL(audioPath, window.location.href).href;
+                    console.log('Attempting to load audio from:', fullUrl);
                     
-                    // Handle load errors to try alternative file paths
-                    window.claveAudio.onerror = function() {
-                        console.log('First attempt failed, trying alternative file path...');
-                        // Try without leading slash
-                        window.claveAudio.src = 'clave240bpm.mp3';
-                        window.claveAudio.onerror = function() {
-                            console.log('Second attempt failed, trying M4A format...');
-                            // Try with M4A format
-                            window.claveAudio.src = 'clave240bpm.m4a';
-                            window.claveAudio.onerror = function() {
-                                console.error('All attempts to load clave audio failed');
-                                if (iconRef) {
-                                    iconRef.classList.remove('playing');
-                                    iconRef.classList.remove('loading');
-                                }
-                                window.claveAudio = null;
-                                window.currentClaveIcon = null;
-                            };
-                            window.claveAudio.load();
-                            window.claveAudio.play().catch(handlePlayError);
-                        };
-                        window.claveAudio.load();
-                        window.claveAudio.play().catch(handlePlayError);
-                    };
+                    // Simply set the source to the audio file directly
+                    window.claveAudio.src = audioPath;
                     
-                    // Function to handle play errors
-                    function handlePlayError(err) {
-                        console.error('Could not play clave audio:', err);
+                    // Add a direct onerror handler
+                    window.claveAudio.onerror = function(e) {
+                        console.error('Error loading clave audio:', e);
                         if (iconRef) {
                             iconRef.classList.remove('playing');
                             iconRef.classList.remove('loading');
                         }
                         window.claveAudio = null;
                         window.currentClaveIcon = null;
-                    }
+                        
+                        // Add a helpful message about file location
+                        console.log('Please ensure the file "clave240bpm.mp3" exists in the same directory as this HTML file.');
+                    };
                     
-                    // Load and attempt to play the first option
+                    // Check if we can actually play this file type
+                    const canPlayMp3 = window.claveAudio.canPlayType('audio/mpeg');
+                    console.log('Can this browser play MP3 files?', canPlayMp3 || 'No');
+                    
+                    // Load the audio file
                     window.claveAudio.load();
-                    window.claveAudio.play().catch(handlePlayError);
+                    
+                    // Play the audio with error handling
+                    window.claveAudio.play()
+                        .then(() => {
+                            console.log('Clave audio started playing successfully!');
+                        })
+                        .catch(err => {
+                            console.error('Could not play clave audio:', err);
+                            // Show more context about potential errors
+                            if (err.name === 'NotAllowedError') {
+                                console.log('User interaction required before playing audio. Try clicking elsewhere first.');
+                            } else if (err.name === 'NotSupportedError') {
+                                console.log('This audio format is not supported by this browser.');
+                            }
+                            
+                            if (iconRef) {
+                                iconRef.classList.remove('playing');
+                                iconRef.classList.remove('loading');
+                            }
+                            window.claveAudio = null;
+                            window.currentClaveIcon = null;
+                        });
                 });
                 
                 // Add keyboard support
