@@ -194,19 +194,89 @@
             transform: none;
         }
         
-        /* Progress bar inside play button */
-        .button-progress {
+        /* Equalizer bars container */
+        .equalizer {
             position: absolute;
             bottom: 0;
             left: 0;
-            width: 0%; /* Initially 0% width */
+            width: 100%;
             height: 100%;
-            background-color: rgba(93, 92, 222, 0.4); /* Darker purple background for better visibility */
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            padding: 5px;
+            box-sizing: border-box;
             z-index: 0; /* Behind the play/pause icons */
-            transform-origin: left center;
-            will-change: transform, width; /* Optimize for animations */
-            transition: width 0.2s linear; /* Smoother linear transition with shorter duration */
-            backface-visibility: hidden; /* Reduce flickering */
+            pointer-events: none; /* Don't block clicks */
+        }
+        
+        /* Individual equalizer bars */
+        .eq-bar {
+            width: 3.5px;
+            background-color: rgba(93, 92, 222, 0.6);
+            height: 0;
+            border-radius: 1px;
+            transition: height 0.1s ease;
+        }
+        
+        /* Animation for equalizer bars */
+        @keyframes eq1 {
+            0%, 100% { height: 5px; }
+            50% { height: 18px; }
+        }
+        
+        @keyframes eq2 {
+            0%, 100% { height: 12px; }
+            25% { height: 5px; }
+            75% { height: 22px; }
+        }
+        
+        @keyframes eq3 {
+            0%, 100% { height: 8px; }
+            65% { height: 20px; }
+        }
+        
+        @keyframes eq4 {
+            0%, 100% { height: 15px; }
+            40% { height: 7px; }
+            80% { height: 25px; }
+        }
+        
+        @keyframes eq5 {
+            0%, 100% { height: 10px; }
+            35% { height: 24px; }
+            70% { height: 3px; }
+        }
+        
+        @keyframes eq6 {
+            0%, 100% { height: 7px; }
+            30% { height: 21px; }
+            60% { height: 12px; }
+            90% { height: 17px; }
+        }
+        
+        .play-button.playing .eq-bar:nth-child(1) {
+            animation: eq1 0.5s ease-in-out infinite;
+        }
+        
+        .play-button.playing .eq-bar:nth-child(2) {
+            animation: eq2 0.6s ease-in-out infinite;
+        }
+        
+        .play-button.playing .eq-bar:nth-child(3) {
+            animation: eq3 0.45s ease-in-out infinite;
+        }
+        
+        .play-button.playing .eq-bar:nth-child(4) {
+            animation: eq4 0.55s ease-in-out infinite;
+        }
+        
+        .play-button.playing .eq-bar:nth-child(5) {
+            animation: eq5 0.5s ease-in-out infinite;
+        }
+        
+        .play-button.playing .eq-bar:nth-child(6) {
+            animation: eq6 0.65s ease-in-out infinite;
         }
         
         .play-icon, .pause-icon {
@@ -1184,9 +1254,16 @@
                 playButton.className = 'play-button';
                 playButton.dataset.audioPath = audioPath;
                 
-                // Add progress bar
-                const buttonProgress = document.createElement('div');
-                buttonProgress.className = 'button-progress';
+                // Create equalizer bars
+                const equalizer = document.createElement('div');
+                equalizer.className = 'equalizer';
+                
+                // Add 6 equalizer bars
+                for (let i = 0; i < 6; i++) {
+                    const bar = document.createElement('div');
+                    bar.className = 'eq-bar';
+                    equalizer.appendChild(bar);
+                }
                 
                 // Add play/pause icons
                 const playIcon = document.createElement('div');
@@ -1196,7 +1273,7 @@
                 pauseIcon.className = 'pause-icon';
                 
                 // Add all elements to button
-                playButton.appendChild(buttonProgress);
+                playButton.appendChild(equalizer);
                 playButton.appendChild(playIcon);
                 playButton.appendChild(pauseIcon);
                 
@@ -1275,9 +1352,6 @@
              * Toggle audio playback
              */
             function toggleAudio(button, audioPath) {
-                const buttonProgress = button.querySelector('.button-progress');
-                let progressInterval;
-                
                 // Stop clave audio when starting song audio
                 stopClaveAudio();
                 
@@ -1311,27 +1385,6 @@
                     currentAudio = null;
                     currentPlayButton = null;
                     disableButton(button);
-                });
-                
-                audio.addEventListener('loadedmetadata', function() {
-                    // Check if this button is in an active accordion item (recently opened)
-                    const isInActiveAccordion = button.closest('.accordion-item.active') !== null;
-                    
-                    if (isInActiveAccordion) {
-                        // Add a short delay before starting progress updates if accordion was just opened
-                        // This prevents animation conflicts between accordion opening and progress bar
-                        setTimeout(() => {
-                            // Setup progress updates with a slightly longer interval
-                            progressInterval = setInterval(() => {
-                                updateProgressBar(audio, buttonProgress);
-                            }, 120); // Slight increase in interval for smoother animation
-                        }, 300); // Wait for accordion animation to settle
-                    } else {
-                        // For non-active items, start progress updates immediately
-                        progressInterval = setInterval(() => {
-                            updateProgressBar(audio, buttonProgress);
-                        }, 100);
-                    }
                 });
                 
                 // Start playback
@@ -1390,46 +1443,28 @@
                 
                 // Helper function to reset button to play state
                 function resetButtonToPlay(btn) {
+                    // Remove playing class to stop equalizer animation
+                    btn.classList.remove('playing');
+                    
+                    // Show play icon, hide pause icon
                     const playIco = btn.querySelector('.play-icon');
                     const pauseIco = btn.querySelector('.pause-icon');
-                    const progress = btn.querySelector('.button-progress');
                     
-                    playIco.style.display = 'block';
-                    pauseIco.style.display = 'none';
-                    
-                    if (progress) progress.style.width = '0%';
-                    
-                    if (progressInterval) {
-                        clearInterval(progressInterval);
-                        progressInterval = null;
-                    }
+                    if (playIco) playIco.style.display = 'block';
+                    if (pauseIco) pauseIco.style.display = 'none';
                 }
                 
                 // Helper function to set button to pause state
                 function setButtonToPause(btn) {
+                    // Add playing class to start equalizer animation
+                    btn.classList.add('playing');
+                    
+                    // Hide play icon, show pause icon
                     const playIco = btn.querySelector('.play-icon');
                     const pauseIco = btn.querySelector('.pause-icon');
                     
-                    playIco.style.display = 'none';
-                    pauseIco.style.display = 'block';
-                }
-                
-                // Helper function to update progress bar
-                function updateProgressBar(audio, progressBar) {
-                    if (!audio || !progressBar) return;
-                    
-                    // Use requestAnimationFrame for smoother updates
-                    requestAnimationFrame(() => {
-                        const currentTime = audio.currentTime;
-                        const duration = audio.duration || 1;
-                        const progress = Math.min((currentTime / duration) * 100, 100); // Cap at 100%
-                        
-                        // Only update if there's a meaningful change (>= 0.5%)
-                        const currentWidth = parseFloat(progressBar.style.width) || 0;
-                        if (Math.abs(progress - currentWidth) >= 0.5) {
-                            progressBar.style.width = `${progress}%`;
-                        }
-                    });
+                    if (playIco) playIco.style.display = 'none';
+                    if (pauseIco) pauseIco.style.display = 'block';
                 }
             }
             
@@ -1498,13 +1533,8 @@
                                             
                                             // Reset the play button state if we have one
                                             if (currentPlayButton) {
-                                                const playIco = currentPlayButton.querySelector('.play-icon');
-                                                const pauseIco = currentPlayButton.querySelector('.pause-icon');
-                                                const progress = currentPlayButton.querySelector('.button-progress');
-                                                
-                                                if (playIco) playIco.style.display = 'block';
-                                                if (pauseIco) pauseIco.style.display = 'none';
-                                                if (progress) progress.style.width = '0%';
+                                                // Reset the button state using our helper function
+                                                resetButtonToPlay(currentPlayButton);
                                             }
                                             
                                             // Clear global audio state
