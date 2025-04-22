@@ -377,6 +377,30 @@
             height: 18px;
             margin-top: 2px; /* Small top margin to align with text */
             flex-shrink: 0; /* Prevent icon from shrinking */
+            position: relative;
+        }
+        
+        /* Loading state for clave icon */
+        .corner-icon.loading .corner-svg {
+            opacity: 0.5;
+        }
+        
+        .corner-icon.loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px solid transparent;
+            border-top-color: #000;
+            border-radius: 50%;
+            animation: clave-loading 0.8s linear infinite;
+        }
+        
+        @keyframes clave-loading {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         
         /* Style the SVG */
@@ -1120,11 +1144,14 @@
                 textContent.textContent = content;
                 contentWrapper.appendChild(textContent);
                 
+                // Create a protection flag to prevent stopping audio too early
+                let recentlyActivated = false;
+
                 // Create an observer for the icon to stop clave when it scrolls out of view
                 const iconObserver = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         // If the icon is no longer visible and clave audio is playing from this icon
-                        if (!entry.isIntersecting && window.claveAudio && window.currentClaveIcon === iconContainer) {
+                        if (!entry.isIntersecting && window.claveAudio && window.currentClaveIcon === iconContainer && !recentlyActivated) {
                             stopClaveAudio();
                             console.log('Clave audio stopped - item scrolled out of view');
                         }
@@ -1166,13 +1193,13 @@
                 window.claveAudio = window.claveAudio || null;
                 window.currentClaveIcon = window.currentClaveIcon || null;
                 
-                // Add click event to play clave240bpm.m4a
+                // Add simple click event to play clave audio directly
                 iconContainer.addEventListener('click', function() {
+                    // Set the protection flag to prevent early stopping
+                    recentlyActivated = true;
+                    
                     // Always reset state completely first
                     const wasPlayingSameIcon = window.currentClaveIcon === this;
-                    
-                    // Stop any clave audio
-                    stopClaveAudio();
                     
                     // Stop any song audio and reset equalizer
                     if (currentAudio) {
@@ -1192,44 +1219,215 @@
                         // Clear globals
                         currentAudio = null;
                         currentPlayButton = null;
-                        console.log('Song audio stopped to play clave');
                     }
                     
-                    // If we just stopped this icon's audio, don't restart it
-                    if (wasPlayingSameIcon) {
-                        console.log('Clave audio stopped without restarting');
-                        return;
+                    // Clear the protection flag after 2 seconds
+                    setTimeout(() => {
+                        recentlyActivated = false;
+                    }, 2000);
+                    
+                    // Stop any existing clave audio
+                    if (window.claveAudio) {
+                        window.claveAudio.pause();
+                        window.claveAudio.currentTime = 0;
+                        
+                        // If we just stopped this icon's audio, don't restart it
+                        if (wasPlayingSameIcon) {
+                            this.classList.remove('playing');
+                            window.currentClaveIcon = null;
+                            window.claveAudio = null;
+                            console.log('Clave audio stopped without restarting');
+                            return;
+                        }
+                        
+                        // Remove playing class from previous icon
+                        if (window.currentClaveIcon) {
+                            window.currentClaveIcon.classList.remove('playing');
+                        }
                     }
                     
-                    // Create and play the clave audio
-                    window.claveAudio = new Audio('clave240bpm.mp3');
+                    // Show loading animation
+                    this.classList.add('loading');
                     window.currentClaveIcon = this;
                     
-                    // Add visual feedback
-                    this.classList.add('playing');
+                    // Create a new Audio element for clave sound
+                    window.claveAudio = new Audio();
                     
-                    // Handle completion
+                    // Set up event listeners for the audio element
+                    window.claveAudio.addEventListener('canplaythrough', () => {
+                        console.log('Clave audio loaded, ready to play');
+                        this.classList.remove('loading');
+                        this.classList.add('playing');
+                    });
+                    
                     window.claveAudio.addEventListener('ended', () => {
+                        console.log('Clave audio playback complete');
                         this.classList.remove('playing');
                         window.claveAudio = null;
                         window.currentClaveIcon = null;
                     });
                     
-                    // Handle errors
-                    window.claveAudio.addEventListener('error', () => {
-                        console.error('Error playing clave240bpm.mp3');
+                    window.claveAudio.addEventListener('error', (e) => {
+                        console.error('Error with clave audio:', e);
+                        this.classList.remove('loading');
                         this.classList.remove('playing');
+                        
+                        // Create and show a temporary error message
+                        const errorMsg = document.createElement('div');
+                        errorMsg.style.cssText = 'color: red; font-size: 12px; margin-left: 24px; margin-top: 4px;';
+                        errorMsg.textContent = 'Audio file not found';
+                        this.parentNode.appendChild(errorMsg);
+                        
+                        // Remove the error message after 3 seconds
+                        setTimeout(() => {
+                            errorMsg.remove();
+                        }, 3000);
+                        
                         window.claveAudio = null;
                         window.currentClaveIcon = null;
                     });
                     
-                    // Start playback
-                    window.claveAudio.play().catch(err => {
-                        console.error('Could not play clave audio:', err);
-                        this.classList.remove('playing');
+                    // Try multiple sources in order
+                    console.log('Attempting to play clave audio - with fallback options');
+                    
+                    // Create array of fallback sources - starting with local file, then hosted options
+                    const audioSources = [
+                        'clave240bpm.mp3',
+                        'https://assets.mixkit.co/active_storage/sfx/1005/1005-preview.mp3', // Fallback to hosted wood click sound
+                        'https://cdn.jsdelivr.net/gh/scottschiller/SoundManager2/demo/_mp3/click-high.mp3' // Another fallback
+                    ];
+                    
+                    // Try the first source
+                    tryAudioSource(0);
+                    
+                    // Recursive function to try each source
+                    function tryAudioSource(index) {
+                        if (index >= audioSources.length) {
+                            // All sources failed
+                            console.error('All audio sources failed');
+                            showAudioError();
+                            return;
+                        }
+                        
+                        const source = audioSources[index];
+                        console.log(`Trying audio source ${index + 1}/${audioSources.length}: ${source}`);
+                        
+                        // Create a completely new Audio element for each attempt
+                        window.claveAudio = new Audio();
+                        
+                        // Set up monitoring for all audio events to debug
+                        ['loadstart', 'durationchange', 'loadedmetadata', 'loadeddata', 
+                         'progress', 'canplay', 'canplaythrough', 'playing', 'play'].forEach(event => {
+                            window.claveAudio.addEventListener(event, () => {
+                                console.log(`Audio event: ${event} - time: ${window.claveAudio.currentTime}/${window.claveAudio.duration}`);
+                                if (event === 'canplaythrough') {
+                                    // Check if we have actual audio data
+                                    if (window.claveAudio.duration > 0) {
+                                        console.log(`Audio has duration: ${window.claveAudio.duration}s - SHOULD BE PLAYABLE`);
+                                    } else {
+                                        console.warn('Audio reports canplaythrough but has zero duration!');
+                                    }
+                                }
+                                if (event === 'playing') {
+                                    console.log('AUDIO IS ACTUALLY PLAYING NOW!');
+                                    iconContainer.classList.remove('loading');
+                                    iconContainer.classList.add('playing');
+                                }
+                            });
+                        });
+                        
+                        // Set up error handling more specifically
+                        window.claveAudio.addEventListener('error', (e) => {
+                            const errorTypes = ['MEDIA_ERR_ABORTED', 'MEDIA_ERR_NETWORK', 'MEDIA_ERR_DECODE', 'MEDIA_ERR_SRC_NOT_SUPPORTED'];
+                            let errorMessage = 'Unknown error';
+                            
+                            if (window.claveAudio.error) {
+                                // Map error code to message
+                                if (window.claveAudio.error.code > 0 && window.claveAudio.error.code <= errorTypes.length) {
+                                    errorMessage = errorTypes[window.claveAudio.error.code - 1];
+                                }
+                                console.error(`Audio error with source ${index + 1}: ${errorMessage}`, window.claveAudio.error);
+                            }
+                            
+                            // Try the next source
+                            tryAudioSource(index + 1);
+                        });
+                        
+                        // Set the source and load the audio
+                        window.claveAudio.preload = 'auto'; // Force preloading
+                        window.claveAudio.src = source;
+                        
+                        // Force a small volume change to wake up audio context on iOS
+                        window.claveAudio.volume = 0.99;
+                        
+                        // Load the audio
+                        console.log('Calling load() on audio element');
+                        window.claveAudio.load();
+                        
+                        // Try to play the audio AFTER a short delay to ensure loading has started
+                        setTimeout(() => {
+                            console.log('Attempting to play audio now');
+                            
+                            // Add direct debugging for play button
+                            const playPromise = window.claveAudio.play();
+                            
+                            // Modern browsers return a promise from play()
+                            if (playPromise !== undefined) {
+                                playPromise.then(() => {
+                                    console.log(`Successfully started playback for source ${index + 1}: ${source}`);
+                                    
+                                    // Add a forced play check after a moment
+                                    setTimeout(() => {
+                                        if (window.claveAudio && window.claveAudio.paused) {
+                                            console.warn('Audio reported successful play() but is actually paused!');
+                                            // Force play again
+                                            window.claveAudio.play().catch(e => 
+                                                console.error('Retry play failed:', e)
+                                            );
+                                        }
+                                    }, 500);
+                                }).catch(err => {
+                                    console.error(`Play() promise rejected for source ${index + 1}:`, err);
+                                    
+                                    // Try the next source
+                                    tryAudioSource(index + 1);
+                                });
+                            } else {
+                                // Older browsers don't return a promise
+                                console.log('Browser returned undefined for play() (older browser)');
+                                
+                                // Check after a moment if playing actually started
+                                setTimeout(() => {
+                                    if (window.claveAudio && window.claveAudio.paused) {
+                                        console.warn('Audio is still paused after play() call');
+                                        // Try the next source
+                                        tryAudioSource(index + 1);
+                                    }
+                                }, 1000);
+                            }
+                        }, 100); // Short delay before attempting to play
+                    }
+                    
+                    // Helper to show audio error
+                    function showAudioError() {
+                        console.error('All audio sources failed');
+                        iconContainer.classList.remove('loading');
+                        iconContainer.classList.remove('playing');
+                        
+                        // Create and show a temporary error message
+                        const errorMsg = document.createElement('div');
+                        errorMsg.style.cssText = 'color: red; font-size: 12px; margin-left: 24px; margin-top: 4px;';
+                        errorMsg.textContent = 'Audio not available';
+                        iconContainer.parentNode.appendChild(errorMsg);
+                        
+                        // Remove the error message after 3 seconds
+                        setTimeout(() => {
+                            errorMsg.remove();
+                        }, 3000);
+                        
                         window.claveAudio = null;
                         window.currentClaveIcon = null;
-                    });
+                    }
                 });
                 
                 // Add keyboard support
