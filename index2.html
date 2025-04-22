@@ -1,1 +1,1861 @@
 
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Cánticos De Victoria</title>
+    <!-- Import fonts from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Force light mode colors regardless of system preference */
+        :root {
+            --background-color: #ffffff;
+            --text-color: #000000;
+            --border-color: #e0e0e0;
+            --hover-color: #f5f5f5;
+            --active-color: #ebebeb;
+        }
+        
+        /* Override any potential dark mode preferences */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background-color: #ffffff;
+                --text-color: #000000;
+                --border-color: #e0e0e0;
+                --hover-color: #f5f5f5;
+                --active-color: #ebebeb;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            max-width: 800px; /* Adjusted to 800px as requested */
+            margin: 0 auto;
+            padding: 16px;
+        }
+
+        header {
+            margin-bottom: 8px;
+            padding: 24px 0 8px; /* Increased top padding from 8px to 24px */
+            position: relative;
+            text-align: center; /* Center the h1 */
+        }
+        
+        /* SVG Container and styling - centered in footer */
+        .svg-container {
+            display: block;
+            width: 30px;
+            margin: 12px auto 0;
+        }
+        
+        .mountain-svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        h1 {
+            font-size: 42px; /* Reduced from 52px to 42px */
+            font-family: 'Chewy', cursive;
+            margin-bottom: 4px; /* Reduced to be closer to subtitle */
+            color: black;
+        }
+        
+        /* Subtitle styling */
+        .subtitle {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 14px; /* Reduced from 16px to 14px */
+            color: #555;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        
+        /* Make the item count slightly bolder */
+        #itemCount {
+            font-weight: 600;
+        }
+
+        /* File input styles removed */
+
+        .accordion {
+            width: 100%;
+            overflow: hidden;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .accordion-item {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .accordion-item:last-child {
+            border-bottom: none;
+        }
+
+        .accordion-header {
+            padding: 16px;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            font-size: 19px; /* Increased from 16px to 19px */
+            user-select: none;
+            font-family: 'Quicksand', sans-serif;
+        }
+        
+        .close-btn {
+            position: absolute;
+            right: 16px;
+            top: 35%; /* Moved up from 50% to 35% */
+            transform: translateY(-50%);
+            width: 20px;
+            height: 34px; /* Match search clear button height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            cursor: pointer;
+            color: black; /* Match search clear button color */
+            transition: opacity 0.3s ease, color 0.2s ease;
+            z-index: 3;
+            line-height: 1;
+        }
+        
+        /* Match the search clear button styling with ::after */
+        .close-btn::after {
+            content: "×"; /* Using the × character directly like the search clear button */
+            font-size: 28px; /* Match search clear button size */
+            font-weight: 300; /* Match search clear button weight - thinner */
+            line-height: 1;
+        }
+        
+        .close-btn:hover {
+            color: #555; /* Match search clear button hover color */
+        }
+        
+        .accordion-item.active .close-btn {
+            opacity: 1;
+        }
+        
+        .play-button {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            background-color: transparent;
+            border: 2px solid var(--text-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+            cursor: pointer;
+            color: var(--text-color);
+            position: relative;
+            transition: all 0.2s ease;
+            overflow: hidden; /* Contain the progress bar */
+            /* Create a new stacking context to isolate rendering */
+            z-index: 1;
+            transform: translateZ(0); /* Force hardware acceleration */
+        }
+        
+        .play-button:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        .play-button:active {
+            transform: scale(0.95);
+        }
+        
+        .play-button.disabled {
+            border-color: #ccc;
+            color: #ccc;
+            cursor: default;
+            opacity: 0.7;
+        }
+        
+        .play-button.disabled:hover {
+            background-color: transparent;
+        }
+        
+        .play-button.disabled:active {
+            transform: none;
+        }
+        
+        /* Equalizer bars container */
+        .equalizer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            padding: 2px; /* Reduced padding to allow bars to fill more space */
+            box-sizing: border-box;
+            z-index: 0; /* Behind the play/pause icons */
+            pointer-events: none; /* Don't block clicks */
+        }
+        
+        /* Individual equalizer bars */
+        .eq-bar {
+            width: 3.8px; /* Slightly wider bars */
+            background-color: rgba(93, 92, 222, 0.35); /* More transparent equalizer bars */
+            height: 0;
+            border-radius: 1px 1px 0 0; /* Rounded top corners only */
+            transition: height 0.1s ease;
+            transform-origin: bottom center; /* Ensure animations scale from bottom */
+        }
+        
+        /* Animation for equalizer bars - taller to fill the button */
+        @keyframes eq1 {
+            0%, 100% { height: 8px; }
+            50% { height: 28px; }
+        }
+        
+        @keyframes eq2 {
+            0%, 100% { height: 14px; }
+            25% { height: 6px; }
+            75% { height: 26px; }
+        }
+        
+        @keyframes eq3 {
+            0%, 100% { height: 10px; }
+            65% { height: 28px; }
+        }
+        
+        @keyframes eq4 {
+            0%, 100% { height: 16px; }
+            40% { height: 8px; }
+            80% { height: 28px; }
+        }
+        
+        @keyframes eq5 {
+            0%, 100% { height: 12px; }
+            35% { height: 28px; }
+            70% { height: 5px; }
+        }
+        
+        @keyframes eq6 {
+            0%, 100% { height: 9px; }
+            30% { height: 26px; }
+            60% { height: 14px; }
+            90% { height: 20px; }
+        }
+        
+        .play-button.playing .eq-bar:nth-child(1) {
+            animation: eq1 0.5s ease-in-out infinite;
+        }
+        
+        .play-button.playing .eq-bar:nth-child(2) {
+            animation: eq2 0.6s ease-in-out infinite;
+        }
+        
+        .play-button.playing .eq-bar:nth-child(3) {
+            animation: eq3 0.45s ease-in-out infinite;
+        }
+        
+        .play-button.playing .eq-bar:nth-child(4) {
+            animation: eq4 0.55s ease-in-out infinite;
+        }
+        
+        .play-button.playing .eq-bar:nth-child(5) {
+            animation: eq5 0.5s ease-in-out infinite;
+        }
+        
+        .play-button.playing .eq-bar:nth-child(6) {
+            animation: eq6 0.65s ease-in-out infinite;
+        }
+        
+        .play-icon, .pause-icon {
+            position: absolute;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        
+        .play-icon {
+            height: 0;
+            width: 0;
+            border-style: solid;
+            border-width: 8px 0 8px 12px;
+            border-color: transparent transparent transparent var(--text-color);
+            margin-left: 2px;
+        }
+        
+        .pause-icon {
+            display: none;
+            width: 12px;
+            height: 14px;
+            background: repeating-linear-gradient(
+                to right,
+                var(--text-color),
+                var(--text-color) 4px,
+                transparent 4px,
+                transparent 8px
+            );
+        }
+        
+        .title-container {
+            flex-grow: 1;
+            position: relative;
+            overflow: hidden;
+            padding-right: 32px; /* Base padding to prevent text from touching the close button */
+        }
+        
+        .title-text {
+            position: relative;
+            z-index: 2;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 600; /* Semi-bold for better readability */
+        }
+        
+        /* Progress bar now inside button only */
+
+        .accordion-header:hover {
+            background-color: var(--hover-color);
+        }
+
+        .accordion-header:active {
+            background-color: var(--active-color);
+        }
+
+        /* Removed + and - icons */
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.4s ease-out;
+            padding: 0 16px;
+            white-space: pre-wrap;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 18px; /* Increased from 15px to 18px */
+            line-height: 1.5; /* Maintained the same line height ratio */
+            opacity: 0;
+            transform: translateY(-8px);
+            transition-property: max-height, padding, opacity, transform;
+        }
+
+        /* Content wrapper for text and corner icon */
+        .content-wrapper {
+            position: relative;
+            min-height: 50px; /* Ensure enough space for the content */
+            display: flex; /* Display as flex to place icon and text in same line */
+            align-items: flex-start; /* Align items at the top */
+            gap: 10px; /* Gap between icon and text */
+        }
+        
+        /* Text content within the wrapper */
+        .text-content {
+            white-space: pre-wrap;
+            flex: 1; /* Allow text to take remaining space */
+            font-family: 'Quicksand', sans-serif; /* Explicitly set font to ensure it's applied */
+        }
+        
+        /* Corner icon positioning - now at start of line */
+        .corner-icon {
+            opacity: 0.7; /* Slightly more visible */
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            cursor: pointer; /* Show pointer cursor to indicate it's clickable */
+            padding: 0; /* No padding to avoid larger hit area */
+            z-index: 5; /* Ensure it's above text if needed */
+            display: flex; /* Center the SVG precisely */
+            align-items: center;
+            justify-content: center;
+            width: 18px; /* Match the SVG size exactly */
+            height: 18px;
+            margin-top: 2px; /* Small top margin to align with text */
+            flex-shrink: 0; /* Prevent icon from shrinking */
+            position: relative;
+        }
+        
+        /* Loading state for clave icon */
+        .corner-icon.loading .corner-svg {
+            opacity: 0.5;
+        }
+        
+        .corner-icon.loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px solid transparent;
+            border-top-color: #000;
+            border-radius: 50%;
+            animation: clave-loading 0.8s linear infinite;
+        }
+        
+        @keyframes clave-loading {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Style the SVG */
+        .corner-svg {
+            width: 18px; /* Reduced from 24px to 18px */
+            height: 18px; /* Reduced from 24px to 18px */
+            fill: #000000; /* Black as requested */
+        }
+        
+        /* Hover effect on the icon */
+        .corner-icon:hover {
+            opacity: 1;
+            transform: scale(1.1); /* Slight scale effect on hover */
+        }
+        
+        /* Active/pressed state */
+        .corner-icon:active {
+            transform: scale(0.95);
+        }
+
+        .accordion-item.active .accordion-content {
+            max-height: 1000px;
+            padding: 16px;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Styling for the closing animation */
+        .accordion-item.closing .accordion-content {
+            opacity: 0.5;
+            transform: translateY(-4px);
+            transition: max-height 0.4s ease-in, opacity 0.25s ease-out, transform 0.25s ease-out;
+        }
+        
+        /* Blur effect with dark tint for inactive items when an item is active */
+        .blur-others .accordion-item {
+            filter: blur(3px);
+            transition: filter 0.3s ease, opacity 0.3s ease;
+            pointer-events: none;
+            opacity: 0.5; /* Darker opacity */
+            position: relative;
+        }
+        
+        /* Dark tint overlay for blurred items */
+        .blur-others .accordion-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.15); /* Black tint */
+            z-index: 5;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        /* Clear the active item */
+        .blur-others .accordion-item.active {
+            filter: blur(0);
+            pointer-events: auto;
+            opacity: 1;
+        }
+        
+        /* Remove the overlay from active item */
+        .blur-others .accordion-item.active::before {
+            opacity: 0;
+        }
+
+        .loading {
+            text-align: center;
+            margin: 24px 0;
+            display: none;
+        }
+
+        .loading::after {
+            content: "...";
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { content: "."; }
+            33% { content: ".."; }
+            66% { content: "..."; }
+        }
+        
+        .search-container {
+            margin-bottom: 2px; /* Reduced from 6px to 2px - minimal space */
+            position: relative; /* For positioning the clear button */
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 8px 16px; /* Reduced top/bottom padding from 12px to 8px */
+            padding-right: 38px; /* Add space for the clear button */
+            font-size: 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px; /* Much more rounded borders */
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+        
+        .search-input:focus {
+            border-color: var(--text-color);
+        }
+        
+        .search-clear-btn {
+            /* Positioning */
+            position: absolute;
+            right: 12px;
+            top: 0;
+            height: 34px;  /* Same height as the search input */
+            width: 20px;
+            
+            /* Display as flex for centering */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            /* Other properties */
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        
+        /* Wrapper for X to center it perfectly */
+        .search-clear-btn::after {
+            content: "×";  /* Using the × character directly */
+            font-size: 28px;
+            font-weight: 300; /* Thinner font */
+            color: black;
+            line-height: 1;
+        }
+        
+        .search-clear-btn:hover {
+            color: #555;
+        }
+        
+        .search-clear-btn.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .search-status {
+            margin-top: 4px;
+            font-size: 12px;
+            color: #666;
+            min-height: 16px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .copyright-footer {
+            margin-top: 24px;
+            padding: 16px 0 48px; /* Added bottom padding to create space below the footer */
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+            /* Removed border-top */
+        }
+        
+        .copyright-footer p {
+            margin: 0;
+            font-family: 'Quicksand', sans-serif;
+        }
+        
+        /* Return to top button with mountain icon and text - circular shape */
+        .return-to-top {
+            position: fixed;
+            bottom: 16px;
+            right: 16px;
+            width: 56px; /* Equal width and height for circle */
+            height: 56px; /* Made same as width for perfect circle */
+            background-color: white;
+            border: none;
+            border-radius: 50%; /* Changed to circle */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.2s ease;
+            z-index: 100;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+            pointer-events: none;
+            padding: 4px 4px 2px; /* Adjusted padding for centered content */
+        }
+        
+        /* Mountain SVG in return to top button */
+        .return-to-top .up-icon {
+            width: 32px; /* Increased from 24px to 32px */
+            height: auto;
+            margin-bottom: 3px; /* Increased spacing a bit */
+        }
+        
+        /* "Up" text below icon */
+        .return-to-top .up-text {
+            font-size: 11px;
+            font-weight: 500;
+            color: #555;
+            font-family: 'Quicksand', sans-serif;
+        }
+        
+        /* Fullscreen button - icon only - fixed position */
+        .fullscreen-btn {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0.8;
+            z-index: 90; /* High z-index but below the return-to-top button */
+            background: none; /* No background */
+        }
+        
+        .fullscreen-btn:hover {
+            opacity: 1;
+        }
+        
+        .fullscreen-btn:active {
+            transform: scale(0.95);
+        }
+        
+        /* Fullscreen button icons */
+        .fullscreen-enter,
+        .fullscreen-exit {
+            width: 16px;
+            height: 16px;
+            position: relative;
+        }
+        
+        /* Enter fullscreen icon (four corner arrows pointing outward) */
+        .fullscreen-enter::before,
+        .fullscreen-enter::after,
+        .fullscreen-exit::before,
+        .fullscreen-exit::after {
+            content: '';
+            position: absolute;
+            border-color: #888;
+            border-style: solid;
+        }
+        
+        /* Top-left arrow */
+        .fullscreen-enter::before {
+            width: 6px;
+            height: 6px;
+            top: 0;
+            left: 0;
+            border-width: 1px 0 0 1px;
+        }
+        
+        /* Bottom-right arrow */
+        .fullscreen-enter::after {
+            width: 6px;
+            height: 6px;
+            bottom: 0;
+            right: 0;
+            border-width: 0 1px 1px 0;
+        }
+        
+        /* Top-right arrow - using pseudo-elements of a child div */
+        .fullscreen-enter .top-right {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            top: 0;
+            right: 0;
+            border-width: 1px 1px 0 0;
+            border-color: #888;
+            border-style: solid;
+        }
+        
+        /* Bottom-left arrow - using pseudo-elements of a child div */
+        .fullscreen-enter .bottom-left {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            bottom: 0;
+            left: 0;
+            border-width: 0 0 1px 1px;
+            border-color: #888;
+            border-style: solid;
+        }
+        
+        /* Exit fullscreen icon (four corner arrows pointing inward) */
+        .fullscreen-exit {
+            display: none;
+        }
+        
+        /* Top-left arrow */
+        .fullscreen-exit::before {
+            width: 6px;
+            height: 6px;
+            top: 2px;
+            left: 2px;
+            border-width: 1px 0 0 1px;
+        }
+        
+        /* Bottom-right arrow */
+        .fullscreen-exit::after {
+            width: 6px;
+            height: 6px;
+            bottom: 2px;
+            right: 2px;
+            border-width: 0 1px 1px 0;
+        }
+        
+        /* Top-right arrow - using pseudo-elements of a child div */
+        .fullscreen-exit .top-right {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            top: 2px;
+            right: 2px;
+            border-width: 1px 1px 0 0;
+            border-color: #888;
+            border-style: solid;
+        }
+        
+        /* Bottom-left arrow - using pseudo-elements of a child div */
+        .fullscreen-exit .bottom-left {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            bottom: 2px;
+            left: 2px;
+            border-width: 0 0 1px 1px;
+            border-color: #888;
+            border-style: solid;
+        }
+        
+        .return-to-top.visible {
+            opacity: 0.8; /* More subtle */
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        
+        .return-to-top:hover {
+            opacity: 1;
+            background-color: #f8f8f8;
+        }
+        
+        .return-to-top:active {
+            transform: scale(0.95);
+        }
+        
+
+        
+
+
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+            }
+            
+            h1 {
+                font-size: 26px; /* Reduced from 32px to 26px */
+            }
+            
+            .accordion-header {
+                padding: 14px;
+                font-size: 17px; /* Increased to match larger font sizes on mobile */
+            }
+            
+            .accordion-item.active .accordion-content {
+                padding: 14px;
+            }
+            
+            /* Adjust title container padding on smaller screens */
+            .title-container {
+                padding-right: 24px; /* Less padding needed on mobile */
+            }
+            
+            /* Adjust close button position on small screens */
+            .close-btn {
+                right: 10px; /* Move closer to the edge */
+            }
+        }
+        
+        /* For very small screens, adjust padding further */
+        @media (max-width: 360px) {
+            .title-container {
+                padding-right: 20px; /* Even less padding on very small screens */
+            }
+        }
+        
+        /* For larger screens, add more padding for better aesthetics */
+        @media (min-width: 768px) {
+            .title-container {
+                padding-right: 40px; /* More padding on larger screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <!-- Centered h1 title -->
+        <h1>Cánticos De Victoria</h1>
+        
+        <!-- Subtitle with item count -->
+        <p id="itemCountSubtitle" class="subtitle">Una colección de <span id="itemCount">0</span> coritos</p>
+        
+        <!-- Fullscreen button -->
+        <div id="fullscreenBtn" class="fullscreen-btn" aria-label="Toggle fullscreen" role="button" tabindex="0">
+            <div class="fullscreen-enter">
+                <div class="top-right"></div>
+                <div class="bottom-left"></div>
+            </div>
+            <div class="fullscreen-exit">
+                <div class="top-right"></div>
+                <div class="bottom-left"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- File input section removed -->
+
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search" class="search-input">
+        <span class="search-clear-btn" id="searchClearBtn" role="button" tabindex="0" aria-label="Clear search"></span>
+        <div id="searchStatus" class="search-status"></div>
+    </div>
+
+    <div id="loading" class="loading">Loading canticles</div>
+    <div id="accordion" class="accordion"></div>
+    
+    <footer class="copyright-footer">
+        <p>Work in progress ɔ 2025 Cánticos De Victoria. <span style="color: green;">Ministerio Monte de Dios</span>. Manatí, P.R.</p>
+    </footer>
+    
+    <!-- Return to top button with mountain icon and "Up" text -->
+    <div id="returnToTop" class="return-to-top" aria-label="Return to top" role="button" tabindex="0">
+        <!-- Mountain SVG for up button -->
+        <svg width="510.2" height="411.55" fill="none" stroke-linecap="square" stroke-miterlimit="10" version="1.1" viewBox="0 0 510.2 411.55" xmlns="http://www.w3.org/2000/svg" class="up-icon">
+            <defs>
+                <clipPath id="clipPath411-up">
+                    <path d="m129.72-5.7707h800v600h-800z"/>
+                </clipPath>
+                <clipPath id="clipPath417-up">
+                    <path d="m129.72-5.7707h800v600h-800z"/>
+                </clipPath>
+                <clipPath id="clipPath423-up">
+                    <path d="m129.72-5.7707h800v600h-800z"/>
+                </clipPath>
+            </defs>
+            <g fill-rule="evenodd">
+                <path transform="translate(-133.27 -88.454)" d="m376.97 88.454c-57.43 69.504-138.67 206.23-243.7 411.55h510.2c-93.146-103.81-182.14-240.98-266.49-411.55z" clip-path="url(#clipPath423-up)" fill="#46b961"/>
+                <path transform="translate(-133.27 -88.454)" d="m376.97 205.97c-28.441 8.7006-109.68 106.54-243.7 294.03h510.2c-107.62-134.9-196.63-233.21-266.49-294.03z" clip-path="url(#clipPath417-up)" fill="#3b5e2f"/>
+                <path transform="translate(-133.27 -88.454)" d="m243.99 205.97c-46.564 87.807-83.811 185.65-110.72 294.03 37.776-9.3852 99.08-14.061 184.08-14.061 84.983 0 193.64 4.6759 326.12 14.061-99.345-39.328-232.33-137.19-399.48-294.03z" clip-path="url(#clipPath411-up)" fill="#c7ce49"/>
+            </g>
+        </svg>
+        <!-- "Up" text -->
+        <span class="up-text">Up</span>
+    </div>
+
+    <script>
+        /**
+         * Main application for Canticos De Victoria
+         * Fast loading accordion with search and audio playback
+         */
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM elements
+            const accordion = document.getElementById('accordion');
+            const loading = document.getElementById('loading');
+            
+            // Year in footer is static (2025)
+            
+            // Global state for audio playback
+            let currentAudio = null;
+            let currentPlayButton = null;
+            
+            // Configuration
+            const txtFilePath = 'canticos.txt';
+            
+            // Initialize application
+            loadTextFile(txtFilePath);
+            
+            // Setup return to top button
+            setupReturnToTopButton();
+            
+            // Setup fullscreen functionality
+            setupFullscreenButton();
+            
+            // Try to go fullscreen automatically if allowed
+            tryAutoFullscreen();
+            
+            //=============================================================================
+            // DATA LOADING & PROCESSING
+            //=============================================================================
+            
+            /**
+             * Load and process the text file containing canticles
+             */
+            function loadTextFile(filePath) {
+                loading.style.display = 'block';
+                accordion.innerHTML = '';
+                
+                fetch(filePath)
+                    .then(response => {
+                        if (!response.ok) throw new Error('Failed to load text file');
+                        return response.text();
+                    })
+                    .then(content => {
+                        parseFileContent(content);
+                        loading.style.display = 'none';
+                    })
+                    .catch(error => {
+                        console.error('Error loading text file:', error);
+                        loading.style.display = 'none';
+                        showErrorMessage(filePath);
+                    });
+            }
+            
+            /**
+             * Display error message when text file can't be loaded
+             */
+            function showErrorMessage(filePath) {
+                accordion.innerHTML = `
+                    <div class="accordion-item">
+                        <div class="accordion-header">
+                            <span class="title-text">Error loading canticles</span>
+                        </div>
+                        <div class="accordion-content" style="max-height: none; padding: 16px;">
+                            Could not load the canticles file. Please check that "${filePath}" exists.
+                        </div>
+                    </div>
+                `;
+            }
+            
+            /**
+             * Parse file content and create accordion items
+             */
+            async function parseFileContent(content) {
+                // Clear accordion before adding any items
+                accordion.innerHTML = '';
+                
+                // Process content into structured data
+                const items = processContentIntoItems(content);
+                
+                // Quick visual rendering (without audio checks)
+                items.forEach(item => {
+                    createAccordionItem(item.title, item.content, item.audioPath);
+                });
+                
+                // Handle empty state
+                if (items.length === 0) {
+                    accordion.innerHTML = '<div class="accordion-item"><div class="accordion-header"><span class="title-text">No canticles found</span></div></div>';
+                    
+                    // Update item count to 0
+                    updateItemCount(0);
+                    return;
+                }
+                
+                // Update the item count in the subtitle
+                updateItemCount(items.length);
+                
+                // Setup accordion functionality immediately for good UX
+                setupAccordion();
+                
+                // Check audio files in the background after UI is rendered
+                setTimeout(() => checkAudioFilesAsync(), 100);
+            }
+            
+            /**
+             * Update the item count displayed in the subtitle
+             */
+            function updateItemCount(count) {
+                const itemCountElement = document.getElementById('itemCount');
+                if (itemCountElement) {
+                    itemCountElement.textContent = count;
+                }
+            }
+            
+            /**
+             * Process raw content into structured item objects
+             */
+            function processContentIntoItems(content) {
+                // Split the content by empty lines to identify different sections
+                const rawSections = content.split(/\n\s*\n/);
+                
+                // Process all sections
+                return rawSections
+                    .map(section => {
+                        if (!section.trim()) return null; // Skip empty sections
+                        
+                        // Extract title and content
+                        let lines = section.split('\n');
+                        let title = lines[0].trim();
+                        let contentLines = lines.slice(1);
+                        let audioPath = '';
+                        
+                        // Find and remove audio path from content
+                        for (let i = 0; i < contentLines.length; i++) {
+                            if (contentLines[i].trim().toLowerCase().startsWith('audio:')) {
+                                audioPath = contentLines[i].substring(6).trim();
+                                contentLines.splice(i, 1);
+                                break;
+                            }
+                        }
+                        
+                        // Generate audio path if not explicitly provided
+                        if (!audioPath) {
+                            audioPath = generateAudioPathFromTitle(title);
+                        }
+                        
+                        // Handle title prefix if present
+                        if (title.toUpperCase().startsWith('TITLE:')) {
+                            title = title.substring(6).trim();
+                        }
+                        
+                        return {
+                            title: title,
+                            content: contentLines.join('\n').trim(),
+                            audioPath: audioPath
+                        };
+                    })
+                    .filter(item => item !== null); // Remove empty items
+            }
+            
+            /**
+             * Generate an audio file path from a title
+             */
+            function generateAudioPathFromTitle(title) {
+                // Normalize Spanish characters
+                const normalizedTitle = normalizeSpanishChars(title);
+                
+                // Create safe filename
+                const safeFilename = normalizedTitle
+                    .toLowerCase()
+                    .replace(/[^\w\s-]/g, '')
+                    .replace(/\s+/g, '_')
+                    .trim();
+                    
+                return `audio/${safeFilename}.mp3`;
+            }
+            
+            /**
+             * Convert accented characters to their non-accented equivalents
+             */
+            function normalizeSpanishChars(text) {
+                const charMap = {
+                    'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u',
+                    'Á': 'A', 'É': 'E', 'Í': 'I', 'Ó': 'O', 'Ú': 'U',
+                    'ñ': 'n', 'Ñ': 'N', 'ü': 'u', 'Ü': 'U',
+                    'ç': 'c', 'Ç': 'C'
+                };
+                
+                return text.replace(/[áéíóúÁÉÍÓÚñÑüÜçÇ]/g, match => charMap[match] || match);
+            }
+            
+            //=============================================================================
+            // UI RENDERING
+            //=============================================================================
+            
+            /**
+             * Create an accordion item and add it to the DOM
+             */
+            function createAccordionItem(title, content, audioPath) {
+                const item = document.createElement('div');
+                item.className = 'accordion-item';
+                
+                // Create header with play button
+                const header = document.createElement('div');
+                header.className = 'accordion-header';
+                
+                // Create play button (initially enabled, will be checked later)
+                const playButton = createPlayButton(audioPath);
+                
+                // Create title container
+                const titleContainer = document.createElement('div');
+                titleContainer.className = 'title-container';
+                
+                const titleText = document.createElement('span');
+                titleText.className = 'title-text';
+                titleText.textContent = title;
+                
+                titleContainer.appendChild(titleText);
+                
+                // Create close button (X) - uses ::after for the X character
+                const closeBtn = document.createElement('div');
+                closeBtn.className = 'close-btn';
+                // No innerHTML needed as we're using ::after pseudo-element
+                closeBtn.setAttribute('aria-label', 'Close');
+                closeBtn.setAttribute('role', 'button');
+                closeBtn.setAttribute('tabindex', '0');
+                
+                // Add click handler to close button
+                closeBtn.addEventListener('click', function(e) {
+                    e.stopPropagation(); // Prevent the accordion toggle
+                    item.classList.remove('active');
+                    accordion.classList.remove('blur-others');
+                    
+                    // Stop clave audio when closing an item
+                    stopClaveAudio();
+                });
+                
+                // Add keyboard support for close button
+                closeBtn.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        item.classList.remove('active');
+                        accordion.classList.remove('blur-others');
+                    }
+                });
+                
+                // Assemble header elements
+                header.appendChild(playButton);
+                header.appendChild(titleContainer);
+                header.appendChild(closeBtn);
+                
+                // Create content area with SVG icon
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'accordion-content';
+                
+                // Create a wrapper for content and SVG
+                const contentWrapper = document.createElement('div');
+                contentWrapper.className = 'content-wrapper';
+                
+                // Add SVG icon first so it appears at the beginning of the line
+                const iconContainer = document.createElement('div');
+                iconContainer.className = 'corner-icon';
+                iconContainer.setAttribute('role', 'button');
+                iconContainer.setAttribute('aria-label', 'Play metronome sound');
+                iconContainer.setAttribute('tabindex', '0');
+                contentWrapper.appendChild(iconContainer);
+                
+                // Add text content (after icon)
+                const textContent = document.createElement('div');
+                textContent.className = 'text-content';
+                textContent.textContent = content;
+                contentWrapper.appendChild(textContent);
+                
+                // Create an observer for the icon to stop clave when it scrolls out of view
+                const iconObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        // If the icon is no longer visible and clave audio is playing from this icon
+                        if (!entry.isIntersecting && window.claveAudio && window.currentClaveIcon === iconContainer) {
+                            stopClaveAudio();
+                            console.log('Clave audio stopped - item scrolled out of view');
+                        }
+                    });
+                }, { threshold: 0.1 });
+                
+                // Start observing the icon for visibility changes
+                iconObserver.observe(iconContainer);
+                
+                // SVG for top right corner
+                iconContainer.innerHTML = `
+                    <svg fill="#000000" height="24px" width="24px" version="1.1" xmlns="http://www.w3.org/2000/svg" 
+                        viewBox="0 0 512.001 512.001" class="corner-svg">
+                        <g>
+                            <g>
+                                <path d="M92.99,362.329L69.908,385.41c-15.787,15.787-16.077,41.185-0.289,56.973c15.787,15.787,41.185,15.498,56.973-0.29
+                                l122.264-122.264L92.99,362.329z"/>
+                            </g>
+                        </g>
+                        <g>
+                            <g>
+                                <path d="M442.383,69.618c-15.787-15.787-41.185-15.498-56.973,0.29L263.147,192.172l155.866-42.501l23.082-23.081
+                                C457.881,110.803,458.17,85.405,442.383,69.618z"/>
+                            </g>
+                        </g>
+                        <g>
+                            <g>
+                                <path d="M510.604,187.779c-1.864-6.958-5.461-13.156-10.422-18.118c-2.487-2.487-5.316-4.663-8.445-6.469
+                                c-9.365-5.407-20.277-6.844-30.725-4.046L30.028,274.63c-10.448,2.8-19.178,9.499-24.586,18.866
+                                c-5.407,9.367-6.844,20.278-4.044,30.725c2.8,10.449,9.499,19.178,18.866,24.586c9.365,5.407,20.277,6.844,30.725,4.046
+                                l430.984-115.482c10.448-2.8,19.178-9.499,24.586-18.866C511.967,209.139,513.403,198.227,510.604,187.779z"/>
+                            </g>
+                        </g>
+                    </svg>
+                `;
+                
+                // Store clave audio globally for the entire app
+                // This allows us to control it from multiple places
+                window.claveAudio = window.claveAudio || null;
+                window.currentClaveIcon = window.currentClaveIcon || null;
+                
+                // Add click event to play clave240bpm.m4a
+                iconContainer.addEventListener('click', function() {
+                    // Always reset state completely first
+                    const wasPlayingSameIcon = window.currentClaveIcon === this;
+                    
+                    // Stop any clave audio
+                    stopClaveAudio();
+                    
+                    // Stop any song audio and reset equalizer
+                    if (currentAudio) {
+                        currentAudio.pause();
+                        currentAudio.currentTime = 0;
+                        
+                        // Make sure we reset the button state to stop animations
+                        if (currentPlayButton) {
+                            // Force reset the button visually - this is crucial
+                            currentPlayButton.classList.remove('playing');
+                            const playIco = currentPlayButton.querySelector('.play-icon');
+                            const pauseIco = currentPlayButton.querySelector('.pause-icon');
+                            if (playIco) playIco.style.display = 'block';
+                            if (pauseIco) pauseIco.style.display = 'none';
+                        }
+                        
+                        // Clear globals
+                        currentAudio = null;
+                        currentPlayButton = null;
+                        console.log('Song audio stopped to play clave');
+                    }
+                    
+                    // If we just stopped this icon's audio, don't restart it
+                    if (wasPlayingSameIcon) {
+                        console.log('Clave audio stopped without restarting');
+                        return;
+                    }
+                    
+                    // Set loading state
+                    this.classList.add('loading');
+                    
+                    // Create and configure the clave audio before playing
+                    window.claveAudio = new Audio();
+                    
+                    // Save reference to icon
+                    window.currentClaveIcon = this;
+                    const iconRef = this; // Local reference to 'this' for use in callbacks
+                    
+                    // Handle completion
+                    window.claveAudio.addEventListener('ended', function() {
+                        if (iconRef) {
+                            iconRef.classList.remove('playing');
+                            iconRef.classList.remove('loading');
+                        }
+                        window.claveAudio = null;
+                        window.currentClaveIcon = null;
+                    });
+                    
+                    // Handle errors
+                    window.claveAudio.addEventListener('error', function(e) {
+                        console.error('Error playing clave240bpm.mp3:', e);
+                        if (iconRef) {
+                            iconRef.classList.remove('playing');
+                            iconRef.classList.remove('loading');
+                        }
+                        window.claveAudio = null;
+                        window.currentClaveIcon = null;
+                    });
+                    
+                    // Handle when audio is ready to play
+                    window.claveAudio.addEventListener('canplaythrough', function() {
+                        // Now the audio is loaded, add the playing class for visual feedback
+                        if (iconRef) {
+                            iconRef.classList.add('playing');
+                            iconRef.classList.remove('loading');
+                        }
+                    });
+                    
+                    // Set source and load it
+                    window.claveAudio.src = 'clave240bpm.mp3';
+                    window.claveAudio.load();
+                    
+                    // Start playback
+                    try {
+                        // Use a small timeout to ensure the browser has time to process
+                        setTimeout(() => {
+                            if (window.claveAudio) {
+                                window.claveAudio.play()
+                                    .catch(err => {
+                                        console.error('Could not play clave audio:', err);
+                                        if (iconRef) {
+                                            iconRef.classList.remove('playing');
+                                            iconRef.classList.remove('loading');
+                                        }
+                                        window.claveAudio = null;
+                                        window.currentClaveIcon = null;
+                                    });
+                            }
+                        }, 50);
+                    } catch (err) {
+                        console.error('Unexpected error playing clave audio:', err);
+                        if (iconRef) {
+                            iconRef.classList.remove('playing');
+                            iconRef.classList.remove('loading');
+                        }
+                        window.claveAudio = null;
+                        window.currentClaveIcon = null;
+                    }
+                }
+                });
+                
+                // Add keyboard support
+                iconContainer.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.click(); // Trigger the click handler
+                    }
+                });
+                
+                contentWrapper.appendChild(iconContainer);
+                contentDiv.appendChild(contentWrapper);
+                
+                // Add completed elements to DOM
+                item.appendChild(header);
+                item.appendChild(contentDiv);
+                accordion.appendChild(item);
+            }
+            
+            /**
+             * Create a play button with initial state
+             */
+            function createPlayButton(audioPath) {
+                const playButton = document.createElement('div');
+                playButton.className = 'play-button';
+                playButton.dataset.audioPath = audioPath;
+                
+                // Create equalizer bars
+                const equalizer = document.createElement('div');
+                equalizer.className = 'equalizer';
+                
+                // Add 6 equalizer bars
+                for (let i = 0; i < 6; i++) {
+                    const bar = document.createElement('div');
+                    bar.className = 'eq-bar';
+                    equalizer.appendChild(bar);
+                }
+                
+                // Add play/pause icons
+                const playIcon = document.createElement('div');
+                playIcon.className = 'play-icon';
+                
+                const pauseIcon = document.createElement('div');
+                pauseIcon.className = 'pause-icon';
+                
+                // Add all elements to button
+                playButton.appendChild(equalizer);
+                playButton.appendChild(playIcon);
+                playButton.appendChild(pauseIcon);
+                
+                // Add temporary click handler to prevent accordion toggle
+                playButton.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+                
+                return playButton;
+            }
+            
+            //=============================================================================
+            // AUDIO FUNCTIONALITY
+            //=============================================================================
+            
+            /**
+             * Check if audio files exist and update buttons accordingly
+             */
+            async function checkAudioFilesAsync() {
+                const playButtons = document.querySelectorAll('.play-button');
+                
+                // Process all buttons in parallel
+                const buttonChecks = Array.from(playButtons).map(async (button) => {
+                    const audioPath = button.dataset.audioPath;
+                    try {
+                        const audioExists = await checkAudioFile(audioPath);
+                        if (!audioExists) {
+                            // Disable button if audio doesn't exist
+                            button.classList.add('disabled');
+                        } else {
+                            // Add real click handler for existing audio
+                            button.addEventListener('click', function(e) {
+                                e.stopPropagation();
+                                toggleAudio(this, audioPath);
+                            });
+                        }
+                    } catch (error) {
+                        console.error("Error checking audio file:", error);
+                        button.classList.add('disabled');
+                    }
+                });
+                
+                // Wait for all checks to complete
+                await Promise.all(buttonChecks);
+            }
+            
+            /**
+             * Check if a file exists using HEAD request
+             */
+            function checkAudioFile(url) {
+                return new Promise(resolve => {
+                    fetch(url, { method: 'HEAD' })
+                        .then(response => resolve(response.ok))
+                        .catch(() => resolve(false));
+                });
+            }
+            
+            /**
+             * Global function to stop clave audio playback
+             */
+            function stopClaveAudio() {
+                if (window.claveAudio) {
+                    window.claveAudio.pause();
+                    window.claveAudio.currentTime = 0;
+                    
+                    // Remove playing class from icon
+                    if (window.currentClaveIcon) {
+                        window.currentClaveIcon.classList.remove('playing');
+                    }
+                    
+                    window.claveAudio = null;
+                }
+            }
+            
+            /**
+             * Toggle audio playback
+             */
+            function toggleAudio(button, audioPath) {
+                // Stop clave audio when starting song audio
+                stopClaveAudio();
+                
+                // Stop currently playing audio if any
+                if (currentAudio) {
+                    currentAudio.pause();
+                    currentAudio.currentTime = 0;
+                    resetButtonToPlay(currentPlayButton);
+                    
+                    // If clicking same button that's playing, just stop
+                    if (currentPlayButton === button) {
+                        currentAudio = null;
+                        currentPlayButton = null;
+                        return;
+                    }
+                }
+                
+                // Create and play new audio
+                const audio = new Audio(audioPath);
+                
+                // Add audio event listeners
+                audio.addEventListener('ended', function() {
+                    resetButtonToPlay(button);
+                    currentAudio = null;
+                    currentPlayButton = null;
+                });
+                
+                audio.addEventListener('error', function(e) {
+                    console.error('Audio error:', e);
+                    resetButtonToPlay(button);
+                    currentAudio = null;
+                    currentPlayButton = null;
+                    disableButton(button);
+                });
+                
+                // Start playback
+                audio.play().then(() => {
+                    setButtonToPause(button);
+                    currentAudio = audio;
+                    currentPlayButton = button;
+                    
+                    // Create an observer for the item containing this button
+                    // This ensures audio stops when scrolling away, even if the item is closed
+                    const audioItem = button.closest('.accordion-item');
+                    if (audioItem) {
+                        // Create a new Intersection Observer for this playing item
+                        const audioObserver = new IntersectionObserver((entries) => {
+                            entries.forEach(entry => {
+                                if (!entry.isIntersecting && currentAudio) {
+                                    // Item with playing audio is out of view - stop audio
+                                    currentAudio.pause();
+                                    currentAudio.currentTime = 0;
+                                    resetButtonToPlay(currentPlayButton);
+                                    currentAudio = null;
+                                    currentPlayButton = null;
+                                    console.log('Audio stopped - playing item scrolled out of view');
+                                    
+                                    // Disconnect this observer
+                                    audioObserver.disconnect();
+                                }
+                            });
+                        }, {
+                            threshold: 0.1 // Trigger when less than 10% is visible
+                        });
+                        
+                        // Start observing the item with playing audio
+                        audioObserver.observe(audioItem);
+                        
+                        // Store the observer on the audio object so we can clean it up later
+                        audio.observer = audioObserver;
+                    }
+                }).catch(err => {
+                    console.error('Audio play error:', err);
+                    resetButtonToPlay(button);
+                    
+                    if (err.name === 'NotAllowedError') {
+                        alert('Please interact with the page first before playing audio.');
+                    } else {
+                        console.log('Could not play audio file:', audioPath);
+                        disableButton(button);
+                    }
+                });
+                
+                // Helper function to disable button
+                function disableButton(btn) {
+                    btn.classList.add('disabled');
+                    btn.replaceWith(btn.cloneNode(true));
+                }
+                
+                // Helper function to reset button to play state
+                function resetButtonToPlay(btn) {
+                    // Remove playing class to stop equalizer animation
+                    btn.classList.remove('playing');
+                    
+                    // Show play icon, hide pause icon
+                    const playIco = btn.querySelector('.play-icon');
+                    const pauseIco = btn.querySelector('.pause-icon');
+                    
+                    if (playIco) playIco.style.display = 'block';
+                    if (pauseIco) pauseIco.style.display = 'none';
+                }
+                
+                // Helper function to set button to pause state
+                function setButtonToPause(btn) {
+                    // Add playing class to start equalizer animation
+                    btn.classList.add('playing');
+                    
+                    // Hide play icon, show pause icon
+                    const playIco = btn.querySelector('.play-icon');
+                    const pauseIco = btn.querySelector('.pause-icon');
+                    
+                    if (playIco) playIco.style.display = 'none';
+                    if (pauseIco) pauseIco.style.display = 'block';
+                }
+            }
+            
+            //=============================================================================
+            // INTERACTION & EVENTS
+            //=============================================================================
+            
+            /**
+             * Setup accordion expand/collapse functionality
+             */
+            function setupAccordion() {
+                const accordionItems = document.querySelectorAll('.accordion-item');
+                let currentObserver = null;
+                
+                accordionItems.forEach(item => {
+                    const header = item.querySelector('.accordion-header');
+                    
+                    header.addEventListener('click', () => {
+                        const isActive = item.classList.contains('active');
+                        
+                        // Disconnect any existing observer
+                        if (currentObserver) {
+                            currentObserver.disconnect();
+                            currentObserver = null;
+                        }
+                        
+                        // Remove active class from all items
+                        accordionItems.forEach(otherItem => {
+                            otherItem.classList.remove('active');
+                        });
+                        
+                        // Toggle blur effect based on whether an item will be active
+                        if (!isActive) {
+                            // Opening an item - apply blur effect to other items
+                            item.classList.add('active');
+                            accordion.classList.add('blur-others');
+                            
+                            // Create an Intersection Observer for the active item
+                            currentObserver = new IntersectionObserver((entries) => {
+                                // Handle intersection changes
+                                entries.forEach(entry => {
+                                    if (entry.isIntersecting) {
+                                        // Item is in viewport - apply blur to others
+                                        accordion.classList.add('blur-others');
+                                    } else {
+                                        // Item is not in viewport - close it with a slight delay for smoother transition
+                                        // First remove blur immediately for better visual feedback
+                                        accordion.classList.remove('blur-others');
+                                        
+                                        // Add closing class to animate the item closing
+                                        item.classList.add('closing');
+                                        
+                                        // Wait a short moment before completely closing the item
+                                        setTimeout(() => {
+                                            // Close the item (remove active class)
+                                            item.classList.remove('active');
+                                            item.classList.remove('closing');
+                                        }, 200);
+                                        
+                                        // Always stop audio when any item scrolls out of view
+                                        // This ensures we don't have audio continuing to play out of view
+                                        if (currentAudio) {
+                                            // Stop the audio
+                                            currentAudio.pause();
+                                            currentAudio.currentTime = 0;
+                                            
+                                            // Reset the play button state if we have one
+                                            if (currentPlayButton) {
+                                                // Reset the button state using our helper function
+                                                resetButtonToPlay(currentPlayButton);
+                                            }
+                                            
+                                            // Clear global audio state
+                                            currentAudio = null;
+                                            currentPlayButton = null;
+                                            
+                                            console.log('Audio stopped due to item scrolling out of view');
+                                        }
+                                        
+                                        // Disconnect observer as we're done with it
+                                        currentObserver.disconnect();
+                                        currentObserver = null;
+                                    }
+                                });
+                            }, {
+                                threshold: 0.1 // Trigger when at least 10% is visible
+                            });
+                            
+                            // Start observing the active item
+                            currentObserver.observe(item);
+                        } else {
+                            // Closing the active item - remove blur effect
+                            accordion.classList.remove('blur-others');
+                        }
+                    });
+                });
+                
+                // Initialize search functionality
+                setupSearch();
+            }
+            
+            /**
+             * Setup fullscreen button and functionality
+             */
+            function setupFullscreenButton() {
+                const fullscreenBtn = document.getElementById('fullscreenBtn');
+                const enterIcon = fullscreenBtn.querySelector('.fullscreen-enter');
+                const exitIcon = fullscreenBtn.querySelector('.fullscreen-exit');
+                
+                if (!fullscreenBtn) return;
+                
+                // Check if fullscreen is supported
+                const doc = window.document;
+                const docEl = doc.documentElement;
+                
+                const requestFullscreen = 
+                    docEl.requestFullscreen || 
+                    docEl.mozRequestFullScreen || 
+                    docEl.webkitRequestFullscreen || 
+                    docEl.msRequestFullscreen;
+                
+                const exitFullscreen = 
+                    doc.exitFullscreen ||
+                    doc.mozCancelFullScreen ||
+                    doc.webkitExitFullscreen ||
+                    doc.msExitFullscreen;
+                
+                // Keep the same icon regardless of fullscreen state
+                function updateFullscreenButton() {
+                    // Always show the enter icon
+                    enterIcon.style.display = 'block';
+                    exitIcon.style.display = 'none';
+                }
+                
+                // Toggle fullscreen when button is clicked
+                fullscreenBtn.addEventListener('click', () => {
+                    if (document.fullscreenElement || 
+                        document.webkitFullscreenElement || 
+                        document.mozFullScreenElement ||
+                        document.msFullscreenElement) {
+                        // Exit fullscreen
+                        if (exitFullscreen) {
+                            exitFullscreen.call(doc)
+                                .then(() => updateFullscreenButton())
+                                .catch(err => {
+                                    console.error('Error exiting fullscreen:', err);
+                                });
+                        }
+                    } else {
+                        // Enter fullscreen
+                        if (requestFullscreen) {
+                            requestFullscreen.call(docEl)
+                                .then(() => updateFullscreenButton())
+                                .catch(err => {
+                                    console.error('Error entering fullscreen:', err);
+                                });
+                        }
+                    }
+                });
+                
+                // Handle keyboard navigation
+                fullscreenBtn.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        fullscreenBtn.click();
+                    }
+                });
+                
+                // Listen for fullscreen change events
+                document.addEventListener('fullscreenchange', updateFullscreenButton);
+                document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
+                document.addEventListener('mozfullscreenchange', updateFullscreenButton);
+                document.addEventListener('MSFullscreenChange', updateFullscreenButton);
+                
+                // Initial button state
+                updateFullscreenButton();
+            }
+            
+            /**
+             * Try to automatically enter fullscreen mode
+             * Note: Most browsers require user interaction before allowing fullscreen
+             */
+            function tryAutoFullscreen() {
+                // This might be blocked by browsers without user interaction
+                const doc = window.document;
+                const docEl = doc.documentElement;
+                
+                const requestFullscreen = 
+                    docEl.requestFullscreen || 
+                    docEl.mozRequestFullScreen || 
+                    docEl.webkitRequestFullscreen || 
+                    docEl.msRequestFullscreen;
+                
+                if (requestFullscreen) {
+                    // Try to request fullscreen mode
+                    requestFullscreen.call(docEl).catch(err => {
+                        // This will likely fail, but we're trying anyway
+                        console.log('Auto fullscreen not allowed without user interaction');
+                    });
+                }
+            }
+            
+            /**
+             * Setup return to top button functionality
+             */
+            function setupReturnToTopButton() {
+                const returnToTopBtn = document.getElementById('returnToTop');
+                
+                if (!returnToTopBtn) return;
+                
+                // Show button when page is scrolled down
+                const toggleReturnToTopButton = () => {
+                    // Show button when scrolled down 300px or more
+                    if (window.scrollY > 300) {
+                        returnToTopBtn.classList.add('visible');
+                    } else {
+                        returnToTopBtn.classList.remove('visible');
+                    }
+                };
+                
+                // Smooth scroll to top when button is clicked
+                returnToTopBtn.addEventListener('click', () => {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+                
+                // Handle keyboard navigation
+                returnToTopBtn.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        window.scrollTo({
+                            top: 0,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+                
+                // Check scroll position on load
+                toggleReturnToTopButton();
+                
+                // Listen for scroll events
+                window.addEventListener('scroll', toggleReturnToTopButton);
+            }
+            
+            /**
+             * Setup search functionality
+             */
+            function setupSearch() {
+                const searchInput = document.getElementById('searchInput');
+                const searchStatus = document.getElementById('searchStatus');
+                const clearButton = document.getElementById('searchClearBtn');
+                
+                if (!searchInput || !clearButton) return;
+                
+                // Function to update search results
+                const updateSearch = () => {
+                    const query = searchInput.value.toLowerCase().trim();
+                    const normalizedQuery = normalizeSpanishChars(query);
+                    const items = document.querySelectorAll('.accordion-item');
+                    let matchCount = 0;
+                    
+                    // Toggle clear button visibility
+                    if (query === '') {
+                        clearButton.classList.remove('visible');
+                        items.forEach(item => item.classList.remove('hidden'));
+                        searchStatus.textContent = '';
+                        return;
+                    } else {
+                        clearButton.classList.add('visible');
+                    }
+                    
+                    // Filter items based on search query
+                    items.forEach(item => {
+                        const titleElement = item.querySelector('.title-text');
+                        if (!titleElement) return;
+                        
+                        const title = titleElement.textContent.toLowerCase();
+                        const normalizedTitle = normalizeSpanishChars(title);
+                        
+                        if (normalizedTitle.includes(normalizedQuery)) {
+                            item.classList.remove('hidden');
+                            matchCount++;
+                        } else {
+                            item.classList.add('hidden');
+                        }
+                    });
+                    
+                    // Update status message
+                    if (matchCount === 0) {
+                        searchStatus.textContent = 'No matches found';
+                    } else if (matchCount === 1) {
+                        searchStatus.textContent = '1 canticle found';
+                    } else {
+                        searchStatus.textContent = `${matchCount} canticles found`;
+                    }
+                };
+                
+                // Listen for input changes
+                searchInput.addEventListener('input', updateSearch);
+                
+                // Setup clear button functionality
+                clearButton.addEventListener('click', () => {
+                    searchInput.value = '';
+                    searchInput.focus();
+                    updateSearch();
+                });
+                
+                // Handle Escape key press
+                searchInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        searchInput.value = '';
+                        updateSearch();
+                        searchInput.blur(); // Remove focus
+                    }
+                });
+            }
+        });
+    </script>
+
+
+</body>
+</html>
