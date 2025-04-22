@@ -1276,28 +1276,68 @@
                         window.currentClaveIcon = null;
                     });
                     
-                    // Set the source and load the audio
-                    window.claveAudio.src = 'clave240bpm.mp3';
-                    window.claveAudio.load();
+                    // Try multiple sources in order
+                    console.log('Attempting to play clave audio - with fallback options');
                     
-                    // Play the audio
-                    window.claveAudio.play()
-                        .then(() => {
-                            console.log('Clave audio playing');
-                        })
-                        .catch(err => {
-                            console.error('Could not play clave audio:', err);
-                            this.classList.remove('loading');
-                            this.classList.remove('playing');
-                            
-                            // Handle user interaction errors
-                            if (err.name === 'NotAllowedError') {
-                                console.log('User interaction required. Try clicking elsewhere first.');
-                            }
-                            
-                            window.claveAudio = null;
-                            window.currentClaveIcon = null;
-                        });
+                    // Create array of fallback sources - starting with local file, then hosted options
+                    const audioSources = [
+                        'clave240bpm.mp3',
+                        'https://assets.mixkit.co/active_storage/sfx/1005/1005-preview.mp3', // Fallback to hosted wood click sound
+                        'https://cdn.jsdelivr.net/gh/scottschiller/SoundManager2/demo/_mp3/click-high.mp3' // Another fallback
+                    ];
+                    
+                    // Try the first source
+                    tryAudioSource(0);
+                    
+                    // Recursive function to try each source
+                    function tryAudioSource(index) {
+                        if (index >= audioSources.length) {
+                            // All sources failed
+                            console.error('All audio sources failed');
+                            showAudioError();
+                            return;
+                        }
+                        
+                        const source = audioSources[index];
+                        console.log(`Trying audio source ${index + 1}/${audioSources.length}: ${source}`);
+                        
+                        // Set the source and load the audio
+                        window.claveAudio.src = source;
+                        window.claveAudio.load();
+                        
+                        // Try to play the audio
+                        window.claveAudio.play()
+                            .then(() => {
+                                console.log(`Clave audio playing from source: ${source}`);
+                            })
+                            .catch(err => {
+                                console.error(`Could not play audio from source ${index + 1}:`, err);
+                                
+                                // Try the next source
+                                tryAudioSource(index + 1);
+                            });
+                    }
+                    
+                    // Helper to show audio error
+                    function showAudioError() {
+                        console.error('All audio sources failed');
+                        iconContainer.classList.remove('loading');
+                        iconContainer.classList.remove('playing');
+                        
+                        // Create and show a temporary error message
+                        const errorMsg = document.createElement('div');
+                        errorMsg.style.cssText = 'color: red; font-size: 12px; margin-left: 24px; margin-top: 4px;';
+                        errorMsg.textContent = 'Audio not available';
+                        iconContainer.parentNode.appendChild(errorMsg);
+                        
+                        // Remove the error message after 3 seconds
+                        setTimeout(() => {
+                            errorMsg.remove();
+                        }, 3000);
+                        
+                        window.claveAudio = null;
+                        window.currentClaveIcon = null;
+                    }
                 });
                 
                 // Add keyboard support
