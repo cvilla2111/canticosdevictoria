@@ -377,6 +377,30 @@
             height: 18px;
             margin-top: 2px; /* Small top margin to align with text */
             flex-shrink: 0; /* Prevent icon from shrinking */
+            position: relative;
+        }
+        
+        /* Loading state for clave icon */
+        .corner-icon.loading .corner-svg {
+            opacity: 0.5;
+        }
+        
+        .corner-icon.loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px solid transparent;
+            border-top-color: #000;
+            border-radius: 50%;
+            animation: clave-loading 0.8s linear infinite;
+        }
+        
+        @keyframes clave-loading {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         
         /* Style the SVG */
@@ -1201,35 +1225,76 @@
                         return;
                     }
                     
-                    // Create and play the clave audio
-                    window.claveAudio = new Audio('clave240bpm.mp3');
-                    window.currentClaveIcon = this;
+                        // Set loading state
+                    this.classList.add('loading');
                     
-                    // Add visual feedback
-                    this.classList.add('playing');
+                    // Create and configure the clave audio before playing
+                    window.claveAudio = new Audio();
+                    
+                    // Save reference to icon
+                    window.currentClaveIcon = this;
+                    const iconRef = this; // Local reference to 'this' for use in callbacks
                     
                     // Handle completion
-                    window.claveAudio.addEventListener('ended', () => {
-                        this.classList.remove('playing');
+                    window.claveAudio.addEventListener('ended', function() {
+                        if (iconRef) {
+                            iconRef.classList.remove('playing');
+                            iconRef.classList.remove('loading');
+                        }
                         window.claveAudio = null;
                         window.currentClaveIcon = null;
                     });
                     
                     // Handle errors
-                    window.claveAudio.addEventListener('error', () => {
-                        console.error('Error playing clave240bpm.mp3');
-                        this.classList.remove('playing');
+                    window.claveAudio.addEventListener('error', function(e) {
+                        console.error('Error playing clave240bpm.mp3:', e);
+                        if (iconRef) {
+                            iconRef.classList.remove('playing');
+                            iconRef.classList.remove('loading');
+                        }
                         window.claveAudio = null;
                         window.currentClaveIcon = null;
                     });
                     
+                    // Handle when audio is ready to play
+                    window.claveAudio.addEventListener('canplaythrough', function() {
+                        // Now the audio is loaded, add the playing class for visual feedback
+                        if (iconRef) {
+                            iconRef.classList.add('playing');
+                            iconRef.classList.remove('loading');
+                        }
+                    });
+                    
+                    // Set source and load it
+                    window.claveAudio.src = 'clave240bpm.mp3';
+                    window.claveAudio.load();
+                    
                     // Start playback
-                    window.claveAudio.play().catch(err => {
-                        console.error('Could not play clave audio:', err);
-                        this.classList.remove('playing');
+                    try {
+                        // Use a small timeout to ensure the browser has time to process
+                        setTimeout(() => {
+                            if (window.claveAudio) {
+                                window.claveAudio.play()
+                                    .catch(err => {
+                                        console.error('Could not play clave audio:', err);
+                                        if (iconRef) {
+                                            iconRef.classList.remove('playing');
+                                            iconRef.classList.remove('loading');
+                                        }
+                                        window.claveAudio = null;
+                                        window.currentClaveIcon = null;
+                                    });
+                            }
+                        }, 50);
+                    } catch (err) {
+                        console.error('Unexpected error playing clave audio:', err);
+                        if (iconRef) {
+                            iconRef.classList.remove('playing');
+                            iconRef.classList.remove('loading');
+                        }
                         window.claveAudio = null;
                         window.currentClaveIcon = null;
-                    });
+                    }
                 });
                 
                 // Add keyboard support
