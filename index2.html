@@ -1265,29 +1265,40 @@
                         }
                     });
                     
-                    // Set source and load it
-                    window.claveAudio.src = 'clave240bpm.mp3';
-                    window.claveAudio.load();
+                    // Try three different file paths/extensions in sequence
+                    console.log('Attempting to play clave audio...');
                     
-                    // Start playback
-                    try {
-                        // Use a small timeout to ensure the browser has time to process
-                        setTimeout(() => {
-                            if (window.claveAudio) {
-                                window.claveAudio.play()
-                                    .catch(err => {
-                                        console.error('Could not play clave audio:', err);
-                                        if (iconRef) {
-                                            iconRef.classList.remove('playing');
-                                            iconRef.classList.remove('loading');
-                                        }
-                                        window.claveAudio = null;
-                                        window.currentClaveIcon = null;
-                                    });
-                            }
-                        }, 50);
-                    } catch (err) {
-                        console.error('Unexpected error playing clave audio:', err);
+                    // First, try with MP3 format with leading slash
+                    window.claveAudio.src = '/clave240bpm.mp3';
+                    
+                    // Handle load errors to try alternative file paths
+                    window.claveAudio.onerror = function() {
+                        console.log('First attempt failed, trying alternative file path...');
+                        // Try without leading slash
+                        window.claveAudio.src = 'clave240bpm.mp3';
+                        window.claveAudio.onerror = function() {
+                            console.log('Second attempt failed, trying M4A format...');
+                            // Try with M4A format
+                            window.claveAudio.src = 'clave240bpm.m4a';
+                            window.claveAudio.onerror = function() {
+                                console.error('All attempts to load clave audio failed');
+                                if (iconRef) {
+                                    iconRef.classList.remove('playing');
+                                    iconRef.classList.remove('loading');
+                                }
+                                window.claveAudio = null;
+                                window.currentClaveIcon = null;
+                            };
+                            window.claveAudio.load();
+                            window.claveAudio.play().catch(handlePlayError);
+                        };
+                        window.claveAudio.load();
+                        window.claveAudio.play().catch(handlePlayError);
+                    };
+                    
+                    // Function to handle play errors
+                    function handlePlayError(err) {
+                        console.error('Could not play clave audio:', err);
                         if (iconRef) {
                             iconRef.classList.remove('playing');
                             iconRef.classList.remove('loading');
@@ -1295,6 +1306,10 @@
                         window.claveAudio = null;
                         window.currentClaveIcon = null;
                     }
+                    
+                    // Load and attempt to play the first option
+                    window.claveAudio.load();
+                    window.claveAudio.play().catch(handlePlayError);
                 });
                 
                 // Add keyboard support
