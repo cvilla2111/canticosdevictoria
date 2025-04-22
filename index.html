@@ -1192,20 +1192,17 @@
                 
                 // Add click event to play clave240bpm.m4a
                 iconContainer.addEventListener('click', function() {
-                    // Always reset state completely first
+                    // Get reference to the current state
                     const wasPlayingSameIcon = window.currentClaveIcon === this;
+                    const iconRef = this;
                     
-                    // Stop any clave audio
-                    stopClaveAudio();
-                    
-                    // Stop any song audio and reset equalizer
+                    // Stop any currently playing audio first
                     if (currentAudio) {
                         currentAudio.pause();
                         currentAudio.currentTime = 0;
                         
-                        // Make sure we reset the button state to stop animations
+                        // Reset button state
                         if (currentPlayButton) {
-                            // Force reset the button visually - this is crucial
                             currentPlayButton.classList.remove('playing');
                             const playIco = currentPlayButton.querySelector('.play-icon');
                             const pauseIco = currentPlayButton.querySelector('.pause-icon');
@@ -1213,10 +1210,25 @@
                             if (pauseIco) pauseIco.style.display = 'none';
                         }
                         
-                        // Clear globals
+                        // Clear song audio globals
                         currentAudio = null;
                         currentPlayButton = null;
                         console.log('Song audio stopped to play clave');
+                    }
+                    
+                    // Also stop any existing clave audio
+                    if (window.claveAudio) {
+                        window.claveAudio.pause();
+                        
+                        // Remove visual state from previous clave icon
+                        if (window.currentClaveIcon) {
+                            window.currentClaveIcon.classList.remove('playing');
+                            window.currentClaveIcon.classList.remove('loading');
+                        }
+                        
+                        // Clear clave globals
+                        window.claveAudio = null;
+                        window.currentClaveIcon = null;
                     }
                     
                     // If we just stopped this icon's audio, don't restart it
@@ -1225,76 +1237,51 @@
                         return;
                     }
                     
-                        // Set loading state
-                    this.classList.add('loading');
+                    // Show loading state
+                    iconRef.classList.add('loading');
                     
-                    // Create and configure the clave audio before playing
-                    window.claveAudio = new Audio();
+                    // Use a simple approach - create new audio and play immediately
+                    console.log('Creating new clave audio');
+                    window.claveAudio = new Audio('clave240bpm.mp3');
+                    window.currentClaveIcon = iconRef;
                     
-                    // Save reference to icon
-                    window.currentClaveIcon = this;
-                    const iconRef = this; // Local reference to 'this' for use in callbacks
+                    // Set up basic events
+                    window.claveAudio.oncanplay = function() {
+                        console.log('Clave audio can play now');
+                        iconRef.classList.add('playing');
+                        iconRef.classList.remove('loading');
+                    };
                     
-                    // Handle completion
-                    window.claveAudio.addEventListener('ended', function() {
-                        if (iconRef) {
-                            iconRef.classList.remove('playing');
-                            iconRef.classList.remove('loading');
-                        }
+                    window.claveAudio.onended = function() {
+                        console.log('Clave audio ended naturally');
+                        iconRef.classList.remove('playing');
+                        iconRef.classList.remove('loading');
                         window.claveAudio = null;
                         window.currentClaveIcon = null;
-                    });
+                    };
                     
-                    // Handle errors
-                    window.claveAudio.addEventListener('error', function(e) {
-                        console.error('Error playing clave240bpm.mp3:', e);
-                        if (iconRef) {
-                            iconRef.classList.remove('playing');
-                            iconRef.classList.remove('loading');
-                        }
+                    window.claveAudio.onerror = function(e) {
+                        console.error('Error with clave audio:', e);
+                        iconRef.classList.remove('loading');
+                        iconRef.classList.remove('playing');
                         window.claveAudio = null;
                         window.currentClaveIcon = null;
-                    });
+                    };
                     
-                    // Handle when audio is ready to play
-                    window.claveAudio.addEventListener('canplaythrough', function() {
-                        // Now the audio is loaded, add the playing class for visual feedback
-                        if (iconRef) {
-                            iconRef.classList.add('playing');
+                    // Start playback immediately
+                    console.log('Starting clave playback');
+                    window.claveAudio.play()
+                        .then(() => {
+                            console.log('Clave started playing successfully');
+                        })
+                        .catch(err => {
+                            console.error('Failed to play clave:', err);
                             iconRef.classList.remove('loading');
-                        }
-                    });
-                    
-                    // Set source and load it
-                    window.claveAudio.src = 'clave240bpm.mp3';
-                    window.claveAudio.load();
-                    
-                    // Start playback
-                    try {
-                        // Use a small timeout to ensure the browser has time to process
-                        setTimeout(() => {
-                            if (window.claveAudio) {
-                                window.claveAudio.play()
-                                    .catch(err => {
-                                        console.error('Could not play clave audio:', err);
-                                        if (iconRef) {
-                                            iconRef.classList.remove('playing');
-                                            iconRef.classList.remove('loading');
-                                        }
-                                        window.claveAudio = null;
-                                        window.currentClaveIcon = null;
-                                    });
-                            }
-                        }, 50);
-                    } catch (err) {
-                        console.error('Unexpected error playing clave audio:', err);
-                        if (iconRef) {
                             iconRef.classList.remove('playing');
-                            iconRef.classList.remove('loading');
-                        }
-                        window.claveAudio = null;
-                        window.currentClaveIcon = null;
-                    }
+                            window.claveAudio = null;
+                            window.currentClaveIcon = null;
+                        });
+                }
                 });
                 
                 // Add keyboard support
