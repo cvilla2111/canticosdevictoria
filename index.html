@@ -166,6 +166,9 @@
             position: relative;
             transition: all 0.2s ease;
             overflow: hidden; /* Contain the progress bar */
+            /* Create a new stacking context to isolate rendering */
+            z-index: 1;
+            transform: translateZ(0); /* Force hardware acceleration */
         }
         
         .play-button:hover {
@@ -1311,10 +1314,24 @@
                 });
                 
                 audio.addEventListener('loadedmetadata', function() {
-                    // Setup progress updates
-                    progressInterval = setInterval(() => {
-                        updateProgressBar(audio, buttonProgress);
-                    }, 100);
+                    // Check if this button is in an active accordion item (recently opened)
+                    const isInActiveAccordion = button.closest('.accordion-item.active') !== null;
+                    
+                    if (isInActiveAccordion) {
+                        // Add a short delay before starting progress updates if accordion was just opened
+                        // This prevents animation conflicts between accordion opening and progress bar
+                        setTimeout(() => {
+                            // Setup progress updates with a slightly longer interval
+                            progressInterval = setInterval(() => {
+                                updateProgressBar(audio, buttonProgress);
+                            }, 120); // Slight increase in interval for smoother animation
+                        }, 300); // Wait for accordion animation to settle
+                    } else {
+                        // For non-active items, start progress updates immediately
+                        progressInterval = setInterval(() => {
+                            updateProgressBar(audio, buttonProgress);
+                        }, 100);
+                    }
                 });
                 
                 // Start playback
