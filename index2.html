@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="mobile-web-app-capable" content="yes">
-    <title>Cánticos De Victoria</title>
+    <title>Cánticos De Victoria (beta)</title>
     <!-- Import fonts from Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
@@ -1301,21 +1301,100 @@
                         const source = audioSources[index];
                         console.log(`Trying audio source ${index + 1}/${audioSources.length}: ${source}`);
                         
+                        // Create a completely new Audio element for each attempt
+                        window.claveAudio = new Audio();
+                        
+                        // Set up monitoring for all audio events to debug
+                        ['loadstart', 'durationchange', 'loadedmetadata', 'loadeddata', 
+                         'progress', 'canplay', 'canplaythrough', 'playing', 'play'].forEach(event => {
+                            window.claveAudio.addEventListener(event, () => {
+                                console.log(`Audio event: ${event} - time: ${window.claveAudio.currentTime}/${window.claveAudio.duration}`);
+                                if (event === 'canplaythrough') {
+                                    // Check if we have actual audio data
+                                    if (window.claveAudio.duration > 0) {
+                                        console.log(`Audio has duration: ${window.claveAudio.duration}s - SHOULD BE PLAYABLE`);
+                                    } else {
+                                        console.warn('Audio reports canplaythrough but has zero duration!');
+                                    }
+                                }
+                                if (event === 'playing') {
+                                    console.log('AUDIO IS ACTUALLY PLAYING NOW!');
+                                    iconContainer.classList.remove('loading');
+                                    iconContainer.classList.add('playing');
+                                }
+                            });
+                        });
+                        
+                        // Set up error handling more specifically
+                        window.claveAudio.addEventListener('error', (e) => {
+                            const errorTypes = ['MEDIA_ERR_ABORTED', 'MEDIA_ERR_NETWORK', 'MEDIA_ERR_DECODE', 'MEDIA_ERR_SRC_NOT_SUPPORTED'];
+                            let errorMessage = 'Unknown error';
+                            
+                            if (window.claveAudio.error) {
+                                // Map error code to message
+                                if (window.claveAudio.error.code > 0 && window.claveAudio.error.code <= errorTypes.length) {
+                                    errorMessage = errorTypes[window.claveAudio.error.code - 1];
+                                }
+                                console.error(`Audio error with source ${index + 1}: ${errorMessage}`, window.claveAudio.error);
+                            }
+                            
+                            // Try the next source
+                            tryAudioSource(index + 1);
+                        });
+                        
                         // Set the source and load the audio
+                        window.claveAudio.preload = 'auto'; // Force preloading
                         window.claveAudio.src = source;
+                        
+                        // Force a small volume change to wake up audio context on iOS
+                        window.claveAudio.volume = 0.99;
+                        
+                        // Load the audio
+                        console.log('Calling load() on audio element');
                         window.claveAudio.load();
                         
-                        // Try to play the audio
-                        window.claveAudio.play()
-                            .then(() => {
-                                console.log(`Clave audio playing from source: ${source}`);
-                            })
-                            .catch(err => {
-                                console.error(`Could not play audio from source ${index + 1}:`, err);
+                        // Try to play the audio AFTER a short delay to ensure loading has started
+                        setTimeout(() => {
+                            console.log('Attempting to play audio now');
+                            
+                            // Add direct debugging for play button
+                            const playPromise = window.claveAudio.play();
+                            
+                            // Modern browsers return a promise from play()
+                            if (playPromise !== undefined) {
+                                playPromise.then(() => {
+                                    console.log(`Successfully started playback for source ${index + 1}: ${source}`);
+                                    
+                                    // Add a forced play check after a moment
+                                    setTimeout(() => {
+                                        if (window.claveAudio && window.claveAudio.paused) {
+                                            console.warn('Audio reported successful play() but is actually paused!');
+                                            // Force play again
+                                            window.claveAudio.play().catch(e => 
+                                                console.error('Retry play failed:', e)
+                                            );
+                                        }
+                                    }, 500);
+                                }).catch(err => {
+                                    console.error(`Play() promise rejected for source ${index + 1}:`, err);
+                                    
+                                    // Try the next source
+                                    tryAudioSource(index + 1);
+                                });
+                            } else {
+                                // Older browsers don't return a promise
+                                console.log('Browser returned undefined for play() (older browser)');
                                 
-                                // Try the next source
-                                tryAudioSource(index + 1);
-                            });
+                                // Check after a moment if playing actually started
+                                setTimeout(() => {
+                                    if (window.claveAudio && window.claveAudio.paused) {
+                                        console.warn('Audio is still paused after play() call');
+                                        // Try the next source
+                                        tryAudioSource(index + 1);
+                                    }
+                                }, 1000);
+                            }
+                        }, 100); // Short delay before attempting to play
                     }
                     
                     // Helper to show audio error
