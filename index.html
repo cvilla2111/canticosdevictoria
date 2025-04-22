@@ -1153,7 +1153,6 @@
                         // If the icon is no longer visible and clave audio is playing from this icon
                         if (!entry.isIntersecting && window.claveAudio && window.currentClaveIcon === iconContainer && !recentlyActivated) {
                             stopClaveAudio();
-                            console.log('Clave audio stopped - item scrolled out of view');
                         }
                     });
                 }, { threshold: 0.1 });
@@ -1236,7 +1235,6 @@
                             this.classList.remove('playing');
                             window.currentClaveIcon = null;
                             window.claveAudio = null;
-                            console.log('Clave audio stopped without restarting');
                             return;
                         }
                         
@@ -1483,15 +1481,12 @@
                     window.claveAudio.pause();
                     window.claveAudio.currentTime = 0;
                     
-                    // Remove playing and loading classes from icon
+                    // Remove playing class from icon
                     if (window.currentClaveIcon) {
                         window.currentClaveIcon.classList.remove('playing');
-                        window.currentClaveIcon.classList.remove('loading');
                     }
                     
-                    // Clear global references
                     window.claveAudio = null;
-                    window.currentClaveIcon = null;
                 }
             }
             
@@ -1554,7 +1549,7 @@
                                     resetButtonToPlay(currentPlayButton);
                                     currentAudio = null;
                                     currentPlayButton = null;
-
+                                    console.log('Audio stopped - playing item scrolled out of view');
                                     
                                     // Disconnect this observer
                                     audioObserver.disconnect();
@@ -1687,8 +1682,6 @@
                                             // Clear global audio state
                                             currentAudio = null;
                                             currentPlayButton = null;
-                                            
-
                                         }
                                         
                                         // Disconnect observer as we're done with it
@@ -1718,12 +1711,12 @@
              */
             function setupFullscreenButton() {
                 const fullscreenBtn = document.getElementById('fullscreenBtn');
+                if (!fullscreenBtn) return;
+                
                 const enterIcon = fullscreenBtn.querySelector('.fullscreen-enter');
                 const exitIcon = fullscreenBtn.querySelector('.fullscreen-exit');
                 
-                if (!fullscreenBtn) return;
-                
-                // Check if fullscreen is supported
+                // Get fullscreen API methods with vendor prefixes
                 const doc = window.document;
                 const docEl = doc.documentElement;
                 
@@ -1739,35 +1732,35 @@
                     doc.webkitExitFullscreen ||
                     doc.msExitFullscreen;
                 
-                // Keep the same icon regardless of fullscreen state
+                // Get current fullscreen element with vendor prefixes
+                function getFullscreenElement() {
+                    return document.fullscreenElement || 
+                           document.webkitFullscreenElement || 
+                           document.mozFullScreenElement ||
+                           document.msFullscreenElement;
+                }
+                
+                // Always show the enter icon
                 function updateFullscreenButton() {
-                    // Always show the enter icon
                     enterIcon.style.display = 'block';
                     exitIcon.style.display = 'none';
                 }
                 
                 // Toggle fullscreen when button is clicked
                 fullscreenBtn.addEventListener('click', () => {
-                    if (document.fullscreenElement || 
-                        document.webkitFullscreenElement || 
-                        document.mozFullScreenElement ||
-                        document.msFullscreenElement) {
+                    if (getFullscreenElement()) {
                         // Exit fullscreen
                         if (exitFullscreen) {
-                            exitFullscreen.call(doc)
-                                .then(() => updateFullscreenButton())
-                                .catch(err => {
-                                    console.error('Error exiting fullscreen:', err);
-                                });
+                            exitFullscreen.call(doc).catch(() => {
+                                // Silently handle errors
+                            });
                         }
                     } else {
                         // Enter fullscreen
                         if (requestFullscreen) {
-                            requestFullscreen.call(docEl)
-                                .then(() => updateFullscreenButton())
-                                .catch(err => {
-                                    console.error('Error entering fullscreen:', err);
-                                });
+                            requestFullscreen.call(docEl).catch(() => {
+                                // Silently handle errors
+                            });
                         }
                     }
                 });
@@ -1780,7 +1773,7 @@
                     }
                 });
                 
-                // Listen for fullscreen change events
+                // Listen for fullscreen change events with vendor prefixes
                 document.addEventListener('fullscreenchange', updateFullscreenButton);
                 document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
                 document.addEventListener('mozfullscreenchange', updateFullscreenButton);
@@ -1792,12 +1785,9 @@
             
             /**
              * Try to automatically enter fullscreen mode
-             * Note: Most browsers require user interaction before allowing fullscreen
              */
             function tryAutoFullscreen() {
-                // This might be blocked by browsers without user interaction
-                const doc = window.document;
-                const docEl = doc.documentElement;
+                const docEl = document.documentElement;
                 
                 const requestFullscreen = 
                     docEl.requestFullscreen || 
@@ -1806,10 +1796,9 @@
                     docEl.msRequestFullscreen;
                 
                 if (requestFullscreen) {
-                    // Try to request fullscreen mode
-                    requestFullscreen.call(docEl).catch(err => {
-                        // This will likely fail, but we're trying anyway
-                        console.log('Auto fullscreen not allowed without user interaction');
+                    // Most browsers block this without user interaction, but we try anyway
+                    requestFullscreen.call(docEl).catch(() => {
+                        // Expected to fail without user interaction
                     });
                 }
             }
