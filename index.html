@@ -1181,15 +1181,9 @@
                         currentAudio.pause();
                         currentAudio.currentTime = 0;
                         
-                        // Reset the play button state
+                        // Reset the play button state to stop equalizer animations
                         if (currentPlayButton) {
-                            const playIco = currentPlayButton.querySelector('.play-icon');
-                            const pauseIco = currentPlayButton.querySelector('.pause-icon');
-                            const progress = currentPlayButton.querySelector('.button-progress');
-                            
-                            if (playIco) playIco.style.display = 'block';
-                            if (pauseIco) pauseIco.style.display = 'none';
-                            if (progress) progress.style.width = '0%';
+                            resetButtonToPlay(currentPlayButton);
                         }
                         
                         // Clear globals
