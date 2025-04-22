@@ -1167,29 +1167,37 @@
                 
                 // Add click event to play clave240bpm.m4a
                 iconContainer.addEventListener('click', function() {
-                    // If any clave audio is playing, stop it first
+                    // Always reset state completely first
+                    const wasPlayingSameIcon = window.currentClaveIcon === this;
+                    
+                    // Stop any clave audio
                     stopClaveAudio();
                     
-                    // If we just stopped this icon's audio, return without starting a new one
-                    if (window.currentClaveIcon === this) {
-                        window.currentClaveIcon = null;
-                        return;
-                    }
-                    
-                    // Stop any song audio that might be playing
+                    // Stop any song audio and reset equalizer
                     if (currentAudio) {
                         currentAudio.pause();
                         currentAudio.currentTime = 0;
                         
-                        // Reset the play button state to stop equalizer animations
+                        // Make sure we reset the button state to stop animations
                         if (currentPlayButton) {
-                            resetButtonToPlay(currentPlayButton);
+                            // Force reset the button visually - this is crucial
+                            currentPlayButton.classList.remove('playing');
+                            const playIco = currentPlayButton.querySelector('.play-icon');
+                            const pauseIco = currentPlayButton.querySelector('.pause-icon');
+                            if (playIco) playIco.style.display = 'block';
+                            if (pauseIco) pauseIco.style.display = 'none';
                         }
                         
                         // Clear globals
                         currentAudio = null;
                         currentPlayButton = null;
                         console.log('Song audio stopped to play clave');
+                    }
+                    
+                    // If we just stopped this icon's audio, don't restart it
+                    if (wasPlayingSameIcon) {
+                        console.log('Clave audio stopped without restarting');
+                        return;
                     }
                     
                     // Create and play the clave audio
