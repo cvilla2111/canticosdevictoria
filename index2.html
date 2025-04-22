@@ -808,7 +808,7 @@
 <body>
     <header>
         <!-- Centered h1 title -->
-        <h1>Cánticos De Victoria</h1>
+        <h1>Cánticos De Victoria (beta)</h1>
         
         <!-- Subtitle with item count -->
         <p id="itemCountSubtitle" class="subtitle">Una colección de <span id="itemCount">0</span> coritos</p>
@@ -1255,13 +1255,11 @@
                     
                     // Set up event listeners for the audio element
                     window.claveAudio.addEventListener('canplaythrough', () => {
-                        console.log('Clave audio loaded, ready to play');
                         this.classList.remove('loading');
                         this.classList.add('playing');
                     });
                     
                     window.claveAudio.addEventListener('ended', () => {
-                        console.log('Clave audio playback complete');
                         this.classList.remove('playing');
                         window.claveAudio = null;
                         window.currentClaveIcon = null;
@@ -1485,12 +1483,15 @@
                     window.claveAudio.pause();
                     window.claveAudio.currentTime = 0;
                     
-                    // Remove playing class from icon
+                    // Remove playing and loading classes from icon
                     if (window.currentClaveIcon) {
                         window.currentClaveIcon.classList.remove('playing');
+                        window.currentClaveIcon.classList.remove('loading');
                     }
                     
+                    // Clear global references
                     window.claveAudio = null;
+                    window.currentClaveIcon = null;
                 }
             }
             
@@ -1553,7 +1554,7 @@
                                     resetButtonToPlay(currentPlayButton);
                                     currentAudio = null;
                                     currentPlayButton = null;
-                                    console.log('Audio stopped - playing item scrolled out of view');
+
                                     
                                     // Disconnect this observer
                                     audioObserver.disconnect();
@@ -1687,7 +1688,7 @@
                                             currentAudio = null;
                                             currentPlayButton = null;
                                             
-                                            console.log('Audio stopped due to item scrolling out of view');
+
                                         }
                                         
                                         // Disconnect observer as we're done with it
