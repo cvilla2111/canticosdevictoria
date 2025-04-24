@@ -817,7 +817,7 @@
 <body>
     <header>
         <!-- Centered h1 title -->
-        <h1>Cánticos De Victoria@</h1>
+        <h1>Cánticos De Victoria</h1>
         
         <!-- Subtitle with item count -->
         <p id="itemCountSubtitle" class="subtitle">Una colección de <span id="itemCount">0</span> coritos</p>
@@ -1198,20 +1198,19 @@
                 window.claveAudio = window.claveAudio || null;
                 window.currentClaveIcon = window.currentClaveIcon || null;
                 
-                // First, prepare the loading overlay - add it now but keep it hidden
-                const loadingOverlay = document.createElement('div');
-                loadingOverlay.className = 'loading-overlay';
-                loadingOverlay.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: white; display: none; z-index: 20; justify-content: center; align-items: center; border-radius: 3px;';
-                
-                // Add an asterisk character (guaranteed to be available in any font)
-                const spinner = document.createElement('div');
-                spinner.textContent = '*';
-                spinner.style.cssText = 'font-size: 18px; color: black; animation: spin 1.5s linear infinite; display: inline-block;';
-                loadingOverlay.appendChild(spinner);
-                
-                // Add it to the DOM immediately, but keep it hidden
-                iconContainer.style.position = 'relative'; // Ensure the container can position the overlay
-                iconContainer.appendChild(loadingOverlay);
+                // Create animation keyframes for pulsing background
+                if (!document.getElementById('pulse-animation')) {
+                    const styleSheet = document.createElement('style');
+                    styleSheet.id = 'pulse-animation';
+                    styleSheet.textContent = `
+                        @keyframes pulse-bg {
+                            0% { background-color: #ffcc00; }
+                            50% { background-color: #ff6600; }
+                            100% { background-color: #ffcc00; }
+                        }
+                    `;
+                    document.head.appendChild(styleSheet);
+                }
                 
                 // Prepare the keyframe animation once
                 if (!document.getElementById('spin-animation')) {
@@ -1228,12 +1227,12 @@
                 
                 // Add click event to play clave audio directly
                 iconContainer.addEventListener('click', function() {
-                    // FIRST THING: Show the loading overlay IMMEDIATELY
-                    // This change happens synchronously before any async operations
-                    const loadingOverlay = this.querySelector('.loading-overlay');
-                    if (loadingOverlay) {
-                        loadingOverlay.style.display = 'flex';
-                    }
+                    // FIRST THING: Apply immediate visual feedback
+                    // Direct style changes - no DOM manipulation, no overlay to show/hide
+                    this.style.backgroundColor = "#ffcc00";
+                    this.style.border = "2px solid black";
+                    this.style.borderRadius = "50%";
+                    this.style.animation = "pulse-bg 1s infinite"; // Apply pulsing animation
                     
                     // Now handle state reset and audio
                     const wasPlayingSameIcon = window.currentClaveIcon === this;
@@ -1372,11 +1371,11 @@
                             iconContainer.classList.remove('loading');
                             iconContainer.classList.add('playing');
                             
-                            // Hide the loading overlay
-                            const loadingOverlay = iconContainer.querySelector('.loading-overlay');
-                            if (loadingOverlay) {
-                                loadingOverlay.style.display = 'none';
-                            }
+                            // Reset styling now that audio has loaded
+                            iconContainer.style.backgroundColor = "";
+                            iconContainer.style.border = "";
+                            iconContainer.style.borderRadius = "";
+                            iconContainer.style.animation = "";
                         });
                         
                         window.claveAudio.addEventListener('playing', () => {
