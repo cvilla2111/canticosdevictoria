@@ -1144,14 +1144,11 @@
                 textContent.textContent = content;
                 contentWrapper.appendChild(textContent);
                 
-                // Create a protection flag to prevent stopping audio too early
-                let recentlyActivated = false;
-
                 // Create an observer for the icon to stop clave when it scrolls out of view
                 const iconObserver = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         // If the icon is no longer visible and clave audio is playing from this icon
-                        if (!entry.isIntersecting && window.claveAudio && window.currentClaveIcon === iconContainer && !recentlyActivated) {
+                        if (!entry.isIntersecting && window.claveAudio && window.currentClaveIcon === iconContainer) {
                             stopClaveAudio();
                         }
                     });
@@ -1194,9 +1191,6 @@
                 
                 // Add simple click event to play clave audio directly
                 iconContainer.addEventListener('click', function() {
-                    // Set the protection flag to prevent early stopping
-                    recentlyActivated = true;
-                    
                     // Always reset state completely first
                     const wasPlayingSameIcon = window.currentClaveIcon === this;
                     
@@ -1219,11 +1213,6 @@
                         currentAudio = null;
                         currentPlayButton = null;
                     }
-                    
-                    // Clear the protection flag after 2 seconds
-                    setTimeout(() => {
-                        recentlyActivated = false;
-                    }, 2000);
                     
                     // Stop any existing clave audio
                     if (window.claveAudio) {
@@ -1283,71 +1272,82 @@
                         window.currentClaveIcon = null;
                     });
                     
-                    // Create array of fallback sources - starting with local file, then hosted options
-                    const audioSources = [
-                        'clave240bpm.mp3',
-                        'https://assets.mixkit.co/active_storage/sfx/1005/1005-preview.mp3', // Fallback to hosted wood click sound
-                        'https://cdn.jsdelivr.net/gh/scottschiller/SoundManager2/demo/_mp3/click-high.mp3' // Another fallback
-                    ];
+                    // Use audio from the root directory
+                    const claveUrl = 'clave240bpm.mp3';
                     
-                    // Try the first source
-                    tryAudioSource(0);
-                    
-                    // Recursive function to try each audio source until one works
-                    function tryAudioSource(index) {
-                        // If we've tried all sources and none worked
-                        if (index >= audioSources.length) {
-                            showAudioError();
-                            return;
+                    // First check if the file exists
+                    fetch(claveUrl, { method: 'HEAD' })
+                    .then(response => {
+                        if (response.ok) {
+                            console.log("Clave file exists, attempting to play...");
+                            playClaveAudio(claveUrl);
+                        } else {
+                            console.error("Clave file not found at:", claveUrl);
+                            iconContainer.classList.remove('loading');
+                            showAudioError("File not found: " + claveUrl);
                         }
-                        
-                        const source = audioSources[index];
-                        
-                        // Create a new Audio element for each attempt
-                        window.claveAudio = new Audio();
+                    })
+                    .catch(error => {
+                        console.error("Error checking clave file:", error);
+                        iconContainer.classList.remove('loading');
+                        showAudioError("Error checking file");
+                    });
+                    
+                    // Function to play clave audio after verifying file exists
+                    function playClaveAudio(url) {
+                        // Create a new Audio element for clave
+                        window.claveAudio = new Audio(url);
                         
                         // Add essential event listeners
                         window.claveAudio.addEventListener('canplaythrough', () => {
+                            console.log("Clave audio canplaythrough event fired");
                             iconContainer.classList.remove('loading');
                             iconContainer.classList.add('playing');
                         });
                         
                         window.claveAudio.addEventListener('playing', () => {
+                            console.log("Clave audio playing event fired");
                             iconContainer.classList.remove('loading');
                             iconContainer.classList.add('playing');
                         });
                         
-                        window.claveAudio.addEventListener('error', () => {
-                            // Try the next source when there's an error
-                            tryAudioSource(index + 1);
+                        window.claveAudio.addEventListener('ended', () => {
+                            console.log("Clave audio ended event fired");
+                            // When sound ends naturally, auto-replay for metronome effect
+                            if (window.claveAudio && window.currentClaveIcon === iconContainer) {
+                                window.claveAudio.currentTime = 0;
+                                window.claveAudio.play().catch(err => {
+                                    console.error("Failed to replay clave:", err);
+                                    stopClaveAudio();
+                                });
+                            }
                         });
                         
-                        // Configure and load the audio
-                        window.claveAudio.preload = 'auto';
-                        window.claveAudio.src = source;
-                        window.claveAudio.volume = 1.0;
-                        window.claveAudio.load();
+                        window.claveAudio.addEventListener('error', (e) => {
+                            console.error("Clave audio error event fired:", e);
+                            console.error("Error code:", window.claveAudio.error?.code);
+                            console.error("Error message:", window.claveAudio.error?.message);
+                            iconContainer.classList.remove('loading');
+                            iconContainer.classList.remove('playing');
+                            showAudioError("Error loading audio");
+                        });
                         
-                        // Try to play with a short delay to ensure loading has started
-                        setTimeout(() => {
-                            const playPromise = window.claveAudio.play();
-                            
-                            // Modern browsers return a promise from play()
-                            if (playPromise !== undefined) {
-                                playPromise.catch(() => {
-                                    // Try the next source if play fails
-                                    tryAudioSource(index + 1);
-                                });
-                            } else {
-                                // For older browsers, check if playing started after a moment
-                                setTimeout(() => {
-                                    if (window.claveAudio && window.claveAudio.paused) {
-                                        // Try the next source
-                                        tryAudioSource(index + 1);
-                                    }
-                                }, 500);
-                            }
-                        }, 100);
+                        // Log before playing
+                        console.log("Attempting to play clave audio from:", url);
+                        
+                        // Load and start playing the audio
+                        window.claveAudio.volume = 1.0;
+                        
+                        // Play with proper error handling
+                        const playPromise = window.claveAudio.play();
+                        if (playPromise !== undefined) {
+                            playPromise.catch(error => {
+                                console.error("Couldn't play clave audio:", error);
+                                iconContainer.classList.remove('loading');
+                                iconContainer.classList.remove('playing');
+                                showAudioError("Failed to play audio");
+                            });
+                        }
                     }
                     
                     // Helper to show audio error when all sources fail
@@ -1535,36 +1535,36 @@
                     currentAudio = audio;
                     currentPlayButton = button;
                     
-                    // Create an observer for the item containing this button
-                    // This ensures audio stops when scrolling away, even if the item is closed
-                    const audioItem = button.closest('.accordion-item');
-                    if (audioItem) {
-                        // Create a new Intersection Observer for this playing item
-                        const audioObserver = new IntersectionObserver((entries) => {
-                            entries.forEach(entry => {
-                                if (!entry.isIntersecting && currentAudio) {
-                                    // Item with playing audio is out of view - stop audio
-                                    currentAudio.pause();
-                                    currentAudio.currentTime = 0;
-                                    resetButtonToPlay(currentPlayButton);
-                                    currentAudio = null;
-                                    currentPlayButton = null;
-                                    console.log('Audio stopped - playing item scrolled out of view');
-                                    
-                                    // Disconnect this observer
-                                    audioObserver.disconnect();
-                                }
-                            });
-                        }, {
-                            threshold: 0.1 // Trigger when less than 10% is visible
-                        });
-                        
-                        // Start observing the item with playing audio
-                        audioObserver.observe(audioItem);
-                        
-                        // Store the observer on the audio object so we can clean it up later
-                        audio.observer = audioObserver;
-                    }
+                    // Create an IntersectionObserver to stop audio when the play button
+                    // is completely outside the viewport
+                    const audioObserver = new IntersectionObserver(
+                        (entries) => {
+                            // Get the first (and only) entry for this button
+                            const entry = entries[0];
+                            
+                            // Only stop audio when button is completely out of view
+                            // intersectionRatio of 0 means the element is completely invisible
+                            if (entry.intersectionRatio === 0 && currentAudio) {
+                                // Stop the audio
+                                currentAudio.pause();
+                                currentAudio.currentTime = 0;
+                                
+                                // Reset button state
+                                resetButtonToPlay(currentPlayButton);
+                                
+                                // Clear globals
+                                currentAudio = null;
+                                currentPlayButton = null;
+                                
+                                // Disconnect observer
+                                audioObserver.disconnect();
+                            }
+                        },
+                        { threshold: 0 } // Use threshold 0 to detect when element is completely invisible
+                    );
+                    
+                    // Start observing the button
+                    audioObserver.observe(button);
                 }).catch(err => {
                     console.error('Audio play error:', err);
                     resetButtonToPlay(button);
