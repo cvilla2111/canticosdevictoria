@@ -1144,14 +1144,11 @@
                 textContent.textContent = content;
                 contentWrapper.appendChild(textContent);
                 
-                // Create a protection flag to prevent stopping audio too early
-                let recentlyActivated = false;
-
                 // Create an observer for the icon to stop clave when it scrolls out of view
                 const iconObserver = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         // If the icon is no longer visible and clave audio is playing from this icon
-                        if (!entry.isIntersecting && window.claveAudio && window.currentClaveIcon === iconContainer && !recentlyActivated) {
+                        if (!entry.isIntersecting && window.claveAudio && window.currentClaveIcon === iconContainer) {
                             stopClaveAudio();
                         }
                     });
@@ -1194,9 +1191,6 @@
                 
                 // Add simple click event to play clave audio directly
                 iconContainer.addEventListener('click', function() {
-                    // Set the protection flag to prevent early stopping
-                    recentlyActivated = true;
-                    
                     // Always reset state completely first
                     const wasPlayingSameIcon = window.currentClaveIcon === this;
                     
@@ -1219,11 +1213,6 @@
                         currentAudio = null;
                         currentPlayButton = null;
                     }
-                    
-                    // Clear the protection flag after 2 seconds
-                    setTimeout(() => {
-                        recentlyActivated = false;
-                    }, 2000);
                     
                     // Stop any existing clave audio
                     if (window.claveAudio) {
@@ -1535,16 +1524,10 @@
                     currentAudio = audio;
                     currentPlayButton = button;
                     
-                    // Add a protection flag to prevent stopping audio if user scrolls immediately after starting playback
-                    let protectionActive = true;
-                    
-                    // Create an IntersectionObserver to stop audio only when the play button
-                    // is completely outside the viewport (not just partially hidden)
+                    // Create an IntersectionObserver to stop audio when the play button
+                    // is completely outside the viewport
                     const audioObserver = new IntersectionObserver(
                         (entries) => {
-                            // If protection is active, don't stop audio yet
-                            if (protectionActive) return;
-                            
                             // Get the first (and only) entry for this button
                             const entry = entries[0];
                             
@@ -1571,12 +1554,6 @@
                     
                     // Start observing the button
                     audioObserver.observe(button);
-                    
-                    // Disable protection after 2 seconds - this gives enough time for initial playback
-                    // and prevents accidental stopping if user scrolls right after clicking
-                    setTimeout(() => {
-                        protectionActive = false;
-                    }, 2000);
                 }).catch(err => {
                     console.error('Audio play error:', err);
                     resetButtonToPlay(button);
