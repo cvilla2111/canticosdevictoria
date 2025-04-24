@@ -1542,21 +1542,21 @@
                         // Create a new Intersection Observer for this playing item
                         const audioObserver = new IntersectionObserver((entries) => {
                             entries.forEach(entry => {
-                                if (!entry.isIntersecting && currentAudio) {
-                                    // Item with playing audio is out of view - stop audio
+                                // Only stop when item is completely out of view
+                                if (entry.intersectionRatio === 0 && currentAudio) {
+                                    // Item with playing audio is completely out of view - stop audio
                                     currentAudio.pause();
                                     currentAudio.currentTime = 0;
                                     resetButtonToPlay(currentPlayButton);
                                     currentAudio = null;
                                     currentPlayButton = null;
-                                    console.log('Audio stopped - playing item scrolled out of view');
                                     
                                     // Disconnect this observer
                                     audioObserver.disconnect();
                                 }
                             });
                         }, {
-                            threshold: 0.1 // Trigger when less than 10% is visible
+                            threshold: 0 // Use threshold 0 to detect when element is completely invisible
                         });
                         
                         // Start observing the item with playing audio
