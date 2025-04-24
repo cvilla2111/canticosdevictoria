@@ -1272,8 +1272,8 @@
                         window.currentClaveIcon = null;
                     });
                     
-                    // Use direct CDN URLs for immediate functionality
-                    const claveUrl = 'https://cdn.jsdelivr.net/gh/scottschiller/SoundManager2/demo/_mp3/click-high.mp3';
+                    // Use only the local clave file - no fallbacks
+                    const claveUrl = 'clave240bpm.mp3';
                     
                     // Create a new Audio element for clave
                     window.claveAudio = new Audio(claveUrl);
