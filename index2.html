@@ -1198,19 +1198,7 @@
                 window.claveAudio = window.claveAudio || null;
                 window.currentClaveIcon = window.currentClaveIcon || null;
                 
-                // Create animation keyframes for pulsing background
-                if (!document.getElementById('pulse-animation')) {
-                    const styleSheet = document.createElement('style');
-                    styleSheet.id = 'pulse-animation';
-                    styleSheet.textContent = `
-                        @keyframes pulse-bg {
-                            0% { background-color: #ffcc00; }
-                            50% { background-color: #ff6600; }
-                            100% { background-color: #ffcc00; }
-                        }
-                    `;
-                    document.head.appendChild(styleSheet);
-                }
+                // Loading animation disabled as requested
                 
                 // Prepare the keyframe animation once
                 if (!document.getElementById('spin-animation')) {
@@ -1227,12 +1215,7 @@
                 
                 // Add click event to play clave audio directly
                 iconContainer.addEventListener('click', function() {
-                    // FIRST THING: Apply immediate visual feedback
-                    // Direct style changes - no DOM manipulation, no overlay to show/hide
-                    this.style.backgroundColor = "#ffcc00";
-                    this.style.border = "2px solid black";
-                    this.style.borderRadius = "50%";
-                    this.style.animation = "pulse-bg 1s infinite"; // Apply pulsing animation
+                    // No loading visual effects - immediately start preparing audio
                     
                     // Now handle state reset and audio
                     const wasPlayingSameIcon = window.currentClaveIcon === this;
