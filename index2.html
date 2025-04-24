@@ -1242,19 +1242,17 @@
                         }
                     }
                     
-                    // Add immediate visual feedback
-                    console.log("LOADING: Adding loading class and changing style directly");
-                    this.style.backgroundColor = "#ffcc00"; // Bright yellow background
-                    this.style.border = "2px solid black"; // Add visible border
+                    // Add loading feedback
+                    console.log("LOADING: Adding loading class and replacing icon with hourglass");
                     
-                    // Instead of adding an external hourglass, replace the clave icon with the hourglass
                     // Save original icon to restore later
                     this.dataset.originalIcon = this.innerHTML;
                     
-                    // Replace the icon with hourglass
+                    // Replace the icon with hourglass - all we need is the hourglass character
+                    // No background or border needed
                     this.innerHTML = `<span style="display: inline-block; font-size: 18px; animation: spin 1.5s linear infinite;">⌛</span>`;
                     
-                    // No need for a separate loading message element
+                    // No separate loading message needed
                     window.claveLoadingMsg = null;
                     
                     // Add the spin animation if it doesn't exist yet
@@ -1270,8 +1268,7 @@
                         document.head.appendChild(styleSheet);
                     }
                     
-                    // Store the loading message reference for easy removal
-                    window.claveLoadingMsg = loadingMsg;
+                    // No loading message to store
                     
                     // Also add loading class for CSS effects
                     this.classList.add('loading');
