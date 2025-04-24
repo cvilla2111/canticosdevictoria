@@ -817,7 +817,7 @@
 <body>
     <header>
         <!-- Centered h1 title -->
-        <h1>Cánticos De Victoria</h1>
+        <h1>Cánticos De Victoria@</h1>
         
         <!-- Subtitle with item count -->
         <p id="itemCountSubtitle" class="subtitle">Una colección de <span id="itemCount">0</span> coritos</p>
@@ -1247,15 +1247,30 @@
                     this.style.backgroundColor = "#ffcc00"; // Bright yellow background
                     this.style.border = "2px solid black"; // Add visible border
                     
-                    // Add a text message that shows "Loading..." next to the icon
+                    // Add a spinning hourglass symbol next to the icon
                     const loadingMsg = document.createElement('span');
-                    loadingMsg.textContent = "Loading...";
-                    loadingMsg.style.color = "red";
-                    loadingMsg.style.fontWeight = "bold";
+                    loadingMsg.innerHTML = "⌛"; // Hourglass unicode character
+                    loadingMsg.style.color = "black";
+                    loadingMsg.style.fontSize = "18px";
                     loadingMsg.style.marginLeft = "24px";
+                    loadingMsg.style.display = "inline-block"; // Needed for animation
+                    loadingMsg.style.animation = "spin 1.5s linear infinite"; // Apply spinning animation
                     loadingMsg.id = "clave-loading-msg";
                     loadingMsg.className = "loading-msg";
                     this.parentNode.appendChild(loadingMsg);
+                    
+                    // Add the spin animation if it doesn't exist yet
+                    if (!document.getElementById('hourglass-spin-animation')) {
+                        const styleSheet = document.createElement('style');
+                        styleSheet.id = 'hourglass-spin-animation';
+                        styleSheet.textContent = `
+                            @keyframes spin {
+                                0% { transform: rotate(0deg); }
+                                100% { transform: rotate(360deg); }
+                            }
+                        `;
+                        document.head.appendChild(styleSheet);
+                    }
                     
                     // Store the loading message reference for easy removal
                     window.claveLoadingMsg = loadingMsg;
