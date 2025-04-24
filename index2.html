@@ -1535,9 +1535,36 @@
                     currentAudio = audio;
                     currentPlayButton = button;
                     
-                    // Don't stop audio automatically on scroll - let it play until user explicitly stops it
-                    // We could still add a very generous check for when the user has scrolled extremely far away
-                    // but we'll let audio continue playing regardless of scroll position for now
+                    // Create an IntersectionObserver to stop audio only when the play button
+                    // is completely outside the viewport (not just partially hidden)
+                    const audioObserver = new IntersectionObserver(
+                        (entries) => {
+                            // Get the first (and only) entry for this button
+                            const entry = entries[0];
+                            
+                            // Only stop audio when button is completely out of view
+                            // intersectionRatio of 0 means the element is completely invisible
+                            if (entry.intersectionRatio === 0 && currentAudio) {
+                                // Stop the audio
+                                currentAudio.pause();
+                                currentAudio.currentTime = 0;
+                                
+                                // Reset button state
+                                resetButtonToPlay(currentPlayButton);
+                                
+                                // Clear globals
+                                currentAudio = null;
+                                currentPlayButton = null;
+                                
+                                // Disconnect observer
+                                audioObserver.disconnect();
+                            }
+                        },
+                        { threshold: 0 } // Use threshold 0 to detect when element is completely invisible
+                    );
+                    
+                    // Start observing the button
+                    audioObserver.observe(button);
                 }).catch(err => {
                     console.error('Audio play error:', err);
                     resetButtonToPlay(button);
