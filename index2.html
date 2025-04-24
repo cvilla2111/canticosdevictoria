@@ -817,7 +817,7 @@
 <body>
     <header>
         <!-- Centered h1 title -->
-        <h1>Cánticos De Victoria</h1>
+        <h1>Cánticos De Victoria**</h1>
         
         <!-- Subtitle with item count -->
         <p id="itemCountSubtitle" class="subtitle">Una colección de <span id="itemCount">0</span> coritos</p>
@@ -1248,9 +1248,25 @@
                     // Save original icon to restore later
                     this.dataset.originalIcon = this.innerHTML;
                     
-                    // Replace the icon with hourglass - all we need is the hourglass character
-                    // No background or border needed
-                    this.innerHTML = `<span style="display: inline-block; font-size: 18px; animation: spin 1.5s linear infinite;">⌛</span>`;
+                    // Replace the icon with a more visible hourglass
+                    // Make it center-aligned, larger, and ensure it's visible
+                    this.innerHTML = '';  // Clear first
+                    
+                    // Create a span for the hourglass that fills the container
+                    const hourglassSpan = document.createElement('span');
+                    hourglassSpan.textContent = '⌛';
+                    hourglassSpan.style.fontSize = '18px';
+                    hourglassSpan.style.color = 'black';
+                    hourglassSpan.style.display = 'block';
+                    hourglassSpan.style.width = '100%';
+                    hourglassSpan.style.height = '100%';
+                    hourglassSpan.style.display = 'flex';
+                    hourglassSpan.style.alignItems = 'center';
+                    hourglassSpan.style.justifyContent = 'center';
+                    hourglassSpan.style.animation = 'spin 1.5s linear infinite';
+                    
+                    // Add to DOM
+                    this.appendChild(hourglassSpan);
                     
                     // No separate loading message needed
                     window.claveLoadingMsg = null;
