@@ -817,7 +817,7 @@
 <body>
     <header>
         <!-- Centered h1 title -->
-        <h1>Cánticos De Victoria</h1>
+        <h1>Cánticos De Victoria@</h1>
         
         <!-- Subtitle with item count -->
         <p id="itemCountSubtitle" class="subtitle">Una colección de <span id="itemCount">0</span> coritos</p>
@@ -1198,9 +1198,44 @@
                 window.claveAudio = window.claveAudio || null;
                 window.currentClaveIcon = window.currentClaveIcon || null;
                 
-                // Add simple click event to play clave audio directly
+                // First, prepare the loading overlay - add it now but keep it hidden
+                const loadingOverlay = document.createElement('div');
+                loadingOverlay.className = 'loading-overlay';
+                loadingOverlay.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: white; display: none; z-index: 20; justify-content: center; align-items: center; border-radius: 3px;';
+                
+                // Add an asterisk character (guaranteed to be available in any font)
+                const spinner = document.createElement('div');
+                spinner.textContent = '*';
+                spinner.style.cssText = 'font-size: 18px; color: black; animation: spin 1.5s linear infinite; display: inline-block;';
+                loadingOverlay.appendChild(spinner);
+                
+                // Add it to the DOM immediately, but keep it hidden
+                iconContainer.style.position = 'relative'; // Ensure the container can position the overlay
+                iconContainer.appendChild(loadingOverlay);
+                
+                // Prepare the keyframe animation once
+                if (!document.getElementById('spin-animation')) {
+                    const styleSheet = document.createElement('style');
+                    styleSheet.id = 'spin-animation';
+                    styleSheet.textContent = `
+                        @keyframes spin {
+                            0% { transform: rotate(0deg); }
+                            100% { transform: rotate(360deg); }
+                        }
+                    `;
+                    document.head.appendChild(styleSheet);
+                }
+                
+                // Add click event to play clave audio directly
                 iconContainer.addEventListener('click', function() {
-                    // Always reset state completely first
+                    // FIRST THING: Show the loading overlay IMMEDIATELY
+                    // This change happens synchronously before any async operations
+                    const loadingOverlay = this.querySelector('.loading-overlay');
+                    if (loadingOverlay) {
+                        loadingOverlay.style.display = 'flex';
+                    }
+                    
+                    // Now handle state reset and audio
                     const wasPlayingSameIcon = window.currentClaveIcon === this;
                     
                     // Stop any song audio and reset equalizer
@@ -1233,6 +1268,11 @@
                             this.classList.remove('playing');
                             window.currentClaveIcon = null;
                             window.claveAudio = null;
+                            
+                            // Hide the loading overlay when stopping
+                            if (loadingOverlay) {
+                                loadingOverlay.style.display = 'none';
+                            }
                             return;
                         }
                         
@@ -1241,24 +1281,6 @@
                             window.currentClaveIcon.classList.remove('playing');
                         }
                     }
-                    
-                    // Add loading feedback
-                    console.log("LOADING: Adding loading class and replacing icon with hourglass");
-                    
-                    // Save original icon to restore later
-                    this.dataset.originalIcon = this.innerHTML;
-                    
-                    // Force immediate display of hourglass with a direct HTML replacement
-                    // This approach avoids any delay in DOM manipulation
-                    this.innerHTML = `
-                        <div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; 
-                                    background-color: white; color: black; border-radius: 3px; text-align: center;">
-                            <span style="font-size: 18px; display: inline-block; animation: spin 1.5s linear infinite;">⌛</span>
-                        </div>
-                    `;
-                    
-                    // Force browser reflow to ensure immediate display
-                    void this.offsetWidth;
                     
                     // No separate loading message needed
                     window.claveLoadingMsg = null;
@@ -1350,20 +1372,11 @@
                             iconContainer.classList.remove('loading');
                             iconContainer.classList.add('playing');
                             
-                            // Remove the loading message
-                            if (window.claveLoadingMsg) {
-                                window.claveLoadingMsg.remove();
-                                window.claveLoadingMsg = null;
+                            // Hide the loading overlay
+                            const loadingOverlay = iconContainer.querySelector('.loading-overlay');
+                            if (loadingOverlay) {
+                                loadingOverlay.style.display = 'none';
                             }
-                            
-                            // Restore original icon if available
-                            if (iconContainer.dataset.originalIcon) {
-                                iconContainer.innerHTML = iconContainer.dataset.originalIcon;
-                            }
-                            
-                            // Reset styling
-                            iconContainer.style.backgroundColor = "";
-                            iconContainer.style.border = "";
                         });
                         
                         window.claveAudio.addEventListener('playing', () => {
