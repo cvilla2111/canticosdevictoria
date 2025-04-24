@@ -1535,36 +1535,9 @@
                     currentAudio = audio;
                     currentPlayButton = button;
                     
-                    // Create an observer for the item containing this button
-                    // This ensures audio stops when scrolling away, even if the item is closed
-                    const audioItem = button.closest('.accordion-item');
-                    if (audioItem) {
-                        // Create a new Intersection Observer for this playing item
-                        const audioObserver = new IntersectionObserver((entries) => {
-                            entries.forEach(entry => {
-                                // Only stop when item is completely out of view
-                                if (entry.intersectionRatio === 0 && currentAudio) {
-                                    // Item with playing audio is completely out of view - stop audio
-                                    currentAudio.pause();
-                                    currentAudio.currentTime = 0;
-                                    resetButtonToPlay(currentPlayButton);
-                                    currentAudio = null;
-                                    currentPlayButton = null;
-                                    
-                                    // Disconnect this observer
-                                    audioObserver.disconnect();
-                                }
-                            });
-                        }, {
-                            threshold: 0 // Use threshold 0 to detect when element is completely invisible
-                        });
-                        
-                        // Start observing the item with playing audio
-                        audioObserver.observe(audioItem);
-                        
-                        // Store the observer on the audio object so we can clean it up later
-                        audio.observer = audioObserver;
-                    }
+                    // Don't stop audio automatically on scroll - let it play until user explicitly stops it
+                    // We could still add a very generous check for when the user has scrolled extremely far away
+                    // but we'll let audio continue playing regardless of scroll position for now
                 }).catch(err => {
                     console.error('Audio play error:', err);
                     resetButtonToPlay(button);
