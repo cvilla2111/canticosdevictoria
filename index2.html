@@ -1572,11 +1572,11 @@
                     // Start observing the button
                     audioObserver.observe(button);
                     
-                    // Disable protection after 3 seconds - this gives enough time for initial playback
+                    // Disable protection after 2 seconds - this gives enough time for initial playback
                     // and prevents accidental stopping if user scrolls right after clicking
                     setTimeout(() => {
                         protectionActive = false;
-                    }, 3000);
+                    }, 2000);
                 }).catch(err => {
                     console.error('Audio play error:', err);
                     resetButtonToPlay(button);
