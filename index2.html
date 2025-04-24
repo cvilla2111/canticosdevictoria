@@ -808,7 +808,7 @@
 <body>
     <header>
         <!-- Centered h1 title -->
-        <h1>Cánticos De Victoria</h1>
+        <h1>Cánticos De Victoria#</h1>
         
         <!-- Subtitle with item count -->
         <p id="itemCountSubtitle" class="subtitle">Una colección de <span id="itemCount">0</span> coritos</p>
@@ -1272,49 +1272,82 @@
                         window.currentClaveIcon = null;
                     });
                     
-                    // Use only the local clave file - no fallbacks
+                    // Use audio from the root directory
                     const claveUrl = 'clave240bpm.mp3';
                     
-                    // Create a new Audio element for clave
-                    window.claveAudio = new Audio(claveUrl);
-                    
-                    // Add essential event listeners
-                    window.claveAudio.addEventListener('canplaythrough', () => {
+                    // First check if the file exists
+                    fetch(claveUrl, { method: 'HEAD' })
+                    .then(response => {
+                        if (response.ok) {
+                            console.log("Clave file exists, attempting to play...");
+                            playClaveAudio(claveUrl);
+                        } else {
+                            console.error("Clave file not found at:", claveUrl);
+                            iconContainer.classList.remove('loading');
+                            showAudioError("File not found: " + claveUrl);
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error checking clave file:", error);
                         iconContainer.classList.remove('loading');
-                        iconContainer.classList.add('playing');
+                        showAudioError("Error checking file");
                     });
                     
-                    window.claveAudio.addEventListener('playing', () => {
-                        iconContainer.classList.remove('loading');
-                        iconContainer.classList.add('playing');
-                    });
-                    
-                    window.claveAudio.addEventListener('ended', () => {
-                        // When sound ends naturally, auto-replay for metronome effect
-                        if (window.claveAudio && window.currentClaveIcon === iconContainer) {
-                            window.claveAudio.currentTime = 0;
-                            window.claveAudio.play().catch(err => {
-                                console.error("Failed to replay clave:", err);
-                                stopClaveAudio();
+                    // Function to play clave audio after verifying file exists
+                    function playClaveAudio(url) {
+                        // Create a new Audio element for clave
+                        window.claveAudio = new Audio(url);
+                        
+                        // Add essential event listeners
+                        window.claveAudio.addEventListener('canplaythrough', () => {
+                            console.log("Clave audio canplaythrough event fired");
+                            iconContainer.classList.remove('loading');
+                            iconContainer.classList.add('playing');
+                        });
+                        
+                        window.claveAudio.addEventListener('playing', () => {
+                            console.log("Clave audio playing event fired");
+                            iconContainer.classList.remove('loading');
+                            iconContainer.classList.add('playing');
+                        });
+                        
+                        window.claveAudio.addEventListener('ended', () => {
+                            console.log("Clave audio ended event fired");
+                            // When sound ends naturally, auto-replay for metronome effect
+                            if (window.claveAudio && window.currentClaveIcon === iconContainer) {
+                                window.claveAudio.currentTime = 0;
+                                window.claveAudio.play().catch(err => {
+                                    console.error("Failed to replay clave:", err);
+                                    stopClaveAudio();
+                                });
+                            }
+                        });
+                        
+                        window.claveAudio.addEventListener('error', (e) => {
+                            console.error("Clave audio error event fired:", e);
+                            console.error("Error code:", window.claveAudio.error?.code);
+                            console.error("Error message:", window.claveAudio.error?.message);
+                            iconContainer.classList.remove('loading');
+                            iconContainer.classList.remove('playing');
+                            showAudioError("Error loading audio");
+                        });
+                        
+                        // Log before playing
+                        console.log("Attempting to play clave audio from:", url);
+                        
+                        // Load and start playing the audio
+                        window.claveAudio.volume = 1.0;
+                        
+                        // Play with proper error handling
+                        const playPromise = window.claveAudio.play();
+                        if (playPromise !== undefined) {
+                            playPromise.catch(error => {
+                                console.error("Couldn't play clave audio:", error);
+                                iconContainer.classList.remove('loading');
+                                iconContainer.classList.remove('playing');
+                                showAudioError("Failed to play audio");
                             });
                         }
-                    });
-                    
-                    window.claveAudio.addEventListener('error', (e) => {
-                        console.error("Clave audio error:", e);
-                        showAudioError();
-                    });
-                    
-                    // Load and start playing the audio
-                    window.claveAudio.volume = 1.0;
-                    
-                    // Play with proper error handling
-                    const playPromise = window.claveAudio.play();
-                    if (playPromise !== undefined) {
-                        playPromise.catch(error => {
-                            console.error("Couldn't play clave audio:", error);
-                            showAudioError();
-                        });
                     }
                     
                     // Helper to show audio error when all sources fail
