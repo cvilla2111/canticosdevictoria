@@ -817,7 +817,7 @@
 <body>
     <header>
         <!-- Centered h1 title -->
-        <h1>Cánticos De Victoria$</h1>
+        <h1>Cánticos De Victoria</h1>
         
         <!-- Subtitle with item count -->
         <p id="itemCountSubtitle" class="subtitle">Una colección de <span id="itemCount">0</span> coritos</p>
@@ -1253,8 +1253,12 @@
                     loadingMsg.style.color = "red";
                     loadingMsg.style.fontWeight = "bold";
                     loadingMsg.style.marginLeft = "24px";
+                    loadingMsg.id = "clave-loading-msg";
                     loadingMsg.className = "loading-msg";
                     this.parentNode.appendChild(loadingMsg);
+                    
+                    // Store the loading message reference for easy removal
+                    window.claveLoadingMsg = loadingMsg;
                     
                     // Also add loading class for CSS effects
                     this.classList.add('loading');
@@ -1327,12 +1331,32 @@
                             console.log("Clave audio canplaythrough event fired");
                             iconContainer.classList.remove('loading');
                             iconContainer.classList.add('playing');
+                            
+                            // Remove the loading message
+                            if (window.claveLoadingMsg) {
+                                window.claveLoadingMsg.remove();
+                                window.claveLoadingMsg = null;
+                            }
+                            
+                            // Reset styling
+                            iconContainer.style.backgroundColor = "";
+                            iconContainer.style.border = "";
                         });
                         
                         window.claveAudio.addEventListener('playing', () => {
                             console.log("Clave audio playing event fired");
                             iconContainer.classList.remove('loading');
                             iconContainer.classList.add('playing');
+                            
+                            // Remove the loading message
+                            if (window.claveLoadingMsg) {
+                                window.claveLoadingMsg.remove();
+                                window.claveLoadingMsg = null;
+                            }
+                            
+                            // Reset styling
+                            iconContainer.style.backgroundColor = "";
+                            iconContainer.style.border = "";
                         });
                         
                         window.claveAudio.addEventListener('ended', () => {
@@ -1378,6 +1402,16 @@
                     function showAudioError() {
                         iconContainer.classList.remove('loading');
                         iconContainer.classList.remove('playing');
+                        
+                        // Reset the icon's styles
+                        iconContainer.style.backgroundColor = "";
+                        iconContainer.style.border = "";
+                        
+                        // Remove loading message if it exists
+                        if (window.claveLoadingMsg) {
+                            window.claveLoadingMsg.remove();
+                            window.claveLoadingMsg = null;
+                        }
                         
                         // Create and show a temporary error message
                         const errorMsg = document.createElement('div');
