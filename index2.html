@@ -380,26 +380,31 @@
             position: relative;
         }
         
-        /* Loading state for clave icon */
+        /* Loading state for clave icon - sand clock (hourglass) icon */
         .corner-icon.loading .corner-svg {
-            opacity: 0.5;
+            display: none; /* Hide the clave icon */
         }
         
-        .corner-icon.loading::after {
+        /* Sand clock (hourglass) SVG for loading state */
+        .corner-icon.loading::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            border: 2px solid transparent;
-            border-top-color: #000;
-            border-radius: 50%;
-            animation: clave-loading 0.8s linear infinite;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='18' height='18' fill='%23000000'%3E%3Cpath d='M6 2v6h.01L6 8.01 10 12l-4 4 .01.01H6V22h12v-5.99h-.01L18 16l-4-4 4-3.99-.01-.01H18V2H6zm10 14.5V20H8v-3.5l4-4 4 4zm-4-5l-4-4V4h8v3.5l-4 4z'/%3E%3C/svg%3E");
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: contain;
+            animation: hourglass-spin 2s linear infinite;
         }
         
-        @keyframes clave-loading {
+        @keyframes hourglass-spin {
             0% { transform: rotate(0deg); }
+            25% { transform: rotate(90deg); }
+            50% { transform: rotate(180deg); }
+            75% { transform: rotate(270deg); }
             100% { transform: rotate(360deg); }
         }
         
@@ -808,7 +813,7 @@
 <body>
     <header>
         <!-- Centered h1 title -->
-        <h1>Cánticos De Victoria#</h1>
+        <h1>Cánticos De Victoria@</h1>
         
         <!-- Subtitle with item count -->
         <p id="itemCountSubtitle" class="subtitle">Una colección de <span id="itemCount">0</span> coritos</p>
