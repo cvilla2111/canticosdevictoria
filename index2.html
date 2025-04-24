@@ -380,34 +380,36 @@
             position: relative;
         }
         
-        /* Loading state for clave icon - hourglass explicitly shown */
+        /* Loading state for clave icon - simple spinner */
         .corner-icon.loading {
             position: relative;
-            background-color: #f8f8f8; /* Light background to make hourglass stand out */
-            border-radius: 50%;
         }
         
         .corner-icon.loading .corner-svg {
-            opacity: 0; /* Hide the clave icon but preserve layout */
+            display: none; /* Hide the clave icon completely */
         }
         
-        /* Hourglass icon - using HTML entity directly */
-        .corner-icon.loading::before {
-            content: '⌛';
+        /* Spinner circle created with border */
+        .corner-icon.loading::after {
+            content: '';
+            box-sizing: border-box;
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 18px;
-            color: #000;
-            animation: hourglass-pulse 1.5s ease-in-out infinite;
-            z-index: 10;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 16px;
+            height: 16px;
+            margin: auto;
+            border: 3px solid transparent;
+            border-top-color: #000;
+            border-radius: 50%;
+            animation: spinner-rotation 1s linear infinite;
         }
         
-        @keyframes hourglass-pulse {
-            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.7; }
-            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        @keyframes spinner-rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         
         /* Style the SVG */
@@ -815,7 +817,7 @@
 <body>
     <header>
         <!-- Centered h1 title -->
-        <h1>Cánticos De Victoria##</h1>
+        <h1>Cánticos De Victoria</h1>
         
         <!-- Subtitle with item count -->
         <p id="itemCountSubtitle" class="subtitle">Una colección de <span id="itemCount">0</span> coritos</p>
