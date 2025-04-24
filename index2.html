@@ -1535,10 +1535,16 @@
                     currentAudio = audio;
                     currentPlayButton = button;
                     
+                    // Add a protection flag to prevent stopping audio if user scrolls immediately after starting playback
+                    let protectionActive = true;
+                    
                     // Create an IntersectionObserver to stop audio only when the play button
                     // is completely outside the viewport (not just partially hidden)
                     const audioObserver = new IntersectionObserver(
                         (entries) => {
+                            // If protection is active, don't stop audio yet
+                            if (protectionActive) return;
+                            
                             // Get the first (and only) entry for this button
                             const entry = entries[0];
                             
@@ -1565,6 +1571,12 @@
                     
                     // Start observing the button
                     audioObserver.observe(button);
+                    
+                    // Disable protection after 3 seconds - this gives enough time for initial playback
+                    // and prevents accidental stopping if user scrolls right after clicking
+                    setTimeout(() => {
+                        protectionActive = false;
+                    }, 3000);
                 }).catch(err => {
                     console.error('Audio play error:', err);
                     resetButtonToPlay(button);
