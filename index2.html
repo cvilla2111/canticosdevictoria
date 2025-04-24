@@ -817,7 +817,7 @@
 <body>
     <header>
         <!-- Centered h1 title -->
-        <h1>Cánticos De Victoria</h1>
+        <h1>Cánticos De Victoria$</h1>
         
         <!-- Subtitle with item count -->
         <p id="itemCountSubtitle" class="subtitle">Una colección de <span id="itemCount">0</span> coritos</p>
@@ -1242,9 +1242,24 @@
                         }
                     }
                     
-                    // Show loading animation
+                    // Add immediate visual feedback
+                    console.log("LOADING: Adding loading class and changing style directly");
+                    this.style.backgroundColor = "#ffcc00"; // Bright yellow background
+                    this.style.border = "2px solid black"; // Add visible border
+                    
+                    // Add a text message that shows "Loading..." next to the icon
+                    const loadingMsg = document.createElement('span');
+                    loadingMsg.textContent = "Loading...";
+                    loadingMsg.style.color = "red";
+                    loadingMsg.style.fontWeight = "bold";
+                    loadingMsg.style.marginLeft = "24px";
+                    loadingMsg.className = "loading-msg";
+                    this.parentNode.appendChild(loadingMsg);
+                    
+                    // Also add loading class for CSS effects
                     this.classList.add('loading');
                     window.currentClaveIcon = this;
+                    console.log("LOADING: Current element:", this);
                     
                     // Create a new Audio element for clave sound
                     window.claveAudio = new Audio();
