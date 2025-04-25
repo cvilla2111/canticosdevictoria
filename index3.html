@@ -8,20 +8,27 @@
     <style>
         /* Styles for audio buttons that don't have an MP3 file */
         .audio-unavailable {
-            opacity: 0.4;
             position: relative;
         }
         
+        .audio-unavailable .play-button {
+            color: #D1403F !important; /* Red color instead of primary */
+            opacity: 0.7;
+            stroke: #D1403F;
+            stroke-width: 1.5px;
+        }
+        
         .audio-unavailable::after {
-            content: '×';
+            content: '✕';
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 32px;
-            color: #D1403F;
+            font-size: 24px;
+            color: white;
             font-weight: bold;
             z-index: 5;
+            text-shadow: 0px 0px 2px rgba(0,0,0,0.5);
         }
         
         .audio-unavailable .play-button {
@@ -82,7 +89,7 @@
 <body class="min-h-screen bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-200">
     <div class="container mx-auto px-2 sm:px-3 py-6 max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl min-h-screen flex flex-col">
         <div>
-            <h1 class="text-2xl font-bold mb-4 text-primary">Cánticos de Victoria@</h1>
+            <h1 class="text-2xl font-bold mb-4 text-primary">Cánticos de Victoria</h1>
             
             <div id="loadingIndicator" class="flex items-center justify-center py-4">
                 <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -199,7 +206,7 @@
                                 <div class="relative h-10 w-10 mr-3 cursor-pointer" onclick="playAudio(event, '${itemId}')">
                                     <!-- Play button background and border -->
                                     <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-10 w-10 text-primary play-button" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-audio-id="${itemId}">
-                                        <rect x="3" y="3" width="18" height="18" rx="4" ry="4" />
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
                                         <path class="play-icon" d="M10 8l6 4-6 4V8z" fill="currentColor" />
                                     </svg>
                                     
