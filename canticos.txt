@@ -468,6 +468,9 @@ Lugar donde va la letra del corito
 La Necesito Si La Necesito
 Lugar donde va la letra del corito
 
+La Noticia
+La noticia mas grande del siglo
+
 La Sangre De Cristo Lava, Lavo Mi Ser
 Lugar donde va la letra del corito
 
@@ -636,6 +639,12 @@ Si Esta Tierra Ardiera En Fuego
 //Yo iré, yo iré, 
 yo iré con Jesús a morar.//
 
+Si Has Conocido Al Señor Alábale
+//Si has conocido al Señor alábale,
+porque El se mueve en medio de la alabanza//
+//No, no, no a la distancia no, acerca al altar
+que es donde está el Señor.//
+
 Si La Víbora Te Picó
 Lugar donde va la letra del corito
 
@@ -755,7 +764,7 @@ Lugar donde va la letra del corito
 Ya No Se Oyen Cantar Los Coritos De Ayer
 Lugar donde va la letra del corito
 
-Ya Que Haz Puesto La Mano En El Arado
+Ya Que Has Puesto La Mano En El Arado
 Lugar donde va la letra del corito
 
 Yo Alabo A Jesús El Nazareno
