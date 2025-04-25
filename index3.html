@@ -50,6 +50,28 @@
         .pulse-error {
             animation: pulseError 0.3s ease-in-out;
         }
+        
+        /* Animations for the fixed stop button */
+        @keyframes bounceIn {
+            0% { transform: translate(-50%, 100px); opacity: 0; }
+            60% { transform: translate(-50%, -10px); opacity: 1; }
+            80% { transform: translate(-50%, 5px); }
+            100% { transform: translate(-50%, 0); }
+        }
+        
+        @keyframes bounceOut {
+            0% { transform: translate(-50%, 0); opacity: 1; }
+            20% { transform: translate(-50%, 5px); opacity: 1; }
+            100% { transform: translate(-50%, 100px); opacity: 0; }
+        }
+        
+        .bounce-in {
+            animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        
+        .bounce-out {
+            animation: bounceOut 0.4s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards;
+        }
     </style>
     <script>
         tailwind.config = {
@@ -60,11 +82,11 @@
                         primary: '#5D5CDE',
                     },
                     animation: {
-                        'eq1': 'jumping 1.2s ease-in-out infinite alternate',
-                        'eq2': 'jumping 0.9s ease-in-out infinite alternate',
-                        'eq3': 'jumping 0.7s ease-in-out infinite alternate',
-                        'eq4': 'jumping 0.8s ease-in-out infinite alternate',
-                        'eq5': 'jumping 1.0s ease-in-out infinite alternate'
+                        'eq1': 'jumping 0.6s ease-in-out infinite alternate',
+                        'eq2': 'jumping 0.4s ease-in-out infinite alternate',
+                        'eq3': 'jumping 0.3s ease-in-out infinite alternate',
+                        'eq4': 'jumping 0.5s ease-in-out infinite alternate',
+                        'eq5': 'jumping 0.45s ease-in-out infinite alternate'
                     },
                     keyframes: {
                         jumping: {
@@ -596,9 +618,19 @@
                 // Change to pause icon (square)
                 playButton.querySelector('path').setAttribute('d', 'M9 9h6v6H9z');
                 
-                // Show fixed stop button when audio is playing (but not for clave)
+                // Show fixed stop button with bounce effect (but not for clave)
                 if (!clavePlaying) {
+                    // First make sure button is visible
                     fixedStopButton.classList.remove('hidden');
+                    
+                    // Remove any existing animation classes
+                    fixedStopButton.classList.remove('bounce-in', 'bounce-out');
+                    
+                    // Force a reflow to restart animation
+                    void fixedStopButton.offsetWidth;
+                    
+                    // Add the bounce-in animation
+                    fixedStopButton.classList.add('bounce-in');
                 }
             } else {
                 // Hide equalizer animation when not playing
@@ -609,9 +641,22 @@
                 // Change to play icon (triangle)
                 playButton.querySelector('path').setAttribute('d', 'M10 8l6 4-6 4V8z');
                 
-                // Hide fixed stop button when audio is not playing
-                if (!currentAudio && !currentOscillator) {
-                    fixedStopButton.classList.add('hidden');
+                // Hide fixed stop button with exit animation when audio is not playing
+                if (!currentAudio && !currentOscillator && !fixedStopButton.classList.contains('hidden')) {
+                    // Remove any existing animation classes
+                    fixedStopButton.classList.remove('bounce-in', 'bounce-out');
+                    
+                    // Force a reflow to restart animation
+                    void fixedStopButton.offsetWidth;
+                    
+                    // Add the bounce-out animation
+                    fixedStopButton.classList.add('bounce-out');
+                    
+                    // After animation completes, hide the button
+                    setTimeout(() => {
+                        fixedStopButton.classList.add('hidden');
+                        fixedStopButton.classList.remove('bounce-out');
+                    }, 400); // Match the duration of the bounce-out animation
                 }
             }
         }
