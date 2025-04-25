@@ -143,7 +143,7 @@
             </div>
             
             <!-- Dynamic item list -->
-            <ul id="itemList" class="bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden shadow-md cursor-pointer">
+            <ul id="itemList" class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-md cursor-pointer">
                 <!-- Items will be populated dynamically -->
             </ul>
         </div>
@@ -247,7 +247,7 @@
                         const isLastItem = index === items.length - 1;
                         
                         const listItem = document.createElement('li');
-                        listItem.className = `py-3 px-2 ${!isLastItem ? 'border-b border-gray-200 dark:border-gray-700' : ''} hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors`;
+                        listItem.className = `py-3 px-2 ${!isLastItem ? 'border-b border-gray-200 dark:border-gray-700' : ''} hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors`;
                         listItem.onclick = function() {
                             openModal(item.title, item.content);
                         };
@@ -261,8 +261,8 @@
                             <div class="flex items-center">
                                 <div class="relative h-10 w-10 mr-3 cursor-pointer" onclick="playAudio(event, '${itemId}')">
                                     <!-- Play button background and border -->
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-10 w-10 text-primary play-button" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-audio-id="${itemId}">
-                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-10 w-10 text-primary play-button" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" data-audio-id="${itemId}">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="white" class="dark:fill-gray-800" />
                                         <path class="play-icon" d="M10 8l6 4-6 4V8z" fill="currentColor" />
                                     </svg>
                                     
@@ -329,8 +329,9 @@
                         }
                         
                         if (rectElement) {
-                            // Change the background fill of the rectangle
-                            rectElement.setAttribute("fill", "rgba(136, 136, 136, 0.15)");
+                            // Keep the background white but change the border color to gray
+                            rectElement.setAttribute("fill", "white");
+                            rectElement.setAttribute("class", "dark:fill-gray-800");
                         }
                         
                         // Add not-allowed cursor to the button container
@@ -609,7 +610,7 @@
                     
                     // Set the new SVG content with gray colors directly in the SVG
                     newSvg.innerHTML = `
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="rgba(136, 136, 136, 0.15)" stroke="#888888" stroke-width="1.5" />
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="white" class="dark:fill-gray-800" stroke="#888888" stroke-width="1" />
                         <path d="M10 8l6 4-6 4V8z" fill="#888888" />
                     `;
                     
