@@ -89,7 +89,7 @@
 <body class="min-h-screen bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-200">
     <div class="container mx-auto px-2 sm:px-3 py-6 max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl min-h-screen flex flex-col">
         <div>
-            <h1 class="text-2xl font-bold mb-4 text-primary">Cánticos de Victoria@</h1>
+            <h1 class="text-2xl font-bold mb-4 text-primary">Cánticos de Victoria</h1>
             
             <div id="loadingIndicator" class="flex items-center justify-center py-4">
                 <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -272,6 +272,12 @@
                 <button id="metronomeButton" onclick="toggleMetronome()" class="text-primary font-medium cursor-pointer focus:outline-none border border-primary rounded px-2 py-1">240bpm</button>
             </div>
         </div>
+    </div>
+    
+    <!-- Fixed stop button (hidden by default) -->
+    <div id="fixedStopButton" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 w-14 h-14 rounded-full bg-red-500 shadow-xl flex items-center justify-center cursor-pointer z-50 hidden transition-all duration-300 hover:scale-110 active:scale-95" onclick="stopCurrentAudio()">
+        <div class="w-5 h-5 bg-white rounded-sm"></div>
+        <div class="absolute inset-0 rounded-full border-4 border-white opacity-20"></div>
     </div>
 
     <script>
@@ -534,6 +540,7 @@
         function updatePlayButtonState(audioId, isPlaying) {
             const playButton = document.querySelector(`[data-audio-id="${audioId}"]`);
             const equalizerElement = document.querySelector(`[data-equalizer-id="${audioId}"]`);
+            const fixedStopButton = document.getElementById('fixedStopButton');
             
             if (isPlaying) {
                 // Show equalizer animation when playing
@@ -543,6 +550,11 @@
                 
                 // Change to pause icon (square)
                 playButton.querySelector('path').setAttribute('d', 'M9 9h6v6H9z');
+                
+                // Show fixed stop button when audio is playing (but not for clave)
+                if (!clavePlaying) {
+                    fixedStopButton.classList.remove('hidden');
+                }
             } else {
                 // Hide equalizer animation when not playing
                 if (equalizerElement) {
@@ -551,6 +563,11 @@
                 
                 // Change to play icon (triangle)
                 playButton.querySelector('path').setAttribute('d', 'M10 8l6 4-6 4V8z');
+                
+                // Hide fixed stop button when audio is not playing
+                if (!currentAudio && !currentOscillator) {
+                    fixedStopButton.classList.add('hidden');
+                }
             }
         }
         
