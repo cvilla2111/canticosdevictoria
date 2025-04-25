@@ -477,7 +477,10 @@
             // Initialize audio context if not already done
             const context = initAudioContext();
             
-            // Stop any other playing sounds
+            // Stop any playing HTML audio elements
+            stopCurrentAudio();
+            
+            // Also stop any fallback oscillator sounds
             if (currentOscillator) {
                 stopCurrentSound();
             }
