@@ -229,6 +229,7 @@
                         const audioFilename = generateAudioFilename(item.title);
                         const audioPath = `audio/${audioFilename}.mp3`;
                         
+                        // Create the button HTML with conditional styling based on audio availability
                         listItem.innerHTML = `
                             <div class="flex items-center">
                                 <div class="relative h-10 w-10 mr-3 cursor-pointer" onclick="playAudio(event, '${itemId}')">
@@ -255,6 +256,78 @@
                         `;
                         
                         itemList.appendChild(listItem);
+                        
+                        // Check if audio file exists and mark as unavailable if needed
+                        checkAudioFileExists(audioPath, itemId);
+                    });
+                }
+                
+                // Function to check if an audio file exists
+                function checkAudioFileExists(audioPath, audioId) {
+                    fetch(audioPath, { method: 'HEAD' })
+                        .then(response => {
+                            if (!response.ok) {
+                                // If fetch returns not OK, mark the audio as unavailable
+                                markAudioAsUnavailable(audioId);
+                            }
+                        })
+                        .catch(error => {
+                            // If fetch fails, mark the audio as unavailable
+                            console.error(`Error checking audio file ${audioPath}:`, error);
+                            markAudioAsUnavailable(audioId);
+                        });
+                }
+                
+                // Function to mark an audio file as unavailable
+                function markAudioAsUnavailable(audioId) {
+                    // Add to the set of unavailable files
+                    unavailableAudioFiles.add(audioId);
+                    
+                    // Apply visual styling directly
+                    const svgElement = document.querySelector(`[data-audio-id="${audioId}"]`);
+                    if (svgElement) {
+                        // Create a new gray SVG
+                        const newSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                        
+                        // Copy classes and attributes from the original SVG
+                        newSvg.setAttribute("class", svgElement.getAttribute("class"));
+                        newSvg.setAttribute("viewBox", "0 0 24 24");
+                        newSvg.setAttribute("fill", "none");
+                        newSvg.setAttribute("data-audio-id", audioId);
+                        
+                        // Set gray colors directly in the SVG content
+                        newSvg.innerHTML = `
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="rgba(136, 136, 136, 0.15)" stroke="#888888" stroke-width="1.5" />
+                            <path d="M10 8l6 4-6 4V8z" fill="#888888" />
+                        `;
+                        
+                        // Replace the old SVG with the new one
+                        svgElement.parentNode.replaceChild(newSvg, svgElement);
+                        
+                        // Add not-allowed cursor and X mark
+                        const buttonContainer = newSvg.closest('.relative');
+                        if (buttonContainer) {
+                            buttonContainer.style.cursor = 'not-allowed';
+                            
+                            // Add X mark if it doesn't already exist
+                            if (!buttonContainer.querySelector('.unavailable-mark')) {
+                                const xMark = document.createElement('div');
+                                xMark.textContent = '✕';
+                                xMark.className = 'unavailable-mark';
+                                xMark.style.position = 'absolute';
+                                xMark.style.top = '50%';
+                                xMark.style.left = '50%';
+                                xMark.style.transform = 'translate(-50%, -50%)';
+                                xMark.style.fontSize = '24px';
+                                xMark.style.color = 'white';
+                                xMark.style.fontWeight = 'bold';
+                                xMark.style.zIndex = '5';
+                                xMark.style.textShadow = '0px 0px 2px rgba(0,0,0,0.5)';
+                                buttonContainer.appendChild(xMark);
+                            }
+                        }
+                    }
+                }
                     });
                     
                     // Update subtitle with item count
