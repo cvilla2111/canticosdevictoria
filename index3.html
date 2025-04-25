@@ -117,7 +117,9 @@
 <body class="min-h-screen bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-200">
     <div class="container mx-auto px-2 sm:px-3 py-6 max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl min-h-screen flex flex-col">
         <div>
-            <h1 class="text-2xl font-bold mb-4 text-primary text-center">Cánticos de Victoria</h1>
+            <h1 class="text-2xl font-bold mb-1 text-primary text-center">Cánticos de Victoria@</h1>
+            
+            <p id="subtitle" class="mb-4 text-sm text-gray-600 dark:text-gray-400 text-center">Una colección de coritos</p>
             
             <div id="loadingIndicator" class="flex items-center justify-center py-4">
                 <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -130,8 +132,6 @@
             <div id="errorMessage" class="hidden py-4 px-4 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg mb-4">
                 <p>Error al cargar el archivo de cánticos. Por favor, verifique que exista el archivo "canticos.txt" en el directorio raíz.</p>
             </div>
-            
-            <p id="subtitle" class="mb-4 text-sm text-gray-600 dark:text-gray-400 text-center">Una colección de coritos</p>
             
             <!-- Dynamic item list -->
             <ul id="itemList" class="bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden shadow-md cursor-pointer">
@@ -418,6 +418,28 @@
                 
                 // Set up audio events
                 audioElement.onended = function() {
+                    // Make sure to hide the stop button with animation when audio ends naturally
+                    const fixedStopButton = document.getElementById('fixedStopButton');
+                    if (!fixedStopButton.classList.contains('hidden')) {
+                        // Only do this if stop button is visible and there's no other audio playing
+                        if (!clavePlaying && !currentOscillator) {
+                            // Start the hide animation
+                            fixedStopButton.dataset.hidingInProgress = "true";
+                            fixedStopButton.classList.remove('bounce-in');
+                            fixedStopButton.classList.add('bounce-out');
+                            
+                            // After animation completes, hide the button
+                            setTimeout(() => {
+                                if (fixedStopButton.dataset.hidingInProgress === "true") {
+                                    fixedStopButton.classList.add('hidden');
+                                    fixedStopButton.classList.remove('bounce-out');
+                                    fixedStopButton.dataset.hidingInProgress = "false";
+                                }
+                            }, 400);
+                        }
+                    }
+                    
+                    // Update the play button state
                     updatePlayButtonState(audioId, false);
                     currentAudio = null;
                     playingButtonId = null;
