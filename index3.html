@@ -160,15 +160,15 @@
                         
                         listItem.innerHTML = `
                             <div class="flex items-center">
-                                <div class="relative h-8 w-8 mr-3">
+                                <div class="relative h-10 w-10 mr-3 cursor-pointer" onclick="playAudio(event, '${itemId}')">
                                     <!-- Play button background and border -->
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-8 w-8 text-primary cursor-pointer play-button" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-audio-id="${itemId}" onclick="playAudio(event, '${itemId}')">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-10 w-10 text-primary play-button" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-audio-id="${itemId}">
                                         <rect x="3" y="3" width="18" height="18" rx="4" ry="4" />
                                         <path class="play-icon" d="M10 8l6 4-6 4V8z" fill="currentColor" />
                                     </svg>
                                     
                                     <!-- Equalizer animation (hidden by default) -->
-                                    <div class="equalizer absolute inset-0 flex items-center justify-center hidden" data-equalizer-id="${itemId}">
+                                    <div class="equalizer absolute inset-0 flex items-center justify-center hidden pointer-events-none" data-equalizer-id="${itemId}">
                                         <div class="eq-bar bg-primary w-1 mx-px h-3 animate-eq1"></div>
                                         <div class="eq-bar bg-primary w-1 mx-px h-4 animate-eq2"></div>
                                         <div class="eq-bar bg-primary w-1 mx-px h-2 animate-eq3"></div>
