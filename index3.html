@@ -117,7 +117,7 @@
 <body class="min-h-screen bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-200">
     <div class="container mx-auto px-2 sm:px-3 py-6 max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl min-h-screen flex flex-col">
         <div>
-            <h1 class="text-2xl font-bold mb-1 text-primary text-center">Cánticos de Victoria@</h1>
+            <h1 class="text-2xl font-bold mb-1 text-primary text-center">Cánticos de Victoria</h1>
             
             <p id="subtitle" class="mb-4 text-sm text-gray-600 dark:text-gray-400 text-center">Una colección de coritos</p>
             
@@ -490,27 +490,32 @@
             // Mark this audio file as unavailable
             unavailableAudioFiles.add(audioId);
             
-            // Get the SVG element and change its colors directly
+            // Get the SVG element
             const svgElement = document.querySelector(`[data-audio-id="${audioId}"]`);
             if (svgElement) {
-                // Change the stroke color to gray
-                svgElement.setAttribute('stroke', '#888888');
-                
-                // Find the path and rect elements and change their colors
-                const pathElement = svgElement.querySelector('path');
-                const rectElement = svgElement.querySelector('rect');
-                
-                if (pathElement) {
-                    pathElement.setAttribute('fill', '#888888');
-                }
-                
-                if (rectElement) {
-                    rectElement.setAttribute('fill', 'rgba(136, 136, 136, 0.15)');
-                }
-                
-                // Add the not-allowed cursor to the button container
+                // Get the parent container
                 const buttonContainer = svgElement.closest('.relative');
                 if (buttonContainer) {
+                    // Replace the entire SVG with a gray version
+                    const oldSvg = buttonContainer.querySelector('svg');
+                    const newSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                    
+                    // Copy attributes from old SVG to new one
+                    newSvg.setAttribute("class", oldSvg.getAttribute("class"));
+                    newSvg.setAttribute("viewBox", "0 0 24 24");
+                    newSvg.setAttribute("fill", "none");
+                    newSvg.setAttribute("data-audio-id", audioId);
+                    
+                    // Set the new SVG content with gray colors directly in the SVG
+                    newSvg.innerHTML = `
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="rgba(136, 136, 136, 0.15)" stroke="#888888" stroke-width="1.5" />
+                        <path d="M10 8l6 4-6 4V8z" fill="#888888" />
+                    `;
+                    
+                    // Replace the old SVG with the new one
+                    oldSvg.parentNode.replaceChild(newSvg, oldSvg);
+                    
+                    // Add the not-allowed cursor to the button container
                     buttonContainer.style.cursor = 'not-allowed';
                     
                     // Add the X mark
