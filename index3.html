@@ -260,6 +260,9 @@
                         // Check if audio file exists and mark as unavailable if needed
                         checkAudioFileExists(audioPath, itemId);
                     });
+                    
+                    // Update subtitle with item count after processing all items
+                    subtitle.textContent = `Una colección de ${items.length} coritos`;
                 }
                 
                 // Function to check if an audio file exists
@@ -327,11 +330,6 @@
                             }
                         }
                     }
-                }
-                    });
-                    
-                    // Update subtitle with item count
-                    subtitle.textContent = `Una colección de ${items.length} coritos`;
                 }
                 
                 // Add some default items as fallback
