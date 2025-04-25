@@ -446,9 +446,49 @@
             // Mark this audio file as unavailable
             unavailableAudioFiles.add(audioId);
             
-            // Update the button to appear disabled
-            const buttonContainer = document.querySelector(`[data-audio-id="${audioId}"]`).closest('.relative');
-            buttonContainer.classList.add('audio-unavailable');
+            // Get the SVG element and change its colors directly
+            const svgElement = document.querySelector(`[data-audio-id="${audioId}"]`);
+            if (svgElement) {
+                // Change the stroke color to gray
+                svgElement.setAttribute('stroke', '#888888');
+                
+                // Find the path and rect elements and change their colors
+                const pathElement = svgElement.querySelector('path');
+                const rectElement = svgElement.querySelector('rect');
+                
+                if (pathElement) {
+                    pathElement.setAttribute('fill', '#888888');
+                }
+                
+                if (rectElement) {
+                    rectElement.setAttribute('fill', 'rgba(136, 136, 136, 0.15)');
+                }
+                
+                // Add the not-allowed cursor to the button container
+                const buttonContainer = svgElement.closest('.relative');
+                if (buttonContainer) {
+                    buttonContainer.style.cursor = 'not-allowed';
+                    
+                    // Add the X mark
+                    const xMark = document.createElement('div');
+                    xMark.textContent = '✕';
+                    xMark.style.position = 'absolute';
+                    xMark.style.top = '50%';
+                    xMark.style.left = '50%';
+                    xMark.style.transform = 'translate(-50%, -50%)';
+                    xMark.style.fontSize = '24px';
+                    xMark.style.color = 'white';
+                    xMark.style.fontWeight = 'bold';
+                    xMark.style.zIndex = '5';
+                    xMark.style.textShadow = '0px 0px 2px rgba(0,0,0,0.5)';
+                    
+                    // Only add the X mark if it doesn't already exist
+                    if (!buttonContainer.querySelector('.unavailable-mark')) {
+                        xMark.classList.add('unavailable-mark');
+                        buttonContainer.appendChild(xMark);
+                    }
+                }
+            }
             
             // Initialize audio context if not already done
             const context = initAudioContext();
