@@ -117,7 +117,7 @@
 <body class="min-h-screen bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-200">
     <div class="container mx-auto px-2 sm:px-3 py-6 max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl min-h-screen flex flex-col">
         <div>
-            <h1 class="text-2xl font-bold mb-4 text-primary">Cánticos de Victoria</h1>
+            <h1 class="text-2xl font-bold mb-4 text-primary">Cánticos de Victoria@</h1>
             
             <div id="loadingIndicator" class="flex items-center justify-center py-4">
                 <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -620,6 +620,9 @@
                 
                 // Show fixed stop button with bounce effect (but not for clave)
                 if (!clavePlaying) {
+                    // Cancel any hiding that might be in progress
+                    fixedStopButton.dataset.hidingInProgress = "false";
+                    
                     // First make sure button is visible
                     fixedStopButton.classList.remove('hidden');
                     
@@ -641,8 +644,11 @@
                 // Change to play icon (triangle)
                 playButton.querySelector('path').setAttribute('d', 'M10 8l6 4-6 4V8z');
                 
-                // Hide fixed stop button with exit animation when audio is not playing
-                if (!currentAudio && !currentOscillator && !fixedStopButton.classList.contains('hidden')) {
+                // Hide fixed stop button only if there's absolutely no audio playing
+                if (!currentAudio && !currentOscillator && !clavePlaying && !fixedStopButton.classList.contains('hidden')) {
+                    // Mark that we're in the process of hiding (we'll use this to cancel if needed)
+                    fixedStopButton.dataset.hidingInProgress = "true";
+                    
                     // Remove any existing animation classes
                     fixedStopButton.classList.remove('bounce-in', 'bounce-out');
                     
@@ -654,8 +660,12 @@
                     
                     // After animation completes, hide the button
                     setTimeout(() => {
-                        fixedStopButton.classList.add('hidden');
-                        fixedStopButton.classList.remove('bounce-out');
+                        // Only hide if we haven't cancelled the hiding
+                        if (fixedStopButton.dataset.hidingInProgress === "true") {
+                            fixedStopButton.classList.add('hidden');
+                            fixedStopButton.classList.remove('bounce-out');
+                            fixedStopButton.dataset.hidingInProgress = "false";
+                        }
                     }, 400); // Match the duration of the bounce-out animation
                 }
             }
