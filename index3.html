@@ -35,7 +35,7 @@
 <body class="min-h-screen bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-200">
     <div class="container mx-auto px-4 py-10 max-w-md min-h-screen flex flex-col">
         <div>
-            <h1 class="text-2xl font-bold mb-4 text-primary">Cánticos de Victoria</h1>
+            <h1 class="text-2xl font-bold mb-4 text-primary">Cánticos de Victoria@</h1>
             
             <div id="loadingIndicator" class="flex items-center justify-center py-4">
                 <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -542,8 +542,8 @@
                 const gainNode = context.createGain();
                 gainNode.gain.value = 0;
                 gainNode.gain.setValueAtTime(0, context.currentTime);
-                gainNode.gain.linearRampToValueAtTime(0.6, context.currentTime + 0.001); // Very fast attack
-                gainNode.gain.setValueAtTime(0.6, context.currentTime + 0.005);          // Hold briefly
+                gainNode.gain.linearRampToValueAtTime(1.0, context.currentTime + 0.001); // Very fast attack - increased volume
+                gainNode.gain.setValueAtTime(1.0, context.currentTime + 0.005);          // Hold briefly - increased volume
                 gainNode.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 0.03); // Fast decay
                 
                 // Connect everything
@@ -565,7 +565,7 @@
                 const toneGain = context.createGain();
                 toneGain.gain.value = 0;
                 toneGain.gain.setValueAtTime(0, context.currentTime);
-                toneGain.gain.linearRampToValueAtTime(0.2, context.currentTime + 0.002);
+                toneGain.gain.linearRampToValueAtTime(0.5, context.currentTime + 0.002); // Increased from 0.2 to 0.5
                 toneGain.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 0.02);
                 
                 tone1.connect(toneGain);
