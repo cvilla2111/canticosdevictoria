@@ -620,9 +620,12 @@
         function openModal(title, content) {
             const modal = document.getElementById('modal');
             const modalContentEl = modal.querySelector('.bg-white.dark\\:bg-gray-800');
+            const modalContent = document.getElementById('modalContent');
             
             document.getElementById('modalTitle').textContent = title;
-            document.getElementById('modalContent').textContent = content;
+            
+            // Format the content to preserve line breaks
+            modalContent.innerHTML = content.replace(/\n/g, '<br>');
             
             // First make the modal container visible
             modal.classList.remove('hidden');
