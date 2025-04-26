@@ -116,73 +116,6 @@
             animation: modalContentOut 0.3s ease-in forwards;
         }
         
-        /* Screen protection styles (large screens only) */
-        @media (min-width: 1024px) {
-            .screen-protection-notice {
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-                background: rgba(93, 92, 222, 0.9);
-                color: white;
-                padding: 10px 15px;
-                border-radius: 8px;
-                font-size: 14px;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-                z-index: 100;
-                transition: opacity 0.5s;
-                opacity: 0;
-                pointer-events: none;
-                display: none;
-            }
-            
-            .countdown-circle {
-                position: fixed;
-                bottom: 70px;
-                right: 20px;
-                width: 40px;
-                height: 40px;
-                border-radius: 50%;
-                background-color: rgba(93, 92, 222, 0.2);
-                display: none;
-                z-index: 100;
-            }
-            
-            .countdown-circle-inner {
-                position: absolute;
-                top: 5px;
-                left: 5px;
-                width: 30px;
-                height: 30px;
-                border-radius: 50%;
-                background-color: #5D5CDE;
-                color: white;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                font-size: 12px;
-                font-weight: bold;
-            }
-            
-            /* Element transition styles */
-            .screen-protection-active * {
-                transition: color 5s ease, background-color 5s ease, border-color 5s ease, stroke 5s ease, fill 5s ease !important;
-            }
-            
-            .screen-protection-active svg * {
-                transition: stroke 5s ease, fill 5s ease !important;
-            }
-            
-            .screen-protection-active input {
-                transition: color 5s ease, background-color 5s ease, border-color 5s ease !important;
-            }
-            
-            .screen-protection-active button,
-            .screen-protection-active [role="button"],
-            .screen-protection-active .cursor-pointer {
-                transition: color 5s ease, background-color 5s ease, border-color 5s ease !important;
-            }
-        }
-        
         /* Device size indicator */
         #device-size-indicator {
             position: fixed;
@@ -317,11 +250,6 @@
             </div>
             
             <p class="md:text-base lg:text-lg"><span id="current-year">2025</span> Cánticos de Victoria. Ministerio Monte De Dios.</p>
-            
-            <!-- Screen Protection Notice -->
-            <p class="text-xs text-gray-500 dark:text-gray-400 mt-2 hidden lg:block">
-                Protección anti-quemado de pantalla activa. Se iniciará después de 1 minuto de inactividad.
-            </p>
         </footer>
     </div>
 
@@ -354,15 +282,6 @@
     <div id="fixedStopButton" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 w-14 h-14 rounded-full bg-red-500 shadow-xl flex items-center justify-center cursor-pointer z-50 hidden transition-all duration-300 hover:scale-110 active:scale-95" onclick="stopCurrentAudio()">
         <div class="w-5 h-5 bg-white rounded-sm"></div>
     </div>
-    
-    <!-- Screen Protection Elements -->
-    <div class="screen-protection-notice" id="protectionNotice">
-        Protección de pantalla activándose en breve...
-    </div>
-    
-    <div class="countdown-circle" id="countdownCircle">
-        <div class="countdown-circle-inner" id="countdownValue">30</div>
-    </div>
 
     <script>
         /********************************
@@ -381,14 +300,6 @@
         let clavePlaying = false;
         let claveStep = 0;
         const clavePattern = [1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0]; // 3-2 Son Clave
-        
-        // Screen protection state
-        let isProtectionActive = false;
-        let cycleInterval;
-        let inactivityTimeout;
-        let countdownInterval;
-        let secondsLeft = 60; // 1 minute
-        let isLargeScreen = window.innerWidth >= 1024;
         
         /********************************
          * INITIALIZATION
@@ -412,11 +323,6 @@
             
             // Initialize device size indicator
             updateDeviceSizeIndicator();
-            
-            // Initialize screen protection on large screens
-            if (isLargeScreen) {
-                resetInactivityTimer();
-            }
             
             // Set up event listeners
             setupEventListeners();
@@ -445,28 +351,7 @@
             });
             
             // Device size updates
-            window.addEventListener('resize', function() {
-                isLargeScreen = window.innerWidth >= 1024;
-                
-                if (!isLargeScreen && isProtectionActive) {
-                    stopColorCycling();
-                } else if (isLargeScreen && !inactivityTimeout) {
-                    resetInactivityTimer();
-                }
-                
-                updateDeviceSizeIndicator();
-            });
-            
-            // Reset inactivity timer on user interaction
-            ['mousemove', 'mousedown', 'keypress', 'touchstart', 'scroll', 'click'].forEach(evt => {
-                document.addEventListener(evt, () => {
-                    if (isProtectionActive) {
-                        stopColorCycling();
-                    } else {
-                        resetInactivityTimer();
-                    }
-                });
-            });
+            window.addEventListener('resize', updateDeviceSizeIndicator);
             
             // Modal close events
             document.getElementById('modal').addEventListener('click', function(event) {
@@ -1286,205 +1171,6 @@
             clavePlaying = false;
         }
         
-        /********************************
-         * SCREEN PROTECTION SYSTEM
-         ********************************/
-        function startColorCycling() {
-            if (isProtectionActive || !isLargeScreen) return;
-            
-            isProtectionActive = true;
-            hideCountdown();
-            
-            // Add the protection class to the body to enable transitions on all elements
-            document.body.classList.add('screen-protection-active');
-            
-            // Color cycling function
-            let hue = 0;
-            let brightness = document.documentElement.classList.contains('dark') ? 70 : 30;
-            let direction = 1; // For brightness oscillation
-            
-            cycleInterval = setInterval(() => {
-                // Cycle through colors
-                hue = (hue + 1) % 360;
-                
-                // Oscillate brightness for better protection
-                brightness += direction * 0.5;
-                if (document.documentElement.classList.contains('dark')) {
-                    // Dark mode - keep brightness higher
-                    if (brightness >= 90) direction = -1;
-                    if (brightness <= 50) direction = 1;
-                } else {
-                    // Light mode - keep brightness lower
-                    if (brightness >= 50) direction = -1;
-                    if (brightness <= 20) direction = 1;
-                }
-                
-                // Apply styles to different element types
-                
-                // Text elements
-                document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, span, label, li').forEach((el, index) => {
-                    const elementHue = (hue + index * 10) % 360;
-                    el.style.color = `hsl(${elementHue}, 80%, ${brightness}%)`;
-                });
-                
-                // Input elements
-                document.querySelectorAll('input').forEach((el, index) => {
-                    const elementHue = (hue + index * 15 + 30) % 360;
-                    el.style.color = `hsl(${elementHue}, 70%, ${brightness}%)`;
-                    el.style.borderColor = `hsl(${(elementHue + 40) % 360}, 60%, ${brightness}%)`;
-                    
-                    // Only change background in light mode, keep dark mode backgrounds darker
-                    if (!document.documentElement.classList.contains('dark')) {
-                        el.style.backgroundColor = `hsl(${(elementHue + 90) % 360}, 20%, 96%)`;
-                    } else {
-                        el.style.backgroundColor = `hsl(${(elementHue + 90) % 360}, 20%, 20%)`;
-                    }
-                });
-                
-                // Button elements
-                document.querySelectorAll('button, .cursor-pointer').forEach((el, index) => {
-                    const elementHue = (hue + index * 25 + 60) % 360;
-                    el.style.color = `hsl(${elementHue}, 80%, ${brightness}%)`;
-                    
-                    // Change border colors if they exist
-                    if (getComputedStyle(el).borderColor !== 'rgba(0, 0, 0, 0)') {
-                        el.style.borderColor = `hsl(${(elementHue + 30) % 360}, 60%, ${brightness}%)`;
-                    }
-                });
-                
-                // SVG elements
-                document.querySelectorAll('svg').forEach((svg, index) => {
-                    const elementHue = (hue + index * 40 + 90) % 360;
-                    
-                    // Apply to all paths, circles, rects within SVG
-                    svg.querySelectorAll('path, circle, rect, line, polyline, polygon').forEach((el, i) => {
-                        const pathHue = (elementHue + i * 15) % 360;
-                        
-                        // Change stroke color
-                        if (el.getAttribute('stroke') && el.getAttribute('stroke') !== 'none') {
-                            el.style.stroke = `hsl(${pathHue}, 70%, ${brightness}%)`;
-                        }
-                        
-                        // Change fill color
-                        if (el.getAttribute('fill') && el.getAttribute('fill') !== 'none') {
-                            el.style.fill = `hsl(${(pathHue + 30) % 360}, 70%, ${brightness}%)`;
-                        }
-                    });
-                });
-                
-                // Background and border elements
-                document.querySelectorAll('[class*="bg-"], [class*="border"]').forEach((el, index) => {
-                    const elementHue = (hue + index * 20 + 120) % 360;
-                    
-                    // Apply subtle background color shifts
-                    if (el.className.includes('bg-') && getComputedStyle(el).backgroundColor !== 'rgba(0, 0, 0, 0)') {
-                        if (!document.documentElement.classList.contains('dark')) {
-                            el.style.backgroundColor = `hsl(${elementHue}, 10%, 98%)`;
-                        } else {
-                            el.style.backgroundColor = `hsl(${elementHue}, 10%, 12%)`;
-                        }
-                    }
-                    
-                    // Change border colors if applicable
-                    if (el.className.includes('border') && getComputedStyle(el).borderWidth !== '0px') {
-                        el.style.borderColor = `hsl(${(elementHue + 30) % 360}, 30%, ${brightness}%)`;
-                    }
-                });
-                
-            }, 250);
-        }
-
-        function stopColorCycling() {
-            if (!isProtectionActive) return;
-            
-            clearInterval(cycleInterval);
-            isProtectionActive = false;
-            
-            // Remove protection class from body
-            document.body.classList.remove('screen-protection-active');
-            
-            // Reset all element styles with a smooth transition
-            document.querySelectorAll('*').forEach(el => {
-                el.style.transition = 'color 1s ease, background-color 1s ease, border-color 1s ease, stroke 1s ease, fill 1s ease';
-                el.style.color = '';
-                el.style.backgroundColor = '';
-                el.style.borderColor = '';
-                
-                // For SVG elements
-                if (el.tagName === 'svg' || el.closest('svg')) {
-                    el.style.stroke = '';
-                    el.style.fill = '';
-                }
-            });
-            
-            resetInactivityTimer();
-        }
-
-        function resetInactivityTimer() {
-            // Clear any existing timers
-            clearTimeout(inactivityTimeout);
-            clearInterval(countdownInterval);
-            
-            // Hide the notice
-            const protectionNotice = document.getElementById('protectionNotice');
-            protectionNotice.style.opacity = '0';
-            protectionNotice.style.display = 'none';
-            
-            // Reset seconds counter
-            secondsLeft = 60; // 1 minute
-            
-            // Only set up timers if we're on a large screen
-            if (!isLargeScreen) return;
-            
-            // Set up the inactivity timer
-            inactivityTimeout = setTimeout(() => {
-                showPreActivationCountdown();
-            }, 30000); // 30 seconds
-        }
-
-        function showPreActivationCountdown() {
-            // Show the notice
-            const protectionNotice = document.getElementById('protectionNotice');
-            protectionNotice.style.display = 'block';
-            protectionNotice.style.opacity = '1';
-            
-            // Show and start the countdown
-            const countdownCircle = document.getElementById('countdownCircle');
-            const countdownValue = document.getElementById('countdownValue');
-            countdownCircle.style.display = 'block';
-            secondsLeft = 30; // 30 seconds countdown
-            countdownValue.textContent = secondsLeft;
-            
-            // Update the countdown every second
-            countdownInterval = setInterval(() => {
-                secondsLeft--;
-                countdownValue.textContent = secondsLeft;
-                
-                if (secondsLeft <= 10) {
-                    countdownValue.style.color = '#ff3860';
-                } else {
-                    countdownValue.style.color = 'white';
-                }
-                
-                if (secondsLeft <= 0) {
-                    clearInterval(countdownInterval);
-                    hideCountdown();
-                    startColorCycling();
-                }
-            }, 1000);
-        }
-
-        function hideCountdown() {
-            const protectionNotice = document.getElementById('protectionNotice');
-            const countdownCircle = document.getElementById('countdownCircle');
-            
-            protectionNotice.style.opacity = '0';
-            protectionNotice.style.display = 'none';
-            
-            countdownCircle.style.display = 'none';
-            clearInterval(countdownInterval);
-        }
-
         /********************************
          * DEVICE SIZE INDICATOR
          ********************************/
