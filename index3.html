@@ -75,6 +75,45 @@
         .bounce-out {
             animation: bounceOut 0.4s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards;
         }
+        
+        /* Animations for the modal window */
+        @keyframes modalFadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes modalFadeOut {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        
+        @keyframes modalContentIn {
+            0% { opacity: 0; transform: scale(0.9); }
+            70% { opacity: 1; transform: scale(1.02); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        @keyframes modalContentOut {
+            0% { opacity: 1; transform: scale(1); }
+            30% { opacity: 1; transform: scale(1.02); }
+            100% { opacity: 0; transform: scale(0.9); }
+        }
+        
+        .modal-fade-in {
+            animation: modalFadeIn 0.3s ease-out forwards;
+        }
+        
+        .modal-fade-out {
+            animation: modalFadeOut 0.3s ease-in forwards;
+        }
+        
+        .modal-content-in {
+            animation: modalContentIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        
+        .modal-content-out {
+            animation: modalContentOut 0.3s ease-in forwards;
+        }
     </style>
     <script>
         tailwind.config = {
@@ -431,9 +470,20 @@
     <script>
         // Modal functionality
         function openModal(title, content) {
+            const modal = document.getElementById('modal');
+            const modalContentEl = modal.querySelector('.bg-white.dark\\:bg-gray-800');
+            
             document.getElementById('modalTitle').textContent = title;
             document.getElementById('modalContent').textContent = content;
-            document.getElementById('modal').classList.remove('hidden');
+            
+            // First make the modal container visible
+            modal.classList.remove('hidden');
+            modal.classList.add('modal-fade-in');
+            
+            // Animate the modal content with a slight zoom effect
+            modalContentEl.classList.add('modal-content-in');
+            
+            // Prevent scrolling of the body
             document.body.classList.add('overflow-hidden');
         }
 
@@ -443,8 +493,22 @@
                 stopClave();
             }
             
-            document.getElementById('modal').classList.add('hidden');
-            document.body.classList.remove('overflow-hidden');
+            const modal = document.getElementById('modal');
+            const modalContentEl = modal.querySelector('.bg-white.dark\\:bg-gray-800');
+            
+            // Add the fade-out animations
+            modal.classList.add('modal-fade-out');
+            modalContentEl.classList.add('modal-content-out');
+            
+            // When animation completes, hide the modal
+            setTimeout(() => {
+                modal.classList.remove('modal-fade-in', 'modal-fade-out');
+                modalContentEl.classList.remove('modal-content-in', 'modal-content-out');
+                modal.classList.add('hidden');
+                
+                // Allow scrolling again
+                document.body.classList.remove('overflow-hidden');
+            }, 300); // Match the animation duration
         }
 
         // Close modal when clicking outside
