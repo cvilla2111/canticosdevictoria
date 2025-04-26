@@ -128,7 +128,20 @@
         <div>
             <h1 class="text-2xl font-bold mb-0 text-primary text-center">Cánticos de Victoria</h1>
             
-            <p id="subtitle" class="mb-4 text-sm text-gray-600 dark:text-gray-400 text-center">Una colección de coritos</p>
+            <p id="subtitle" class="mb-2 text-sm text-gray-600 dark:text-gray-400 text-center">Una colección de coritos</p>
+            
+            <!-- Search bar -->
+            <div class="mb-4 relative">
+                <div class="relative">
+                    <input type="text" id="searchInput" class="w-full px-4 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors" placeholder="Buscar corito...">
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-400 dark:text-gray-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+                </div>
+                <p id="noResults" class="mt-2 text-sm text-red-500 dark:text-red-400 text-center hidden">No se encontraron resultados</p>
+            </div>
             
             <div id="loadingIndicator" class="flex items-center justify-center py-4">
                 <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -288,8 +301,8 @@
                         checkAudioFileExists(audioPath, itemId);
                     });
                     
-                    // Update subtitle with item count after processing all items
-                    subtitle.textContent = `Una colección de ${items.length} coritos`;
+                    // Update subtitle with item count after processing all items - bold number
+                    subtitle.innerHTML = `Una colección de <strong>${items.length}</strong> coritos`;
                 }
                 
                 // Function to check if an audio file exists
@@ -424,7 +437,45 @@
         // Count items and update subtitle
         document.addEventListener('DOMContentLoaded', function() {
             const itemCount = document.querySelectorAll('ul li').length;
-            document.getElementById('subtitle').textContent = `Una colección de ${itemCount} coritos`;
+            document.getElementById('subtitle').innerHTML = `Una colección de <strong>${itemCount}</strong> coritos`;
+            
+            // Set up search functionality
+            const searchInput = document.getElementById('searchInput');
+            const noResults = document.getElementById('noResults');
+            
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase().trim();
+                const listItems = document.querySelectorAll('#itemList li');
+                let visibleCount = 0;
+                
+                // If search term is empty, show all items
+                if (searchTerm === '') {
+                    listItems.forEach(item => {
+                        item.classList.remove('hidden');
+                    });
+                    noResults.classList.add('hidden');
+                    return;
+                }
+                
+                // Filter items based on search term
+                listItems.forEach(item => {
+                    const title = item.querySelector('span').textContent.toLowerCase();
+                    // If item title contains search term, show it, otherwise hide it
+                    if (title.includes(searchTerm)) {
+                        item.classList.remove('hidden');
+                        visibleCount++;
+                    } else {
+                        item.classList.add('hidden');
+                    }
+                });
+                
+                // Show or hide the "no results" message
+                if (visibleCount === 0) {
+                    noResults.classList.remove('hidden');
+                } else {
+                    noResults.classList.add('hidden');
+                }
+            });
             
             // Set up theme toggle switch
             const themeToggle = document.getElementById('themeToggle');
