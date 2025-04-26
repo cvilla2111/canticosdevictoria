@@ -443,8 +443,20 @@
             const searchInput = document.getElementById('searchInput');
             const noResults = document.getElementById('noResults');
             
+            // Function to normalize text for searching (remove accents, special chars)
+            function normalizeText(text) {
+                return text
+                    .toLowerCase()
+                    .replace(/ñ/g, "n")                 // Replace ñ with n explicitly
+                    .normalize("NFD")                   // Normalize accented characters
+                    .replace(/[\u0300-\u036f]/g, "")    // Remove diacritics (accents)
+                    .replace(/[^\w\s]/g, " ")          // Replace special chars with spaces
+                    .replace(/\s+/g, " ")              // Normalize multiple spaces
+                    .trim();                           // Remove leading/trailing whitespace
+            }
+            
             searchInput.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase().trim();
+                const searchTerm = normalizeText(this.value);
                 const listItems = document.querySelectorAll('#itemList li');
                 let visibleCount = 0;
                 
@@ -457,10 +469,10 @@
                     return;
                 }
                 
-                // Filter items based on search term
+                // Filter items based on normalized search term
                 listItems.forEach(item => {
-                    const title = item.querySelector('span').textContent.toLowerCase();
-                    // If item title contains search term, show it, otherwise hide it
+                    const title = normalizeText(item.querySelector('span').textContent);
+                    // If normalized item title contains search term, show it, otherwise hide it
                     if (title.includes(searchTerm)) {
                         item.classList.remove('hidden');
                         visibleCount++;
