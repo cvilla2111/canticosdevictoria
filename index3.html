@@ -259,11 +259,11 @@
     <!-- Modal -->
     <div id="modal" class="fixed inset-0 z-50 hidden overflow-auto bg-black bg-opacity-75 flex items-center justify-center p-2">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-[75vw] w-full max-h-[95vh] overflow-auto">
-            <div class="px-3 py-3">
+            <div class="px-3 pt-5 pb-3">
                 <div class="flex items-start">
-                    <h3 id="modalTitle" class="text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold text-gray-800 dark:text-gray-200 pr-6 flex-1"></h3>
-                    <button onclick="closeModal()" class="w-6 h-6 flex items-center justify-center rounded-full bg-black dark:bg-gray-700 text-white hover:bg-gray-800 hover:dark:bg-gray-600 transition-colors duration-200 focus:outline-none flex-shrink-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <h3 id="modalTitle" class="text-base md:text-lg lg:text-xl xl:text-2xl font-bold text-gray-800 dark:text-gray-200 pl-3 pr-6 flex-1"></h3>
+                    <button onclick="closeModal()" class="w-5 h-5 flex items-center justify-center rounded-full bg-black dark:bg-gray-700 text-white hover:bg-gray-800 hover:dark:bg-gray-600 transition-colors duration-200 focus:outline-none flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
@@ -274,7 +274,7 @@
                     <p id="modalContent" class="text-gray-800 dark:text-gray-200 text-lg md:text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl text-left font-medium"></p>
                 </div>
             </div>
-            <div class="px-3 py-2 border-t border-gray-200 dark:border-gray-700 text-right">
+            <div class="px-3 py-2 text-right">
                 <button id="metronomeButton" onclick="toggleMetronome()" class="text-primary font-medium cursor-pointer focus:outline-none border border-primary rounded px-2 py-1">240bpm</button>
             </div>
         </div>
