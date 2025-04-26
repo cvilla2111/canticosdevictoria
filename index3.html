@@ -163,6 +163,11 @@
                 font-size: 12px;
                 font-weight: bold;
             }
+            
+            /* Animated color protection for all text elements */
+            .screen-protection-active * {
+                transition: color 5s ease !important;
+            }
         }
     </style>
     <script>
@@ -1203,7 +1208,7 @@
             clavePlaying = false;
         }
         
-        // Screen Protection Implementation (only for large screens)
+        // SCREEN PROTECTION IMPLEMENTATION (ENTIRE APP, LARGE SCREENS ONLY)
         // Variables for screen protection
         let isProtectionActive = false;
         let cycleInterval;
@@ -1211,17 +1216,41 @@
         let countdownInterval;
         let secondsLeft = 300; // 5 minutes
         let isLargeScreen = window.innerWidth >= 1024;
+        
+        // Collection of text elements to animate
+        function getAllTextElements() {
+            // Get all elements with text that we want to protect
+            const textElements = [];
+            
+            // Main elements
+            textElements.push(document.querySelector('h1')); // Main heading
+            textElements.push(document.getElementById('subtitle')); // Subtitle
+            
+            // All list items
+            document.querySelectorAll('#itemList li span').forEach(el => textElements.push(el));
+            
+            // Modal content if visible
+            if (!document.getElementById('modal').classList.contains('hidden')) {
+                textElements.push(document.getElementById('modalTitle'));
+                textElements.push(document.getElementById('modalContent'));
+            }
+            
+            // Footer text
+            document.querySelectorAll('footer p').forEach(el => textElements.push(el));
+            
+            // Return only non-null elements
+            return textElements.filter(el => el !== null);
+        }
 
         // Function to start the color cycling to prevent burn-in
         function startColorCycling() {
             if (isProtectionActive || !isLargeScreen) return;
             
             isProtectionActive = true;
-            
             hideCountdown();
             
-            // Get all the text content lines in the modal content
-            const modalContent = document.getElementById('modalContent');
+            // Add the protection class to the body to enable transitions
+            document.body.classList.add('screen-protection-active');
             
             // Color cycling function
             let hue = 0;
@@ -1244,11 +1273,14 @@
                     if (brightness <= 20) direction = 1;
                 }
                 
-                // Adjust color for text in the modal if it's open
-                if (!document.getElementById('modal').classList.contains('hidden') && modalContent) {
-                    modalContent.style.transition = 'color 5s ease';
-                    modalContent.style.color = `hsl(${hue}, 80%, ${brightness}%)`;
-                }
+                // Get all text elements on the page
+                const textElements = getAllTextElements();
+                
+                // Apply color to all text elements with varying hues
+                textElements.forEach((el, index) => {
+                    const elementHue = (hue + index * 15) % 360; // Slightly different hue for each element
+                    el.style.color = `hsl(${elementHue}, 80%, ${brightness}%)`;
+                });
                 
             }, 250);
         }
@@ -1259,12 +1291,15 @@
             clearInterval(cycleInterval);
             isProtectionActive = false;
             
-            // Reset colors
-            const modalContent = document.getElementById('modalContent');
-            if (modalContent) {
-                modalContent.style.transition = 'color 1s ease';
-                modalContent.style.color = '';
-            }
+            // Remove protection class from body
+            document.body.classList.remove('screen-protection-active');
+            
+            // Reset all text colors to their original values
+            const textElements = getAllTextElements();
+            textElements.forEach(el => {
+                el.style.transition = 'color 1s ease';
+                el.style.color = '';
+            });
             
             resetInactivityTimer();
         }
