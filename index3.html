@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cánticos de Victoria</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Styles for audio buttons that don't have an MP3 file */
@@ -77,6 +80,10 @@
         tailwind.config = {
             darkMode: 'class',
             theme: {
+                fontFamily: {
+                    'sans': ['Montserrat', 'sans-serif'],
+                    'headings': ['system-ui', 'sans-serif'],
+                },
                 extend: {
                     colors: {
                         primary: '#5D5CDE',
@@ -127,7 +134,7 @@
 <body class="min-h-screen bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-200">
     <div class="container mx-auto px-2 sm:px-3 py-6 pb-20 max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl min-h-screen flex flex-col">
         <div>
-            <h1 class="text-2xl font-bold mb-0 text-gray-800 dark:text-gray-200 text-center">Cánticos de Victoria</h1>
+            <h1 class="text-2xl font-bold mb-0 text-gray-800 dark:text-gray-200 text-center font-headings">Cánticos de Victoria</h1>
             
             <p id="subtitle" class="mb-2 text-sm text-gray-600 dark:text-gray-400 text-center">Una colección de coritos</p>
             
