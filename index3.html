@@ -308,7 +308,7 @@
             
             <!-- Screen protection notice - Only visible on large screens -->
             <p class="text-xs text-gray-500 dark:text-gray-400 mt-2 hidden lg:block">
-                Protección anti-quemado de pantalla activa. Se iniciará después de 5 minutos de inactividad.
+                Protección anti-quemado de pantalla activa. Se iniciará después de 1 minuto de inactividad.
             </p>
         </footer>
         
@@ -1265,7 +1265,7 @@
         let cycleInterval;
         let inactivityTimeout;
         let countdownInterval;
-        let secondsLeft = 300; // 5 minutes
+        let secondsLeft = 60; // 1 minute (changed from 5 minutes)
         let isLargeScreen = window.innerWidth >= 1024;
         
         // Collection of text elements to animate
@@ -1366,7 +1366,7 @@
             protectionNotice.style.display = 'none';
             
             // Reset seconds counter
-            secondsLeft = 300; // 5 minutes
+            secondsLeft = 60; // 1 minute (changed from 5 minutes)
             
             // Only set up timers if we're on a large screen
             if (!isLargeScreen) return;
@@ -1374,7 +1374,7 @@
             // Set up the inactivity timer
             inactivityTimeout = setTimeout(() => {
                 showPreActivationCountdown();
-            }, 270000); // 4:30 minutes (270 seconds) - show countdown for the last 30 seconds
+            }, 30000); // 30 seconds (changed from 4:30 minutes)
         }
 
         function showPreActivationCountdown() {
