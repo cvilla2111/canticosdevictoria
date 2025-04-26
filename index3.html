@@ -261,7 +261,26 @@
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-[75vw] w-full max-h-[95vh] overflow-auto">
             <div class="px-3 pt-5 pb-3">
                 <div class="flex items-start">
-                    <div class="pl-3 pr-6 flex-1">
+                    <!-- New play button for the modal -->
+                    <div class="relative h-8 w-8 mr-3 mt-0.5 flex-shrink-0 cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-900 dark:text-gray-100 play-button" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" id="modalPlayButton">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="white" class="dark:fill-gray-800" />
+                            <path class="play-icon" d="M10 8l6 4-6 4V8z" fill="currentColor" />
+                        </svg>
+                        
+                        <!-- Equalizer animation (hidden by default) -->
+                        <div class="absolute inset-0 pointer-events-none hidden" id="modalEqualizer">
+                            <div class="absolute bottom-2 left-0 right-0 flex items-end justify-center h-[calc(100%-8px)]">
+                                <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq1"></div>
+                                <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq2"></div>
+                                <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq3"></div>
+                                <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq4"></div>
+                                <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq5"></div>
+                                <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq6"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pl-1 pr-6 flex-1">
                         <h3 id="modalTitle" class="text-base md:text-lg lg:text-xl xl:text-2xl font-bold text-gray-800 dark:text-gray-200 leading-tight"></h3>
                         <p id="modalSubtitle" class="text-xs md:text-sm lg:text-base text-gray-600 dark:text-gray-400 font-normal -mt-1 hidden"></p>
                     </div>
@@ -298,6 +317,7 @@
         let currentGain = null;
         let currentAudio = null;
         let playingButtonId = null;
+        let currentModalAudioId = null; // Stores the audio ID associated with the currently open modal
         const unavailableAudioFiles = new Set();
         
         // Clave pattern state
@@ -331,6 +351,13 @@
             
             // Set up event listeners
             setupEventListeners();
+            
+            // Set up modal play button event listener
+            document.getElementById('modalPlayButton').parentElement.addEventListener('click', function() {
+                if (currentModalAudioId) {
+                    playAudio(new Event('click'), currentModalAudioId);
+                }
+            });
         });
         
         /********************************
@@ -547,7 +574,7 @@
                 const listItem = document.createElement('li');
                 listItem.className = `py-3 px-2 ${!isLastItem ? 'border-b border-gray-200 dark:border-gray-700' : ''} hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors`;
                 listItem.onclick = function() {
-                    openModal(item.title, item.content);
+                    openModal(item.title, item.content, itemId);
                 };
                 
                 // Generate audio filename from title
@@ -622,10 +649,24 @@
         /********************************
          * MODAL FUNCTIONS
          ********************************/
-        function openModal(title, content) {
+        function openModal(title, content, audioId) {
             const modal = document.getElementById('modal');
             const modalContentEl = modal.querySelector('.bg-white.dark\\:bg-gray-800');
             const modalContent = document.getElementById('modalContent');
+            
+            // Store the current audio ID for the modal play button
+            currentModalAudioId = audioId;
+            
+            // Update modal play button state if current audio is playing
+            updateModalPlayButtonState();
+            
+            // Check if the audio is unavailable and update modal play button accordingly
+            if (unavailableAudioFiles.has(audioId)) {
+                markModalPlayButtonAsUnavailable();
+            } else {
+                // Make sure we remove any unavailable styling if it was previously applied
+                resetModalPlayButton();
+            }
             
             // Handle long titles that may need to wrap
             const titleEl = document.getElementById('modalTitle');
@@ -684,6 +725,9 @@
                 modalContentEl.classList.remove('modal-content-in', 'modal-content-out');
                 modal.classList.add('hidden');
                 
+                // Reset current modal audio ID
+                currentModalAudioId = null;
+                
                 // Allow scrolling again
                 document.body.classList.remove('overflow-hidden');
             }, 300); // Match the animation duration
@@ -710,6 +754,15 @@
                 setTimeout(() => {
                     buttonContainer.classList.remove('pulse-error');
                 }, 300);
+                
+                // Also pulse the modal play button if this is the current modal audio
+                if (audioId === currentModalAudioId) {
+                    const modalPlayButton = document.getElementById('modalPlayButton').parentElement;
+                    modalPlayButton.classList.add('pulse-error');
+                    setTimeout(() => {
+                        modalPlayButton.classList.remove('pulse-error');
+                    }, 300);
+                }
                 return;
             }
             
@@ -767,10 +820,15 @@
                     updatePlayButtonState(audioId, false);
                     currentAudio = null;
                     playingButtonId = null;
+                    
+                    // Also update the modal play button state if needed
+                    updateModalPlayButtonState();
                 };
                 
                 audioElement.onpause = function() {
                     updatePlayButtonState(audioId, false);
+                    // Also update the modal play button state if needed
+                    updateModalPlayButtonState();
                 };
                 
                 audioElement.onerror = function() {
@@ -779,6 +837,11 @@
                     
                     // If there's an error (e.g., file not found), mark as unavailable
                     playFallbackTone(audioId);
+                    
+                    // Also update the modal play button if this is the current modal audio
+                    if (audioId === currentModalAudioId) {
+                        markModalPlayButtonAsUnavailable();
+                    }
                 };
                 
                 // Play the audio file
@@ -792,17 +855,30 @@
                             updatePlayButtonState(audioId, true);
                             currentAudio = audioElement;
                             playingButtonId = audioId;
+                            
+                            // Also update the modal play button state if needed
+                            updateModalPlayButtonState();
                         })
                         .catch(error => {
                             console.error("Playback error:", error);
                             // If autoplay is blocked or file not found, mark as unavailable
                             playFallbackTone(audioId);
+                            
+                            // Also update the modal play button if this is the current modal audio
+                            if (audioId === currentModalAudioId) {
+                                markModalPlayButtonAsUnavailable();
+                            }
                         });
                 }
             } catch (error) {
                 console.error("Audio playback error:", error);
                 // Fall back to playing a tone
                 playFallbackTone(audioId);
+                
+                // Also update the modal play button if this is the current modal audio
+                if (audioId === currentModalAudioId) {
+                    markModalPlayButtonAsUnavailable();
+                }
             }
         }
         
@@ -812,12 +888,22 @@
                     if (!response.ok) {
                         // If fetch returns not OK, mark the audio as unavailable
                         markAudioAsUnavailable(audioId);
+                        
+                        // Also update the modal play button if this is the current modal audio
+                        if (audioId === currentModalAudioId) {
+                            markModalPlayButtonAsUnavailable();
+                        }
                     }
                 })
                 .catch(error => {
                     // If fetch fails, mark the audio as unavailable
                     console.error(`Error checking audio file ${audioPath}:`, error);
                     markAudioAsUnavailable(audioId);
+                    
+                    // Also update the modal play button if this is the current modal audio
+                    if (audioId === currentModalAudioId) {
+                        markModalPlayButtonAsUnavailable();
+                    }
                 });
         }
         
@@ -851,6 +937,84 @@
                 if (buttonContainer) {
                     buttonContainer.style.cursor = 'not-allowed';
                 }
+            }
+        }
+        
+        function markModalPlayButtonAsUnavailable() {
+            const modalPlayButton = document.getElementById('modalPlayButton');
+            
+            // Change the stroke color to gray
+            modalPlayButton.setAttribute("stroke", "#888888");
+            
+            // Find and update the path and rect elements
+            const pathElement = modalPlayButton.querySelector('path');
+            const rectElement = modalPlayButton.querySelector('rect');
+            
+            if (pathElement) {
+                // Change the fill color of the play triangle
+                pathElement.setAttribute("fill", "#888888");
+            }
+            
+            if (rectElement) {
+                // Keep the background white but change the border color to gray
+                rectElement.setAttribute("fill", "white");
+                rectElement.setAttribute("class", "dark:fill-gray-800");
+            }
+            
+            // Add not-allowed cursor to the button container
+            const buttonContainer = modalPlayButton.parentElement;
+            if (buttonContainer) {
+                buttonContainer.style.cursor = 'not-allowed';
+            }
+        }
+        
+        function resetModalPlayButton() {
+            const modalPlayButton = document.getElementById('modalPlayButton');
+            
+            // Reset stroke color
+            modalPlayButton.setAttribute("stroke", "currentColor");
+            
+            // Find and update the path and rect elements
+            const pathElement = modalPlayButton.querySelector('path');
+            const rectElement = modalPlayButton.querySelector('rect');
+            
+            if (pathElement) {
+                // Reset fill color
+                pathElement.setAttribute("fill", "currentColor");
+            }
+            
+            if (rectElement) {
+                // Reset background
+                rectElement.setAttribute("fill", "white");
+                rectElement.setAttribute("class", "dark:fill-gray-800");
+            }
+            
+            // Reset cursor
+            const buttonContainer = modalPlayButton.parentElement;
+            if (buttonContainer) {
+                buttonContainer.style.cursor = 'pointer';
+            }
+        }
+        
+        function updateModalPlayButtonState() {
+            if (!currentModalAudioId) return;
+            
+            const modalPlayButton = document.getElementById('modalPlayButton');
+            const modalEqualizer = document.getElementById('modalEqualizer');
+            
+            // Check if the associated audio is playing
+            if (playingButtonId === currentModalAudioId) {
+                // Change to pause icon (square)
+                modalPlayButton.querySelector('path').setAttribute('d', 'M9 9h6v6H9z');
+                
+                // Show equalizer animation
+                modalEqualizer.classList.remove('hidden');
+            } else {
+                // Change to play icon (triangle)
+                modalPlayButton.querySelector('path').setAttribute('d', 'M10 8l6 4-6 4V8z');
+                
+                // Hide equalizer animation
+                modalEqualizer.classList.add('hidden');
             }
         }
         
@@ -907,6 +1071,11 @@
                 }
             }
             
+            // Also update the modal play button if this is the current modal audio
+            if (audioId === currentModalAudioId) {
+                markModalPlayButtonAsUnavailable();
+            }
+            
             // Initialize audio context if not already done
             const context = initAudioContext();
             
@@ -940,6 +1109,9 @@
             
             // Update UI
             updatePlayButtonState(audioId, true);
+            
+            // Also update the modal play button state if needed
+            updateModalPlayButtonState();
             
             // Store references
             currentOscillator = oscillator;
@@ -976,6 +1148,9 @@
                 updatePlayButtonState(playingButtonId, false);
                 playingButtonId = null;
             }
+            
+            // Also update the modal play button state
+            updateModalPlayButtonState();
         }
         
         function stopCurrentSound(updateButton = true) {
@@ -994,6 +1169,9 @@
                     if (updateButton && playingButtonId) {
                         updatePlayButtonState(playingButtonId, false);
                         playingButtonId = null;
+                        
+                        // Also update the modal play button state
+                        updateModalPlayButtonState();
                     }
                 }, 100);
             }
