@@ -173,14 +173,14 @@
 <body class="min-h-screen bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-200">
     <div class="container mx-auto px-2 sm:px-3 pt-10 pb-20 max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl min-h-screen flex flex-col">
         <div>
-            <h1 class="text-4xl font-bold mb-0 text-gray-800 dark:text-gray-200 text-center font-headings">Cánticos de Victoria</h1>
+            <h1 class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-0 text-gray-800 dark:text-gray-200 text-center font-headings">Cánticos de Victoria</h1>
             
-            <p id="subtitle" class="mb-2 text-sm text-gray-600 dark:text-gray-400 text-center">Una colección de coritos</p>
+            <p id="subtitle" class="mb-2 text-sm md:text-base lg:text-lg xl:text-xl text-gray-600 dark:text-gray-400 text-center">Una colección de coritos</p>
             
             <!-- Fixed search bar container -->
             <div id="searchBarContainer" class="sticky top-0 z-10 bg-white dark:bg-gray-900 pt-2 pb-1 mb-4 transition-shadow duration-300">
                 <div class="relative">
-                    <input type="text" id="searchInput" class="w-full px-4 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors" placeholder="Search...">
+                    <input type="text" id="searchInput" class="w-full px-4 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors text-base md:text-lg lg:text-xl" placeholder="Search...">
                     <div class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 dark:text-gray-500">
                         <!-- Search icon (shown by default) -->
                         <svg id="searchIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -193,7 +193,7 @@
                         </svg>
                     </div>
                 </div>
-                <p id="noResults" class="mt-2 text-sm text-red-500 dark:text-red-400 text-center hidden">No se encontraron resultados</p>
+                <p id="noResults" class="mt-2 text-sm md:text-base lg:text-lg text-red-500 dark:text-red-400 text-center hidden">No se encontraron resultados</p>
             </div>
             
             <div id="loadingIndicator" class="flex items-center justify-center py-4">
@@ -201,11 +201,11 @@
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                <span>Cargando cánticos...</span>
+                <span class="md:text-lg lg:text-xl">Cargando cánticos...</span>
             </div>
             
             <div id="errorMessage" class="hidden py-4 px-4 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg mb-4">
-                <p>Error al cargar el archivo de cánticos. Por favor, verifique que exista el archivo "canticos.txt" en el directorio raíz.</p>
+                <p class="md:text-lg lg:text-xl">Error al cargar el archivo de cánticos. Por favor, verifique que exista el archivo "canticos.txt" en el directorio raíz.</p>
             </div>
             
             <!-- Dynamic item list -->
@@ -234,7 +234,7 @@
                 </span>
             </div>
             
-            <p><span id="current-year">2025</span> Cánticos de Victoria. Ministerio Monte De Dios.</p>
+            <p class="md:text-base lg:text-lg"><span id="current-year">2025</span> Cánticos de Victoria. Ministerio Monte De Dios.</p>
         </footer>
         
         <script>
@@ -354,7 +354,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <span class="font-bold">${item.title}</span>
+                                <span class="font-bold md:text-lg lg:text-xl xl:text-2xl">${item.title}</span>
                             </div>
                             <audio id="${itemId}" preload="none">
                                 <source src="${audioPath}" type="audio/mpeg">
