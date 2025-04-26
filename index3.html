@@ -164,9 +164,26 @@
                 font-weight: bold;
             }
             
-            /* Animated color protection for all text elements */
+            /* Enhanced screen protection - applies to all elements */
             .screen-protection-active * {
-                transition: color 5s ease !important;
+                transition: color 5s ease, background-color 5s ease, border-color 5s ease, stroke 5s ease, fill 5s ease !important;
+            }
+            
+            /* Special transition for SVG elements */
+            .screen-protection-active svg * {
+                transition: stroke 5s ease, fill 5s ease !important;
+            }
+            
+            /* Special transition for inputs */
+            .screen-protection-active input {
+                transition: color 5s ease, background-color 5s ease, border-color 5s ease !important;
+            }
+            
+            /* Special transition for buttons and interactive elements */
+            .screen-protection-active button,
+            .screen-protection-active [role="button"],
+            .screen-protection-active .cursor-pointer {
+                transition: color 5s ease, background-color 5s ease, border-color 5s ease !important;
             }
         }
         
@@ -1259,48 +1276,26 @@
             clavePlaying = false;
         }
         
-        // SCREEN PROTECTION IMPLEMENTATION (ENTIRE APP, LARGE SCREENS ONLY)
+        // ENHANCED SCREEN PROTECTION IMPLEMENTATION (ALL UI ELEMENTS, LARGE SCREENS ONLY)
         // Variables for screen protection
         let isProtectionActive = false;
         let cycleInterval;
         let inactivityTimeout;
         let countdownInterval;
-        let secondsLeft = 60; // 1 minute (changed from 5 minutes)
+        let secondsLeft = 60; // 1 minute
         let isLargeScreen = window.innerWidth >= 1024;
         
-        // Collection of text elements to animate
-        function getAllTextElements() {
-            // Get all elements with text that we want to protect
-            const textElements = [];
-            
-            // Main elements
-            textElements.push(document.querySelector('h1')); // Main heading
-            textElements.push(document.getElementById('subtitle')); // Subtitle
-            
-            // All list items
-            document.querySelectorAll('#itemList li span').forEach(el => textElements.push(el));
-            
-            // Modal content if visible
-            if (!document.getElementById('modal').classList.contains('hidden')) {
-                textElements.push(document.getElementById('modalTitle'));
-                textElements.push(document.getElementById('modalContent'));
-            }
-            
-            // Footer text
-            document.querySelectorAll('footer p').forEach(el => textElements.push(el));
-            
-            // Return only non-null elements
-            return textElements.filter(el => el !== null);
-        }
-
-        // Function to start the color cycling to prevent burn-in
+        // Store original styles for each element type to restore later
+        const originalStyles = new Map();
+        
+        // Function to start the enhanced color cycling to prevent burn-in
         function startColorCycling() {
             if (isProtectionActive || !isLargeScreen) return;
             
             isProtectionActive = true;
             hideCountdown();
             
-            // Add the protection class to the body to enable transitions
+            // Add the protection class to the body to enable transitions on all elements
             document.body.classList.add('screen-protection-active');
             
             // Color cycling function
@@ -1312,7 +1307,7 @@
                 // Cycle through colors
                 hue = (hue + 1) % 360;
                 
-                // Oscillate brightness to keep text readable but prevent burn-in
+                // Oscillate brightness to keep elements readable but prevent burn-in
                 brightness += direction * 0.5;
                 if (document.documentElement.classList.contains('dark')) {
                     // Dark mode - keep brightness higher
@@ -1324,13 +1319,81 @@
                     if (brightness <= 20) direction = 1;
                 }
                 
-                // Get all text elements on the page
-                const textElements = getAllTextElements();
+                // Apply styles to ALL elements with varying hues
                 
-                // Apply color to all text elements with varying hues
-                textElements.forEach((el, index) => {
-                    const elementHue = (hue + index * 15) % 360; // Slightly different hue for each element
+                // 1. Text elements (headings, paragraphs, spans)
+                document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, span, label, li').forEach((el, index) => {
+                    const elementHue = (hue + index * 10) % 360;
                     el.style.color = `hsl(${elementHue}, 80%, ${brightness}%)`;
+                });
+                
+                // 2. Input elements
+                document.querySelectorAll('input').forEach((el, index) => {
+                    const elementHue = (hue + index * 15 + 30) % 360;
+                    el.style.color = `hsl(${elementHue}, 70%, ${brightness}%)`;
+                    el.style.borderColor = `hsl(${(elementHue + 40) % 360}, 60%, ${brightness}%)`;
+                    
+                    // Only change background in light mode, keep dark mode backgrounds darker
+                    if (!document.documentElement.classList.contains('dark')) {
+                        el.style.backgroundColor = `hsl(${(elementHue + 90) % 360}, 20%, 96%)`;
+                    } else {
+                        el.style.backgroundColor = `hsl(${(elementHue + 90) % 360}, 20%, 20%)`;
+                    }
+                });
+                
+                // 3. Button elements
+                document.querySelectorAll('button, .cursor-pointer').forEach((el, index) => {
+                    const elementHue = (hue + index * 25 + 60) % 360;
+                    el.style.color = `hsl(${elementHue}, 80%, ${brightness}%)`;
+                    
+                    // Change border colors if they exist
+                    if (getComputedStyle(el).borderColor !== 'rgba(0, 0, 0, 0)') {
+                        el.style.borderColor = `hsl(${(elementHue + 30) % 360}, 60%, ${brightness}%)`;
+                    }
+                });
+                
+                // 4. SVG elements
+                document.querySelectorAll('svg').forEach((svg, index) => {
+                    const elementHue = (hue + index * 40 + 90) % 360;
+                    
+                    // Apply to all paths, circles, rects within SVG
+                    svg.querySelectorAll('path, circle, rect, line, polyline, polygon').forEach((el, i) => {
+                        const pathHue = (elementHue + i * 15) % 360;
+                        
+                        // Change stroke color
+                        if (el.getAttribute('stroke') && el.getAttribute('stroke') !== 'none') {
+                            el.style.stroke = `hsl(${pathHue}, 70%, ${brightness}%)`;
+                        }
+                        
+                        // Change fill color
+                        if (el.getAttribute('fill') && el.getAttribute('fill') !== 'none') {
+                            el.style.fill = `hsl(${(pathHue + 30) % 360}, 70%, ${brightness}%)`;
+                        }
+                    });
+                });
+                
+                // 5. Background elements and borders
+                document.querySelectorAll('.bg-white, .bg-gray-100, .bg-gray-200, .dark\\:bg-gray-800, .dark\\:bg-gray-900').forEach((el, index) => {
+                    const elementHue = (hue + index * 20 + 120) % 360;
+                    
+                    // Apply subtle background color shifts
+                    if (!document.documentElement.classList.contains('dark')) {
+                        // Light mode - very subtle shifts
+                        el.style.backgroundColor = `hsl(${elementHue}, 10%, 98%)`;
+                    } else {
+                        // Dark mode - very subtle shifts
+                        el.style.backgroundColor = `hsl(${elementHue}, 10%, 12%)`;
+                    }
+                });
+                
+                // 6. Border elements
+                document.querySelectorAll('[class*="border"]').forEach((el, index) => {
+                    const elementHue = (hue + index * 30 + 150) % 360;
+                    
+                    // Only change if there's actually a border
+                    if (getComputedStyle(el).borderWidth !== '0px') {
+                        el.style.borderColor = `hsl(${elementHue}, 30%, ${brightness}%)`;
+                    }
                 });
                 
             }, 250);
@@ -1345,11 +1408,18 @@
             // Remove protection class from body
             document.body.classList.remove('screen-protection-active');
             
-            // Reset all text colors to their original values
-            const textElements = getAllTextElements();
-            textElements.forEach(el => {
-                el.style.transition = 'color 1s ease';
+            // Reset all element styles
+            document.querySelectorAll('*').forEach(el => {
+                el.style.transition = 'color 1s ease, background-color 1s ease, border-color 1s ease, stroke 1s ease, fill 1s ease';
                 el.style.color = '';
+                el.style.backgroundColor = '';
+                el.style.borderColor = '';
+                
+                // For SVG elements
+                if (el.tagName === 'svg' || el.closest('svg')) {
+                    el.style.stroke = '';
+                    el.style.fill = '';
+                }
             });
             
             resetInactivityTimer();
@@ -1366,7 +1436,7 @@
             protectionNotice.style.display = 'none';
             
             // Reset seconds counter
-            secondsLeft = 60; // 1 minute (changed from 5 minutes)
+            secondsLeft = 60; // 1 minute
             
             // Only set up timers if we're on a large screen
             if (!isLargeScreen) return;
@@ -1374,7 +1444,7 @@
             // Set up the inactivity timer
             inactivityTimeout = setTimeout(() => {
                 showPreActivationCountdown();
-            }, 30000); // 30 seconds (changed from 4:30 minutes)
+            }, 30000); // 30 seconds
         }
 
         function showPreActivationCountdown() {
