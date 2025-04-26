@@ -80,6 +80,20 @@
                 extend: {
                     colors: {
                         primary: '#5D5CDE',
+                    },
+                    animation: {
+                        'eq1': 'equalize 0.5s ease-in-out infinite alternate',
+                        'eq2': 'equalize 0.4s ease-in-out infinite alternate',
+                        'eq3': 'equalize 0.3s ease-in-out infinite alternate',
+                        'eq4': 'equalize 0.45s ease-in-out infinite alternate',
+                        'eq5': 'equalize 0.35s ease-in-out infinite alternate'
+                    },
+                    keyframes: {
+                        equalize: {
+                            '0%': { height: '0%' },
+                            '50%': { height: '60%' },
+                            '100%': { height: '25%' }
+                        }
                     }
                 }
             }
@@ -270,6 +284,17 @@
                                         <rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="white" class="dark:fill-gray-800" />
                                         <path class="play-icon" d="M10 8l6 4-6 4V8z" fill="currentColor" />
                                     </svg>
+                                    
+                                    <!-- Equalizer animation (hidden by default) -->
+                                    <div class="absolute inset-0 pointer-events-none hidden" data-equalizer-id="${itemId}">
+                                        <div class="absolute bottom-2 left-0 right-0 flex items-end justify-center h-[calc(100%-8px)]">
+                                            <div class="eq-bar bg-red-500 w-0.5 mx-px h-0 animate-eq1"></div>
+                                            <div class="eq-bar bg-red-500 w-0.5 mx-px h-0 animate-eq2"></div>
+                                            <div class="eq-bar bg-red-500 w-0.5 mx-px h-0 animate-eq3"></div>
+                                            <div class="eq-bar bg-red-500 w-0.5 mx-px h-0 animate-eq4"></div>
+                                            <div class="eq-bar bg-red-500 w-0.5 mx-px h-0 animate-eq5"></div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <span>${item.title}</span>
                             </div>
@@ -823,11 +848,17 @@
         
         function updatePlayButtonState(audioId, isPlaying) {
             const playButton = document.querySelector(`[data-audio-id="${audioId}"]`);
+            const equalizerElement = document.querySelector(`[data-equalizer-id="${audioId}"]`);
             const fixedStopButton = document.getElementById('fixedStopButton');
             
             if (isPlaying) {
                 // Change to pause icon (square)
                 playButton.querySelector('path').setAttribute('d', 'M9 9h6v6H9z');
+                
+                // Show equalizer animation when playing
+                if (equalizerElement) {
+                    equalizerElement.classList.remove('hidden');
+                }
                 
                 // Show fixed stop button with bounce effect (but not for clave)
                 if (!clavePlaying) {
@@ -849,6 +880,11 @@
             } else {
                 // Change to play icon (triangle)
                 playButton.querySelector('path').setAttribute('d', 'M10 8l6 4-6 4V8z');
+                
+                // Hide equalizer animation when not playing
+                if (equalizerElement) {
+                    equalizerElement.classList.add('hidden');
+                }
                 
                 // Hide fixed stop button only if there's absolutely no audio playing
                 if (!currentAudio && !currentOscillator && !clavePlaying && !fixedStopButton.classList.contains('hidden')) {
