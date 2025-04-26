@@ -9,13 +9,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Styles for audio buttons that don't have an MP3 file */
+        /* Audio button states */
         .audio-unavailable {
             position: relative;
         }
         
         .audio-unavailable svg.play-button {
-            color: #888888 !important; /* Gray color instead of primary */
+            color: #888888 !important;
             stroke: #888888 !important;
         }
         
@@ -44,6 +44,7 @@
             cursor: not-allowed;
         }
         
+        /* Button animations */
         @keyframes pulseError {
             0% { transform: scale(1); }
             50% { transform: scale(1.05); }
@@ -54,7 +55,7 @@
             animation: pulseError 0.3s ease-in-out;
         }
         
-        /* Animations for the fixed stop button */
+        /* Fixed stop button animations */
         @keyframes bounceIn {
             0% { transform: translate(-50%, 100px); opacity: 0; }
             60% { transform: translate(-50%, -10px); opacity: 1; }
@@ -76,7 +77,7 @@
             animation: bounceOut 0.4s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards;
         }
         
-        /* Animations for the modal window */
+        /* Modal window animations */
         @keyframes modalFadeIn {
             0% { opacity: 0; }
             100% { opacity: 1; }
@@ -115,9 +116,8 @@
             animation: modalContentOut 0.3s ease-in forwards;
         }
         
-        /* Screen protection styles - only for large screens */
+        /* Screen protection styles (large screens only) */
         @media (min-width: 1024px) {
-            /* Screen protection notification */
             .screen-protection-notice {
                 position: fixed;
                 bottom: 20px;
@@ -135,7 +135,6 @@
                 display: none;
             }
             
-            /* Countdown circle */
             .countdown-circle {
                 position: fixed;
                 bottom: 70px;
@@ -164,22 +163,19 @@
                 font-weight: bold;
             }
             
-            /* Enhanced screen protection - applies to all elements */
+            /* Element transition styles */
             .screen-protection-active * {
                 transition: color 5s ease, background-color 5s ease, border-color 5s ease, stroke 5s ease, fill 5s ease !important;
             }
             
-            /* Special transition for SVG elements */
             .screen-protection-active svg * {
                 transition: stroke 5s ease, fill 5s ease !important;
             }
             
-            /* Special transition for inputs */
             .screen-protection-active input {
                 transition: color 5s ease, background-color 5s ease, border-color 5s ease !important;
             }
             
-            /* Special transition for buttons and interactive elements */
             .screen-protection-active button,
             .screen-protection-active [role="button"],
             .screen-protection-active .cursor-pointer {
@@ -187,7 +183,7 @@
             }
         }
         
-        /* Device size indicator styles */
+        /* Device size indicator */
         #device-size-indicator {
             position: fixed;
             bottom: 10px;
@@ -237,16 +233,13 @@
         const storedTheme = localStorage.getItem('theme');
         const systemDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
         
-        // Set initial theme from localStorage or system preference
         if (storedTheme === 'dark' || (!storedTheme && systemDarkMode)) {
             document.documentElement.classList.add('dark');
         } else {
             document.documentElement.classList.remove('dark');
         }
         
-        // Listen for changes in system color scheme preference
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
-            // Only apply system preference if user hasn't manually set a preference
             if (!localStorage.getItem('theme')) {
                 if (event.matches) {
                     document.documentElement.classList.add('dark');
@@ -260,21 +253,21 @@
 <body class="min-h-screen bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-200">
     <div class="container mx-auto px-2 sm:px-3 pt-10 pb-20 max-w-md md:max-w-lg lg:max-w-2xl xl:max-w-4xl 2xl:max-w-6xl min-h-screen flex flex-col">
         <div>
+            <!-- App Header -->
             <h1 class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-0 text-gray-800 dark:text-gray-200 text-center font-headings">Cánticos de Victoria</h1>
-            
             <p id="subtitle" class="mb-2 text-sm md:text-base lg:text-lg xl:text-xl text-gray-600 dark:text-gray-400 text-center">Una colección de coritos</p>
             
-            <!-- Fixed search bar container -->
+            <!-- Search Bar -->
             <div id="searchBarContainer" class="sticky top-0 z-10 bg-white dark:bg-gray-900 pt-2 pb-1 mb-4 transition-shadow duration-300">
                 <div class="relative">
                     <input type="text" id="searchInput" class="w-full px-4 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors text-base md:text-lg lg:text-xl" placeholder="Search...">
                     <div class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 dark:text-gray-500">
-                        <!-- Search icon (shown by default) -->
+                        <!-- Search icon -->
                         <svg id="searchIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
                         
-                        <!-- Clear search icon (hidden by default) -->
+                        <!-- Clear search icon -->
                         <svg id="clearSearchIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden cursor-pointer hover:text-gray-600 dark:hover:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" onclick="clearSearch()">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                         </svg>
@@ -283,6 +276,7 @@
                 <p id="noResults" class="mt-2 text-sm md:text-base lg:text-lg text-red-500 dark:text-red-400 text-center hidden">No se encontraron resultados</p>
             </div>
             
+            <!-- Loading Indicator -->
             <div id="loadingIndicator" class="flex items-center justify-center py-4">
                 <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -291,19 +285,20 @@
                 <span class="md:text-lg lg:text-xl">Cargando cánticos...</span>
             </div>
             
+            <!-- Error Message -->
             <div id="errorMessage" class="hidden py-4 px-4 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg mb-4">
                 <p class="md:text-lg lg:text-xl">Error al cargar el archivo de cánticos. Por favor, verifique que exista el archivo "canticos.txt" en el directorio raíz.</p>
             </div>
             
-            <!-- Dynamic item list -->
+            <!-- Item List -->
             <ul id="itemList" class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-md cursor-pointer">
                 <!-- Items will be populated dynamically -->
             </ul>
         </div>
         
-        <!-- Copyright Footer with theme toggle -->
+        <!-- Footer -->
         <footer class="mt-auto pt-8 pb-4 text-center text-sm text-gray-500 dark:text-gray-400">
-            <!-- Theme toggle switch -->
+            <!-- Theme Toggle Switch -->
             <div class="flex justify-center items-center mb-3">
                 <span class="mr-2 text-yellow-500">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -323,251 +318,16 @@
             
             <p class="md:text-base lg:text-lg"><span id="current-year">2025</span> Cánticos de Victoria. Ministerio Monte De Dios.</p>
             
-            <!-- Screen protection notice - Only visible on large screens -->
+            <!-- Screen Protection Notice -->
             <p class="text-xs text-gray-500 dark:text-gray-400 mt-2 hidden lg:block">
                 Protección anti-quemado de pantalla activa. Se iniciará después de 1 minuto de inactividad.
             </p>
         </footer>
-        
-        <!-- Device size indicator (bottom left corner) -->
-        <div id="device-size-indicator">mobile</div>
-        
-        <script>
-            // Set the current year in the copyright notice
-            document.getElementById('current-year').textContent = new Date().getFullYear();
-            
-            // Add shadow to search bar when scrolling
-            window.addEventListener('scroll', function() {
-                const searchBar = document.getElementById('searchBarContainer');
-                if (window.scrollY > 10) {
-                    searchBar.classList.add('shadow-md');
-                } else {
-                    searchBar.classList.remove('shadow-md');
-                }
-            });
-            
-            // Device size indicator
-            function updateDeviceSizeIndicator() {
-                const indicator = document.getElementById('device-size-indicator');
-                const width = window.innerWidth;
-                
-                if (width >= 1536) {
-                    indicator.textContent = '2xl: 1536px+';
-                    indicator.style.backgroundColor = 'rgba(76, 29, 149, 0.8)'; // Purple for 2xl
-                } else if (width >= 1280) {
-                    indicator.textContent = 'xl: 1280px+';
-                    indicator.style.backgroundColor = 'rgba(30, 64, 175, 0.8)'; // Blue for xl
-                } else if (width >= 1024) {
-                    indicator.textContent = 'lg: 1024px+';
-                    indicator.style.backgroundColor = 'rgba(21, 128, 61, 0.8)'; // Green for lg
-                } else if (width >= 768) {
-                    indicator.textContent = 'md: 768px+';
-                    indicator.style.backgroundColor = 'rgba(180, 83, 9, 0.8)'; // Orange for md
-                } else if (width >= 640) {
-                    indicator.textContent = 'sm: 640px+';
-                    indicator.style.backgroundColor = 'rgba(185, 28, 28, 0.8)'; // Red for sm
-                } else {
-                    indicator.textContent = 'mobile: <640px';
-                    indicator.style.backgroundColor = 'rgba(0, 0, 0, 0.7)'; // Black for mobile
-                }
-                
-                // Add the width in pixels
-                indicator.textContent += ` (${width}px)`;
-            }
-            
-            // Update the indicator on load and resize
-            window.addEventListener('resize', updateDeviceSizeIndicator);
-            document.addEventListener('DOMContentLoaded', updateDeviceSizeIndicator);
-            
-            // Load canticos from fixed file path
-            document.addEventListener('DOMContentLoaded', function() {
-                const itemList = document.getElementById('itemList');
-                const subtitle = document.getElementById('subtitle');
-                const loadingIndicator = document.getElementById('loadingIndicator');
-                const errorMessage = document.getElementById('errorMessage');
-                
-                // Load the canticos.txt file from root directory
-                loadCanticosFile();
-                
-                async function loadCanticosFile() {
-                    try {
-                        // Fetch the canticos.txt file
-                        const response = await fetch('canticos.txt');
-                        
-                        if (!response.ok) {
-                            throw new Error(`Error ${response.status}: ${response.statusText}`);
-                        }
-                        
-                        // Read the text content
-                        const content = await response.text();
-                        
-                        // Process the file content
-                        processFileContent(content);
-                        
-                        // Hide loading indicator
-                        loadingIndicator.classList.add('hidden');
-                    } catch (error) {
-                        console.error('Error loading canticos.txt:', error);
-                        
-                        // Show error message
-                        loadingIndicator.classList.add('hidden');
-                        errorMessage.classList.remove('hidden');
-                        
-                        // Fall back to default items
-                        loadDefaultItems();
-                    }
-                }
-                
-                // Process the file content and generate list items
-                function processFileContent(content) {
-                    // Split content by blank lines to separate items
-                    const blocks = content.split(/\r?\n\r?\n+/);
-                    const items = [];
-                    
-                    // Process each block as an item
-                    blocks.forEach(block => {
-                        if (!block.trim()) return; // Skip empty blocks
-                        
-                        // Split the block into lines
-                        const lines = block.split(/\r?\n/);
-                        
-                        // First line is the title
-                        const title = lines[0].trim();
-                        
-                        // Remaining lines are the content (if any)
-                        const contentLines = lines.slice(1);
-                        const content = contentLines.join('\n').trim();
-                        
-                        // Add this item to our collection
-                        items.push({ title, content });
-                    });
-                    
-                    // Clear existing items
-                    itemList.innerHTML = '';
-                    
-                    // Generate new items from the parsed content
-                    items.forEach((item, index) => {
-                        const itemId = `audio-${index + 1}`;
-                        const isLastItem = index === items.length - 1;
-                        
-                        const listItem = document.createElement('li');
-                        listItem.className = `py-3 px-2 ${!isLastItem ? 'border-b border-gray-200 dark:border-gray-700' : ''} hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors`;
-                        listItem.onclick = function() {
-                            openModal(item.title, item.content);
-                        };
-                        
-                        // Generate audio filename from title
-                        const audioFilename = generateAudioFilename(item.title);
-                        const audioPath = `audio/${audioFilename}.mp3`;
-                        
-                        // Create the button HTML with conditional styling based on audio availability
-                        listItem.innerHTML = `
-                            <div class="flex items-center">
-                                <div class="relative h-10 w-10 mr-3 cursor-pointer" onclick="playAudio(event, '${itemId}')">
-                                    <!-- Play button background and border -->
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-10 w-10 text-gray-900 dark:text-gray-100 play-button" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" data-audio-id="${itemId}">
-                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="white" class="dark:fill-gray-800" />
-                                        <path class="play-icon" d="M10 8l6 4-6 4V8z" fill="currentColor" />
-                                    </svg>
-                                    
-                                    <!-- Equalizer animation (hidden by default) -->
-                                    <div class="absolute inset-0 pointer-events-none hidden" data-equalizer-id="${itemId}">
-                                        <div class="absolute bottom-2 left-0 right-0 flex items-end justify-center h-[calc(100%-8px)]">
-                                            <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq1"></div>
-                                            <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq2"></div>
-                                            <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq3"></div>
-                                            <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq4"></div>
-                                            <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq5"></div>
-                                            <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq6"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <span class="font-bold md:text-lg lg:text-xl xl:text-2xl">${item.title}</span>
-                            </div>
-                            <audio id="${itemId}" preload="none">
-                                <source src="${audioPath}" type="audio/mpeg">
-                            </audio>
-                        `;
-                        
-                        itemList.appendChild(listItem);
-                        
-                        // Check if audio file exists and mark as unavailable if needed
-                        checkAudioFileExists(audioPath, itemId);
-                    });
-                    
-                    // Update subtitle with item count after processing all items - bold number
-                    subtitle.innerHTML = `Una colección de <strong>${items.length}</strong> coritos`;
-                }
-                
-                // Function to check if an audio file exists
-                function checkAudioFileExists(audioPath, audioId) {
-                    fetch(audioPath, { method: 'HEAD' })
-                        .then(response => {
-                            if (!response.ok) {
-                                // If fetch returns not OK, mark the audio as unavailable
-                                markAudioAsUnavailable(audioId);
-                            }
-                        })
-                        .catch(error => {
-                            // If fetch fails, mark the audio as unavailable
-                            console.error(`Error checking audio file ${audioPath}:`, error);
-                            markAudioAsUnavailable(audioId);
-                        });
-                }
-                
-                // Function to mark an audio file as unavailable
-                function markAudioAsUnavailable(audioId) {
-                    // Add to the set of unavailable files
-                    unavailableAudioFiles.add(audioId);
-                    
-                    // Apply visual styling directly to the existing SVG
-                    const svgElement = document.querySelector(`[data-audio-id="${audioId}"]`);
-                    if (svgElement) {
-                        // Change the stroke color to gray
-                        svgElement.setAttribute("stroke", "#888888");
-                        
-                        // Find and update the path and rect elements
-                        const pathElement = svgElement.querySelector('path');
-                        const rectElement = svgElement.querySelector('rect');
-                        
-                        if (pathElement) {
-                            // Change the fill color of the play triangle
-                            pathElement.setAttribute("fill", "#888888");
-                        }
-                        
-                        if (rectElement) {
-                            // Keep the background white but change the border color to gray
-                            rectElement.setAttribute("fill", "white");
-                            rectElement.setAttribute("class", "dark:fill-gray-800");
-                        }
-                        
-                        // Add not-allowed cursor to the button container
-                        const buttonContainer = svgElement.closest('.relative');
-                        if (buttonContainer) {
-                            buttonContainer.style.cursor = 'not-allowed';
-                        }
-                    }
-                }
-                
-                // Add some default items as fallback
-                function loadDefaultItems() {
-                    const defaultContent = 
-                        "Corito 101\n" +
-                        "Esta es la primera línea del corito 101.\n" +
-                        "Esta es la segunda línea del corito 101.\n" +
-                        "Esta es la tercera línea del corito 101.\n\n" +
-                        "Corito 102\n" +
-                        "Esta es la primera línea del corito 102.\n" +
-                        "Esta es la segunda línea del corito 102.\n\n" +
-                        "Corito 103\n" +
-                        "Este es el contenido del corito 103.\n" +
-                        "Con múltiples líneas para mostrar cómo se presenta el contenido.";
-                    processFileContent(defaultContent);
-                }
-            });
-        </script>
     </div>
 
+    <!-- Device Size Indicator -->
+    <div id="device-size-indicator">mobile</div>
+    
     <!-- Modal -->
     <div id="modal" class="fixed inset-0 z-50 hidden overflow-auto bg-black bg-opacity-75 flex items-center justify-center p-2">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-[75vw] w-full max-h-[95vh] overflow-auto">
@@ -590,12 +350,12 @@
         </div>
     </div>
     
-    <!-- Fixed stop button (hidden by default) -->
+    <!-- Fixed Stop Button -->
     <div id="fixedStopButton" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 w-14 h-14 rounded-full bg-red-500 shadow-xl flex items-center justify-center cursor-pointer z-50 hidden transition-all duration-300 hover:scale-110 active:scale-95" onclick="stopCurrentAudio()">
         <div class="w-5 h-5 bg-white rounded-sm"></div>
     </div>
     
-    <!-- Screen protection notification elements (only for large screens) -->
+    <!-- Screen Protection Elements -->
     <div class="screen-protection-notice" id="protectionNotice">
         Protección de pantalla activándose en breve...
     </div>
@@ -605,7 +365,373 @@
     </div>
 
     <script>
-        // Modal functionality
+        /********************************
+         * GLOBAL VARIABLES
+         ********************************/
+        // Audio playback state
+        let audioContext;
+        let currentOscillator = null;
+        let currentGain = null;
+        let currentAudio = null;
+        let playingButtonId = null;
+        const unavailableAudioFiles = new Set();
+        
+        // Clave pattern state
+        let claveInterval = null;
+        let clavePlaying = false;
+        let claveStep = 0;
+        const clavePattern = [1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0]; // 3-2 Son Clave
+        
+        // Screen protection state
+        let isProtectionActive = false;
+        let cycleInterval;
+        let inactivityTimeout;
+        let countdownInterval;
+        let secondsLeft = 60; // 1 minute
+        let isLargeScreen = window.innerWidth >= 1024;
+        
+        /********************************
+         * INITIALIZATION
+         ********************************/
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set current year in copyright
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+            
+            // Set theme toggle initial state
+            const themeToggle = document.getElementById('themeToggle');
+            if (document.documentElement.classList.contains('dark')) {
+                themeToggle.checked = true;
+            }
+            
+            // Count and display items
+            const itemCount = document.querySelectorAll('ul li').length;
+            document.getElementById('subtitle').innerHTML = `Una colección de <strong>${itemCount}</strong> coritos`;
+            
+            // Load content
+            loadCanticosFile();
+            
+            // Initialize device size indicator
+            updateDeviceSizeIndicator();
+            
+            // Initialize screen protection on large screens
+            if (isLargeScreen) {
+                resetInactivityTimer();
+            }
+            
+            // Set up event listeners
+            setupEventListeners();
+        });
+        
+        /********************************
+         * SETUP FUNCTIONS
+         ********************************/
+        function setupEventListeners() {
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', handleSearch);
+            
+            // Theme toggle
+            const themeToggle = document.getElementById('themeToggle');
+            themeToggle.addEventListener('change', toggleTheme);
+            
+            // Search bar shadow on scroll
+            window.addEventListener('scroll', function() {
+                const searchBar = document.getElementById('searchBarContainer');
+                if (window.scrollY > 10) {
+                    searchBar.classList.add('shadow-md');
+                } else {
+                    searchBar.classList.remove('shadow-md');
+                }
+            });
+            
+            // Device size updates
+            window.addEventListener('resize', function() {
+                isLargeScreen = window.innerWidth >= 1024;
+                
+                if (!isLargeScreen && isProtectionActive) {
+                    stopColorCycling();
+                } else if (isLargeScreen && !inactivityTimeout) {
+                    resetInactivityTimer();
+                }
+                
+                updateDeviceSizeIndicator();
+            });
+            
+            // Reset inactivity timer on user interaction
+            ['mousemove', 'mousedown', 'keypress', 'touchstart', 'scroll', 'click'].forEach(evt => {
+                document.addEventListener(evt, () => {
+                    if (isProtectionActive) {
+                        stopColorCycling();
+                    } else {
+                        resetInactivityTimer();
+                    }
+                });
+            });
+            
+            // Modal close events
+            document.getElementById('modal').addEventListener('click', function(event) {
+                if (event.target === this) {
+                    closeModal();
+                }
+            });
+            
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape' && !document.getElementById('modal').classList.contains('hidden')) {
+                    closeModal();
+                }
+            });
+        }
+        
+        function toggleTheme() {
+            if (this.checked) {
+                // Switch to dark mode
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                // Switch to light mode
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+        
+        /********************************
+         * SEARCH FUNCTIONALITY
+         ********************************/
+        function handleSearch() {
+            const searchTerm = normalizeText(this.value);
+            const listItems = document.querySelectorAll('#itemList li');
+            const noResults = document.getElementById('noResults');
+            let visibleCount = 0;
+            
+            // Update icons based on input value
+            toggleSearchIcons(this.value);
+            
+            // If search term is empty, show all items
+            if (searchTerm === '') {
+                listItems.forEach(item => {
+                    item.classList.remove('hidden');
+                });
+                noResults.classList.add('hidden');
+                return;
+            }
+            
+            // Filter items based on normalized search term
+            listItems.forEach(item => {
+                const title = normalizeText(item.querySelector('span').textContent);
+                // If normalized item title contains search term, show it, otherwise hide it
+                if (title.includes(searchTerm)) {
+                    item.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+            
+            // Show or hide the "no results" message
+            if (visibleCount === 0) {
+                noResults.classList.remove('hidden');
+            } else {
+                noResults.classList.add('hidden');
+            }
+        }
+        
+        function normalizeText(text) {
+            return text
+                .toLowerCase()
+                .replace(/ñ/g, "n")                 // Replace ñ with n explicitly
+                .normalize("NFD")                   // Normalize accented characters
+                .replace(/[\u0300-\u036f]/g, "")    // Remove diacritics (accents)
+                .replace(/[^\w\s]/g, " ")          // Replace special chars with spaces
+                .replace(/\s+/g, " ")              // Normalize multiple spaces
+                .trim();                           // Remove leading/trailing whitespace
+        }
+        
+        function clearSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const noResults = document.getElementById('noResults');
+            
+            searchInput.value = '';
+            
+            // Show all items
+            const listItems = document.querySelectorAll('#itemList li');
+            listItems.forEach(item => {
+                item.classList.remove('hidden');
+            });
+            
+            // Hide no results message
+            noResults.classList.add('hidden');
+            
+            // Update icons
+            toggleSearchIcons('');
+            
+            // Focus the search input
+            searchInput.focus();
+        }
+        
+        function toggleSearchIcons(value) {
+            const searchIcon = document.getElementById('searchIcon');
+            const clearSearchIcon = document.getElementById('clearSearchIcon');
+            
+            if (value.trim() === '') {
+                // Show search icon, hide clear icon
+                searchIcon.classList.remove('hidden');
+                clearSearchIcon.classList.add('hidden');
+            } else {
+                // Hide search icon, show clear icon
+                searchIcon.classList.add('hidden');
+                clearSearchIcon.classList.remove('hidden');
+            }
+        }
+        
+        /********************************
+         * CONTENT LOADING
+         ********************************/
+        async function loadCanticosFile() {
+            const itemList = document.getElementById('itemList');
+            const subtitle = document.getElementById('subtitle');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            try {
+                // Fetch the canticos.txt file
+                const response = await fetch('canticos.txt');
+                
+                if (!response.ok) {
+                    throw new Error(`Error ${response.status}: ${response.statusText}`);
+                }
+                
+                // Read the text content
+                const content = await response.text();
+                
+                // Process the file content
+                processFileContent(content);
+                
+                // Hide loading indicator
+                loadingIndicator.classList.add('hidden');
+            } catch (error) {
+                console.error('Error loading canticos.txt:', error);
+                
+                // Show error message
+                loadingIndicator.classList.add('hidden');
+                errorMessage.classList.remove('hidden');
+                
+                // Fall back to default items
+                loadDefaultItems();
+            }
+        }
+        
+        function processFileContent(content) {
+            const itemList = document.getElementById('itemList');
+            const subtitle = document.getElementById('subtitle');
+            
+            // Split content by blank lines to separate items
+            const blocks = content.split(/\r?\n\r?\n+/);
+            const items = [];
+            
+            // Process each block as an item
+            blocks.forEach(block => {
+                if (!block.trim()) return; // Skip empty blocks
+                
+                // Split the block into lines
+                const lines = block.split(/\r?\n/);
+                
+                // First line is the title
+                const title = lines[0].trim();
+                
+                // Remaining lines are the content (if any)
+                const contentLines = lines.slice(1);
+                const content = contentLines.join('\n').trim();
+                
+                // Add this item to our collection
+                items.push({ title, content });
+            });
+            
+            // Clear existing items
+            itemList.innerHTML = '';
+            
+            // Generate new items from the parsed content
+            items.forEach((item, index) => {
+                const itemId = `audio-${index + 1}`;
+                const isLastItem = index === items.length - 1;
+                
+                const listItem = document.createElement('li');
+                listItem.className = `py-3 px-2 ${!isLastItem ? 'border-b border-gray-200 dark:border-gray-700' : ''} hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors`;
+                listItem.onclick = function() {
+                    openModal(item.title, item.content);
+                };
+                
+                // Generate audio filename from title
+                const audioFilename = generateAudioFilename(item.title);
+                const audioPath = `audio/${audioFilename}.mp3`;
+                
+                // Create the button HTML with conditional styling based on audio availability
+                listItem.innerHTML = `
+                    <div class="flex items-center">
+                        <div class="relative h-10 w-10 mr-3 cursor-pointer" onclick="playAudio(event, '${itemId}')">
+                            <!-- Play button background and border -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-10 w-10 text-gray-900 dark:text-gray-100 play-button" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" data-audio-id="${itemId}">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="white" class="dark:fill-gray-800" />
+                                <path class="play-icon" d="M10 8l6 4-6 4V8z" fill="currentColor" />
+                            </svg>
+                            
+                            <!-- Equalizer animation (hidden by default) -->
+                            <div class="absolute inset-0 pointer-events-none hidden" data-equalizer-id="${itemId}">
+                                <div class="absolute bottom-2 left-0 right-0 flex items-end justify-center h-[calc(100%-8px)]">
+                                    <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq1"></div>
+                                    <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq2"></div>
+                                    <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq3"></div>
+                                    <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq4"></div>
+                                    <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq5"></div>
+                                    <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq6"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="font-bold md:text-lg lg:text-xl xl:text-2xl">${item.title}</span>
+                    </div>
+                    <audio id="${itemId}" preload="none">
+                        <source src="${audioPath}" type="audio/mpeg">
+                    </audio>
+                `;
+                
+                itemList.appendChild(listItem);
+                
+                // Check if audio file exists and mark as unavailable if needed
+                checkAudioFileExists(audioPath, itemId);
+            });
+            
+            // Update subtitle with item count after processing all items - bold number
+            subtitle.innerHTML = `Una colección de <strong>${items.length}</strong> coritos`;
+        }
+        
+        function loadDefaultItems() {
+            const defaultContent = 
+                "Corito 101\n" +
+                "Esta es la primera línea del corito 101.\n" +
+                "Esta es la segunda línea del corito 101.\n" +
+                "Esta es la tercera línea del corito 101.\n\n" +
+                "Corito 102\n" +
+                "Esta es la primera línea del corito 102.\n" +
+                "Esta es la segunda línea del corito 102.\n\n" +
+                "Corito 103\n" +
+                "Este es el contenido del corito 103.\n" +
+                "Con múltiples líneas para mostrar cómo se presenta el contenido.";
+            processFileContent(defaultContent);
+        }
+        
+        function generateAudioFilename(title) {
+            return title
+                .toLowerCase()                      // Convert to lowercase
+                .replace(/ñ/g, "n")                 // Replace ñ with n explicitly
+                .normalize("NFD")                   // Normalize accented characters
+                .replace(/[\u0300-\u036f]/g, "")    // Remove diacritics (accents)
+                .replace(/[^\w\s]/g, "")           // Remove punctuation and special characters
+                .replace(/\s+/g, "_")              // Replace spaces with underscores
+                .trim();                            // Remove any leading/trailing whitespace
+        }
+        
+        /********************************
+         * MODAL FUNCTIONS
+         ********************************/
         function openModal(title, content) {
             const modal = document.getElementById('modal');
             const modalContentEl = modal.querySelector('.bg-white.dark\\:bg-gray-800');
@@ -647,169 +773,17 @@
                 document.body.classList.remove('overflow-hidden');
             }, 300); // Match the animation duration
         }
-
-        // Close modal when clicking outside
-        document.getElementById('modal').addEventListener('click', function(event) {
-            if (event.target === this) {
-                closeModal();
-            }
-        });
-
-        // Close modal on escape key
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape' && !document.getElementById('modal').classList.contains('hidden')) {
-                closeModal();
-            }
-        });
-
-        // Count items and update subtitle
-        document.addEventListener('DOMContentLoaded', function() {
-            const itemCount = document.querySelectorAll('ul li').length;
-            document.getElementById('subtitle').innerHTML = `Una colección de <strong>${itemCount}</strong> coritos`;
-            
-            // Set up search functionality
-            const searchInput = document.getElementById('searchInput');
-            const noResults = document.getElementById('noResults');
-            
-            // Function to normalize text for searching (remove accents, special chars)
-            function normalizeText(text) {
-                return text
-                    .toLowerCase()
-                    .replace(/ñ/g, "n")                 // Replace ñ with n explicitly
-                    .normalize("NFD")                   // Normalize accented characters
-                    .replace(/[\u0300-\u036f]/g, "")    // Remove diacritics (accents)
-                    .replace(/[^\w\s]/g, " ")          // Replace special chars with spaces
-                    .replace(/\s+/g, " ")              // Normalize multiple spaces
-                    .trim();                           // Remove leading/trailing whitespace
-            }
-            
-            // Function to clear search and reset results
-            function clearSearch() {
-                searchInput.value = '';
-                
-                // Show all items
-                const listItems = document.querySelectorAll('#itemList li');
-                listItems.forEach(item => {
-                    item.classList.remove('hidden');
-                });
-                
-                // Hide no results message
-                noResults.classList.add('hidden');
-                
-                // Update icons
-                toggleSearchIcons('');
-                
-                // Focus the search input
-                searchInput.focus();
-            }
-            
-            // Make clearSearch function globally available
-            window.clearSearch = clearSearch;
-            
-            // Function to toggle between search and clear icons
-            function toggleSearchIcons(value) {
-                const searchIcon = document.getElementById('searchIcon');
-                const clearSearchIcon = document.getElementById('clearSearchIcon');
-                
-                if (value.trim() === '') {
-                    // Show search icon, hide clear icon
-                    searchIcon.classList.remove('hidden');
-                    clearSearchIcon.classList.add('hidden');
-                } else {
-                    // Hide search icon, show clear icon
-                    searchIcon.classList.add('hidden');
-                    clearSearchIcon.classList.remove('hidden');
-                }
-            }
-            
-            searchInput.addEventListener('input', function() {
-                const searchTerm = normalizeText(this.value);
-                const listItems = document.querySelectorAll('#itemList li');
-                let visibleCount = 0;
-                
-                // Update icons based on input value
-                toggleSearchIcons(this.value);
-                
-                // If search term is empty, show all items
-                if (searchTerm === '') {
-                    listItems.forEach(item => {
-                        item.classList.remove('hidden');
-                    });
-                    noResults.classList.add('hidden');
-                    return;
-                }
-                
-                // Filter items based on normalized search term
-                listItems.forEach(item => {
-                    const title = normalizeText(item.querySelector('span').textContent);
-                    // If normalized item title contains search term, show it, otherwise hide it
-                    if (title.includes(searchTerm)) {
-                        item.classList.remove('hidden');
-                        visibleCount++;
-                    } else {
-                        item.classList.add('hidden');
-                    }
-                });
-                
-                // Show or hide the "no results" message
-                if (visibleCount === 0) {
-                    noResults.classList.remove('hidden');
-                } else {
-                    noResults.classList.add('hidden');
-                }
-            });
-            
-            // Set up theme toggle switch
-            const themeToggle = document.getElementById('themeToggle');
-            
-            // Set the initial state of the toggle based on current theme
-            if (document.documentElement.classList.contains('dark')) {
-                themeToggle.checked = true;
-            }
-            
-            // Listen for toggle changes
-            themeToggle.addEventListener('change', function() {
-                if (this.checked) {
-                    // Switch to dark mode
-                    document.documentElement.classList.add('dark');
-                    localStorage.setItem('theme', 'dark');
-                } else {
-                    // Switch to light mode
-                    document.documentElement.classList.remove('dark');
-                    localStorage.setItem('theme', 'light');
-                }
-            });
-        });
         
-        // Function to generate the audio filename from a title
-        function generateAudioFilename(title) {
-            return title
-                .toLowerCase()                      // Convert to lowercase
-                .replace(/ñ/g, "n")                 // Replace ñ with n explicitly
-                .normalize("NFD")                   // Normalize accented characters
-                .replace(/[\u0300-\u036f]/g, "")    // Remove diacritics (accents)
-                .replace(/[^\w\s]/g, "")           // Remove punctuation and special characters
-                .replace(/\s+/g, "_")              // Replace spaces with underscores
-                .trim();                            // Remove any leading/trailing whitespace
-        }
-        
-        // Web Audio API setup
-        let audioContext;
-        let currentOscillator = null;
-        let currentGain = null;
-        
-        // Variables to track audio playback
-        let currentAudio = null;
-        let playingButtonId = null;
-
-        // Initialize AudioContext on first user interaction to comply with autoplay policies
+        /********************************
+         * AUDIO FUNCTIONS
+         ********************************/
         function initAudioContext() {
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
             }
             return audioContext;
         }
-
+        
         function playAudio(event, audioId) {
             event.stopPropagation(); // Prevent modal from opening when clicking the play button
             
@@ -917,10 +891,54 @@
             }
         }
         
-        // Audio file availability tracker
-        const unavailableAudioFiles = new Set();
+        function checkAudioFileExists(audioPath, audioId) {
+            fetch(audioPath, { method: 'HEAD' })
+                .then(response => {
+                    if (!response.ok) {
+                        // If fetch returns not OK, mark the audio as unavailable
+                        markAudioAsUnavailable(audioId);
+                    }
+                })
+                .catch(error => {
+                    // If fetch fails, mark the audio as unavailable
+                    console.error(`Error checking audio file ${audioPath}:`, error);
+                    markAudioAsUnavailable(audioId);
+                });
+        }
         
-        // Fallback to playing a tone instead of an audio file
+        function markAudioAsUnavailable(audioId) {
+            // Add to the set of unavailable files
+            unavailableAudioFiles.add(audioId);
+            
+            // Apply visual styling directly to the existing SVG
+            const svgElement = document.querySelector(`[data-audio-id="${audioId}"]`);
+            if (svgElement) {
+                // Change the stroke color to gray
+                svgElement.setAttribute("stroke", "#888888");
+                
+                // Find and update the path and rect elements
+                const pathElement = svgElement.querySelector('path');
+                const rectElement = svgElement.querySelector('rect');
+                
+                if (pathElement) {
+                    // Change the fill color of the play triangle
+                    pathElement.setAttribute("fill", "#888888");
+                }
+                
+                if (rectElement) {
+                    // Keep the background white but change the border color to gray
+                    rectElement.setAttribute("fill", "white");
+                    rectElement.setAttribute("class", "dark:fill-gray-800");
+                }
+                
+                // Add not-allowed cursor to the button container
+                const buttonContainer = svgElement.closest('.relative');
+                if (buttonContainer) {
+                    buttonContainer.style.cursor = 'not-allowed';
+                }
+            }
+        }
+        
         function playFallbackTone(audioId) {
             // Mark this audio file as unavailable
             unavailableAudioFiles.add(audioId);
@@ -1133,15 +1151,9 @@
             }
         }
         
-        // Son Clave pattern functionality
-        let claveInterval = null;
-        let clavePlaying = false;
-        let claveStep = 0;
-        
-        // The 3-2 Son Clave pattern (1 = hit, 0 = rest)
-        // [1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0]
-        const clavePattern = [1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0];
-        
+        /********************************
+         * CLAVE PATTERN FUNCTIONS
+         ********************************/
         function toggleMetronome() {
             if (clavePlaying) {
                 stopClave();
@@ -1189,8 +1201,6 @@
                 const context = audioContext;
                 
                 // Create noise + resonant components for wooden stick sound
-                
-                // 1. Create noise for the initial "clack"
                 const bufferSize = 2 * context.sampleRate;
                 const noiseBuffer = context.createBuffer(1, bufferSize, context.sampleRate);
                 const output = noiseBuffer.getChannelData(0);
@@ -1204,7 +1214,7 @@
                 const noise = context.createBufferSource();
                 noise.buffer = noiseBuffer;
                 
-                // 2. Create bandpass filters to shape the noise into wooden tones
+                // Create bandpass filters to shape the noise into wooden tones
                 const filter1 = context.createBiquadFilter();
                 filter1.type = "bandpass";
                 filter1.frequency.value = 2800; // Higher resonance of wooden sticks
@@ -1215,12 +1225,12 @@
                 filter2.frequency.value = 1200; // Lower resonance of wooden sticks
                 filter2.Q.value = 8;
                 
-                // 3. Create short, sharp envelope for the "clack" sound
+                // Create short, sharp envelope for the "clack" sound
                 const gainNode = context.createGain();
                 gainNode.gain.value = 0;
                 gainNode.gain.setValueAtTime(0, context.currentTime);
-                gainNode.gain.linearRampToValueAtTime(1.0, context.currentTime + 0.001); // Very fast attack - increased volume
-                gainNode.gain.setValueAtTime(1.0, context.currentTime + 0.005);          // Hold briefly - increased volume
+                gainNode.gain.linearRampToValueAtTime(1.0, context.currentTime + 0.001); // Very fast attack
+                gainNode.gain.setValueAtTime(1.0, context.currentTime + 0.005);          // Hold briefly
                 gainNode.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 0.03); // Fast decay
                 
                 // Connect everything
@@ -1242,7 +1252,7 @@
                 const toneGain = context.createGain();
                 toneGain.gain.value = 0;
                 toneGain.gain.setValueAtTime(0, context.currentTime);
-                toneGain.gain.linearRampToValueAtTime(0.5, context.currentTime + 0.002); // Increased from 0.2 to 0.5
+                toneGain.gain.linearRampToValueAtTime(0.5, context.currentTime + 0.002);
                 toneGain.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 0.02);
                 
                 tone1.connect(toneGain);
@@ -1276,19 +1286,9 @@
             clavePlaying = false;
         }
         
-        // ENHANCED SCREEN PROTECTION IMPLEMENTATION (ALL UI ELEMENTS, LARGE SCREENS ONLY)
-        // Variables for screen protection
-        let isProtectionActive = false;
-        let cycleInterval;
-        let inactivityTimeout;
-        let countdownInterval;
-        let secondsLeft = 60; // 1 minute
-        let isLargeScreen = window.innerWidth >= 1024;
-        
-        // Store original styles for each element type to restore later
-        const originalStyles = new Map();
-        
-        // Function to start the enhanced color cycling to prevent burn-in
+        /********************************
+         * SCREEN PROTECTION SYSTEM
+         ********************************/
         function startColorCycling() {
             if (isProtectionActive || !isLargeScreen) return;
             
@@ -1307,7 +1307,7 @@
                 // Cycle through colors
                 hue = (hue + 1) % 360;
                 
-                // Oscillate brightness to keep elements readable but prevent burn-in
+                // Oscillate brightness for better protection
                 brightness += direction * 0.5;
                 if (document.documentElement.classList.contains('dark')) {
                     // Dark mode - keep brightness higher
@@ -1319,15 +1319,15 @@
                     if (brightness <= 20) direction = 1;
                 }
                 
-                // Apply styles to ALL elements with varying hues
+                // Apply styles to different element types
                 
-                // 1. Text elements (headings, paragraphs, spans)
+                // Text elements
                 document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, span, label, li').forEach((el, index) => {
                     const elementHue = (hue + index * 10) % 360;
                     el.style.color = `hsl(${elementHue}, 80%, ${brightness}%)`;
                 });
                 
-                // 2. Input elements
+                // Input elements
                 document.querySelectorAll('input').forEach((el, index) => {
                     const elementHue = (hue + index * 15 + 30) % 360;
                     el.style.color = `hsl(${elementHue}, 70%, ${brightness}%)`;
@@ -1341,7 +1341,7 @@
                     }
                 });
                 
-                // 3. Button elements
+                // Button elements
                 document.querySelectorAll('button, .cursor-pointer').forEach((el, index) => {
                     const elementHue = (hue + index * 25 + 60) % 360;
                     el.style.color = `hsl(${elementHue}, 80%, ${brightness}%)`;
@@ -1352,7 +1352,7 @@
                     }
                 });
                 
-                // 4. SVG elements
+                // SVG elements
                 document.querySelectorAll('svg').forEach((svg, index) => {
                     const elementHue = (hue + index * 40 + 90) % 360;
                     
@@ -1372,27 +1372,22 @@
                     });
                 });
                 
-                // 5. Background elements and borders
-                document.querySelectorAll('.bg-white, .bg-gray-100, .bg-gray-200, .dark\\:bg-gray-800, .dark\\:bg-gray-900').forEach((el, index) => {
+                // Background and border elements
+                document.querySelectorAll('[class*="bg-"], [class*="border"]').forEach((el, index) => {
                     const elementHue = (hue + index * 20 + 120) % 360;
                     
                     // Apply subtle background color shifts
-                    if (!document.documentElement.classList.contains('dark')) {
-                        // Light mode - very subtle shifts
-                        el.style.backgroundColor = `hsl(${elementHue}, 10%, 98%)`;
-                    } else {
-                        // Dark mode - very subtle shifts
-                        el.style.backgroundColor = `hsl(${elementHue}, 10%, 12%)`;
+                    if (el.className.includes('bg-') && getComputedStyle(el).backgroundColor !== 'rgba(0, 0, 0, 0)') {
+                        if (!document.documentElement.classList.contains('dark')) {
+                            el.style.backgroundColor = `hsl(${elementHue}, 10%, 98%)`;
+                        } else {
+                            el.style.backgroundColor = `hsl(${elementHue}, 10%, 12%)`;
+                        }
                     }
-                });
-                
-                // 6. Border elements
-                document.querySelectorAll('[class*="border"]').forEach((el, index) => {
-                    const elementHue = (hue + index * 30 + 150) % 360;
                     
-                    // Only change if there's actually a border
-                    if (getComputedStyle(el).borderWidth !== '0px') {
-                        el.style.borderColor = `hsl(${elementHue}, 30%, ${brightness}%)`;
+                    // Change border colors if applicable
+                    if (el.className.includes('border') && getComputedStyle(el).borderWidth !== '0px') {
+                        el.style.borderColor = `hsl(${(elementHue + 30) % 360}, 30%, ${brightness}%)`;
                     }
                 });
                 
@@ -1408,7 +1403,7 @@
             // Remove protection class from body
             document.body.classList.remove('screen-protection-active');
             
-            // Reset all element styles
+            // Reset all element styles with a smooth transition
             document.querySelectorAll('*').forEach(el => {
                 el.style.transition = 'color 1s ease, background-color 1s ease, border-color 1s ease, stroke 1s ease, fill 1s ease';
                 el.style.color = '';
@@ -1490,41 +1485,36 @@
             clearInterval(countdownInterval);
         }
 
-        // Check screen size on resize
-        window.addEventListener('resize', () => {
-            isLargeScreen = window.innerWidth >= 1024;
+        /********************************
+         * DEVICE SIZE INDICATOR
+         ********************************/
+        function updateDeviceSizeIndicator() {
+            const indicator = document.getElementById('device-size-indicator');
+            const width = window.innerWidth;
             
-            if (!isLargeScreen && isProtectionActive) {
-                stopColorCycling();
-            } else if (isLargeScreen && !inactivityTimeout) {
-                resetInactivityTimer();
+            if (width >= 1536) {
+                indicator.textContent = '2xl: 1536px+';
+                indicator.style.backgroundColor = 'rgba(76, 29, 149, 0.8)'; // Purple for 2xl
+            } else if (width >= 1280) {
+                indicator.textContent = 'xl: 1280px+';
+                indicator.style.backgroundColor = 'rgba(30, 64, 175, 0.8)'; // Blue for xl
+            } else if (width >= 1024) {
+                indicator.textContent = 'lg: 1024px+';
+                indicator.style.backgroundColor = 'rgba(21, 128, 61, 0.8)'; // Green for lg
+            } else if (width >= 768) {
+                indicator.textContent = 'md: 768px+';
+                indicator.style.backgroundColor = 'rgba(180, 83, 9, 0.8)'; // Orange for md
+            } else if (width >= 640) {
+                indicator.textContent = 'sm: 640px+';
+                indicator.style.backgroundColor = 'rgba(185, 28, 28, 0.8)'; // Red for sm
+            } else {
+                indicator.textContent = 'mobile: <640px';
+                indicator.style.backgroundColor = 'rgba(0, 0, 0, 0.7)'; // Black for mobile
             }
             
-            // Update device size indicator
-            updateDeviceSizeIndicator();
-        });
-
-        // Event listeners to reset the inactivity timer
-        ['mousemove', 'mousedown', 'keypress', 'touchstart', 'scroll', 'click'].forEach(evt => {
-            document.addEventListener(evt, () => {
-                if (isProtectionActive) {
-                    stopColorCycling();
-                } else {
-                    resetInactivityTimer();
-                }
-            });
-        });
-
-        // Initialize screen protection when the page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            isLargeScreen = window.innerWidth >= 1024;
-            if (isLargeScreen) {
-                resetInactivityTimer();
-            }
-            
-            // Initial device size indicator update
-            updateDeviceSizeIndicator();
-        });
+            // Add the width in pixels
+            indicator.textContent += ` (${width}px)`;
+        }
     </script>
 </body>
 </html>
