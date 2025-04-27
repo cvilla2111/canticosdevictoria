@@ -218,41 +218,9 @@
                 <span class="md:text-lg lg:text-xl">Cargando cánticos...</span>
             </div>
             
-            <!-- Error Message with Alternative Input Options -->
+            <!-- Error Message -->
             <div id="errorMessage" class="hidden py-4 px-4 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg mb-4">
-                <p class="md:text-lg lg:text-xl">Error al cargar el archivo de cánticos "canticos.txt".</p>
-                <div class="mt-4 flex flex-col gap-3">
-                    <p class="font-bold">Opciones alternativas:</p>
-                    
-                    <!-- Upload File Option -->
-                    <div class="bg-white dark:bg-gray-800 rounded-lg p-3 shadow-sm">
-                        <label for="fileInput" class="block font-medium mb-2">1. Subir archivo de texto:</label>
-                        <input type="file" id="fileInput" accept=".txt" class="block w-full text-sm text-gray-500 dark:text-gray-400
-                            file:mr-4 file:py-2 file:px-4
-                            file:rounded-full file:border-0
-                            file:text-sm file:font-semibold
-                            file:bg-primary file:bg-opacity-10 file:text-primary
-                            hover:file:bg-opacity-20
-                            cursor-pointer">
-                    </div>
-                    
-                    <!-- Paste Text Option -->
-                    <div class="bg-white dark:bg-gray-800 rounded-lg p-3 shadow-sm">
-                        <label for="pasteInput" class="block font-medium mb-2">2. Pegar contenido:</label>
-                        <textarea id="pasteInput" class="w-full h-32 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors text-base" placeholder="Pegar el contenido del archivo de cánticos aquí..."></textarea>
-                        <button id="processPastedText" class="mt-2 bg-primary hover:bg-primary/90 text-white font-bold py-2 px-4 rounded">
-                            Procesar texto
-                        </button>
-                    </div>
-                    
-                    <!-- Use Default Content Option -->
-                    <div class="bg-white dark:bg-gray-800 rounded-lg p-3 shadow-sm">
-                        <p class="font-medium mb-2">3. Usar contenido de ejemplo:</p>
-                        <button id="useDefaultContent" class="bg-gray-500 hover:bg-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">
-                            Cargar ejemplos
-                        </button>
-                    </div>
-                </div>
+                <p class="md:text-lg lg:text-xl">Error al cargar el archivo de cánticos. Por favor, verifique que exista el archivo "canticos.txt" en el directorio raíz.</p>
             </div>
             
             <!-- Item List -->
@@ -423,24 +391,6 @@
                 if (event.key === 'Escape' && !document.getElementById('modal').classList.contains('hidden')) {
                     closeModal();
                 }
-            });
-            
-            // File upload event listener
-            document.getElementById('fileInput').addEventListener('change', handleFileUpload);
-            
-            // Process pasted text button
-            document.getElementById('processPastedText').addEventListener('click', function() {
-                const pastedText = document.getElementById('pasteInput').value;
-                if (pastedText.trim() !== '') {
-                    processFileContent(pastedText);
-                    document.getElementById('errorMessage').classList.add('hidden');
-                }
-            });
-            
-            // Use default content button
-            document.getElementById('useDefaultContent').addEventListener('click', function() {
-                loadDefaultItems();
-                document.getElementById('errorMessage').classList.add('hidden');
             });
         }
         
@@ -680,30 +630,16 @@
         
         function loadDefaultItems() {
             const defaultContent = 
-                "Corito 101 - Gloria a Dios en las Alturas\n" +
-                "Gloria a Dios en las alturas\n" +
-                "Y en la tierra paz a los hombres\n" +
-                "Que ama el Señor\n\n" +
-                "Corito 102 - Santo es el Señor\n" +
-                "Santo, santo, santo es el Señor\n" +
-                "Dios del universo\n" +
-                "Llenos están el cielo y la tierra\n" +
-                "De tu gloria, hosanna\n\n" +
-                "Corito 103 - Mensaje de Paz\n" +
-                "Paz en la tierra\n" +
-                "Paz en las alturas\n" +
-                "Que el gozo eterno reine\n" +
-                "En nuestro corazón\n\n" +
-                "Corito 104 - Alabaré\n" +
-                "Alabaré, alabaré\n" +
-                "Alabaré a mi Señor\n" +
-                "Alabaré, alabaré\n" +
-                "Alabaré a mi Señor\n\n" +
-                "Corito 105 - Bendito sea el Señor\n" +
-                "Bendito sea el Señor\n" +
-                "Dios Poderoso\n" +
-                "Quien fue, quien es, y quien vendrá\n" +
-                "Bendito sea el Señor";
+                "Corito 101\n" +
+                "Esta es la primera línea del corito 101.\n" +
+                "Esta es la segunda línea del corito 101.\n" +
+                "Esta es la tercera línea del corito 101.\n\n" +
+                "Corito 102\n" +
+                "Esta es la primera línea del corito 102.\n" +
+                "Esta es la segunda línea del corito 102.\n\n" +
+                "Corito 103\n" +
+                "Este es el contenido del corito 103.\n" +
+                "Con múltiples líneas para mostrar cómo se presenta el contenido.";
             processFileContent(defaultContent);
         }
         
