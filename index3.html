@@ -116,20 +116,7 @@
             animation: modalContentOut 0.3s ease-in forwards;
         }
         
-        /* Device size indicator */
-        #device-size-indicator {
-            position: fixed;
-            bottom: 10px;
-            left: 10px;
-            padding: 4px 8px;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            font-size: 12px;
-            border-radius: 4px;
-            z-index: 1000;
-            pointer-events: none;
-            font-family: monospace;
-        }
+
     </style>
     <script>
         tailwind.config = {
@@ -253,8 +240,7 @@
         </footer>
     </div>
 
-    <!-- Device Size Indicator -->
-    <div id="device-size-indicator">mobile</div>
+
     
     <!-- Modal -->
     <div id="modal" class="fixed inset-0 z-50 hidden overflow-auto bg-black bg-opacity-75 flex items-center justify-center p-2">
@@ -341,9 +327,7 @@
             // Load content
             loadCanticosFile();
             
-            // Initialize device size indicator
-            updateDeviceSizeIndicator();
-            
+
             // Set up event listeners
             setupEventListeners();
             
@@ -377,9 +361,7 @@
                 }
             });
             
-            // Device size updates
-            window.addEventListener('resize', updateDeviceSizeIndicator);
-            
+
             // Modal close events
             document.getElementById('modal').addEventListener('click', function(event) {
                 if (event.target === this) {
@@ -1366,36 +1348,7 @@
             clavePlaying = false;
         }
         
-        /********************************
-         * DEVICE SIZE INDICATOR
-         ********************************/
-        function updateDeviceSizeIndicator() {
-            const indicator = document.getElementById('device-size-indicator');
-            const width = window.innerWidth;
-            
-            if (width >= 1536) {
-                indicator.textContent = '2xl: 1536px+';
-                indicator.style.backgroundColor = 'rgba(76, 29, 149, 0.8)'; // Purple for 2xl
-            } else if (width >= 1280) {
-                indicator.textContent = 'xl: 1280px+';
-                indicator.style.backgroundColor = 'rgba(30, 64, 175, 0.8)'; // Blue for xl
-            } else if (width >= 1024) {
-                indicator.textContent = 'lg: 1024px+';
-                indicator.style.backgroundColor = 'rgba(21, 128, 61, 0.8)'; // Green for lg
-            } else if (width >= 768) {
-                indicator.textContent = 'md: 768px+';
-                indicator.style.backgroundColor = 'rgba(180, 83, 9, 0.8)'; // Orange for md
-            } else if (width >= 640) {
-                indicator.textContent = 'sm: 640px+';
-                indicator.style.backgroundColor = 'rgba(185, 28, 28, 0.8)'; // Red for sm
-            } else {
-                indicator.textContent = 'mobile: <640px';
-                indicator.style.backgroundColor = 'rgba(0, 0, 0, 0.7)'; // Black for mobile
-            }
-            
-            // Add the width in pixels
-            indicator.textContent += ` (${width}px)`;
-        }
+
     </script>
 </body>
 </html>
