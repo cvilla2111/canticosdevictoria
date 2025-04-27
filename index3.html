@@ -291,6 +291,28 @@
     <div id="fixedStopButton" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 w-14 h-14 rounded-full bg-red-500 shadow-xl flex items-center justify-center cursor-pointer z-50 hidden transition-all duration-300 hover:scale-110 active:scale-95" onclick="stopCurrentAudio()">
         <div class="w-5 h-5 bg-white rounded-sm"></div>
     </div>
+    
+    <!-- Return to Top Button -->
+    <div id="returnToTopBtn" class="fixed bottom-5 right-5 w-12 h-12 cursor-pointer z-40 shadow-md rounded-full bg-white dark:bg-gray-800 transition-all duration-300 opacity-0 invisible hover:scale-110 active:scale-95" onclick="scrollToTop()">
+        <svg width="100%" height="100%" fill="none" stroke-linecap="square" stroke-miterlimit="10" version="1.1" viewBox="0 0 510.2 411.55" xmlns="http://www.w3.org/2000/svg" class="up-icon">
+            <defs>
+                <clipPath id="clipPath411-up">
+                    <path d="m129.72-5.7707h800v600h-800z"/>
+                </clipPath>
+                <clipPath id="clipPath417-up">
+                    <path d="m129.72-5.7707h800v600h-800z"/>
+                </clipPath>
+                <clipPath id="clipPath423-up">
+                    <path d="m129.72-5.7707h800v600h-800z"/>
+                </clipPath>
+            </defs>
+            <g fill-rule="evenodd">
+                <path transform="translate(-133.27 -88.454)" d="m376.97 88.454c-57.43 69.504-138.67 206.23-243.7 411.55h510.2c-93.146-103.81-182.14-240.98-266.49-411.55z" clip-path="url(#clipPath423-up)" fill="#46b961"/>
+                <path transform="translate(-133.27 -88.454)" d="m376.97 205.97c-28.441 8.7006-109.68 106.54-243.7 294.03h510.2c-107.62-134.9-196.63-233.21-266.49-294.03z" clip-path="url(#clipPath417-up)" fill="#3b5e2f"/>
+                <path transform="translate(-133.27 -88.454)" d="m243.99 205.97c-46.564 87.807-83.811 185.65-110.72 294.03 37.776-9.3852 99.08-14.061 184.08-14.061 84.983 0 193.64 4.6759 326.12 14.061-99.345-39.328-232.33-137.19-399.48-294.03z" clip-path="url(#clipPath411-up)" fill="#c7ce49"/>
+            </g>
+        </svg>
+    </div>
 
     <script>
         /********************************
@@ -351,17 +373,34 @@
             const themeToggle = document.getElementById('themeToggle');
             themeToggle.addEventListener('change', toggleTheme);
             
-            // Search bar shadow on scroll
+            // Search bar shadow and return-to-top button on scroll
             window.addEventListener('scroll', function() {
                 const searchBar = document.getElementById('searchBarContainer');
+                const returnToTopBtn = document.getElementById('returnToTopBtn');
+                
+                // Add shadow to search bar when scrolling
                 if (window.scrollY > 10) {
                     searchBar.classList.add('shadow-md');
                 } else {
                     searchBar.classList.remove('shadow-md');
                 }
+                
+                // Show/hide return-to-top button based on scroll position
+                if (window.scrollY > 300) {
+                    returnToTopBtn.classList.remove('opacity-0', 'invisible');
+                    returnToTopBtn.classList.add('opacity-100');
+                } else {
+                    returnToTopBtn.classList.remove('opacity-100');
+                    returnToTopBtn.classList.add('opacity-0');
+                    // Add a delay before making it invisible to allow the transition to complete
+                    setTimeout(() => {
+                        if (window.scrollY <= 300) {
+                            returnToTopBtn.classList.add('invisible');
+                        }
+                    }, 300);
+                }
             });
             
-
             // Modal close events
             document.getElementById('modal').addEventListener('click', function(event) {
                 if (event.target === this) {
@@ -1348,7 +1387,16 @@
             clavePlaying = false;
         }
         
-
+        /********************************
+         * SCROLL TO TOP FUNCTION
+         ********************************/
+        function scrollToTop() {
+            // Scroll to top with smooth animation
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
     </script>
 </body>
 </html>
