@@ -292,6 +292,11 @@
         <div class="w-5 h-5 bg-white rounded-sm"></div>
     </div>
     
+    <!-- Hidden Audio Element for Clave -->
+    <audio id="claveAudio" preload="auto" loop>
+        <source src="clave240bpm.mp3" type="audio/mpeg">
+    </audio>
+    
     <!-- Return to Top Button -->
     <div id="returnToTopBtn" class="fixed bottom-5 right-5 w-14 h-16 cursor-pointer z-40 shadow-md rounded-xl bg-white dark:bg-gray-800 transition-all duration-300 opacity-0 invisible hover:scale-110 active:scale-95 flex flex-col items-center justify-center" onclick="scrollToTop()">
         <div class="w-8 h-8">
@@ -330,11 +335,8 @@
         let currentModalAudioId = null; // Stores the audio ID associated with the currently open modal
         const unavailableAudioFiles = new Set();
         
-        // Clave pattern state
-        let claveInterval = null;
+        // Clave state
         let clavePlaying = false;
-        let claveStep = 0;
-        const clavePattern = [1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0]; // 3-2 Son Clave
         
         /********************************
          * INITIALIZATION
@@ -1267,120 +1269,51 @@
         }
         
         function startClave() {
-            // Initialize audio context if not already done
-            const context = initAudioContext();
-            
-            // Stop any playing HTML audio elements
+            // Stop any playing HTML audio elements or oscillators
             stopCurrentAudio();
             
-            // Also stop any fallback oscillator sounds
-            if (currentOscillator) {
-                stopCurrentSound();
-            }
+            // Get the clave audio element
+            const claveAudio = document.getElementById('claveAudio');
             
-            // BPM = 240, which is 240 quarter notes per minute
-            // For a clave pattern, we need 8th notes, so the interval is half
-            const bpm = 240;
-            const intervalMs = 60000 / bpm / 2; // 125ms for 8th notes at 240bpm
-            
-            // Reset step counter
-            claveStep = 0;
-            
-            // Update button state
-            const metronomeButton = document.getElementById('metronomeButton');
-            metronomeButton.classList.add('font-bold');
-            metronomeButton.classList.add('text-red-500');
-            clavePlaying = true;
-            
-            // Start clave pattern
-            playClaveTick(); // Play first tick immediately
-            
-            // Set up interval for subsequent ticks
-            claveInterval = setInterval(playClaveTick, intervalMs);
-        }
-        
-        function playClaveTick() {
-            // Only play sound when the pattern has a 1 at the current step
-            if (clavePattern[claveStep] === 1) {
-                const context = audioContext;
+            try {
+                // Reset to beginning
+                claveAudio.currentTime = 0;
                 
-                // Create noise + resonant components for wooden stick sound
-                const bufferSize = 2 * context.sampleRate;
-                const noiseBuffer = context.createBuffer(1, bufferSize, context.sampleRate);
-                const output = noiseBuffer.getChannelData(0);
+                // Play the clave audio file
+                const playPromise = claveAudio.play();
                 
-                // Fill buffer with noise
-                for (let i = 0; i < bufferSize; i++) {
-                    output[i] = Math.random() * 2 - 1;
+                // Handle the play promise (required for modern browsers)
+                if (playPromise !== undefined) {
+                    playPromise
+                        .then(() => {
+                            // Update button state to show it's playing
+                            const metronomeButton = document.getElementById('metronomeButton');
+                            metronomeButton.classList.add('font-bold');
+                            metronomeButton.classList.add('text-red-500');
+                            clavePlaying = true;
+                        })
+                        .catch(error => {
+                            console.error("Clave playback error:", error);
+                            // Reset state if audio can't play
+                            clavePlaying = false;
+                        });
                 }
-                
-                // Create noise source
-                const noise = context.createBufferSource();
-                noise.buffer = noiseBuffer;
-                
-                // Create bandpass filters to shape the noise into wooden tones
-                const filter1 = context.createBiquadFilter();
-                filter1.type = "bandpass";
-                filter1.frequency.value = 2800; // Higher resonance of wooden sticks
-                filter1.Q.value = 5;
-                
-                const filter2 = context.createBiquadFilter();
-                filter2.type = "bandpass";
-                filter2.frequency.value = 1200; // Lower resonance of wooden sticks
-                filter2.Q.value = 8;
-                
-                // Create short, sharp envelope for the "clack" sound
-                const gainNode = context.createGain();
-                gainNode.gain.value = 0;
-                gainNode.gain.setValueAtTime(0, context.currentTime);
-                gainNode.gain.linearRampToValueAtTime(1.0, context.currentTime + 0.001); // Very fast attack
-                gainNode.gain.setValueAtTime(1.0, context.currentTime + 0.005);          // Hold briefly
-                gainNode.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 0.03); // Fast decay
-                
-                // Connect everything
-                noise.connect(filter1);
-                noise.connect(filter2);
-                filter1.connect(gainNode);
-                filter2.connect(gainNode);
-                gainNode.connect(context.destination);
-                
-                // Add resonant tones for the wooden quality
-                const tone1 = context.createOscillator();
-                tone1.type = 'triangle';
-                tone1.frequency.value = 2400;
-                
-                const tone2 = context.createOscillator();
-                tone2.type = 'triangle';
-                tone2.frequency.value = 1600;
-                
-                const toneGain = context.createGain();
-                toneGain.gain.value = 0;
-                toneGain.gain.setValueAtTime(0, context.currentTime);
-                toneGain.gain.linearRampToValueAtTime(0.5, context.currentTime + 0.002);
-                toneGain.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 0.02);
-                
-                tone1.connect(toneGain);
-                tone2.connect(toneGain);
-                toneGain.connect(context.destination);
-                
-                // Start and stop all sources
-                noise.start(context.currentTime);
-                tone1.start(context.currentTime);
-                tone2.start(context.currentTime);
-                
-                noise.stop(context.currentTime + 0.05);
-                tone1.stop(context.currentTime + 0.05);
-                tone2.stop(context.currentTime + 0.05);
+            } catch (error) {
+                console.error("Clave audio error:", error);
+                clavePlaying = false;
             }
-            
-            // Move to next step in pattern
-            claveStep = (claveStep + 1) % clavePattern.length;
         }
         
         function stopClave() {
-            if (claveInterval) {
-                clearInterval(claveInterval);
-                claveInterval = null;
+            // Get the clave audio element
+            const claveAudio = document.getElementById('claveAudio');
+            
+            try {
+                // Pause and reset the audio
+                claveAudio.pause();
+                claveAudio.currentTime = 0;
+            } catch (e) {
+                console.error("Error stopping clave audio:", e);
             }
             
             // Update button state
