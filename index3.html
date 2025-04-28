@@ -667,10 +667,64 @@
                 `;
                 
                 itemList.appendChild(listItem);
+                
+                // Check if audio file exists and mark as grayed if not available
+                checkAudioFileExists(audioPath, itemId);
             });
             
             // Update subtitle with item count after processing all items - bold number
             subtitle.innerHTML = `Una colección de <strong>${items.length}</strong> coritos`;
+        }
+        
+        function checkAudioFileExists(audioPath, audioId) {
+            fetch(audioPath, { method: 'HEAD' })
+                .then(response => {
+                    if (!response.ok) {
+                        // If fetch returns not OK, mark the audio as potentially unavailable
+                        markAudioAsGrayed(audioId);
+                    }
+                })
+                .catch(error => {
+                    // If fetch fails, mark the audio as potentially unavailable
+                    console.error(`Error checking audio file ${audioPath}:`, error);
+                    markAudioAsGrayed(audioId);
+                });
+        }
+        
+        function markAudioAsGrayed(audioId) {
+            // Apply visual styling to make the button gray, but don't add it to unavailableAudioFiles
+            // This way it will still try to play when clicked, but appears gray initially
+            const svgElement = document.querySelector(`[data-audio-id="${audioId}"]`);
+            if (svgElement) {
+                // Change the stroke color to gray
+                svgElement.setAttribute("stroke", "#888888");
+                
+                // Find and update the path element
+                const pathElement = svgElement.querySelector('path');
+                if (pathElement) {
+                    // Change the fill color of the play triangle to gray
+                    pathElement.setAttribute("fill", "#888888");
+                }
+            }
+            
+            // Also update the modal play button if this is the current modal audio
+            if (audioId === currentModalAudioId) {
+                markModalPlayButtonAsGrayed();
+            }
+        }
+        
+        function markModalPlayButtonAsGrayed() {
+            const modalPlayButton = document.getElementById('modalPlayButton');
+            
+            // Change the stroke color to gray
+            modalPlayButton.setAttribute("stroke", "#888888");
+            
+            // Find and update the path element
+            const pathElement = modalPlayButton.querySelector('path');
+            if (pathElement) {
+                // Change the fill color of the play triangle to gray
+                pathElement.setAttribute("fill", "#888888");
+            }
         }
         
         function generateAudioFilename(title) {
