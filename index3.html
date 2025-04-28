@@ -918,34 +918,49 @@
             // Apply visual styling directly to the existing SVG
             const svgElement = document.querySelector(`[data-audio-id="${audioId}"]`);
             if (svgElement) {
-                // Change the stroke color to gray
-                svgElement.setAttribute("stroke", "#888888");
-                
-                // Find and update the path and rect elements
-                const pathElement = svgElement.querySelector('path');
-                const rectElement = svgElement.querySelector('rect');
-                
-                if (pathElement) {
-                    // Change the fill color of the play triangle
-                    pathElement.setAttribute("fill", "#888888");
-                }
-                
-                if (rectElement) {
-                    // Keep the background white but change the border color to gray
-                    rectElement.setAttribute("fill", "white");
-                    rectElement.setAttribute("class", "dark:fill-gray-800");
-                }
-                
-                // Add not-allowed cursor to the button container
+                // Get the parent container
                 const buttonContainer = svgElement.closest('.relative');
                 if (buttonContainer) {
+                    // Update the SVG colors directly - turn everything gray
+                    svgElement.setAttribute("stroke", "#888888");
+                    
+                    // Update the triangle path to be gray
+                    const pathElement = svgElement.querySelector('path');
+                    if (pathElement) {
+                        pathElement.setAttribute("fill", "#888888");
+                    }
+                    
+                    // Add the not-allowed cursor to the button container
                     buttonContainer.style.cursor = 'not-allowed';
+                    
+                    // Add the X mark
+                    const xMark = document.createElement('div');
+                    xMark.textContent = '✕';
+                    xMark.style.position = 'absolute';
+                    xMark.style.top = '50%';
+                    xMark.style.left = '50%';
+                    xMark.style.transform = 'translate(-50%, -50%)';
+                    xMark.style.fontSize = '24px';
+                    xMark.style.color = 'white';
+                    xMark.style.fontWeight = 'bold';
+                    xMark.style.zIndex = '5';
+                    xMark.style.textShadow = '0px 0px 2px rgba(0,0,0,0.5)';
+                    
+                    // Only add the X mark if it doesn't already exist
+                    if (!buttonContainer.querySelector('.unavailable-mark')) {
+                        xMark.classList.add('unavailable-mark');
+                        buttonContainer.appendChild(xMark);
+                    }
+                    
+                    // Add a class that we can use to style all unavailable buttons consistently
+                    buttonContainer.classList.add('audio-unavailable');
                 }
             }
         }
         
         function markModalPlayButtonAsUnavailable() {
             const modalPlayButton = document.getElementById('modalPlayButton');
+            const buttonContainer = modalPlayButton.parentElement;
             
             // Change the stroke color to gray
             modalPlayButton.setAttribute("stroke", "#888888");
@@ -966,14 +981,34 @@
             }
             
             // Add not-allowed cursor to the button container
-            const buttonContainer = modalPlayButton.parentElement;
             if (buttonContainer) {
                 buttonContainer.style.cursor = 'not-allowed';
+                
+                // Add a class that we can use to style all unavailable buttons consistently
+                buttonContainer.classList.add('audio-unavailable');
+                
+                // Add the X mark if it doesn't already exist
+                if (!buttonContainer.querySelector('.unavailable-mark')) {
+                    const xMark = document.createElement('div');
+                    xMark.textContent = '✕';
+                    xMark.style.position = 'absolute';
+                    xMark.style.top = '50%';
+                    xMark.style.left = '50%';
+                    xMark.style.transform = 'translate(-50%, -50%)';
+                    xMark.style.fontSize = '24px';
+                    xMark.style.color = 'white';
+                    xMark.style.fontWeight = 'bold';
+                    xMark.style.zIndex = '5';
+                    xMark.style.textShadow = '0px 0px 2px rgba(0,0,0,0.5)';
+                    xMark.classList.add('unavailable-mark');
+                    buttonContainer.appendChild(xMark);
+                }
             }
         }
         
         function resetModalPlayButton() {
             const modalPlayButton = document.getElementById('modalPlayButton');
+            const buttonContainer = modalPlayButton.parentElement;
             
             // Reset stroke color
             modalPlayButton.setAttribute("stroke", "currentColor");
@@ -993,10 +1028,16 @@
                 rectElement.setAttribute("class", "dark:fill-gray-800");
             }
             
-            // Reset cursor
-            const buttonContainer = modalPlayButton.parentElement;
+            // Reset cursor and remove unavailable class/element
             if (buttonContainer) {
                 buttonContainer.style.cursor = 'pointer';
+                buttonContainer.classList.remove('audio-unavailable');
+                
+                // Remove the X mark if it exists
+                const xMark = buttonContainer.querySelector('.unavailable-mark');
+                if (xMark) {
+                    buttonContainer.removeChild(xMark);
+                }
             }
         }
         
@@ -1082,24 +1123,14 @@
                 // Get the parent container
                 const buttonContainer = svgElement.closest('.relative');
                 if (buttonContainer) {
-                    // Replace the entire SVG with a gray version
-                    const oldSvg = buttonContainer.querySelector('svg');
-                    const newSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                    // Update the SVG colors directly - turn everything gray
+                    svgElement.setAttribute("stroke", "#888888");
                     
-                    // Copy attributes from old SVG to new one
-                    newSvg.setAttribute("class", oldSvg.getAttribute("class"));
-                    newSvg.setAttribute("viewBox", "0 0 24 24");
-                    newSvg.setAttribute("fill", "none");
-                    newSvg.setAttribute("data-audio-id", audioId);
-                    
-                    // Set the new SVG content with gray colors directly in the SVG
-                    newSvg.innerHTML = `
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="white" class="dark:fill-gray-800" stroke="#888888" stroke-width="1" />
-                        <path d="M10 8l6 4-6 4V8z" fill="#888888" />
-                    `;
-                    
-                    // Replace the old SVG with the new one
-                    oldSvg.parentNode.replaceChild(newSvg, oldSvg);
+                    // Update the triangle path to be gray
+                    const pathElement = svgElement.querySelector('path');
+                    if (pathElement) {
+                        pathElement.setAttribute("fill", "#888888");
+                    }
                     
                     // Add the not-allowed cursor to the button container
                     buttonContainer.style.cursor = 'not-allowed';
@@ -1122,6 +1153,9 @@
                         xMark.classList.add('unavailable-mark');
                         buttonContainer.appendChild(xMark);
                     }
+                    
+                    // Add a class that we can use to style all unavailable buttons consistently
+                    buttonContainer.classList.add('audio-unavailable');
                 }
             }
             
