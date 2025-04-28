@@ -777,8 +777,14 @@
             // Set the title and content
             document.getElementById('modalTitle').textContent = title;
             
-            // Format the content to preserve line breaks
-            modalContent.innerHTML = content.replace(/\n/g, '<br>');
+            // Format the content to:
+            // 1. Make text in parentheses smaller and lighter color
+            // 2. Preserve line breaks
+            const formattedContent = content
+                .replace(/\(([^)]+)\)/g, '<span class="text-sm md:text-base lg:text-xl xl:text-2xl 2xl:text-3xl text-gray-500 dark:text-gray-400">($1)</span>')
+                .replace(/\n/g, '<br>');
+                
+            modalContent.innerHTML = formattedContent;
             
             // First make the modal container visible
             modal.classList.remove('hidden');
