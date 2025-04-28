@@ -69,10 +69,11 @@
             100% { transform: scale(1); }
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+        @keyframes buttonPulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 rgba(93, 92, 222, 0); }
+            40% { transform: scale(0.88); box-shadow: 0 0 0 rgba(93, 92, 222, 0); }
+            60% { transform: scale(1.15); box-shadow: 0 0 10px rgba(93, 92, 222, 0.5); }
+            100% { transform: scale(1); box-shadow: 0 0 0 rgba(93, 92, 222, 0); }
         }
         
         /* Stop button animations */
@@ -114,7 +115,7 @@
         
         /* === ANIMATION CLASSES === */
         .pulse-error { animation: pulseError 0.3s ease-in-out; }
-        .pulse { animation: pulse 0.3s ease-in-out; }
+        .button-pulse { animation: buttonPulse 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
         .bounce-in { animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         .bounce-out { animation: bounceOut 0.4s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards; }
         .modal-fade-in { animation: modalFadeIn 0.3s ease-out forwards; }
@@ -155,6 +156,28 @@
         
         .audio-unavailable .play-button {
             cursor: not-allowed;
+        }
+        
+        /* Button styling */
+        .play-button-container {
+            transition: transform 0.2s ease;
+            transform-origin: center;
+        }
+        
+        .close-button-effect {
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        
+        .close-button-effect:active {
+            transform: scale(0.85);
+        }
+        
+        .metronome-button-effect {
+            transition: transform 0.2s, color 0.2s;
+        }
+        
+        .metronome-button-effect:active {
+            transform: scale(0.9);
         }
     </style>
 </head>
@@ -235,7 +258,7 @@
             <div class="px-3 pt-8 pb-3">
                 <div class="flex items-start">
                     <!-- Play button for the modal -->
-                    <div class="relative h-10 w-10 mr-3 -mt-3 flex-shrink-0 cursor-pointer">
+                    <div class="relative h-10 w-10 mr-3 -mt-3 flex-shrink-0 cursor-pointer play-button-container" id="modalPlayButtonContainer">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-900 dark:text-gray-100 play-button" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" id="modalPlayButton">
                             <rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="white" class="dark:fill-gray-800" />
                             <path class="play-icon" d="M10 8l6 4-6 4V8z" fill="currentColor" />
@@ -256,7 +279,7 @@
                     <div class="pl-1 pr-6 flex-1">
                         <h3 id="modalTitle" class="text-base md:text-lg lg:text-xl xl:text-2xl font-bold text-gray-800 dark:text-gray-200 leading-none"></h3>
                     </div>
-                    <button id="closeModalBtn" onclick="closeModal()" class="w-6 h-6 flex items-center justify-center rounded-full bg-gray-400 dark:bg-gray-600 text-white hover:bg-gray-500 hover:dark:bg-gray-500 transition-colors duration-200 focus:outline-none flex-shrink-0 -mt-5">
+                    <button id="closeModalBtn" onclick="closeModal()" class="w-6 h-6 flex items-center justify-center rounded-full bg-gray-400 dark:bg-gray-600 text-white hover:bg-gray-500 hover:dark:bg-gray-500 transition-colors duration-200 focus:outline-none flex-shrink-0 -mt-5 close-button-effect">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
@@ -269,7 +292,7 @@
                 </div>
             </div>
             <div class="px-3 py-2 text-right">
-                <button id="metronomeButton" onclick="toggleMetronome()" class="text-primary font-medium cursor-pointer focus:outline-none border border-primary rounded px-2 py-1">240bpm</button>
+                <button id="metronomeButton" onclick="toggleMetronome()" class="text-primary font-medium cursor-pointer focus:outline-none border border-primary rounded px-2 py-1 metronome-button-effect">240bpm</button>
             </div>
         </div>
     </div>
@@ -341,49 +364,32 @@
             setupEventListeners();
             
             // Set up modal play button event listener
-            document.getElementById('modalPlayButton').parentElement.addEventListener('click', function() {
+            document.getElementById('modalPlayButtonContainer').addEventListener('click', function() {
                 if (currentModalAudioId) {
-                    // Add pulse animation when clicking modal play button
-                    addPulseAnimation(this);
+                    // Add intense pulse animation when clicking modal play button
+                    addButtonPulseAnimation(this);
                     playAudio(new Event('click'), currentModalAudioId);
                 }
             });
-
-            // Add pulse animations to interactive buttons
-            setupButtonAnimations();
         });
         
         /********************************
          * BUTTON ANIMATIONS
          ********************************/
-        function setupButtonAnimations() {
-            // Add pulse animation to close modal button
-            const closeBtn = document.getElementById('closeModalBtn');
-            closeBtn.addEventListener('click', function() {
-                addPulseAnimation(this);
-            });
-            
-            // Add pulse animation to metronome button
-            const metronomeBtn = document.getElementById('metronomeButton');
-            metronomeBtn.addEventListener('click', function() {
-                addPulseAnimation(this);
-            });
-        }
-        
-        function addPulseAnimation(element) {
+        function addButtonPulseAnimation(element) {
             // Remove any existing animation
-            element.classList.remove('pulse');
+            element.classList.remove('button-pulse');
             
             // Force a reflow to restart animation
             void element.offsetWidth;
             
             // Add the pulse animation
-            element.classList.add('pulse');
+            element.classList.add('button-pulse');
             
             // Remove the animation class after it completes
             setTimeout(() => {
-                element.classList.remove('pulse');
-            }, 300);
+                element.classList.remove('button-pulse');
+            }, 400);
         }
         
         /********************************
@@ -413,6 +419,24 @@
                 if (event.key === 'Escape' && !document.getElementById('modal').classList.contains('hidden')) {
                     closeModal();
                 }
+            });
+            
+            // Add click effect for metronome button (already has CSS transitions in the styling)
+            const metronomeButton = document.getElementById('metronomeButton');
+            metronomeButton.addEventListener('click', function() {
+                addButtonPulseAnimation(this);
+            });
+            
+            // Add click effect for return to top button
+            const returnToTopBtn = document.getElementById('returnToTopBtn');
+            returnToTopBtn.addEventListener('click', function() {
+                addButtonPulseAnimation(this);
+            });
+            
+            // Add click effect for fixed stop button
+            const fixedStopButton = document.getElementById('fixedStopButton');
+            fixedStopButton.addEventListener('click', function() {
+                addButtonPulseAnimation(this);
             });
         }
         
@@ -612,7 +636,7 @@
                 // Create the button HTML with conditional styling based on audio availability
                 listItem.innerHTML = `
                     <div class="flex items-center">
-                        <div class="relative h-10 w-10 mr-3 cursor-pointer" onclick="playAudio(event, '${itemId}')">
+                        <div class="relative h-10 w-10 mr-3 cursor-pointer play-button-container" onclick="playAudio(event, '${itemId}')">
                             <!-- Play button background and border -->
                             <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-10 w-10 text-gray-900 dark:text-gray-100 play-button" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" data-audio-id="${itemId}">
                                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="white" class="dark:fill-gray-800" />
@@ -646,21 +670,6 @@
             
             // Update subtitle with item count after processing all items - bold number
             subtitle.innerHTML = `Una colección de <strong>${items.length}</strong> coritos`;
-            
-            // Add click handlers with pulse animation to all audio buttons
-            setupAudioButtonClickHandlers();
-        }
-        
-        function setupAudioButtonClickHandlers() {
-            // Add pulse animations to the play buttons when clicked
-            document.querySelectorAll('#itemList .relative').forEach(buttonContainer => {
-                buttonContainer.addEventListener('click', function() {
-                    // Skip animation for unavailable audio
-                    if (!this.style.cursor || this.style.cursor !== 'not-allowed') {
-                        addPulseAnimation(this);
-                    }
-                });
-            });
         }
         
         function generateAudioFilename(title) {
@@ -772,6 +781,10 @@
                 }
                 return;
             }
+            
+            // Add button animation to the play button
+            const buttonContainer = document.querySelector(`[data-audio-id="${audioId}"]`).closest('.play-button-container');
+            addButtonPulseAnimation(buttonContainer);
             
             // Get the associated audio element
             const audioElement = document.getElementById(audioId);
@@ -1342,10 +1355,6 @@
          * UTILITY FUNCTIONS
          ********************************/
         function scrollToTop() {
-            // Add pulse animation to the return to top button
-            const returnToTopBtn = document.getElementById('returnToTopBtn');
-            addPulseAnimation(returnToTopBtn);
-            
             // Scroll to top with smooth animation
             window.scrollTo({
                 top: 0,
