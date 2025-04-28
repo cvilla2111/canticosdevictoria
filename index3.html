@@ -692,18 +692,25 @@
         }
         
         function markAudioAsGrayed(audioId) {
-            // Apply visual styling to make the button light gray, but don't add it to unavailableAudioFiles
-            // This way it will still try to play when clicked, but appears subtly grayed initially
+            // Apply visual styling to make the button appear subtly grayed initially
+            // This way it will still try to play when clicked
             const svgElement = document.querySelector(`[data-audio-id="${audioId}"]`);
             if (svgElement) {
-                // Change the stroke color to a very light gray
-                svgElement.setAttribute("stroke", "#CCCCCC");
+                // Use different colors based on current theme
+                const isDarkMode = document.documentElement.classList.contains('dark');
+                const grayColor = isDarkMode ? "#888888" : "#CCCCCC";
+                
+                // Change the stroke color based on theme
+                svgElement.setAttribute("stroke", grayColor);
+                
+                // Change the opacity to make it more subtle
+                svgElement.style.opacity = "0.7";
                 
                 // Find and update the path element
                 const pathElement = svgElement.querySelector('path');
                 if (pathElement) {
-                    // Change the fill color of the play triangle to light gray
-                    pathElement.setAttribute("fill", "#CCCCCC");
+                    // Change the fill color of the play triangle to appropriate gray
+                    pathElement.setAttribute("fill", grayColor);
                 }
             }
             
@@ -716,14 +723,21 @@
         function markModalPlayButtonAsGrayed() {
             const modalPlayButton = document.getElementById('modalPlayButton');
             
-            // Change the stroke color to light gray
-            modalPlayButton.setAttribute("stroke", "#CCCCCC");
+            // Use different colors based on current theme
+            const isDarkMode = document.documentElement.classList.contains('dark');
+            const grayColor = isDarkMode ? "#888888" : "#CCCCCC";
+            
+            // Change the stroke color based on theme
+            modalPlayButton.setAttribute("stroke", grayColor);
+            
+            // Change the opacity to make it more subtle
+            modalPlayButton.style.opacity = "0.7";
             
             // Find and update the path element
             const pathElement = modalPlayButton.querySelector('path');
             if (pathElement) {
-                // Change the fill color of the play triangle to light gray
-                pathElement.setAttribute("fill", "#CCCCCC");
+                // Change the fill color of the play triangle to appropriate gray
+                pathElement.setAttribute("fill", grayColor);
             }
         }
         
