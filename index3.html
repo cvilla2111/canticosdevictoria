@@ -692,18 +692,18 @@
         }
         
         function markAudioAsGrayed(audioId) {
-            // Apply visual styling to make the button gray, but don't add it to unavailableAudioFiles
-            // This way it will still try to play when clicked, but appears gray initially
+            // Apply visual styling to make the button light gray, but don't add it to unavailableAudioFiles
+            // This way it will still try to play when clicked, but appears subtly grayed initially
             const svgElement = document.querySelector(`[data-audio-id="${audioId}"]`);
             if (svgElement) {
-                // Change the stroke color to gray
-                svgElement.setAttribute("stroke", "#888888");
+                // Change the stroke color to a very light gray
+                svgElement.setAttribute("stroke", "#CCCCCC");
                 
                 // Find and update the path element
                 const pathElement = svgElement.querySelector('path');
                 if (pathElement) {
-                    // Change the fill color of the play triangle to gray
-                    pathElement.setAttribute("fill", "#888888");
+                    // Change the fill color of the play triangle to light gray
+                    pathElement.setAttribute("fill", "#CCCCCC");
                 }
             }
             
@@ -716,14 +716,14 @@
         function markModalPlayButtonAsGrayed() {
             const modalPlayButton = document.getElementById('modalPlayButton');
             
-            // Change the stroke color to gray
-            modalPlayButton.setAttribute("stroke", "#888888");
+            // Change the stroke color to light gray
+            modalPlayButton.setAttribute("stroke", "#CCCCCC");
             
             // Find and update the path element
             const pathElement = modalPlayButton.querySelector('path');
             if (pathElement) {
-                // Change the fill color of the play triangle to gray
-                pathElement.setAttribute("fill", "#888888");
+                // Change the fill color of the play triangle to light gray
+                pathElement.setAttribute("fill", "#CCCCCC");
             }
         }
         
