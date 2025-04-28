@@ -663,9 +663,6 @@
                 `;
                 
                 itemList.appendChild(listItem);
-                
-                // Check if audio file exists and mark as unavailable if needed
-                checkAudioFileExists(audioPath, itemId);
             });
             
             // Update subtitle with item count after processing all items - bold number
@@ -908,31 +905,6 @@
                     }, 400);
                 }
             }
-        }
-        
-        function checkAudioFileExists(audioPath, audioId) {
-            fetch(audioPath, { method: 'HEAD' })
-                .then(response => {
-                    if (!response.ok) {
-                        // If fetch returns not OK, mark the audio as unavailable
-                        markAudioAsUnavailable(audioId);
-                        
-                        // Also update the modal play button if this is the current modal audio
-                        if (audioId === currentModalAudioId) {
-                            markModalPlayButtonAsUnavailable();
-                        }
-                    }
-                })
-                .catch(error => {
-                    // If fetch fails, mark the audio as unavailable
-                    console.error(`Error checking audio file ${audioPath}:`, error);
-                    markAudioAsUnavailable(audioId);
-                    
-                    // Also update the modal play button if this is the current modal audio
-                    if (audioId === currentModalAudioId) {
-                        markModalPlayButtonAsUnavailable();
-                    }
-                });
         }
         
         function markAudioAsUnavailable(audioId) {
