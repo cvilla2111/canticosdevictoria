@@ -4,121 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cánticos de Victoria</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 5L90 95H10z' fill='%235D5CDE'/></svg>" type="image/svg+xml">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Audio button states */
-        .audio-unavailable {
-            position: relative;
-        }
-        
-        .audio-unavailable svg.play-button {
-            color: #888888 !important;
-            stroke: #888888 !important;
-        }
-        
-        .audio-unavailable svg.play-button rect {
-            fill: rgba(136, 136, 136, 0.15) !important;
-        }
-        
-        .audio-unavailable svg.play-button path {
-            fill: #888888 !important;
-        }
-        
-        .audio-unavailable::after {
-            content: '✕';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 24px;
-            color: white;
-            font-weight: bold;
-            z-index: 5;
-            text-shadow: 0px 0px 2px rgba(0,0,0,0.5);
-        }
-        
-        .audio-unavailable .play-button {
-            cursor: not-allowed;
-        }
-        
-        /* Button animations */
-        @keyframes pulseError {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
-        .pulse-error {
-            animation: pulseError 0.3s ease-in-out;
-        }
-        
-        /* Fixed stop button animations */
-        @keyframes bounceIn {
-            0% { transform: translate(-50%, 100px); opacity: 0; }
-            60% { transform: translate(-50%, -10px); opacity: 1; }
-            80% { transform: translate(-50%, 5px); }
-            100% { transform: translate(-50%, 0); }
-        }
-        
-        @keyframes bounceOut {
-            0% { transform: translate(-50%, 0); opacity: 1; }
-            20% { transform: translate(-50%, 5px); opacity: 1; }
-            100% { transform: translate(-50%, 100px); opacity: 0; }
-        }
-        
-        .bounce-in {
-            animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-        
-        .bounce-out {
-            animation: bounceOut 0.4s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards;
-        }
-        
-        /* Modal window animations */
-        @keyframes modalFadeIn {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
-        
-        @keyframes modalFadeOut {
-            0% { opacity: 1; }
-            100% { opacity: 0; }
-        }
-        
-        @keyframes modalContentIn {
-            0% { opacity: 0; transform: scale(0.9); }
-            70% { opacity: 1; transform: scale(1.02); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-        
-        @keyframes modalContentOut {
-            0% { opacity: 1; transform: scale(1); }
-            30% { opacity: 1; transform: scale(1.02); }
-            100% { opacity: 0; transform: scale(0.9); }
-        }
-        
-        .modal-fade-in {
-            animation: modalFadeIn 0.3s ease-out forwards;
-        }
-        
-        .modal-fade-out {
-            animation: modalFadeOut 0.3s ease-in forwards;
-        }
-        
-        .modal-content-in {
-            animation: modalContentIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-        
-        .modal-content-out {
-            animation: modalContentOut 0.3s ease-in forwards;
-        }
-        
-
-    </style>
     <script>
+        // Tailwind Configuration
         tailwind.config = {
             darkMode: 'class',
             theme: {
@@ -169,9 +64,130 @@
             }
         });
     </script>
+    <style>
+        /* === ANIMATION KEYFRAMES === */
+        /* Button animations */
+        @keyframes pulseError {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes buttonPulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 rgba(93, 92, 222, 0); }
+            40% { transform: scale(0.88); box-shadow: 0 0 0 rgba(93, 92, 222, 0); }
+            60% { transform: scale(1.15); box-shadow: 0 0 10px rgba(93, 92, 222, 0.5); }
+            100% { transform: scale(1); box-shadow: 0 0 0 rgba(93, 92, 222, 0); }
+        }
+        
+        /* Stop button animations */
+        @keyframes bounceIn {
+            0% { transform: translate(-50%, 100px); opacity: 0; }
+            60% { transform: translate(-50%, -10px); opacity: 1; }
+            80% { transform: translate(-50%, 5px); }
+            100% { transform: translate(-50%, 0); }
+        }
+        
+        @keyframes bounceOut {
+            0% { transform: translate(-50%, 0); opacity: 1; }
+            20% { transform: translate(-50%, 5px); opacity: 1; }
+            100% { transform: translate(-50%, 100px); opacity: 0; }
+        }
+        
+        /* Modal animations */
+        @keyframes modalFadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes modalFadeOut {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        
+        @keyframes modalContentIn {
+            0% { opacity: 0; transform: scale(0.9); }
+            70% { opacity: 1; transform: scale(1.02); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        @keyframes modalContentOut {
+            0% { opacity: 1; transform: scale(1); }
+            30% { opacity: 1; transform: scale(1.02); }
+            100% { opacity: 0; transform: scale(0.9); }
+        }
+        
+        /* === ANIMATION CLASSES === */
+        .pulse-error { animation: pulseError 0.3s ease-in-out; }
+        .button-pulse { animation: buttonPulse 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
+        .bounce-in { animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .bounce-out { animation: bounceOut 0.4s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards; }
+        .modal-fade-in { animation: modalFadeIn 0.3s ease-out forwards; }
+        .modal-fade-out { animation: modalFadeOut 0.3s ease-in forwards; }
+        .modal-content-in { animation: modalContentIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .modal-content-out { animation: modalContentOut 0.3s ease-in forwards; }
+
+        /* === AUDIO BUTTON STATES === */
+        .audio-unavailable {
+            position: relative;
+        }
+        
+        .audio-unavailable svg.play-button {
+            color: #888888 !important;
+            stroke: #888888 !important;
+        }
+        
+        .audio-unavailable svg.play-button rect {
+            fill: rgba(136, 136, 136, 0.15) !important;
+        }
+        
+        .audio-unavailable svg.play-button path {
+            fill: #888888 !important;
+        }
+        
+        .audio-unavailable::after {
+            content: '✕';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: white;
+            font-weight: bold;
+            z-index: 5;
+            text-shadow: 0px 0px 2px rgba(0,0,0,0.5);
+        }
+        
+        .audio-unavailable .play-button {
+            cursor: not-allowed;
+        }
+        
+        /* Button styling */
+        .play-button-container {
+            transition: transform 0.2s ease;
+            transform-origin: center;
+        }
+        
+        .close-button-effect {
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        
+        .close-button-effect:active {
+            transform: scale(0.85);
+        }
+        
+        .metronome-button-effect {
+            transition: transform 0.2s, color 0.2s;
+        }
+        
+        .metronome-button-effect:active {
+            transform: scale(0.9);
+        }
+    </style>
 </head>
 <body class="min-h-screen bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-200">
     <div class="container mx-auto px-2 sm:px-3 pt-10 pb-20 max-w-md md:max-w-lg lg:max-w-2xl xl:max-w-4xl 2xl:max-w-6xl min-h-screen flex flex-col">
+        <!-- Main Content Area -->
         <div>
             <!-- App Header -->
             <h1 class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-0 text-gray-800 dark:text-gray-200 text-center font-headings">Cánticos de Victoria</h1>
@@ -240,15 +256,13 @@
         </footer>
     </div>
 
-
-    
     <!-- Modal -->
     <div id="modal" class="fixed inset-0 z-50 hidden overflow-auto bg-black bg-opacity-75 flex items-center justify-center p-2">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-[75vw] w-full max-h-[95vh] overflow-auto">
             <div class="px-3 pt-8 pb-3">
                 <div class="flex items-start">
-                    <!-- Play button for the modal - increased to match list item buttons and moved up -->
-                    <div class="relative h-10 w-10 mr-3 -mt-3 flex-shrink-0 cursor-pointer">
+                    <!-- Play button for the modal -->
+                    <div class="relative h-10 w-10 mr-3 -mt-3 flex-shrink-0 cursor-pointer play-button-container" id="modalPlayButtonContainer">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-900 dark:text-gray-100 play-button" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" id="modalPlayButton">
                             <rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="white" class="dark:fill-gray-800" />
                             <path class="play-icon" d="M10 8l6 4-6 4V8z" fill="currentColor" />
@@ -269,7 +283,7 @@
                     <div class="pl-1 pr-6 flex-1">
                         <h3 id="modalTitle" class="text-base md:text-lg lg:text-xl xl:text-2xl font-bold text-gray-800 dark:text-gray-200 leading-none"></h3>
                     </div>
-                    <button onclick="closeModal()" class="w-6 h-6 flex items-center justify-center rounded-full bg-gray-400 dark:bg-gray-600 text-white hover:bg-gray-500 hover:dark:bg-gray-500 transition-colors duration-200 focus:outline-none flex-shrink-0 -mt-5">
+                    <button id="closeModalBtn" onclick="closeModal()" class="w-6 h-6 flex items-center justify-center rounded-full bg-gray-400 dark:bg-gray-600 text-white hover:bg-gray-500 hover:dark:bg-gray-500 transition-colors duration-200 focus:outline-none flex-shrink-0 -mt-5 close-button-effect">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
@@ -282,7 +296,7 @@
                 </div>
             </div>
             <div class="px-3 py-2 text-right">
-                <button id="metronomeButton" onclick="toggleMetronome()" class="text-primary font-medium cursor-pointer focus:outline-none border border-primary rounded px-2 py-1">240bpm</button>
+                <button id="metronomeButton" onclick="toggleMetronome()" class="text-primary font-medium cursor-pointer focus:outline-none border border-primary rounded px-2 py-1 metronome-button-effect">240bpm</button>
             </div>
         </div>
     </div>
@@ -291,11 +305,6 @@
     <div id="fixedStopButton" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 w-14 h-14 rounded-full bg-red-500 shadow-xl flex items-center justify-center cursor-pointer z-50 hidden transition-all duration-300 hover:scale-110 active:scale-95" onclick="stopCurrentAudio()">
         <div class="w-5 h-5 bg-white rounded-sm"></div>
     </div>
-    
-    <!-- Hidden Audio Element for Clave -->
-    <audio id="claveAudio" preload="auto" loop>
-        <source src="clave240bpm.mp3" type="audio/mpeg">
-    </audio>
     
     <!-- Return to Top Button -->
     <div id="returnToTopBtn" class="fixed bottom-5 right-5 w-10 h-10 cursor-pointer z-40 shadow-md rounded-full bg-white dark:bg-gray-800 transition-all duration-300 opacity-0 invisible hover:scale-110 active:scale-95 flex items-center justify-center" onclick="scrollToTop()">
@@ -320,10 +329,15 @@
             </svg>
         </div>
     </div>
+    
+    <!-- Hidden Audio Element for Clave -->
+    <audio id="claveAudio" preload="auto" loop>
+        <source src="clave240bpm.mp3" type="audio/mpeg">
+    </audio>
 
     <script>
         /********************************
-         * GLOBAL VARIABLES
+         * STATE MANAGEMENT
          ********************************/
         // Audio playback state
         let audioContext;
@@ -350,20 +364,40 @@
             // Load content
             loadCanticosFile();
             
-
             // Set up event listeners
             setupEventListeners();
             
             // Set up modal play button event listener
-            document.getElementById('modalPlayButton').parentElement.addEventListener('click', function() {
+            document.getElementById('modalPlayButtonContainer').addEventListener('click', function() {
                 if (currentModalAudioId) {
+                    // Add intense pulse animation when clicking modal play button
+                    addButtonPulseAnimation(this);
                     playAudio(new Event('click'), currentModalAudioId);
                 }
             });
         });
         
         /********************************
-         * SETUP FUNCTIONS
+         * BUTTON ANIMATIONS
+         ********************************/
+        function addButtonPulseAnimation(element) {
+            // Remove any existing animation
+            element.classList.remove('button-pulse');
+            
+            // Force a reflow to restart animation
+            void element.offsetWidth;
+            
+            // Add the pulse animation
+            element.classList.add('button-pulse');
+            
+            // Remove the animation class after it completes
+            setTimeout(() => {
+                element.classList.remove('button-pulse');
+            }, 400);
+        }
+        
+        /********************************
+         * EVENT LISTENERS
          ********************************/
         function setupEventListeners() {
             // Search functionality
@@ -375,32 +409,7 @@
             themeToggle.addEventListener('change', toggleTheme);
             
             // Search bar shadow and return-to-top button on scroll
-            window.addEventListener('scroll', function() {
-                const searchBar = document.getElementById('searchBarContainer');
-                const returnToTopBtn = document.getElementById('returnToTopBtn');
-                
-                // Add shadow to search bar when scrolling
-                if (window.scrollY > 10) {
-                    searchBar.classList.add('shadow-md');
-                } else {
-                    searchBar.classList.remove('shadow-md');
-                }
-                
-                // Show/hide return-to-top button based on scroll position
-                if (window.scrollY > 300) {
-                    returnToTopBtn.classList.remove('opacity-0', 'invisible');
-                    returnToTopBtn.classList.add('opacity-100');
-                } else {
-                    returnToTopBtn.classList.remove('opacity-100');
-                    returnToTopBtn.classList.add('opacity-0');
-                    // Add a delay before making it invisible to allow the transition to complete
-                    setTimeout(() => {
-                        if (window.scrollY <= 300) {
-                            returnToTopBtn.classList.add('invisible');
-                        }
-                    }, 300);
-                }
-            });
+            window.addEventListener('scroll', handleScroll);
             
             // Modal close events
             document.getElementById('modal').addEventListener('click', function(event) {
@@ -409,11 +418,57 @@
                 }
             });
             
+            // Close modal on Escape key
             document.addEventListener('keydown', function(event) {
                 if (event.key === 'Escape' && !document.getElementById('modal').classList.contains('hidden')) {
                     closeModal();
                 }
             });
+            
+            // Add click effect for metronome button (already has CSS transitions in the styling)
+            const metronomeButton = document.getElementById('metronomeButton');
+            metronomeButton.addEventListener('click', function() {
+                addButtonPulseAnimation(this);
+            });
+            
+            // Add click effect for return to top button
+            const returnToTopBtn = document.getElementById('returnToTopBtn');
+            returnToTopBtn.addEventListener('click', function() {
+                addButtonPulseAnimation(this);
+            });
+            
+            // Add click effect for fixed stop button
+            const fixedStopButton = document.getElementById('fixedStopButton');
+            fixedStopButton.addEventListener('click', function() {
+                addButtonPulseAnimation(this);
+            });
+        }
+        
+        function handleScroll() {
+            const searchBar = document.getElementById('searchBarContainer');
+            const returnToTopBtn = document.getElementById('returnToTopBtn');
+            
+            // Add shadow to search bar when scrolling
+            if (window.scrollY > 10) {
+                searchBar.classList.add('shadow-md');
+            } else {
+                searchBar.classList.remove('shadow-md');
+            }
+            
+            // Show/hide return-to-top button based on scroll position
+            if (window.scrollY > 300) {
+                returnToTopBtn.classList.remove('opacity-0', 'invisible');
+                returnToTopBtn.classList.add('opacity-100');
+            } else {
+                returnToTopBtn.classList.remove('opacity-100');
+                returnToTopBtn.classList.add('opacity-0');
+                // Add a delay before making it invisible to allow the transition to complete
+                setTimeout(() => {
+                    if (window.scrollY <= 300) {
+                        returnToTopBtn.classList.add('invisible');
+                    }
+                }, 300);
+            }
         }
         
         function toggleTheme() {
@@ -442,9 +497,7 @@
             
             // If search term is empty, show all items
             if (searchTerm === '') {
-                listItems.forEach(item => {
-                    item.classList.remove('hidden');
-                });
+                listItems.forEach(item => item.classList.remove('hidden'));
                 noResults.classList.add('hidden');
                 return;
             }
@@ -462,11 +515,7 @@
             });
             
             // Show or hide the "no results" message
-            if (visibleCount === 0) {
-                noResults.classList.remove('hidden');
-            } else {
-                noResults.classList.add('hidden');
-            }
+            noResults.classList.toggle('hidden', visibleCount > 0);
         }
         
         function normalizeText(text) {
@@ -487,8 +536,7 @@
             searchInput.value = '';
             
             // Show all items
-            const listItems = document.querySelectorAll('#itemList li');
-            listItems.forEach(item => {
+            document.querySelectorAll('#itemList li').forEach(item => {
                 item.classList.remove('hidden');
             });
             
@@ -506,15 +554,9 @@
             const searchIcon = document.getElementById('searchIcon');
             const clearSearchIcon = document.getElementById('clearSearchIcon');
             
-            if (value.trim() === '') {
-                // Show search icon, hide clear icon
-                searchIcon.classList.remove('hidden');
-                clearSearchIcon.classList.add('hidden');
-            } else {
-                // Hide search icon, show clear icon
-                searchIcon.classList.add('hidden');
-                clearSearchIcon.classList.remove('hidden');
-            }
+            const isEmpty = value.trim() === '';
+            searchIcon.classList.toggle('hidden', !isEmpty);
+            clearSearchIcon.classList.toggle('hidden', isEmpty);
         }
         
         /********************************
@@ -549,22 +591,6 @@
                 loadingIndicator.classList.add('hidden');
                 errorMessage.classList.remove('hidden');
             }
-        }
-        
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const content = e.target.result;
-                processFileContent(content);
-                document.getElementById('errorMessage').classList.add('hidden');
-            };
-            reader.onerror = function() {
-                console.error('Error reading file');
-            };
-            reader.readAsText(file);
         }
         
         function processFileContent(content) {
@@ -614,7 +640,7 @@
                 // Create the button HTML with conditional styling based on audio availability
                 listItem.innerHTML = `
                     <div class="flex items-center">
-                        <div class="relative h-10 w-10 mr-3 cursor-pointer" onclick="playAudio(event, '${itemId}')">
+                        <div class="relative h-10 w-10 mr-3 cursor-pointer play-button-container" onclick="playAudio(event, '${itemId}')">
                             <!-- Play button background and border -->
                             <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-10 w-10 text-gray-900 dark:text-gray-100 play-button" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" data-audio-id="${itemId}">
                                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="white" class="dark:fill-gray-800" />
@@ -642,7 +668,7 @@
                 
                 itemList.appendChild(listItem);
                 
-                // Check if audio file exists and mark as unavailable if needed
+                // Check if audio file exists and mark as grayed if not available
                 checkAudioFileExists(audioPath, itemId);
             });
             
@@ -650,19 +676,69 @@
             subtitle.innerHTML = `Una colección de <strong>${items.length}</strong> coritos`;
         }
         
-        function loadDefaultItems() {
-            const defaultContent = 
-                "Corito 101\n" +
-                "Esta es la primera línea del corito 101.\n" +
-                "Esta es la segunda línea del corito 101.\n" +
-                "Esta es la tercera línea del corito 101.\n\n" +
-                "Corito 102\n" +
-                "Esta es la primera línea del corito 102.\n" +
-                "Esta es la segunda línea del corito 102.\n\n" +
-                "Corito 103\n" +
-                "Este es el contenido del corito 103.\n" +
-                "Con múltiples líneas para mostrar cómo se presenta el contenido.";
-            processFileContent(defaultContent);
+        function checkAudioFileExists(audioPath, audioId) {
+            fetch(audioPath, { method: 'HEAD' })
+                .then(response => {
+                    if (!response.ok) {
+                        // If fetch returns not OK, mark the audio as potentially unavailable
+                        markAudioAsGrayed(audioId);
+                    }
+                })
+                .catch(error => {
+                    // If fetch fails, mark the audio as potentially unavailable
+                    console.error(`Error checking audio file ${audioPath}:`, error);
+                    markAudioAsGrayed(audioId);
+                });
+        }
+        
+        function markAudioAsGrayed(audioId) {
+            // Apply visual styling to make the button appear subtly grayed initially
+            // This way it will still try to play when clicked
+            const svgElement = document.querySelector(`[data-audio-id="${audioId}"]`);
+            if (svgElement) {
+                // Use different colors based on current theme
+                const isDarkMode = document.documentElement.classList.contains('dark');
+                const grayColor = isDarkMode ? "#888888" : "#CCCCCC";
+                
+                // Change the stroke color based on theme
+                svgElement.setAttribute("stroke", grayColor);
+                
+                // Change the opacity to make it more subtle
+                svgElement.style.opacity = "0.7";
+                
+                // Find and update the path element
+                const pathElement = svgElement.querySelector('path');
+                if (pathElement) {
+                    // Change the fill color of the play triangle to appropriate gray
+                    pathElement.setAttribute("fill", grayColor);
+                }
+            }
+            
+            // Also update the modal play button if this is the current modal audio
+            if (audioId === currentModalAudioId) {
+                markModalPlayButtonAsGrayed();
+            }
+        }
+        
+        function markModalPlayButtonAsGrayed() {
+            const modalPlayButton = document.getElementById('modalPlayButton');
+            
+            // Use different colors based on current theme
+            const isDarkMode = document.documentElement.classList.contains('dark');
+            const grayColor = isDarkMode ? "#888888" : "#CCCCCC";
+            
+            // Change the stroke color based on theme
+            modalPlayButton.setAttribute("stroke", grayColor);
+            
+            // Change the opacity to make it more subtle
+            modalPlayButton.style.opacity = "0.7";
+            
+            // Find and update the path element
+            const pathElement = modalPlayButton.querySelector('path');
+            if (pathElement) {
+                // Change the fill color of the play triangle to appropriate gray
+                pathElement.setAttribute("fill", grayColor);
+            }
         }
         
         function generateAudioFilename(title) {
@@ -677,7 +753,7 @@
         }
         
         /********************************
-         * MODAL FUNCTIONS
+         * MODAL FUNCTIONALITY
          ********************************/
         function openModal(title, content, audioId) {
             const modal = document.getElementById('modal');
@@ -698,7 +774,7 @@
                 resetModalPlayButton();
             }
             
-            // Set the title and content - no longer splitting into title/subtitle
+            // Set the title and content
             document.getElementById('modalTitle').textContent = title;
             
             // Format the content to preserve line breaks
@@ -743,7 +819,7 @@
         }
         
         /********************************
-         * AUDIO FUNCTIONS
+         * AUDIO PLAYBACK
          ********************************/
         function initAudioContext() {
             if (!audioContext) {
@@ -775,6 +851,10 @@
                 return;
             }
             
+            // Add button animation to the play button
+            const buttonContainer = document.querySelector(`[data-audio-id="${audioId}"]`).closest('.play-button-container');
+            addButtonPulseAnimation(buttonContainer);
+            
             // Get the associated audio element
             const audioElement = document.getElementById(audioId);
             
@@ -803,55 +883,7 @@
                 audioElement.currentTime = 0; // Reset to beginning
                 
                 // Set up audio events
-                audioElement.onended = function() {
-                    // Make sure to hide the stop button with animation when audio ends naturally
-                    const fixedStopButton = document.getElementById('fixedStopButton');
-                    if (!fixedStopButton.classList.contains('hidden')) {
-                        // Only do this if stop button is visible and there's no other audio playing
-                        if (!clavePlaying && !currentOscillator) {
-                            // Start the hide animation
-                            fixedStopButton.dataset.hidingInProgress = "true";
-                            fixedStopButton.classList.remove('bounce-in');
-                            fixedStopButton.classList.add('bounce-out');
-                            
-                            // After animation completes, hide the button
-                            setTimeout(() => {
-                                if (fixedStopButton.dataset.hidingInProgress === "true") {
-                                    fixedStopButton.classList.add('hidden');
-                                    fixedStopButton.classList.remove('bounce-out');
-                                    fixedStopButton.dataset.hidingInProgress = "false";
-                                }
-                            }, 400);
-                        }
-                    }
-                    
-                    // Update the play button state
-                    updatePlayButtonState(audioId, false);
-                    currentAudio = null;
-                    playingButtonId = null;
-                    
-                    // Also update the modal play button state if needed
-                    updateModalPlayButtonState();
-                };
-                
-                audioElement.onpause = function() {
-                    updatePlayButtonState(audioId, false);
-                    // Also update the modal play button state if needed
-                    updateModalPlayButtonState();
-                };
-                
-                audioElement.onerror = function() {
-                    console.error("Error playing audio:", audioElement.error);
-                    updatePlayButtonState(audioId, false);
-                    
-                    // If there's an error (e.g., file not found), mark as unavailable
-                    playFallbackTone(audioId);
-                    
-                    // Also update the modal play button if this is the current modal audio
-                    if (audioId === currentModalAudioId) {
-                        markModalPlayButtonAsUnavailable();
-                    }
-                };
+                setupAudioEvents(audioElement, audioId);
                 
                 // Play the audio file
                 const playPromise = audioElement.play();
@@ -891,29 +923,60 @@
             }
         }
         
-        function checkAudioFileExists(audioPath, audioId) {
-            fetch(audioPath, { method: 'HEAD' })
-                .then(response => {
-                    if (!response.ok) {
-                        // If fetch returns not OK, mark the audio as unavailable
-                        markAudioAsUnavailable(audioId);
-                        
-                        // Also update the modal play button if this is the current modal audio
-                        if (audioId === currentModalAudioId) {
-                            markModalPlayButtonAsUnavailable();
-                        }
-                    }
-                })
-                .catch(error => {
-                    // If fetch fails, mark the audio as unavailable
-                    console.error(`Error checking audio file ${audioPath}:`, error);
-                    markAudioAsUnavailable(audioId);
+        function setupAudioEvents(audioElement, audioId) {
+            audioElement.onended = function() {
+                handleAudioEnd();
+                
+                // Update the play button state
+                updatePlayButtonState(audioId, false);
+                currentAudio = null;
+                playingButtonId = null;
+                
+                // Also update the modal play button state if needed
+                updateModalPlayButtonState();
+            };
+            
+            audioElement.onpause = function() {
+                updatePlayButtonState(audioId, false);
+                // Also update the modal play button state if needed
+                updateModalPlayButtonState();
+            };
+            
+            audioElement.onerror = function() {
+                console.error("Error playing audio:", audioElement.error);
+                updatePlayButtonState(audioId, false);
+                
+                // If there's an error (e.g., file not found), mark as unavailable
+                playFallbackTone(audioId);
+                
+                // Also update the modal play button if this is the current modal audio
+                if (audioId === currentModalAudioId) {
+                    markModalPlayButtonAsUnavailable();
+                }
+            };
+        }
+        
+        function handleAudioEnd() {
+            // Hide the stop button with animation when audio ends naturally
+            const fixedStopButton = document.getElementById('fixedStopButton');
+            if (!fixedStopButton.classList.contains('hidden')) {
+                // Only do this if stop button is visible and there's no other audio playing
+                if (!clavePlaying && !currentOscillator) {
+                    // Start the hide animation
+                    fixedStopButton.dataset.hidingInProgress = "true";
+                    fixedStopButton.classList.remove('bounce-in');
+                    fixedStopButton.classList.add('bounce-out');
                     
-                    // Also update the modal play button if this is the current modal audio
-                    if (audioId === currentModalAudioId) {
-                        markModalPlayButtonAsUnavailable();
-                    }
-                });
+                    // After animation completes, hide the button
+                    setTimeout(() => {
+                        if (fixedStopButton.dataset.hidingInProgress === "true") {
+                            fixedStopButton.classList.add('hidden');
+                            fixedStopButton.classList.remove('bounce-out');
+                            fixedStopButton.dataset.hidingInProgress = "false";
+                        }
+                    }, 400);
+                }
+            }
         }
         
         function markAudioAsUnavailable(audioId) {
@@ -923,138 +986,17 @@
             // Apply visual styling directly to the existing SVG
             const svgElement = document.querySelector(`[data-audio-id="${audioId}"]`);
             if (svgElement) {
-                // Change the stroke color to gray
-                svgElement.setAttribute("stroke", "#888888");
-                
-                // Find and update the path and rect elements
-                const pathElement = svgElement.querySelector('path');
-                const rectElement = svgElement.querySelector('rect');
-                
-                if (pathElement) {
-                    // Change the fill color of the play triangle
-                    pathElement.setAttribute("fill", "#888888");
-                }
-                
-                if (rectElement) {
-                    // Keep the background white but change the border color to gray
-                    rectElement.setAttribute("fill", "white");
-                    rectElement.setAttribute("class", "dark:fill-gray-800");
-                }
-                
-                // Add not-allowed cursor to the button container
-                const buttonContainer = svgElement.closest('.relative');
-                if (buttonContainer) {
-                    buttonContainer.style.cursor = 'not-allowed';
-                }
-            }
-        }
-        
-        function markModalPlayButtonAsUnavailable() {
-            const modalPlayButton = document.getElementById('modalPlayButton');
-            
-            // Change the stroke color to gray
-            modalPlayButton.setAttribute("stroke", "#888888");
-            
-            // Find and update the path and rect elements
-            const pathElement = modalPlayButton.querySelector('path');
-            const rectElement = modalPlayButton.querySelector('rect');
-            
-            if (pathElement) {
-                // Change the fill color of the play triangle
-                pathElement.setAttribute("fill", "#888888");
-            }
-            
-            if (rectElement) {
-                // Keep the background white but change the border color to gray
-                rectElement.setAttribute("fill", "white");
-                rectElement.setAttribute("class", "dark:fill-gray-800");
-            }
-            
-            // Add not-allowed cursor to the button container
-            const buttonContainer = modalPlayButton.parentElement;
-            if (buttonContainer) {
-                buttonContainer.style.cursor = 'not-allowed';
-            }
-        }
-        
-        function resetModalPlayButton() {
-            const modalPlayButton = document.getElementById('modalPlayButton');
-            
-            // Reset stroke color
-            modalPlayButton.setAttribute("stroke", "currentColor");
-            
-            // Find and update the path and rect elements
-            const pathElement = modalPlayButton.querySelector('path');
-            const rectElement = modalPlayButton.querySelector('rect');
-            
-            if (pathElement) {
-                // Reset fill color
-                pathElement.setAttribute("fill", "currentColor");
-            }
-            
-            if (rectElement) {
-                // Reset background
-                rectElement.setAttribute("fill", "white");
-                rectElement.setAttribute("class", "dark:fill-gray-800");
-            }
-            
-            // Reset cursor
-            const buttonContainer = modalPlayButton.parentElement;
-            if (buttonContainer) {
-                buttonContainer.style.cursor = 'pointer';
-            }
-        }
-        
-        function updateModalPlayButtonState() {
-            if (!currentModalAudioId) return;
-            
-            const modalPlayButton = document.getElementById('modalPlayButton');
-            const modalEqualizer = document.getElementById('modalEqualizer');
-            
-            // Check if the associated audio is playing
-            if (playingButtonId === currentModalAudioId) {
-                // Change to pause icon (square)
-                modalPlayButton.querySelector('path').setAttribute('d', 'M9 9h6v6H9z');
-                
-                // Show equalizer animation
-                modalEqualizer.classList.remove('hidden');
-            } else {
-                // Change to play icon (triangle)
-                modalPlayButton.querySelector('path').setAttribute('d', 'M10 8l6 4-6 4V8z');
-                
-                // Hide equalizer animation
-                modalEqualizer.classList.add('hidden');
-            }
-        }
-        
-        function playFallbackTone(audioId) {
-            // Mark this audio file as unavailable
-            unavailableAudioFiles.add(audioId);
-            
-            // Get the SVG element
-            const svgElement = document.querySelector(`[data-audio-id="${audioId}"]`);
-            if (svgElement) {
                 // Get the parent container
                 const buttonContainer = svgElement.closest('.relative');
                 if (buttonContainer) {
-                    // Replace the entire SVG with a gray version
-                    const oldSvg = buttonContainer.querySelector('svg');
-                    const newSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                    // Update the SVG colors directly - turn everything gray
+                    svgElement.setAttribute("stroke", "#888888");
                     
-                    // Copy attributes from old SVG to new one
-                    newSvg.setAttribute("class", oldSvg.getAttribute("class"));
-                    newSvg.setAttribute("viewBox", "0 0 24 24");
-                    newSvg.setAttribute("fill", "none");
-                    newSvg.setAttribute("data-audio-id", audioId);
-                    
-                    // Set the new SVG content with gray colors directly in the SVG
-                    newSvg.innerHTML = `
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="white" class="dark:fill-gray-800" stroke="#888888" stroke-width="1" />
-                        <path d="M10 8l6 4-6 4V8z" fill="#888888" />
-                    `;
-                    
-                    // Replace the old SVG with the new one
-                    oldSvg.parentNode.replaceChild(newSvg, oldSvg);
+                    // Update the triangle path to be gray
+                    const pathElement = svgElement.querySelector('path');
+                    if (pathElement) {
+                        pathElement.setAttribute("fill", "#888888");
+                    }
                     
                     // Add the not-allowed cursor to the button container
                     buttonContainer.style.cursor = 'not-allowed';
@@ -1077,13 +1019,120 @@
                         xMark.classList.add('unavailable-mark');
                         buttonContainer.appendChild(xMark);
                     }
+                    
+                    // Add a class that we can use to style all unavailable buttons consistently
+                    buttonContainer.classList.add('audio-unavailable');
                 }
             }
+        }
+        
+        function markModalPlayButtonAsUnavailable() {
+            const modalPlayButton = document.getElementById('modalPlayButton');
+            const buttonContainer = modalPlayButton.parentElement;
             
-            // Also update the modal play button if this is the current modal audio
-            if (audioId === currentModalAudioId) {
-                markModalPlayButtonAsUnavailable();
+            // Change the stroke color to gray
+            modalPlayButton.setAttribute("stroke", "#888888");
+            
+            // Find and update the path and rect elements
+            const pathElement = modalPlayButton.querySelector('path');
+            const rectElement = modalPlayButton.querySelector('rect');
+            
+            if (pathElement) {
+                // Change the fill color of the play triangle
+                pathElement.setAttribute("fill", "#888888");
             }
+            
+            if (rectElement) {
+                // Keep the background white but change the border color to gray
+                rectElement.setAttribute("fill", "white");
+                rectElement.setAttribute("class", "dark:fill-gray-800");
+            }
+            
+            // Add not-allowed cursor to the button container
+            if (buttonContainer) {
+                buttonContainer.style.cursor = 'not-allowed';
+                
+                // Add a class that we can use to style all unavailable buttons consistently
+                buttonContainer.classList.add('audio-unavailable');
+                
+                // Add the X mark if it doesn't already exist
+                if (!buttonContainer.querySelector('.unavailable-mark')) {
+                    const xMark = document.createElement('div');
+                    xMark.textContent = '✕';
+                    xMark.style.position = 'absolute';
+                    xMark.style.top = '50%';
+                    xMark.style.left = '50%';
+                    xMark.style.transform = 'translate(-50%, -50%)';
+                    xMark.style.fontSize = '24px';
+                    xMark.style.color = 'white';
+                    xMark.style.fontWeight = 'bold';
+                    xMark.style.zIndex = '5';
+                    xMark.style.textShadow = '0px 0px 2px rgba(0,0,0,0.5)';
+                    xMark.classList.add('unavailable-mark');
+                    buttonContainer.appendChild(xMark);
+                }
+            }
+        }
+        
+        function resetModalPlayButton() {
+            const modalPlayButton = document.getElementById('modalPlayButton');
+            const buttonContainer = modalPlayButton.parentElement;
+            
+            // Reset stroke color
+            modalPlayButton.setAttribute("stroke", "currentColor");
+            
+            // Find and update the path and rect elements
+            const pathElement = modalPlayButton.querySelector('path');
+            const rectElement = modalPlayButton.querySelector('rect');
+            
+            if (pathElement) {
+                // Reset fill color
+                pathElement.setAttribute("fill", "currentColor");
+            }
+            
+            if (rectElement) {
+                // Reset background
+                rectElement.setAttribute("fill", "white");
+                rectElement.setAttribute("class", "dark:fill-gray-800");
+            }
+            
+            // Reset cursor and remove unavailable class/element
+            if (buttonContainer) {
+                buttonContainer.style.cursor = 'pointer';
+                buttonContainer.classList.remove('audio-unavailable');
+                
+                // Remove the X mark if it exists
+                const xMark = buttonContainer.querySelector('.unavailable-mark');
+                if (xMark) {
+                    buttonContainer.removeChild(xMark);
+                }
+            }
+        }
+        
+        function updateModalPlayButtonState() {
+            if (!currentModalAudioId) return;
+            
+            const modalPlayButton = document.getElementById('modalPlayButton');
+            const modalEqualizer = document.getElementById('modalEqualizer');
+            
+            // Check if the associated audio is playing
+            const isPlaying = playingButtonId === currentModalAudioId;
+            
+            // Change icon (play triangle or pause square)
+            modalPlayButton.querySelector('path').setAttribute('d', 
+                isPlaying ? 'M9 9h6v6H9z' : 'M10 8l6 4-6 4V8z'
+            );
+            
+            // Show/hide equalizer animation
+            modalEqualizer.classList.toggle('hidden', !isPlaying);
+        }
+        
+        function playFallbackTone(audioId) {
+            // Mark this audio file as unavailable
+            unavailableAudioFiles.add(audioId);
+            
+            // Update button appearance
+            updateUnavailableButton(audioId);
             
             // Initialize audio context if not already done
             const context = initAudioContext();
@@ -1133,6 +1182,55 @@
                     stopCurrentSound(true);
                 }
             }, 2000);
+        }
+        
+        function updateUnavailableButton(audioId) {
+            // Get the SVG element
+            const svgElement = document.querySelector(`[data-audio-id="${audioId}"]`);
+            if (svgElement) {
+                // Get the parent container
+                const buttonContainer = svgElement.closest('.relative');
+                if (buttonContainer) {
+                    // Update the SVG colors directly - turn everything gray
+                    svgElement.setAttribute("stroke", "#888888");
+                    
+                    // Update the triangle path to be gray
+                    const pathElement = svgElement.querySelector('path');
+                    if (pathElement) {
+                        pathElement.setAttribute("fill", "#888888");
+                    }
+                    
+                    // Add the not-allowed cursor to the button container
+                    buttonContainer.style.cursor = 'not-allowed';
+                    
+                    // Add the X mark
+                    const xMark = document.createElement('div');
+                    xMark.textContent = '✕';
+                    xMark.style.position = 'absolute';
+                    xMark.style.top = '50%';
+                    xMark.style.left = '50%';
+                    xMark.style.transform = 'translate(-50%, -50%)';
+                    xMark.style.fontSize = '24px';
+                    xMark.style.color = 'white';
+                    xMark.style.fontWeight = 'bold';
+                    xMark.style.zIndex = '5';
+                    xMark.style.textShadow = '0px 0px 2px rgba(0,0,0,0.5)';
+                    
+                    // Only add the X mark if it doesn't already exist
+                    if (!buttonContainer.querySelector('.unavailable-mark')) {
+                        xMark.classList.add('unavailable-mark');
+                        buttonContainer.appendChild(xMark);
+                    }
+                    
+                    // Add a class that we can use to style all unavailable buttons consistently
+                    buttonContainer.classList.add('audio-unavailable');
+                }
+            }
+            
+            // Also update the modal play button if this is the current modal audio
+            if (audioId === currentModalAudioId) {
+                markModalPlayButtonAsUnavailable();
+            }
         }
         
         function stopCurrentAudio() {
@@ -1202,20 +1300,7 @@
                 
                 // Show fixed stop button with bounce effect (but not for clave)
                 if (!clavePlaying) {
-                    // Cancel any hiding that might be in progress
-                    fixedStopButton.dataset.hidingInProgress = "false";
-                    
-                    // First make sure button is visible
-                    fixedStopButton.classList.remove('hidden');
-                    
-                    // Remove any existing animation classes
-                    fixedStopButton.classList.remove('bounce-in', 'bounce-out');
-                    
-                    // Force a reflow to restart animation
-                    void fixedStopButton.offsetWidth;
-                    
-                    // Add the bounce-in animation
-                    fixedStopButton.classList.add('bounce-in');
+                    showStopButton();
                 }
             } else {
                 // Change to play icon (triangle)
@@ -1228,33 +1313,58 @@
                 
                 // Hide fixed stop button only if there's absolutely no audio playing
                 if (!currentAudio && !currentOscillator && !clavePlaying && !fixedStopButton.classList.contains('hidden')) {
-                    // Mark that we're in the process of hiding (we'll use this to cancel if needed)
-                    fixedStopButton.dataset.hidingInProgress = "true";
-                    
-                    // Remove any existing animation classes
-                    fixedStopButton.classList.remove('bounce-in', 'bounce-out');
-                    
-                    // Force a reflow to restart animation
-                    void fixedStopButton.offsetWidth;
-                    
-                    // Add the bounce-out animation
-                    fixedStopButton.classList.add('bounce-out');
-                    
-                    // After animation completes, hide the button
-                    setTimeout(() => {
-                        // Only hide if we haven't cancelled the hiding
-                        if (fixedStopButton.dataset.hidingInProgress === "true") {
-                            fixedStopButton.classList.add('hidden');
-                            fixedStopButton.classList.remove('bounce-out');
-                            fixedStopButton.dataset.hidingInProgress = "false";
-                        }
-                    }, 400); // Match the duration of the bounce-out animation
+                    hideStopButton();
                 }
             }
         }
         
+        function showStopButton() {
+            const fixedStopButton = document.getElementById('fixedStopButton');
+            
+            // Cancel any hiding that might be in progress
+            fixedStopButton.dataset.hidingInProgress = "false";
+            
+            // First make sure button is visible
+            fixedStopButton.classList.remove('hidden');
+            
+            // Remove any existing animation classes
+            fixedStopButton.classList.remove('bounce-in', 'bounce-out');
+            
+            // Force a reflow to restart animation
+            void fixedStopButton.offsetWidth;
+            
+            // Add the bounce-in animation
+            fixedStopButton.classList.add('bounce-in');
+        }
+        
+        function hideStopButton() {
+            const fixedStopButton = document.getElementById('fixedStopButton');
+            
+            // Mark that we're in the process of hiding (we'll use this to cancel if needed)
+            fixedStopButton.dataset.hidingInProgress = "true";
+            
+            // Remove any existing animation classes
+            fixedStopButton.classList.remove('bounce-in', 'bounce-out');
+            
+            // Force a reflow to restart animation
+            void fixedStopButton.offsetWidth;
+            
+            // Add the bounce-out animation
+            fixedStopButton.classList.add('bounce-out');
+            
+            // After animation completes, hide the button
+            setTimeout(() => {
+                // Only hide if we haven't cancelled the hiding
+                if (fixedStopButton.dataset.hidingInProgress === "true") {
+                    fixedStopButton.classList.add('hidden');
+                    fixedStopButton.classList.remove('bounce-out');
+                    fixedStopButton.dataset.hidingInProgress = "false";
+                }
+            }, 400); // Match the duration of the bounce-out animation
+        }
+        
         /********************************
-         * CLAVE PATTERN FUNCTIONS
+         * METRONOME FUNCTIONS
          ********************************/
         function toggleMetronome() {
             if (clavePlaying) {
@@ -1320,7 +1430,7 @@
         }
         
         /********************************
-         * SCROLL TO TOP FUNCTION
+         * UTILITY FUNCTIONS
          ********************************/
         function scrollToTop() {
             // Scroll to top with smooth animation
