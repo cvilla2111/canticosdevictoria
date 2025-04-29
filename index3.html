@@ -183,6 +183,51 @@
         .metronome-button-effect:active {
             transform: scale(0.9);
         }
+        
+        /* Base sunken effect for all clave buttons */
+        .tab-btn {
+            box-shadow: 
+                inset 0 1px 1px rgba(0, 0, 0, 0.2),
+                inset 0 2px 5px rgba(0, 0, 0, 0.15),
+                inset 0 -1px 1px rgba(255, 255, 255, 0.6);
+            background-color: #e5e7eb; /* gray-200 */
+            color: #374151; /* gray-700 */
+        }
+        
+        /* Dark mode support for base buttons */
+        .dark .tab-btn {
+            box-shadow: 
+                inset 0 1px 2px rgba(0, 0, 0, 0.4),
+                inset 0 2px 5px rgba(0, 0, 0, 0.3),
+                inset 0 -1px 1px rgba(255, 255, 255, 0.05);
+            background-color: #4b5563; /* gray-600 */
+            color: #d1d5db; /* gray-300 */
+        }
+        
+        /* Active state with fill change */
+        .tab-btn.active-fill {
+            background: linear-gradient(to bottom, 
+                rgba(255, 255, 255, 0.95), 
+                rgba(255, 255, 255, 0.85)
+            );
+            color: #ef4444; /* red-500 */
+            font-weight: 600;
+            box-shadow: 
+                inset 0 1px 1px rgba(0, 0, 0, 0.1),
+                inset 0 2px 3px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Dark mode support for active state */
+        .dark .tab-btn.active-fill {
+            background: linear-gradient(to bottom, 
+                rgba(31, 41, 55, 0.95), 
+                rgba(31, 41, 55, 0.85)
+            );
+            color: #f87171; /* red-400 */
+            box-shadow: 
+                inset 0 1px 1px rgba(0, 0, 0, 0.2),
+                inset 0 2px 3px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body class="min-h-screen bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-200">
@@ -303,16 +348,16 @@
             <div class="px-3 py-3 sticky bottom-0 bg-white dark:bg-gray-800 z-10">
                 <div class="flex justify-end">
                     <div class="inline-flex bg-gray-100 dark:bg-gray-700 rounded-md p-0.5 border border-gray-200 dark:border-gray-600 h-7">
-                        <button id="metronomeButton220" onclick="toggleMetronome(220)" class="tab-btn min-w-[45px] px-4 h-full flex items-center justify-center text-sm font-medium rounded transition-all text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-600 focus:outline-none relative mx-0.5 metronome-button-effect">
+                        <button id="metronomeButton220" onclick="toggleMetronome(220)" class="tab-btn min-w-[45px] px-4 h-full flex items-center justify-center text-sm font-medium rounded transition-all hover:bg-white dark:hover:bg-gray-600 focus:outline-none relative mx-0.5 metronome-button-effect">
                             220
                         </button>
-                        <button id="metronomeButton240" onclick="toggleMetronome(240)" class="tab-btn min-w-[45px] px-4 h-full flex items-center justify-center text-sm font-medium rounded transition-all text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-600 focus:outline-none relative mx-0.5 metronome-button-effect">
+                        <button id="metronomeButton240" onclick="toggleMetronome(240)" class="tab-btn min-w-[45px] px-4 h-full flex items-center justify-center text-sm font-medium rounded transition-all hover:bg-white dark:hover:bg-gray-600 focus:outline-none relative mx-0.5 metronome-button-effect">
                             240
                         </button>
-                        <button id="metronomeButton260" onclick="toggleMetronome(260)" class="tab-btn min-w-[45px] px-4 h-full flex items-center justify-center text-sm font-medium rounded transition-all text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-600 focus:outline-none relative mx-0.5 metronome-button-effect">
+                        <button id="metronomeButton260" onclick="toggleMetronome(260)" class="tab-btn min-w-[45px] px-4 h-full flex items-center justify-center text-sm font-medium rounded transition-all hover:bg-white dark:hover:bg-gray-600 focus:outline-none relative mx-0.5 metronome-button-effect">
                             260
                         </button>
-                        <button id="metronomeButton280" onclick="toggleMetronome(280)" class="tab-btn min-w-[45px] px-4 h-full flex items-center justify-center text-sm font-medium rounded transition-all text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-600 focus:outline-none relative mx-0.5 metronome-button-effect">
+                        <button id="metronomeButton280" onclick="toggleMetronome(280)" class="tab-btn min-w-[45px] px-4 h-full flex items-center justify-center text-sm font-medium rounded transition-all hover:bg-white dark:hover:bg-gray-600 focus:outline-none relative mx-0.5 metronome-button-effect">
                             280
                         </button>
                     </div>
@@ -1488,26 +1533,17 @@
                 if (metronomeButton) {
                     if (bpm === activeBPM) {
                         // Active button - add active styling
-                        metronomeButton.classList.add('bg-white', 'dark:bg-gray-800');
-                        metronomeButton.classList.add('text-red-500', 'dark:text-red-400');
-                        metronomeButton.classList.add('font-semibold');
+                        metronomeButton.classList.add('active-fill');
                         
-                        // Add the active indicator dot
-                        if (!metronomeButton.querySelector('.active-indicator')) {
-                            const indicator = document.createElement('div');
-                            indicator.className = 'active-indicator absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-red-500 dark:bg-red-400 rounded-full';
-                            metronomeButton.appendChild(indicator);
-                        }
+                        // Remove hover classes that might conflict with active state
+                        metronomeButton.classList.remove('hover:bg-white', 'dark:hover:bg-gray-600');
                     } else {
                         // Inactive button - reset styling
-                        metronomeButton.classList.remove('bg-white', 'dark:bg-gray-800');
-                        metronomeButton.classList.remove('text-red-500', 'dark:text-red-400');
-                        metronomeButton.classList.remove('font-semibold');
+                        metronomeButton.classList.remove('active-fill');
                         
-                        // Remove the active indicator dot if it exists
-                        const indicator = metronomeButton.querySelector('.active-indicator');
-                        if (indicator) {
-                            metronomeButton.removeChild(indicator);
+                        // Ensure hover classes are present
+                        if (!metronomeButton.classList.contains('hover:bg-white')) {
+                            metronomeButton.classList.add('hover:bg-white', 'dark:hover:bg-gray-600');
                         }
                     }
                 }
