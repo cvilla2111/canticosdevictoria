@@ -295,8 +295,23 @@
                     <p id="modalContent" class="text-gray-800 dark:text-gray-200 text-lg md:text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl text-left font-medium"></p>
                 </div>
             </div>
-            <div class="px-3 py-2 text-right">
-                <button id="metronomeButton" onclick="toggleMetronome()" class="text-primary font-medium cursor-pointer focus:outline-none border border-primary rounded px-2 py-1 metronome-button-effect">240bpm</button>
+            <div class="px-3 py-2 flex justify-end space-x-3">
+                <button id="metronomeButton220" onclick="toggleMetronome(220)" class="w-12 h-12 flex flex-col items-center justify-center bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors border-b-2 border-gray-200 dark:border-gray-700 focus:outline-none metronome-button-effect">
+                    <span class="text-lg text-gray-700 dark:text-gray-300">220</span>
+                    <span class="text-[10px] text-gray-500 dark:text-gray-400">BPM</span>
+                </button>
+                <button id="metronomeButton240" onclick="toggleMetronome(240)" class="w-12 h-12 flex flex-col items-center justify-center bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors border-b-2 border-gray-200 dark:border-gray-700 focus:outline-none metronome-button-effect">
+                    <span class="text-lg text-gray-700 dark:text-gray-300">240</span>
+                    <span class="text-[10px] text-gray-500 dark:text-gray-400">BPM</span>
+                </button>
+                <button id="metronomeButton260" onclick="toggleMetronome(260)" class="w-12 h-12 flex flex-col items-center justify-center bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors border-b-2 border-gray-200 dark:border-gray-700 focus:outline-none metronome-button-effect">
+                    <span class="text-lg text-gray-700 dark:text-gray-300">260</span>
+                    <span class="text-[10px] text-gray-500 dark:text-gray-400">BPM</span>
+                </button>
+                <button id="metronomeButton280" onclick="toggleMetronome(280)" class="w-12 h-12 flex flex-col items-center justify-center bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors border-b-2 border-gray-200 dark:border-gray-700 focus:outline-none metronome-button-effect">
+                    <span class="text-lg text-gray-700 dark:text-gray-300">280</span>
+                    <span class="text-[10px] text-gray-500 dark:text-gray-400">BPM</span>
+                </button>
             </div>
         </div>
     </div>
@@ -425,10 +440,15 @@
                 }
             });
             
-            // Add click effect for metronome button (already has CSS transitions in the styling)
-            const metronomeButton = document.getElementById('metronomeButton');
-            metronomeButton.addEventListener('click', function() {
-                addButtonPulseAnimation(this);
+            // Add click effect for metronome buttons (already have CSS transitions in the styling)
+            const bpmValues = [220, 240, 260, 280];
+            bpmValues.forEach(bpm => {
+                const metronomeButton = document.getElementById(`metronomeButton${bpm}`);
+                if (metronomeButton) {
+                    metronomeButton.addEventListener('click', function() {
+                        addButtonPulseAnimation(this);
+                    });
+                }
             });
             
             // Add click effect for return to top button
@@ -1372,17 +1392,30 @@
         /********************************
          * METRONOME FUNCTIONS
          ********************************/
-        function toggleMetronome() {
-            if (clavePlaying) {
+        // State for currently active metronome BPM
+        let currentBPM = 0;
+        
+        function toggleMetronome(bpm) {
+            if (clavePlaying && currentBPM === bpm) {
+                // If the same BPM button is clicked, stop playing
                 stopClave();
             } else {
-                startClave();
+                // If different BPM or not playing, start with new BPM
+                startClave(bpm);
             }
         }
         
-        function startClave() {
+        function startClave(bpm) {
             // Stop any playing HTML audio elements or oscillators
             stopCurrentAudio();
+            
+            // Stop clave if already playing (with different BPM)
+            if (clavePlaying) {
+                stopClave();
+            }
+            
+            // Store the current BPM
+            currentBPM = bpm;
             
             // Get the clave audio element
             const claveAudio = document.getElementById('claveAudio');
@@ -1391,6 +1424,10 @@
                 // Reset to beginning
                 claveAudio.currentTime = 0;
                 
+                // Set the playback rate based on BPM
+                // Base rate is 1.0 at 240bpm, adjust proportionally for other BPMs
+                claveAudio.playbackRate = bpm / 240;
+                
                 // Play the clave audio file
                 const playPromise = claveAudio.play();
                 
@@ -1398,21 +1435,21 @@
                 if (playPromise !== undefined) {
                     playPromise
                         .then(() => {
-                            // Update button state to show it's playing
-                            const metronomeButton = document.getElementById('metronomeButton');
-                            metronomeButton.classList.add('font-bold');
-                            metronomeButton.classList.add('text-red-500');
+                            // Update all button states
+                            updateMetronomeButtonStates(bpm);
                             clavePlaying = true;
                         })
                         .catch(error => {
                             console.error("Clave playback error:", error);
                             // Reset state if audio can't play
                             clavePlaying = false;
+                            currentBPM = 0;
                         });
                 }
             } catch (error) {
                 console.error("Clave audio error:", error);
                 clavePlaying = false;
+                currentBPM = 0;
             }
         }
         
@@ -1428,11 +1465,60 @@
                 console.error("Error stopping clave audio:", e);
             }
             
-            // Update button state
-            const metronomeButton = document.getElementById('metronomeButton');
-            metronomeButton.classList.remove('font-bold');
-            metronomeButton.classList.remove('text-red-500');
+            // Reset all button states
+            updateMetronomeButtonStates(0);
+            
+            // Reset state
             clavePlaying = false;
+            currentBPM = 0;
+        }
+        
+        function updateMetronomeButtonStates(activeBPM) {
+            // Define all BPM values we have buttons for
+            const bpmValues = [220, 240, 260, 280];
+            
+            // Update each button's state
+            bpmValues.forEach(bpm => {
+                const metronomeButton = document.getElementById(`metronomeButton${bpm}`);
+                if (metronomeButton) {
+                    const bpmValueSpan = metronomeButton.querySelector('.text-lg');
+                    const bpmLabelSpan = metronomeButton.querySelector('.text-\\[10px\\]');
+                    
+                    if (bpm === activeBPM) {
+                        // Active button - change border color and text color
+                        metronomeButton.classList.remove('border-gray-200', 'dark:border-gray-700');
+                        metronomeButton.classList.add('border-red-500', 'dark:border-red-500');
+                        
+                        // Update BPM value text color
+                        if (bpmValueSpan) {
+                            bpmValueSpan.classList.remove('text-gray-700', 'dark:text-gray-300');
+                            bpmValueSpan.classList.add('text-red-500', 'dark:text-red-400');
+                        }
+                        
+                        // Update BPM label text color
+                        if (bpmLabelSpan) {
+                            bpmLabelSpan.classList.remove('text-gray-500', 'dark:text-gray-400');
+                            bpmLabelSpan.classList.add('text-red-400', 'dark:text-red-300');
+                        }
+                    } else {
+                        // Inactive button - reset to default styling
+                        metronomeButton.classList.remove('border-red-500', 'dark:border-red-500');
+                        metronomeButton.classList.add('border-gray-200', 'dark:border-gray-700');
+                        
+                        // Reset BPM value text color
+                        if (bpmValueSpan) {
+                            bpmValueSpan.classList.remove('text-red-500', 'dark:text-red-400');
+                            bpmValueSpan.classList.add('text-gray-700', 'dark:text-gray-300');
+                        }
+                        
+                        // Reset BPM label text color
+                        if (bpmLabelSpan) {
+                            bpmLabelSpan.classList.remove('text-red-400', 'dark:text-red-300');
+                            bpmLabelSpan.classList.add('text-gray-500', 'dark:text-gray-400');
+                        }
+                    }
+                }
+            });
         }
         
         /********************************
