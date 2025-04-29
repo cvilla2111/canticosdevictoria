@@ -190,7 +190,7 @@
         <!-- Main Content Area -->
         <div>
             <!-- App Header -->
-            <h1 class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-0 text-gray-800 dark:text-gray-200 text-center font-headings">Cánticos de Victoria</h1>
+            <h1 class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-0 text-gray-800 dark:text-gray-200 text-center font-headings">Cánticos de Victoria@</h1>
             <p id="subtitle" class="mb-2 text-sm md:text-base lg:text-lg xl:text-xl text-gray-600 dark:text-gray-400 text-center">Una colección de coritos</p>
             
             <!-- Search Bar -->
@@ -301,31 +301,21 @@
             
             <!-- Fixed Footer -->
             <div class="px-3 py-3 border-t border-gray-200 dark:border-gray-700 sticky bottom-0 bg-white dark:bg-gray-800 z-10">
-                <div class="flex justify-end space-x-3">
-                    <button id="metronomeButton220" onclick="toggleMetronome(220)" class="w-12 h-9 flex flex-col items-center justify-center bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors border-b-2 border-gray-200 dark:border-gray-700 focus:outline-none metronome-button-effect">
-                        <div class="flex items-center gap-0.5">
-                            <span class="text-base leading-none text-gray-700 dark:text-gray-300">220</span>
-                            <span class="text-[8px] leading-none mt-[2px] text-gray-500 dark:text-gray-400">BPM</span>
-                        </div>
-                    </button>
-                    <button id="metronomeButton240" onclick="toggleMetronome(240)" class="w-12 h-9 flex flex-col items-center justify-center bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors border-b-2 border-gray-200 dark:border-gray-700 focus:outline-none metronome-button-effect">
-                        <div class="flex items-center gap-0.5">
-                            <span class="text-base leading-none text-gray-700 dark:text-gray-300">240</span>
-                            <span class="text-[8px] leading-none mt-[2px] text-gray-500 dark:text-gray-400">BPM</span>
-                        </div>
-                    </button>
-                    <button id="metronomeButton260" onclick="toggleMetronome(260)" class="w-12 h-9 flex flex-col items-center justify-center bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors border-b-2 border-gray-200 dark:border-gray-700 focus:outline-none metronome-button-effect">
-                        <div class="flex items-center gap-0.5">
-                            <span class="text-base leading-none text-gray-700 dark:text-gray-300">260</span>
-                            <span class="text-[8px] leading-none mt-[2px] text-gray-500 dark:text-gray-400">BPM</span>
-                        </div>
-                    </button>
-                    <button id="metronomeButton280" onclick="toggleMetronome(280)" class="w-12 h-9 flex flex-col items-center justify-center bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors border-b-2 border-gray-200 dark:border-gray-700 focus:outline-none metronome-button-effect">
-                        <div class="flex items-center gap-0.5">
-                            <span class="text-base leading-none text-gray-700 dark:text-gray-300">280</span>
-                            <span class="text-[8px] leading-none mt-[2px] text-gray-500 dark:text-gray-400">BPM</span>
-                        </div>
-                    </button>
+                <div class="flex justify-end">
+                    <div class="inline-flex bg-gray-100 dark:bg-gray-700 rounded-md p-0.5 border border-gray-200 dark:border-gray-600 h-7">
+                        <button id="metronomeButton220" onclick="toggleMetronome(220)" class="tab-btn min-w-[45px] px-4 h-full flex items-center justify-center text-sm font-medium rounded transition-all text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-600 focus:outline-none relative mx-0.5 metronome-button-effect">
+                            220
+                        </button>
+                        <button id="metronomeButton240" onclick="toggleMetronome(240)" class="tab-btn min-w-[45px] px-4 h-full flex items-center justify-center text-sm font-medium rounded transition-all text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-600 focus:outline-none relative mx-0.5 metronome-button-effect">
+                            240
+                        </button>
+                        <button id="metronomeButton260" onclick="toggleMetronome(260)" class="tab-btn min-w-[45px] px-4 h-full flex items-center justify-center text-sm font-medium rounded transition-all text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-600 focus:outline-none relative mx-0.5 metronome-button-effect">
+                            260
+                        </button>
+                        <button id="metronomeButton280" onclick="toggleMetronome(280)" class="tab-btn min-w-[45px] px-4 h-full flex items-center justify-center text-sm font-medium rounded transition-all text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-600 focus:outline-none relative mx-0.5 metronome-button-effect">
+                            280
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1496,40 +1486,28 @@
             bpmValues.forEach(bpm => {
                 const metronomeButton = document.getElementById(`metronomeButton${bpm}`);
                 if (metronomeButton) {
-                    const bpmValueSpan = metronomeButton.querySelector('.text-lg');
-                    const bpmLabelSpan = metronomeButton.querySelector('.text-\\[10px\\]');
-                    
                     if (bpm === activeBPM) {
-                        // Active button - change border color and text color
-                        metronomeButton.classList.remove('border-gray-200', 'dark:border-gray-700');
-                        metronomeButton.classList.add('border-red-500', 'dark:border-red-500');
+                        // Active button - add active styling
+                        metronomeButton.classList.add('bg-white', 'dark:bg-gray-800');
+                        metronomeButton.classList.add('text-red-500', 'dark:text-red-400');
+                        metronomeButton.classList.add('font-semibold');
                         
-                        // Update BPM value text color
-                        if (bpmValueSpan) {
-                            bpmValueSpan.classList.remove('text-gray-700', 'dark:text-gray-300');
-                            bpmValueSpan.classList.add('text-red-500', 'dark:text-red-400');
-                        }
-                        
-                        // Update BPM label text color
-                        if (bpmLabelSpan) {
-                            bpmLabelSpan.classList.remove('text-gray-500', 'dark:text-gray-400');
-                            bpmLabelSpan.classList.add('text-red-400', 'dark:text-red-300');
+                        // Add the active indicator dot
+                        if (!metronomeButton.querySelector('.active-indicator')) {
+                            const indicator = document.createElement('div');
+                            indicator.className = 'active-indicator absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-red-500 dark:bg-red-400 rounded-full';
+                            metronomeButton.appendChild(indicator);
                         }
                     } else {
-                        // Inactive button - reset to default styling
-                        metronomeButton.classList.remove('border-red-500', 'dark:border-red-500');
-                        metronomeButton.classList.add('border-gray-200', 'dark:border-gray-700');
+                        // Inactive button - reset styling
+                        metronomeButton.classList.remove('bg-white', 'dark:bg-gray-800');
+                        metronomeButton.classList.remove('text-red-500', 'dark:text-red-400');
+                        metronomeButton.classList.remove('font-semibold');
                         
-                        // Reset BPM value text color
-                        if (bpmValueSpan) {
-                            bpmValueSpan.classList.remove('text-red-500', 'dark:text-red-400');
-                            bpmValueSpan.classList.add('text-gray-700', 'dark:text-gray-300');
-                        }
-                        
-                        // Reset BPM label text color
-                        if (bpmLabelSpan) {
-                            bpmLabelSpan.classList.remove('text-red-400', 'dark:text-red-300');
-                            bpmLabelSpan.classList.add('text-gray-500', 'dark:text-gray-400');
+                        // Remove the active indicator dot if it exists
+                        const indicator = metronomeButton.querySelector('.active-indicator');
+                        if (indicator) {
+                            metronomeButton.removeChild(indicator);
                         }
                     }
                 }
