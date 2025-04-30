@@ -2015,11 +2015,11 @@
                     currentLetterElement.textContent = letter;
                 }
                 
-                // Scroll to the letter's position
+                // Scroll to the letter's position with smooth behavior
                 const scrollPosition = letterPositions.get(letter) || 0;
                 window.scrollTo({
                     top: scrollPosition - 60, // Adjust for header height
-                    behavior: 'instant' // Instant scrolling for responsiveness
+                    behavior: 'smooth' // Smooth scrolling for better user experience
                 });
                 
                 // Update the scroll indicator position - keep this the same
