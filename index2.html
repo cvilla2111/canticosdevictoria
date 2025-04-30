@@ -1084,7 +1084,7 @@
             // 1. Make text in parentheses smaller and lighter color
             // 2. Preserve line breaks
             const formattedContent = content
-                .replace(/$$([^)]+)$$/g, '<span class="text-sm md:text-base lg:text-xl xl:text-2xl 2xl:text-3xl text-gray-500 dark:text-gray-400">($1)</span>')
+                .replace(/\(([^)]+)\)/g, '<span class="text-sm md:text-base lg:text-xl xl:text-2xl 2xl:text-3xl text-gray-500 dark:text-gray-400">($1)</span>')
                 .replace(/\n/g, '<br>');
                 
             modalContent.innerHTML = formattedContent;
@@ -1909,3 +1909,123 @@
         // Handle mouse move event
         function handleMouseMove(e) {
             if (!alphaScrollActive) {
+                // If we've moved significantly before the long press triggers, cancel it
+                if (longPressTimer && Math.abs(e.clientY - touchStartY) > 10) {
+                    clearTimeout(longPressTimer);
+                    longPressTimer = null;
+                }
+                return;
+            }
+            
+            // Prevent default scrolling only during alpha scroll
+            e.preventDefault();
+            
+            // Update the letter based on mouse position
+            updateLetterFromPosition(e.clientY);
+        }
+        
+        // Handle mouse up event
+        function handleMouseUp() {
+            clearTimeout(longPressTimer);
+            longPressTimer = null;
+            deactivateAlphaScroll();
+        }
+        
+        // Activate the alphabetical scrolling
+        function activateAlphaScroll(yPos) {
+            // Skip if no letters available
+            if (availableLetters.length === 0) return;
+            
+            alphaScrollActive = true;
+            
+            // Show the letter overlay
+            const letterOverlay = document.getElementById('letterOverlay');
+            if (letterOverlay) {
+                letterOverlay.classList.add('active');
+            }
+            
+            // Show the scroll indicator
+            const scrollIndicator = document.getElementById('scrollIndicator');
+            if (scrollIndicator) {
+                scrollIndicator.style.opacity = '1';
+            }
+            
+            // Update the initial letter based on position
+            updateLetterFromPosition(yPos);
+        }
+        
+        // Deactivate the alphabetical scrolling
+        function deactivateAlphaScroll() {
+            alphaScrollActive = false;
+            
+            // Hide the letter overlay
+            const letterOverlay = document.getElementById('letterOverlay');
+            if (letterOverlay) {
+                letterOverlay.classList.remove('active');
+            }
+            
+            // Hide the scroll indicator
+            const scrollIndicator = document.getElementById('scrollIndicator');
+            if (scrollIndicator) {
+                scrollIndicator.style.opacity = '0';
+            }
+        }
+        
+        // Update the current letter based on Y position
+        function updateLetterFromPosition(yPos) {
+            if (!alphaScrollActive || availableLetters.length === 0) return;
+            
+            // Calculate the relative position in the viewport
+            const viewportHeight = window.innerHeight;
+            const safeArea = viewportHeight * 0.8; // 80% of viewport height
+            const topOffset = viewportHeight * 0.1; // 10% from top
+            const bottomLimit = topOffset + safeArea;
+            
+            // Normalize the position within the safe area
+            let relativePos = (yPos - topOffset) / safeArea;
+            relativePos = Math.max(0, Math.min(relativePos, 1));
+            
+            // Calculate the letter index
+            const letterIndex = Math.floor(relativePos * availableLetters.length);
+            const adjustedIndex = Math.max(0, Math.min(letterIndex, availableLetters.length - 1));
+            
+            // Update if the letter has changed
+            if (adjustedIndex !== currentLetterIndex) {
+                currentLetterIndex = adjustedIndex;
+                const letter = availableLetters[currentLetterIndex];
+                
+                // Update the displayed letter
+                const currentLetterElement = document.getElementById('currentLetter');
+                if (currentLetterElement) {
+                    currentLetterElement.textContent = letter;
+                }
+                
+                // Scroll to the letter's position
+                const scrollPosition = letterPositions.get(letter) || 0;
+                window.scrollTo({
+                    top: scrollPosition - 60, // Adjust for header height
+                    behavior: 'instant' // Instant scrolling for responsiveness
+                });
+                
+                // Update the scroll indicator position
+                const scrollIndicator = document.getElementById('scrollIndicator');
+                if (scrollIndicator) {
+                    const indicatorPos = topOffset + (safeArea * relativePos);
+                    scrollIndicator.style.top = `${indicatorPos}px`;
+                }
+            }
+        }
+        
+        /********************************
+         * UTILITY FUNCTIONS
+         ********************************/
+        function scrollToTop() {
+            // Scroll to top with smooth animation
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+</body>
+</html>
