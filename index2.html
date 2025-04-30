@@ -292,6 +292,16 @@
             opacity: 0;
             z-index: 90;
         }
+        
+        /* Disable text selection in item list */
+        #itemList {
+            -webkit-touch-callout: none; /* iOS Safari */
+            -webkit-user-select: none;   /* Safari */
+            -khtml-user-select: none;    /* Konqueror HTML */
+            -moz-user-select: none;      /* Firefox */
+            -ms-user-select: none;       /* Internet Explorer/Edge */
+            user-select: none;           /* Non-prefixed version */
+        }
     </style>
 </head>
 <body class="min-h-screen bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-200">
@@ -596,8 +606,8 @@
             
             // Set up alphabet scroll event listeners
             const itemList = document.getElementById('itemList');
-            itemList.addEventListener('touchstart', handleTouchStart);
-            itemList.addEventListener('touchmove', handleTouchMove);
+            itemList.addEventListener('touchstart', handleTouchStart, { passive: false });
+            itemList.addEventListener('touchmove', handleTouchMove, { passive: false });
             itemList.addEventListener('touchend', handleTouchEnd);
             
             // Mouse events for desktop testing
@@ -607,6 +617,14 @@
             
             // Handle window resize for alphabet scroll
             window.addEventListener('resize', updateLetterPositions);
+            
+            // Prevent text selection conflicts during touch events
+            itemList.addEventListener('selectstart', function(e) {
+                if (alphaScrollActive || longPressTimer) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
         }
         
         function handleScroll() {
@@ -1824,6 +1842,9 @@
          ********************************/
         // Handle touch start event
         function handleTouchStart(e) {
+            // Prevent text selection during touch events
+            e.preventDefault();
+            
             // Store the starting Y position
             touchStartY = e.touches[0].clientY;
             
@@ -1858,6 +1879,9 @@
         
         // Handle mouse down event (for desktop testing)
         function handleMouseDown(e) {
+            // Prevent text selection
+            e.preventDefault();
+            
             // Store the starting Y position
             touchStartY = e.clientY;
             
