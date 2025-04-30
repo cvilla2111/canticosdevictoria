@@ -1027,6 +1027,18 @@
             // Get sorted letters
             availableLetters = Object.keys(groupedItems).sort();
             
+            // For faster alpha scroll, preload availableLetters with more frequent jumps
+            if (availableLetters.length > 15) {
+                // Create direct jumps to make scrolling feel faster with large letter sets
+                availableLetters.forEach((letter, index) => {
+                    // Add emphasis on this letter in the HTML to make it more responsive
+                    const marker = document.getElementById(`letter-${letter}`);
+                    if (marker) {
+                        marker.dataset.priority = 'high';
+                    }
+                });
+            }
+            
             // For each letter group
             availableLetters.forEach(letter => {
                 const items = groupedItems[letter];
@@ -2163,7 +2175,7 @@
         // State to track finger movement
         let previousFingerY = 0;
         let lastMovementDirection = 0; // 0: no movement, -1: up, 1: down
-        let movementThreshold = 30; // Increased threshold for less sensitivity (was 10)
+        let movementThreshold = 12; // Lower threshold for faster letter scrolling (was 30)
         let movementAccumulator = 0; // Accumulates movement until threshold is reached
         
         // Update the current letter based on Y position
@@ -2208,8 +2220,9 @@
             // Save current position for next comparison
             previousFingerY = yPos;
             
-            // Only change letter if we've moved enough OR if directly tapping on a letter region
+            // More aggressive letter changing with lower threshold for faster scrolling
             const shouldChangeLetter = movementAccumulator >= movementThreshold || 
+                                     Math.abs(directIndex - currentLetterIndex) > 1 ||
                                      (previousFingerY === 0 && directIndex !== currentLetterIndex);
             
             if (shouldChangeLetter) {
@@ -2246,11 +2259,11 @@
                         currentLetterElement.textContent = letter;
                     }
                     
-                    // Scroll to the letter's position with smooth behavior
+                    // Scroll to the letter's position with instant behavior for faster response
                     const scrollPosition = letterPositions.get(letter) || 0;
                     window.scrollTo({
                         top: scrollPosition - 60, // Adjust for header height
-                        behavior: 'smooth' // Use smooth scrolling for better visual experience
+                        behavior: 'auto' // Use instant scrolling for faster response
                     });
                 }
             }
