@@ -1999,8 +1999,9 @@
             let relativePos = (yPos - topOffset) / safeArea;
             relativePos = Math.max(0, Math.min(relativePos, 1));
             
-            // Calculate the letter index
-            const letterIndex = Math.floor(relativePos * availableLetters.length);
+            // INVERTED: Calculate the letter index using the inverted relative position
+            // Now A (index 0) will be at the bottom, Z will be at the top
+            const letterIndex = Math.floor((1 - relativePos) * availableLetters.length);
             const adjustedIndex = Math.max(0, Math.min(letterIndex, availableLetters.length - 1));
             
             // Update if the letter has changed
@@ -2021,7 +2022,8 @@
                     behavior: 'instant' // Instant scrolling for responsiveness
                 });
                 
-                // Update the scroll indicator position
+                // Update the scroll indicator position - keep this the same
+                // so indicator shows your actual finger position
                 const scrollIndicator = document.getElementById('scrollIndicator');
                 if (scrollIndicator) {
                     const indicatorPos = topOffset + (safeArea * relativePos);
