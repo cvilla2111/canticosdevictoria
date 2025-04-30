@@ -4,12 +4,130 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cánticos de Victoria</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M18.7,5.1c-0.2-0.6-0.6-1.1-1.2-1.4c-0.9-0.5-2-0.6-2.9-0.1L11.8,5H6C3.8,5,2,6.8,2,9v7c0,2.2,1.8,4,4,4h6h6c2.2,0,4-1.8,4-4V9C22,7,20.6,5.4,18.7,5.1z' fill='%2346b961'/><path d='M11,18H6c-1.1,0-2-0.9-2-2V9c0-1.1,0.9-2,2-2h5V18z' fill='%2368c97f'/><path d='M15.3,16.2L13,17.4V6.6l2.6-1.3c0.4-0.2,0.8,0,1,0C16.7,5.5,17,5.7,17,6.2v7.3C17,14.7,16.4,15.7,15.3,16.2z' fill='%233b5e2f'/><path d='M20,16c0,1.1-0.9,2-2,2h-1.8c1.7-0.9,2.8-2.6,2.8-4.5V7.3c0.6,0.3,1,1,1,1.7V16z' fill='%23c7ce49'/></svg>" type="image/svg+xml">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Tailwind Configuration
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                fontFamily: {
+                    'sans': ['Quicksand', 'sans-serif'],
+                    'headings': ['Chewy', 'cursive'],
+                },
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                    },
+                    animation: {
+                        'eq1': 'equalize 0.45s ease-in-out infinite alternate',
+                        'eq2': 'equalize 0.38s ease-in-out infinite alternate',
+                        'eq3': 'equalize 0.3s ease-in-out infinite alternate',
+                        'eq4': 'equalize 0.42s ease-in-out infinite alternate',
+                        'eq5': 'equalize 0.35s ease-in-out infinite alternate',
+                        'eq6': 'equalize 0.4s ease-in-out infinite alternate'
+                    },
+                    keyframes: {
+                        equalize: {
+                            '0%': { height: '0%' },
+                            '50%': { height: '75%' },
+                            '100%': { height: '30%' }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Theme management
+        const storedTheme = localStorage.getItem('theme');
+        const systemDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        if (storedTheme === 'dark' || (!storedTheme && systemDarkMode)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (!localStorage.getItem('theme')) {
+                if (event.matches) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            }
+        });
+    </script>
     <style>
-        /* Audio button states */
+        /* === ANIMATION KEYFRAMES === */
+        /* Button animations */
+        @keyframes pulseError {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes buttonPulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 rgba(93, 92, 222, 0); }
+            40% { transform: scale(0.88); box-shadow: 0 0 0 rgba(93, 92, 222, 0); }
+            60% { transform: scale(1.15); box-shadow: 0 0 10px rgba(93, 92, 222, 0.5); }
+            100% { transform: scale(1); box-shadow: 0 0 0 rgba(93, 92, 222, 0); }
+        }
+        
+        /* Stop button animations */
+        @keyframes bounceIn {
+            0% { transform: translate(-50%, 100px); opacity: 0; }
+            60% { transform: translate(-50%, -10px); opacity: 1; }
+            80% { transform: translate(-50%, 5px); }
+            100% { transform: translate(-50%, 0); }
+        }
+        
+        @keyframes bounceOut {
+            0% { transform: translate(-50%, 0); opacity: 1; }
+            20% { transform: translate(-50%, 5px); opacity: 1; }
+            100% { transform: translate(-50%, 100px); opacity: 0; }
+        }
+        
+        /* Modal animations */
+        @keyframes modalFadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes modalFadeOut {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        
+        @keyframes modalContentIn {
+            0% { opacity: 0; transform: scale(0.9); }
+            70% { opacity: 1; transform: scale(1.02); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        @keyframes modalContentOut {
+            0% { opacity: 1; transform: scale(1); }
+            30% { opacity: 1; transform: scale(1.02); }
+            100% { opacity: 0; transform: scale(0.9); }
+        }
+        
+        /* === ANIMATION CLASSES === */
+        .pulse-error { animation: pulseError 0.3s ease-in-out; }
+        .button-pulse { animation: buttonPulse 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
+        .bounce-in { animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .bounce-out { animation: bounceOut 0.4s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards; }
+        .modal-fade-in { animation: modalFadeIn 0.3s ease-out forwards; }
+        .modal-fade-out { animation: modalFadeOut 0.3s ease-in forwards; }
+        .modal-content-in { animation: modalContentIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .modal-content-out { animation: modalContentOut 0.3s ease-in forwards; }
+
+        /* === AUDIO BUTTON STATES === */
         .audio-unavailable {
             position: relative;
         }
@@ -44,154 +162,197 @@
             cursor: not-allowed;
         }
         
-        /* Button animations */
-        @keyframes pulseError {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+        /* Button styling */
+        .play-button-container {
+            transition: transform 0.2s ease;
+            transform-origin: center;
         }
         
-        .pulse-error {
-            animation: pulseError 0.3s ease-in-out;
+        .close-button-effect {
+            transition: transform 0.2s, background-color 0.2s;
         }
         
-        /* Fixed stop button animations */
-        @keyframes bounceIn {
-            0% { transform: translate(-50%, 100px); opacity: 0; }
-            60% { transform: translate(-50%, -10px); opacity: 1; }
-            80% { transform: translate(-50%, 5px); }
-            100% { transform: translate(-50%, 0); }
+        .close-button-effect:active {
+            transform: scale(0.85);
         }
         
-        @keyframes bounceOut {
-            0% { transform: translate(-50%, 0); opacity: 1; }
-            20% { transform: translate(-50%, 5px); opacity: 1; }
-            100% { transform: translate(-50%, 100px); opacity: 0; }
+        .metronome-button-effect {
+            transition: transform 0.2s, color 0.2s;
         }
         
-        .bounce-in {
-            animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        .metronome-button-effect:active {
+            transform: scale(0.9);
         }
         
-        .bounce-out {
-            animation: bounceOut 0.4s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards;
+        /* Base sunken effect for all clave buttons */
+        .tab-btn {
+            box-shadow: 
+                inset 0 1px 1px rgba(0, 0, 0, 0.2),
+                inset 0 2px 5px rgba(0, 0, 0, 0.15),
+                inset 0 -1px 1px rgba(255, 255, 255, 0.6);
+            background-color: #e5e7eb; /* gray-200 */
+            color: #374151; /* gray-700 */
         }
         
-        /* Modal window animations */
-        @keyframes modalFadeIn {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
+        /* Dark mode support for base buttons */
+        .dark .tab-btn {
+            box-shadow: 
+                inset 0 1px 2px rgba(0, 0, 0, 0.4),
+                inset 0 2px 5px rgba(0, 0, 0, 0.3),
+                inset 0 -1px 1px rgba(255, 255, 255, 0.05);
+            background-color: #4b5563; /* gray-600 */
+            color: #d1d5db; /* gray-300 */
         }
         
-        @keyframes modalFadeOut {
-            0% { opacity: 1; }
-            100% { opacity: 0; }
+        /* Active state with fill change */
+        .tab-btn.active-fill {
+            background: linear-gradient(to bottom, 
+                rgba(255, 255, 255, 0.95), 
+                rgba(255, 255, 255, 0.85)
+            );
+            color: #ef4444; /* red-500 */
+            font-weight: 600;
+            box-shadow: 
+                inset 0 1px 1px rgba(0, 0, 0, 0.1),
+                inset 0 2px 3px rgba(0, 0, 0, 0.05);
         }
         
-        @keyframes modalContentIn {
-            0% { opacity: 0; transform: scale(0.9); }
-            70% { opacity: 1; transform: scale(1.02); }
-            100% { opacity: 1; transform: scale(1); }
+        /* Dark mode support for active state */
+        .dark .tab-btn.active-fill {
+            background: linear-gradient(to bottom, 
+                rgba(31, 41, 55, 0.95), 
+                rgba(31, 41, 55, 0.85)
+            );
+            color: #f87171; /* red-400 */
+            box-shadow: 
+                inset 0 1px 1px rgba(0, 0, 0, 0.2),
+                inset 0 2px 3px rgba(0, 0, 0, 0.1);
         }
         
-        @keyframes modalContentOut {
-            0% { opacity: 1; transform: scale(1); }
-            30% { opacity: 1; transform: scale(1.02); }
-            100% { opacity: 0; transform: scale(0.9); }
-        }
-        
-        .modal-fade-in {
-            animation: modalFadeIn 0.3s ease-out forwards;
-        }
-        
-        .modal-fade-out {
-            animation: modalFadeOut 0.3s ease-in forwards;
-        }
-        
-        .modal-content-in {
-            animation: modalContentIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-        
-        .modal-content-out {
-            animation: modalContentOut 0.3s ease-in forwards;
-        }
-        
-        /* Device size indicator */
-        #device-size-indicator {
+        /* Alphabet handle - touch area */
+        .alphabet-handle {
             position: fixed;
-            bottom: 10px;
-            left: 10px;
-            padding: 4px 8px;
-            background-color: rgba(0, 0, 0, 0.7);
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;  /* Touch area width */
+            height: 70%;
+            z-index: 40;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none;
+        }
+        
+        /* Handle indicator - half-pill shape */
+        .handle-indicator {
+            width: 36px;
+            height: 36px;
+            position: absolute;
+            right: 0; /* Flush with screen edge */
+            border: 2px solid #1f2937; /* gray-800 - match text color */
+            border-right: none; /* Remove right border since it's against screen edge */
+            border-radius: 18px 0 0 18px; /* Half-pill shape: rounded left, flat right */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-right: 4px; /* Adjust text position slightly */
+            color: #1f2937; /* Match text color */
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease; /* Smooth transition */
+            touch-action: none;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: -2px 2px 8px rgba(0,0,0,0.15); /* Shadow only on left side */
+            opacity: 0; /* Hidden by default */
+            transform: scale(0.9) translateX(10px); /* Slightly scaled down and shifted */
+            pointer-events: none; /* Don't respond to events when hidden */
+        }
+        
+        .dark .handle-indicator {
+            border-color: #e5e7eb; /* gray-200 - match dark mode text */
+            color: #e5e7eb; /* Match dark mode text */
+            background: rgba(31, 41, 55, 0.9);
+            box-shadow: -2px 2px 8px rgba(0,0,0,0.3);
+        }
+        
+        /* Visible state */
+        .handle-indicator.visible {
+            opacity: 1;
+            transform: scale(1) translateX(0);
+            pointer-events: auto; /* Respond to events when visible */
+        }
+        
+        .handle-indicator.active {
+            transform: scale(1.1) !important; /* Override any transform */
+            border-width: 2.5px; /* Slightly thicker for active state */
+            border-right: none; /* Keep right side flat */
+            box-shadow: -3px 2px 10px rgba(0, 0, 0, 0.3);
+            opacity: 1 !important; /* Ensure visibility */
+        }
+        
+        .dark .handle-indicator.active {
+            box-shadow: -3px 2px 10px rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Current letter display */
+        .letter-display {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            background: rgba(31, 41, 55, 0.9); /* Match text color */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
-            font-size: 12px;
-            border-radius: 4px;
-            z-index: 1000;
+            font-weight: bold;
+            font-size: 48px;
+            opacity: 0;
             pointer-events: none;
-            font-family: monospace;
+            transition: opacity 0.2s;
+            z-index: 50;
+        }
+        
+        .dark .letter-display {
+            background: rgba(229, 231, 235, 0.9); /* Light background in dark mode */
+            color: #1f2937; /* Dark text on light background */
+        }
+        
+        .letter-display.visible {
+            opacity: 1;
+        }
+        
+        /* Section headers */
+        .section-header {
+            position: sticky;
+            top: 0;
+            background: #f9fafb;
+            padding: 8px 16px;
+            font-weight: bold;
+            font-size: 18px;
+            z-index: 10;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        
+        .dark .section-header {
+            background: #374151;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
     </style>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                fontFamily: {
-                    'sans': ['Quicksand', 'sans-serif'],
-                    'headings': ['Chewy', 'cursive'],
-                },
-                extend: {
-                    colors: {
-                        primary: '#5D5CDE',
-                    },
-                    animation: {
-                        'eq1': 'equalize 0.35s ease-in-out infinite alternate',
-                        'eq2': 'equalize 0.28s ease-in-out infinite alternate',
-                        'eq3': 'equalize 0.2s ease-in-out infinite alternate',
-                        'eq4': 'equalize 0.32s ease-in-out infinite alternate',
-                        'eq5': 'equalize 0.25s ease-in-out infinite alternate',
-                        'eq6': 'equalize 0.3s ease-in-out infinite alternate'
-                    },
-                    keyframes: {
-                        equalize: {
-                            '0%': { height: '0%' },
-                            '50%': { height: '75%' },
-                            '100%': { height: '30%' }
-                        }
-                    }
-                }
-            }
-        }
-
-        // Theme management
-        const storedTheme = localStorage.getItem('theme');
-        const systemDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        
-        if (storedTheme === 'dark' || (!storedTheme && systemDarkMode)) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-        
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
-            if (!localStorage.getItem('theme')) {
-                if (event.matches) {
-                    document.documentElement.classList.add('dark');
-                } else {
-                    document.documentElement.classList.remove('dark');
-                }
-            }
-        });
-    </script>
 </head>
 <body class="min-h-screen bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-200">
     <div class="container mx-auto px-2 sm:px-3 pt-10 pb-20 max-w-md md:max-w-lg lg:max-w-2xl xl:max-w-4xl 2xl:max-w-6xl min-h-screen flex flex-col">
+        <!-- Main Content Area -->
         <div>
             <!-- App Header -->
             <h1 class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-0 text-gray-800 dark:text-gray-200 text-center font-headings">Cánticos de Victoria</h1>
             <p id="subtitle" class="mb-2 text-sm md:text-base lg:text-lg xl:text-xl text-gray-600 dark:text-gray-400 text-center">Una colección de coritos</p>
             
             <!-- Search Bar -->
-            <div id="searchBarContainer" class="sticky top-0 z-10 bg-white dark:bg-gray-900 pt-2 pb-1 mb-4 transition-shadow duration-300">
+            <div id="searchBarContainer" class="sticky top-0 z-20 bg-white dark:bg-gray-900 pt-2 pb-1 mb-4 transition-shadow duration-300">
                 <div class="relative">
                     <input type="text" id="searchInput" class="w-full px-4 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors text-base md:text-lg lg:text-xl" placeholder="Search...">
                     <div class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 dark:text-gray-500">
@@ -249,21 +410,27 @@
                 </span>
             </div>
             
-            <p class="md:text-base lg:text-lg"><span id="current-year">2025</span> Cánticos de Victoria. Ministerio Monte De Dios.</p>
+            <p class="md:text-base lg:text-lg">Work in progress ɔ 2025 Cánticos De Victoria. <span class="text-green-600 dark:text-green-500">Ministerio Monte de Dios</span>. Manatí, P.R.</p>
         </footer>
     </div>
 
-    <!-- Device Size Indicator -->
-    <div id="device-size-indicator">mobile</div>
+    <!-- Alphabet Handle -->
+    <div id="alphabetHandle" class="alphabet-handle">
+        <div id="handleIndicator" class="handle-indicator">A</div>
+    </div>
     
+    <!-- Letter Display (shows when scrolling the handle) -->
+    <div id="letterDisplay" class="letter-display">A</div>
+
     <!-- Modal -->
-    <div id="modal" class="fixed inset-0 z-50 hidden overflow-auto bg-black bg-opacity-75 flex items-center justify-center p-2">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-[75vw] w-full max-h-[95vh] overflow-auto">
-            <div class="px-3 pt-5 pb-3">
-                <div class="flex items-start">
-                    <!-- Play button for the modal - keeping original size from previous version -->
-                    <div class="relative h-8 w-8 mr-3 mt-0.5 flex-shrink-0 cursor-pointer">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-900 dark:text-gray-100 play-button" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" id="modalPlayButton">
+    <div id="modal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-75 flex items-center justify-center p-4 sm:p-2">
+        <div style="border-radius: 8px !important; overflow: hidden;" class="bg-white dark:bg-gray-800 shadow-xl max-w-md md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-[75vw] w-full max-h-[80vh] flex flex-col">
+            <!-- Fixed Header -->
+            <div class="px-3 pt-5 pb-3 sticky top-0 bg-white dark:bg-gray-800 z-10">
+                <div class="flex">
+                    <!-- Play button for the modal -->
+                    <div class="relative h-10 w-10 mr-3 flex-shrink-0 cursor-pointer play-button-container -mt-1" id="modalPlayButtonContainer">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-900 dark:text-gray-100 play-button" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" id="modalPlayButton">
                             <rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="white" class="dark:fill-gray-800" />
                             <path class="play-icon" d="M10 8l6 4-6 4V8z" fill="currentColor" />
                         </svg>
@@ -280,23 +447,42 @@
                             </div>
                         </div>
                     </div>
-                    <div class="pl-1 pr-6 flex-1">
+                    <div class="pl-1 pr-6 flex-1 flex items-center self-center min-h-[40px] -mt-1">
                         <h3 id="modalTitle" class="text-base md:text-lg lg:text-xl xl:text-2xl font-bold text-gray-800 dark:text-gray-200 leading-tight"></h3>
                     </div>
-                    <button onclick="closeModal()" class="w-5 h-5 flex items-center justify-center rounded-full bg-black dark:bg-gray-700 text-white hover:bg-gray-800 hover:dark:bg-gray-600 transition-colors duration-200 focus:outline-none flex-shrink-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <button id="closeModalBtn" onclick="closeModal()" class="w-6 h-6 flex items-center justify-center rounded-full bg-gray-400 dark:bg-gray-600 text-white hover:bg-gray-500 hover:dark:bg-gray-500 transition-colors duration-200 focus:outline-none flex-shrink-0 self-start -mt-2 close-button-effect">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
                 </div>
             </div>
-            <div class="px-3 py-3 md:pt-4 lg:pt-5 xl:pt-6 flex justify-center">
-                <div class="max-w-lg w-full">
-                    <p id="modalContent" class="text-gray-800 dark:text-gray-200 text-lg md:text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl text-left font-medium"></p>
+            
+            <!-- Scrollable Content Area -->
+            <div class="flex-1 overflow-y-auto px-3 py-3 md:py-4 lg:py-5 xl:py-6 flex justify-center" id="scrollableContent">
+                <div class="w-full text-center max-w-3xl">
+                    <p id="modalContent" class="text-gray-800 dark:text-gray-200 text-lg md:text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl text-left font-medium inline-block"></p>
                 </div>
             </div>
-            <div class="px-3 py-2 text-right">
-                <button id="metronomeButton" onclick="toggleMetronome()" class="text-primary font-medium cursor-pointer focus:outline-none border border-primary rounded px-2 py-1">240bpm</button>
+            
+            <!-- Fixed Footer -->
+            <div class="px-3 py-3 sticky bottom-0 bg-white dark:bg-gray-800 z-10">
+                <div class="flex justify-end">
+                    <div class="inline-flex rounded-md p-0.5 h-7">
+                        <button id="metronomeButton220" onclick="toggleMetronome(220)" class="tab-btn min-w-[45px] px-4 h-full flex items-center justify-center text-sm font-medium rounded transition-all hover:bg-white dark:hover:bg-gray-600 focus:outline-none relative mx-0.5 metronome-button-effect">
+                            220
+                        </button>
+                        <button id="metronomeButton240" onclick="toggleMetronome(240)" class="tab-btn min-w-[45px] px-4 h-full flex items-center justify-center text-sm font-medium rounded transition-all hover:bg-white dark:hover:bg-gray-600 focus:outline-none relative mx-0.5 metronome-button-effect">
+                            240
+                        </button>
+                        <button id="metronomeButton260" onclick="toggleMetronome(260)" class="tab-btn min-w-[45px] px-4 h-full flex items-center justify-center text-sm font-medium rounded transition-all hover:bg-white dark:hover:bg-gray-600 focus:outline-none relative mx-0.5 metronome-button-effect">
+                            260
+                        </button>
+                        <button id="metronomeButton280" onclick="toggleMetronome(280)" class="tab-btn min-w-[45px] px-4 h-full flex items-center justify-center text-sm font-medium rounded transition-all hover:bg-white dark:hover:bg-gray-600 focus:outline-none relative mx-0.5 metronome-button-effect">
+                            280
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -305,1097 +491,640 @@
     <div id="fixedStopButton" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 w-14 h-14 rounded-full bg-red-500 shadow-xl flex items-center justify-center cursor-pointer z-50 hidden transition-all duration-300 hover:scale-110 active:scale-95" onclick="stopCurrentAudio()">
         <div class="w-5 h-5 bg-white rounded-sm"></div>
     </div>
+    
+    <!-- Return to Top Button -->
+    <div id="returnToTopBtn" class="fixed bottom-5 right-5 w-10 h-10 cursor-pointer z-40 shadow-md rounded-full bg-white dark:bg-gray-800 transition-all duration-300 opacity-0 invisible hover:scale-110 active:scale-95 flex items-center justify-center" onclick="scrollToTop()">
+        <div class="w-7 h-7">
+            <svg width="100%" height="100%" fill="none" stroke-linecap="square" stroke-miterlimit="10" version="1.1" viewBox="0 0 510.2 411.55" xmlns="http://www.w3.org/2000/svg" class="up-icon">
+                <defs>
+                    <clipPath id="clipPath411-up">
+                        <path d="m129.72-5.7707h800v600h-800z"/>
+                    </clipPath>
+                    <clipPath id="clipPath417-up">
+                        <path d="m129.72-5.7707h800v600h-800z"/>
+                    </clipPath>
+                    <clipPath id="clipPath423-up">
+                        <path d="m129.72-5.7707h800v600h-800z"/>
+                    </clipPath>
+                </defs>
+                <g fill-rule="evenodd">
+                    <path transform="translate(-133.27 -88.454)" d="m376.97 88.454c-57.43 69.504-138.67 206.23-243.7 411.55h510.2c-93.146-103.81-182.14-240.98-266.49-411.55z" clip-path="url(#clipPath423-up)" fill="#46b961"/>
+                    <path transform="translate(-133.27 -88.454)" d="m376.97 205.97c-28.441 8.7006-109.68 106.54-243.7 294.03h510.2c-107.62-134.9-196.63-233.21-266.49-294.03z" clip-path="url(#clipPath417-up)" fill="#3b5e2f"/>
+                    <path transform="translate(-133.27 -88.454)" d="m243.99 205.97c-46.564 87.807-83.811 185.65-110.72 294.03 37.776-9.3852 99.08-14.061 184.08-14.061 84.983 0 193.64 4.6759 326.12 14.061-99.345-39.328-232.33-137.19-399.48-294.03z" clip-path="url(#clipPath411-up)" fill="#c7ce49"/>
+                </g>
+            </svg>
+        </div>
+    </div>
+    
+    <!-- Hidden Audio Element for Clave -->
+    <audio id="claveAudio" preload="auto" loop>
+        <source src="clave240bpm.mp3" type="audio/mpeg">
+    </audio>
 
     <script>
-        /********************************
-         * GLOBAL VARIABLES
-         ********************************/
-        // Audio playback state
-        let audioContext;
-        let currentOscillator = null;
-        let currentGain = null;
-        let currentAudio = null;
-        let playingButtonId = null;
-        let currentModalAudioId = null; // Stores the audio ID associated with the currently open modal
-        const unavailableAudioFiles = new Set();
+        // Sample data for songs by letter (this would be replaced by your actual data)
+        const songsByLetter = {
+            'A': [
+                'Alabanza y adoración', 'Al Rey de reyes', 'Aleluya Cristo vive',
+                'Alaba a Jehová', 'Amor eterno', 'Abre mis ojos', 'Alza tus manos'
+            ],
+            'B': [
+                'Bendito sea el Señor', 'Buscad primero', 'Brilla Jesús', 'Bendición y honra'
+            ],
+            'C': [
+                'Cristo te ama', 'Caminando voy', 'Cantaré de tu amor', 'Cordero de Dios',
+                'Cuando el pueblo de Dios ora', 'Cambiame Señor'
+            ],
+            'D': [
+                'Digno es el Cordero', 'Dios incomparable', 'Dame un nuevo corazón'
+            ],
+            'E': [
+                'El gozo del Señor', 'Eres mi protector', 'En la cruz', 'El Señor es mi pastor', 
+                'En tu presencia', 'Eres tú'
+            ],
+            'F': [
+                'Fluye en mí', 'Fiel y verdadero', 'Fuente de vida'
+            ],
+            'G': [
+                'Grande es el Señor', 'Glorioso', 'Gracias Señor', 'Gloria a Dios'
+            ],
+            'H': [
+                'Hosanna', 'Hay poder', 'Hoy te rindo mi ser', 'Hermoso eres tú'
+            ],
+            'I': [
+                'Incomparable', 'Iglesia gloriosa', 'Invencible es mi Dios'
+            ],
+            'J': [
+                'Jesucristo es el Señor', 'Jehová es mi guerrero', 'Junto a tus pies'
+            ],
+            'L': [
+                'La alegría del Señor', 'Levanto mis manos', 'Los que esperan en Jehová'
+            ],
+            'M': [
+                'Mi salvador vive', 'Majestuoso', 'Milagroso Dios', 'Mi universo'
+            ],
+            'N': [
+                'No hay nadie como tú', 'Nada es imposible', 'Nadie como tú'
+            ],
+            'P': [
+                'Poderoso Dios', 'Paz en la tormenta', 'Por siempre te alabaré'
+            ],
+            'R': [
+                'Rey de reyes', 'Renuévame', 'Roca eterna', 'Río de adoración'
+            ],
+            'S': [
+                'Santo es el Señor', 'Solo Cristo', 'Soy libre', 'Santo Espíritu',
+                'Sublime gracia', 'Sana nuestra tierra'
+            ],
+            'T': [
+                'Tú eres santo', 'Te alabaré', 'Tú me sostendrás', 'Tu nombre levantaré'
+            ],
+            'V': [
+                'Vine a adorarte', 'Vencedor', 'Vivo por fe', 'Victoria en Cristo'
+            ],
+            'Y': [
+                'Yo te busco', 'Yo soy libre', 'Yo te exaltaré'
+            ]
+        };
+
+        // DOM elements
+        const itemList = document.getElementById('itemList');
+        const searchInput = document.getElementById('searchInput');
+        const clearSearchIcon = document.getElementById('clearSearchIcon');
+        const searchIcon = document.getElementById('searchIcon');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const errorMessage = document.getElementById('errorMessage');
+        const noResults = document.getElementById('noResults');
+        const themeToggle = document.getElementById('themeToggle');
+        const returnToTopBtn = document.getElementById('returnToTopBtn');
+        const alphabetHandle = document.getElementById('alphabetHandle');
+        const handleIndicator = document.getElementById('handleIndicator');
+        const letterDisplay = document.getElementById('letterDisplay');
         
-        // Clave pattern state
-        let claveInterval = null;
-        let clavePlaying = false;
-        let claveStep = 0;
-        const clavePattern = [1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0]; // 3-2 Son Clave
+        // Modal elements
+        const modal = document.getElementById('modal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalContent = document.getElementById('modalContent');
         
-        /********************************
-         * INITIALIZATION
-         ********************************/
-        document.addEventListener('DOMContentLoaded', function() {
-            // Set current year in copyright
-            document.getElementById('current-year').textContent = new Date().getFullYear();
-            
-            // Set theme toggle initial state
-            const themeToggle = document.getElementById('themeToggle');
-            if (document.documentElement.classList.contains('dark')) {
-                themeToggle.checked = true;
+        // Available letters for navigation
+        const availableLetters = Object.keys(songsByLetter).sort();
+        
+        // Alphabet handle state variables
+        let isDragging = false;
+        let currentLetterIndex = 0;
+        let handleY = 0;
+        let scrollTimeout = null;
+        let isScrolling = false;
+        
+        // Update subtitle with number of songs
+        function updateSubtitle() {
+            let totalSongs = 0;
+            for (const letter in songsByLetter) {
+                totalSongs += songsByLetter[letter].length;
             }
-            
-            // Load content
-            loadCanticosFile();
-            
-            // Initialize device size indicator
-            updateDeviceSizeIndicator();
-            
-            // Set up event listeners
-            setupEventListeners();
-            
-            // Set up modal play button event listener
-            document.getElementById('modalPlayButton').parentElement.addEventListener('click', function() {
-                if (currentModalAudioId) {
-                    playAudio(new Event('click'), currentModalAudioId);
-                }
-            });
-        });
-        
-        /********************************
-         * SETUP FUNCTIONS
-         ********************************/
-        function setupEventListeners() {
-            // Search functionality
-            const searchInput = document.getElementById('searchInput');
-            searchInput.addEventListener('input', handleSearch);
-            
-            // Theme toggle
-            const themeToggle = document.getElementById('themeToggle');
-            themeToggle.addEventListener('change', toggleTheme);
-            
-            // Search bar shadow on scroll
-            window.addEventListener('scroll', function() {
-                const searchBar = document.getElementById('searchBarContainer');
-                if (window.scrollY > 10) {
-                    searchBar.classList.add('shadow-md');
-                } else {
-                    searchBar.classList.remove('shadow-md');
-                }
-            });
-            
-            // Device size updates
-            window.addEventListener('resize', updateDeviceSizeIndicator);
-            
-            // Modal close events
-            document.getElementById('modal').addEventListener('click', function(event) {
-                if (event.target === this) {
-                    closeModal();
-                }
-            });
-            
-            document.addEventListener('keydown', function(event) {
-                if (event.key === 'Escape' && !document.getElementById('modal').classList.contains('hidden')) {
-                    closeModal();
-                }
-            });
+            document.getElementById('subtitle').textContent = `Una colección de ${totalSongs} coritos`;
         }
         
-        function toggleTheme() {
-            if (this.checked) {
-                // Switch to dark mode
-                document.documentElement.classList.add('dark');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                // Switch to light mode
-                document.documentElement.classList.remove('dark');
-                localStorage.setItem('theme', 'light');
-            }
-        }
-        
-        /********************************
-         * SEARCH FUNCTIONALITY
-         ********************************/
-        function handleSearch() {
-            const searchTerm = normalizeText(this.value);
-            const listItems = document.querySelectorAll('#itemList li');
-            const noResults = document.getElementById('noResults');
-            let visibleCount = 0;
+        // Generate content list with sections
+        function generateContentList() {
+            let html = '';
             
-            // Update icons based on input value
-            toggleSearchIcons(this.value);
-            
-            // If search term is empty, show all items
-            if (searchTerm === '') {
-                listItems.forEach(item => {
-                    item.classList.remove('hidden');
+            availableLetters.forEach(letter => {
+                const songs = songsByLetter[letter];
+                
+                // Create section header
+                html += `<div id="section-${letter}" class="section-header sticky top-[45px] z-10">${letter}</div>`;
+                
+                // Create songs list
+                html += '<div class="py-1">';
+                songs.forEach(song => {
+                    html += `
+                        <li class="py-2 px-3 flex items-center border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" data-title="${song}" onclick="openModal('${song}')">
+                            <div class="relative h-8 w-8 mr-3 flex-shrink-0 play-button-container">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-900 dark:text-gray-100 play-button" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="white" class="dark:fill-gray-800" />
+                                    <path d="M10 8l6 4-6 4V8z" fill="currentColor" />
+                                </svg>
+                            </div>
+                            <span class="font-medium md:text-lg lg:text-xl">${song}</span>
+                        </li>
+                    `;
                 });
-                noResults.classList.add('hidden');
-                return;
-            }
-            
-            // Filter items based on normalized search term
-            listItems.forEach(item => {
-                const title = normalizeText(item.querySelector('span').textContent);
-                // If normalized item title contains search term, show it, otherwise hide it
-                if (title.includes(searchTerm)) {
-                    item.classList.remove('hidden');
-                    visibleCount++;
-                } else {
-                    item.classList.add('hidden');
-                }
+                html += '</div>';
             });
             
-            // Show or hide the "no results" message
-            if (visibleCount === 0) {
-                noResults.classList.remove('hidden');
-            } else {
-                noResults.classList.add('hidden');
-            }
+            itemList.innerHTML = html;
+            hideLoading();
+            updateSubtitle();
         }
         
-        function normalizeText(text) {
-            return text
-                .toLowerCase()
-                .replace(/ñ/g, "n")                 // Replace ñ with n explicitly
-                .normalize("NFD")                   // Normalize accented characters
-                .replace(/[\u0300-\u036f]/g, "")    // Remove diacritics (accents)
-                .replace(/[^\w\s]/g, " ")          // Replace special chars with spaces
-                .replace(/\s+/g, " ")              // Normalize multiple spaces
-                .trim();                           // Remove leading/trailing whitespace
+        // Hide loading indicator
+        function hideLoading() {
+            loadingIndicator.classList.add('hidden');
         }
         
+        // Show error message
+        function showError() {
+            errorMessage.classList.remove('hidden');
+            hideLoading();
+        }
+        
+        // Clear search
         function clearSearch() {
-            const searchInput = document.getElementById('searchInput');
-            const noResults = document.getElementById('noResults');
-            
             searchInput.value = '';
-            
-            // Show all items
-            const listItems = document.querySelectorAll('#itemList li');
-            listItems.forEach(item => {
-                item.classList.remove('hidden');
-            });
-            
-            // Hide no results message
-            noResults.classList.add('hidden');
-            
-            // Update icons
-            toggleSearchIcons('');
-            
-            // Focus the search input
+            searchInput.dispatchEvent(new Event('input'));
             searchInput.focus();
         }
         
-        function toggleSearchIcons(value) {
-            const searchIcon = document.getElementById('searchIcon');
-            const clearSearchIcon = document.getElementById('clearSearchIcon');
-            
-            if (value.trim() === '') {
-                // Show search icon, hide clear icon
-                searchIcon.classList.remove('hidden');
-                clearSearchIcon.classList.add('hidden');
-            } else {
-                // Hide search icon, show clear icon
-                searchIcon.classList.add('hidden');
-                clearSearchIcon.classList.remove('hidden');
-            }
-        }
-        
-        /********************************
-         * CONTENT LOADING
-         ********************************/
-        async function loadCanticosFile() {
-            const itemList = document.getElementById('itemList');
-            const subtitle = document.getElementById('subtitle');
-            const loadingIndicator = document.getElementById('loadingIndicator');
-            const errorMessage = document.getElementById('errorMessage');
-            
-            try {
-                // Fetch the canticos.txt file
-                const response = await fetch('canticos.txt');
+        // Search functionality
+        function setupSearch() {
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
                 
-                if (!response.ok) {
-                    throw new Error(`Error ${response.status}: ${response.statusText}`);
+                // Show/hide clear icon
+                if (searchTerm) {
+                    searchIcon.classList.add('hidden');
+                    clearSearchIcon.classList.remove('hidden');
+                } else {
+                    searchIcon.classList.remove('hidden');
+                    clearSearchIcon.classList.add('hidden');
                 }
                 
-                // Read the text content
-                const content = await response.text();
+                // Get all list items
+                const listItems = document.querySelectorAll('#itemList li');
+                const sectionHeaders = document.querySelectorAll('#itemList > div');
                 
-                // Process the file content
-                processFileContent(content);
+                // Hide all section headers initially
+                sectionHeaders.forEach(header => {
+                    header.classList.add('hidden');
+                });
                 
-                // Hide loading indicator
-                loadingIndicator.classList.add('hidden');
-            } catch (error) {
-                console.error('Error loading canticos.txt:', error);
+                // Track which letters have visible items
+                const lettersWithVisibleItems = new Set();
                 
-                // Show error message
-                loadingIndicator.classList.add('hidden');
-                errorMessage.classList.remove('hidden');
-            }
-        }
-        
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const content = e.target.result;
-                processFileContent(content);
-                document.getElementById('errorMessage').classList.add('hidden');
-            };
-            reader.onerror = function() {
-                console.error('Error reading file');
-            };
-            reader.readAsText(file);
-        }
-        
-        function processFileContent(content) {
-            const itemList = document.getElementById('itemList');
-            const subtitle = document.getElementById('subtitle');
-            
-            // Split content by blank lines to separate items
-            const blocks = content.split(/\r?\n\r?\n+/);
-            const items = [];
-            
-            // Process each block as an item
-            blocks.forEach(block => {
-                if (!block.trim()) return; // Skip empty blocks
-                
-                // Split the block into lines
-                const lines = block.split(/\r?\n/);
-                
-                // First line is the title
-                const title = lines[0].trim();
-                
-                // Remaining lines are the content (if any)
-                const contentLines = lines.slice(1);
-                const content = contentLines.join('\n').trim();
-                
-                // Add this item to our collection
-                items.push({ title, content });
-            });
-            
-            // Clear existing items
-            itemList.innerHTML = '';
-            
-            // Generate new items from the parsed content
-            items.forEach((item, index) => {
-                const itemId = `audio-${index + 1}`;
-                const isLastItem = index === items.length - 1;
-                
-                const listItem = document.createElement('li');
-                listItem.className = `py-3 px-2 ${!isLastItem ? 'border-b border-gray-200 dark:border-gray-700' : ''} hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors`;
-                listItem.onclick = function() {
-                    openModal(item.title, item.content, itemId);
-                };
-                
-                // Generate audio filename from title
-                const audioFilename = generateAudioFilename(item.title);
-                const audioPath = `audio/${audioFilename}.mp3`;
-                
-                // Create the button HTML with conditional styling based on audio availability
-                listItem.innerHTML = `
-                    <div class="flex items-center">
-                        <div class="relative h-10 w-10 mr-3 cursor-pointer" onclick="playAudio(event, '${itemId}')">
-                            <!-- Play button background and border -->
-                            <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-10 w-10 text-gray-900 dark:text-gray-100 play-button" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" data-audio-id="${itemId}">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="white" class="dark:fill-gray-800" />
-                                <path class="play-icon" d="M10 8l6 4-6 4V8z" fill="currentColor" />
-                            </svg>
-                            
-                            <!-- Equalizer animation (hidden by default) -->
-                            <div class="absolute inset-0 pointer-events-none hidden" data-equalizer-id="${itemId}">
-                                <div class="absolute bottom-2 left-0 right-0 flex items-end justify-center h-[calc(100%-8px)]">
-                                    <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq1"></div>
-                                    <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq2"></div>
-                                    <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq3"></div>
-                                    <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq4"></div>
-                                    <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq5"></div>
-                                    <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq6"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <span class="font-bold md:text-lg lg:text-xl xl:text-2xl">${item.title}</span>
-                    </div>
-                    <audio id="${itemId}" preload="none">
-                        <source src="${audioPath}" type="audio/mpeg">
-                    </audio>
-                `;
-                
-                itemList.appendChild(listItem);
-                
-                // Check if audio file exists and mark as unavailable if needed
-                checkAudioFileExists(audioPath, itemId);
-            });
-            
-            // Update subtitle with item count after processing all items - bold number
-            subtitle.innerHTML = `Una colección de <strong>${items.length}</strong> coritos`;
-        }
-        
-        function loadDefaultItems() {
-            const defaultContent = 
-                "Corito 101\n" +
-                "Esta es la primera línea del corito 101.\n" +
-                "Esta es la segunda línea del corito 101.\n" +
-                "Esta es la tercera línea del corito 101.\n\n" +
-                "Corito 102\n" +
-                "Esta es la primera línea del corito 102.\n" +
-                "Esta es la segunda línea del corito 102.\n\n" +
-                "Corito 103\n" +
-                "Este es el contenido del corito 103.\n" +
-                "Con múltiples líneas para mostrar cómo se presenta el contenido.";
-            processFileContent(defaultContent);
-        }
-        
-        function generateAudioFilename(title) {
-            return title
-                .toLowerCase()                      // Convert to lowercase
-                .replace(/ñ/g, "n")                 // Replace ñ with n explicitly
-                .normalize("NFD")                   // Normalize accented characters
-                .replace(/[\u0300-\u036f]/g, "")    // Remove diacritics (accents)
-                .replace(/[^\w\s]/g, "")           // Remove punctuation and special characters
-                .replace(/\s+/g, "_")              // Replace spaces with underscores
-                .trim();                            // Remove any leading/trailing whitespace
-        }
-        
-        /********************************
-         * MODAL FUNCTIONS
-         ********************************/
-        function openModal(title, content, audioId) {
-            const modal = document.getElementById('modal');
-            const modalContentEl = modal.querySelector('.bg-white.dark\\:bg-gray-800');
-            const modalContent = document.getElementById('modalContent');
-            
-            // Store the current audio ID for the modal play button
-            currentModalAudioId = audioId;
-            
-            // Update modal play button state if current audio is playing
-            updateModalPlayButtonState();
-            
-            // Check if the audio is unavailable and update modal play button accordingly
-            if (unavailableAudioFiles.has(audioId)) {
-                markModalPlayButtonAsUnavailable();
-            } else {
-                // Make sure we remove any unavailable styling if it was previously applied
-                resetModalPlayButton();
-            }
-            
-            // Set the title and content - no longer splitting into title/subtitle
-            document.getElementById('modalTitle').textContent = title;
-            
-            // Format the content to preserve line breaks
-            modalContent.innerHTML = content.replace(/\n/g, '<br>');
-            
-            // First make the modal container visible
-            modal.classList.remove('hidden');
-            modal.classList.add('modal-fade-in');
-            
-            // Animate the modal content with a slight zoom effect
-            modalContentEl.classList.add('modal-content-in');
-            
-            // Prevent scrolling of the body
-            document.body.classList.add('overflow-hidden');
-        }
-
-        function closeModal() {
-            // Stop the clave sound if it's playing
-            if (clavePlaying) {
-                stopClave();
-            }
-            
-            const modal = document.getElementById('modal');
-            const modalContentEl = modal.querySelector('.bg-white.dark\\:bg-gray-800');
-            
-            // Add the fade-out animations
-            modal.classList.add('modal-fade-out');
-            modalContentEl.classList.add('modal-content-out');
-            
-            // When animation completes, hide the modal
-            setTimeout(() => {
-                modal.classList.remove('modal-fade-in', 'modal-fade-out');
-                modalContentEl.classList.remove('modal-content-in', 'modal-content-out');
-                modal.classList.add('hidden');
-                
-                // Reset current modal audio ID
-                currentModalAudioId = null;
-                
-                // Allow scrolling again
-                document.body.classList.remove('overflow-hidden');
-            }, 300); // Match the animation duration
-        }
-        
-        /********************************
-         * AUDIO FUNCTIONS
-         ********************************/
-        function initAudioContext() {
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            return audioContext;
-        }
-        
-        function playAudio(event, audioId) {
-            event.stopPropagation(); // Prevent modal from opening when clicking the play button
-            
-            // Skip interaction if the audio file is already known to be unavailable
-            if (unavailableAudioFiles.has(audioId)) {
-                // Just show an indication of the unavailable state
-                const buttonContainer = document.querySelector(`[data-audio-id="${audioId}"]`).closest('.relative');
-                buttonContainer.classList.add('pulse-error');
-                setTimeout(() => {
-                    buttonContainer.classList.remove('pulse-error');
-                }, 300);
-                
-                // Also pulse the modal play button if this is the current modal audio
-                if (audioId === currentModalAudioId) {
-                    const modalPlayButton = document.getElementById('modalPlayButton').parentElement;
-                    modalPlayButton.classList.add('pulse-error');
-                    setTimeout(() => {
-                        modalPlayButton.classList.remove('pulse-error');
-                    }, 300);
-                }
-                return;
-            }
-            
-            // Get the associated audio element
-            const audioElement = document.getElementById(audioId);
-            
-            // Check if we're already playing this audio
-            if (playingButtonId === audioId && currentAudio === audioElement) {
-                // Stop current audio
-                stopCurrentAudio();
-                return;
-            }
-            
-            // If another button's audio is playing, make sure to reset its button state
-            if (playingButtonId && playingButtonId !== audioId) {
-                updatePlayButtonState(playingButtonId, false);
-            }
-            
-            // Stop any currently playing audio
-            stopCurrentAudio();
-            
-            // Also stop the clave pattern if it's playing
-            if (clavePlaying) {
-                stopClave();
-            }
-            
-            try {
-                // Start the audio
-                audioElement.currentTime = 0; // Reset to beginning
-                
-                // Set up audio events
-                audioElement.onended = function() {
-                    // Make sure to hide the stop button with animation when audio ends naturally
-                    const fixedStopButton = document.getElementById('fixedStopButton');
-                    if (!fixedStopButton.classList.contains('hidden')) {
-                        // Only do this if stop button is visible and there's no other audio playing
-                        if (!clavePlaying && !currentOscillator) {
-                            // Start the hide animation
-                            fixedStopButton.dataset.hidingInProgress = "true";
-                            fixedStopButton.classList.remove('bounce-in');
-                            fixedStopButton.classList.add('bounce-out');
-                            
-                            // After animation completes, hide the button
-                            setTimeout(() => {
-                                if (fixedStopButton.dataset.hidingInProgress === "true") {
-                                    fixedStopButton.classList.add('hidden');
-                                    fixedStopButton.classList.remove('bounce-out');
-                                    fixedStopButton.dataset.hidingInProgress = "false";
-                                }
-                            }, 400);
-                        }
-                    }
+                // Filter items
+                let hasVisibleItems = false;
+                listItems.forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    const letter = text.trim()[0].toUpperCase();
                     
-                    // Update the play button state
-                    updatePlayButtonState(audioId, false);
-                    currentAudio = null;
-                    playingButtonId = null;
-                    
-                    // Also update the modal play button state if needed
-                    updateModalPlayButtonState();
-                };
-                
-                audioElement.onpause = function() {
-                    updatePlayButtonState(audioId, false);
-                    // Also update the modal play button state if needed
-                    updateModalPlayButtonState();
-                };
-                
-                audioElement.onerror = function() {
-                    console.error("Error playing audio:", audioElement.error);
-                    updatePlayButtonState(audioId, false);
-                    
-                    // If there's an error (e.g., file not found), mark as unavailable
-                    playFallbackTone(audioId);
-                    
-                    // Also update the modal play button if this is the current modal audio
-                    if (audioId === currentModalAudioId) {
-                        markModalPlayButtonAsUnavailable();
-                    }
-                };
-                
-                // Play the audio file
-                const playPromise = audioElement.play();
-                
-                // Handle the play promise (required for modern browsers)
-                if (playPromise !== undefined) {
-                    playPromise
-                        .then(() => {
-                            // Update button state to show it's playing
-                            updatePlayButtonState(audioId, true);
-                            currentAudio = audioElement;
-                            playingButtonId = audioId;
-                            
-                            // Also update the modal play button state if needed
-                            updateModalPlayButtonState();
-                        })
-                        .catch(error => {
-                            console.error("Playback error:", error);
-                            // If autoplay is blocked or file not found, mark as unavailable
-                            playFallbackTone(audioId);
-                            
-                            // Also update the modal play button if this is the current modal audio
-                            if (audioId === currentModalAudioId) {
-                                markModalPlayButtonAsUnavailable();
-                            }
-                        });
-                }
-            } catch (error) {
-                console.error("Audio playback error:", error);
-                // Fall back to playing a tone
-                playFallbackTone(audioId);
-                
-                // Also update the modal play button if this is the current modal audio
-                if (audioId === currentModalAudioId) {
-                    markModalPlayButtonAsUnavailable();
-                }
-            }
-        }
-        
-        function checkAudioFileExists(audioPath, audioId) {
-            fetch(audioPath, { method: 'HEAD' })
-                .then(response => {
-                    if (!response.ok) {
-                        // If fetch returns not OK, mark the audio as unavailable
-                        markAudioAsUnavailable(audioId);
+                    if (searchTerm === '' || text.includes(searchTerm)) {
+                        item.classList.remove('hidden');
+                        hasVisibleItems = true;
                         
-                        // Also update the modal play button if this is the current modal audio
-                        if (audioId === currentModalAudioId) {
-                            markModalPlayButtonAsUnavailable();
+                        // Track which letter has visible items
+                        if (letter) {
+                            lettersWithVisibleItems.add(letter);
                         }
-                    }
-                })
-                .catch(error => {
-                    // If fetch fails, mark the audio as unavailable
-                    console.error(`Error checking audio file ${audioPath}:`, error);
-                    markAudioAsUnavailable(audioId);
-                    
-                    // Also update the modal play button if this is the current modal audio
-                    if (audioId === currentModalAudioId) {
-                        markModalPlayButtonAsUnavailable();
+                        
+                        // Show the corresponding section header
+                        const sectionHeader = document.getElementById(`section-${letter}`);
+                        if (sectionHeader) {
+                            sectionHeader.classList.remove('hidden');
+                        }
+                    } else {
+                        item.classList.add('hidden');
                     }
                 });
-        }
-        
-        function markAudioAsUnavailable(audioId) {
-            // Add to the set of unavailable files
-            unavailableAudioFiles.add(audioId);
-            
-            // Apply visual styling directly to the existing SVG
-            const svgElement = document.querySelector(`[data-audio-id="${audioId}"]`);
-            if (svgElement) {
-                // Change the stroke color to gray
-                svgElement.setAttribute("stroke", "#888888");
                 
-                // Find and update the path and rect elements
-                const pathElement = svgElement.querySelector('path');
-                const rectElement = svgElement.querySelector('rect');
-                
-                if (pathElement) {
-                    // Change the fill color of the play triangle
-                    pathElement.setAttribute("fill", "#888888");
+                // Show/hide no results message
+                if (!hasVisibleItems && searchTerm !== '') {
+                    noResults.classList.remove('hidden');
+                } else {
+                    noResults.classList.add('hidden');
                 }
                 
-                if (rectElement) {
-                    // Keep the background white but change the border color to gray
-                    rectElement.setAttribute("fill", "white");
-                    rectElement.setAttribute("class", "dark:fill-gray-800");
-                }
-                
-                // Add not-allowed cursor to the button container
-                const buttonContainer = svgElement.closest('.relative');
-                if (buttonContainer) {
-                    buttonContainer.style.cursor = 'not-allowed';
-                }
-            }
+                // Update alphabet handle letters based on search results
+                updateAlphabetHandleLetters(lettersWithVisibleItems);
+            });
         }
         
-        function markModalPlayButtonAsUnavailable() {
-            const modalPlayButton = document.getElementById('modalPlayButton');
-            
-            // Change the stroke color to gray
-            modalPlayButton.setAttribute("stroke", "#888888");
-            
-            // Find and update the path and rect elements
-            const pathElement = modalPlayButton.querySelector('path');
-            const rectElement = modalPlayButton.querySelector('rect');
-            
-            if (pathElement) {
-                // Change the fill color of the play triangle
-                pathElement.setAttribute("fill", "#888888");
+        // Update alphabet handle letters based on search results
+        function updateAlphabetHandleLetters(visibleLetters) {
+            // Hide handle indicator if no letters are visible
+            if (visibleLetters.size === 0) {
+                handleIndicator.classList.remove('visible');
+                return;
             }
             
-            if (rectElement) {
-                // Keep the background white but change the border color to gray
-                rectElement.setAttribute("fill", "white");
-                rectElement.setAttribute("class", "dark:fill-gray-800");
-            }
-            
-            // Add not-allowed cursor to the button container
-            const buttonContainer = modalPlayButton.parentElement;
-            if (buttonContainer) {
-                buttonContainer.style.cursor = 'not-allowed';
-            }
-        }
-        
-        function resetModalPlayButton() {
-            const modalPlayButton = document.getElementById('modalPlayButton');
-            
-            // Reset stroke color
-            modalPlayButton.setAttribute("stroke", "currentColor");
-            
-            // Find and update the path and rect elements
-            const pathElement = modalPlayButton.querySelector('path');
-            const rectElement = modalPlayButton.querySelector('rect');
-            
-            if (pathElement) {
-                // Reset fill color
-                pathElement.setAttribute("fill", "currentColor");
-            }
-            
-            if (rectElement) {
-                // Reset background
-                rectElement.setAttribute("fill", "white");
-                rectElement.setAttribute("class", "dark:fill-gray-800");
-            }
-            
-            // Reset cursor
-            const buttonContainer = modalPlayButton.parentElement;
-            if (buttonContainer) {
-                buttonContainer.style.cursor = 'pointer';
-            }
-        }
-        
-        function updateModalPlayButtonState() {
-            if (!currentModalAudioId) return;
-            
-            const modalPlayButton = document.getElementById('modalPlayButton');
-            const modalEqualizer = document.getElementById('modalEqualizer');
-            
-            // Check if the associated audio is playing
-            if (playingButtonId === currentModalAudioId) {
-                // Change to pause icon (square)
-                modalPlayButton.querySelector('path').setAttribute('d', 'M9 9h6v6H9z');
-                
-                // Show equalizer animation
-                modalEqualizer.classList.remove('hidden');
-            } else {
-                // Change to play icon (triangle)
-                modalPlayButton.querySelector('path').setAttribute('d', 'M10 8l6 4-6 4V8z');
-                
-                // Hide equalizer animation
-                modalEqualizer.classList.add('hidden');
-            }
-        }
-        
-        function playFallbackTone(audioId) {
-            // Mark this audio file as unavailable
-            unavailableAudioFiles.add(audioId);
-            
-            // Get the SVG element
-            const svgElement = document.querySelector(`[data-audio-id="${audioId}"]`);
-            if (svgElement) {
-                // Get the parent container
-                const buttonContainer = svgElement.closest('.relative');
-                if (buttonContainer) {
-                    // Replace the entire SVG with a gray version
-                    const oldSvg = buttonContainer.querySelector('svg');
-                    const newSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                    
-                    // Copy attributes from old SVG to new one
-                    newSvg.setAttribute("class", oldSvg.getAttribute("class"));
-                    newSvg.setAttribute("viewBox", "0 0 24 24");
-                    newSvg.setAttribute("fill", "none");
-                    newSvg.setAttribute("data-audio-id", audioId);
-                    
-                    // Set the new SVG content with gray colors directly in the SVG
-                    newSvg.innerHTML = `
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="white" class="dark:fill-gray-800" stroke="#888888" stroke-width="1" />
-                        <path d="M10 8l6 4-6 4V8z" fill="#888888" />
-                    `;
-                    
-                    // Replace the old SVG with the new one
-                    oldSvg.parentNode.replaceChild(newSvg, oldSvg);
-                    
-                    // Add the not-allowed cursor to the button container
-                    buttonContainer.style.cursor = 'not-allowed';
-                    
-                    // Add the X mark
-                    const xMark = document.createElement('div');
-                    xMark.textContent = '✕';
-                    xMark.style.position = 'absolute';
-                    xMark.style.top = '50%';
-                    xMark.style.left = '50%';
-                    xMark.style.transform = 'translate(-50%, -50%)';
-                    xMark.style.fontSize = '24px';
-                    xMark.style.color = 'white';
-                    xMark.style.fontWeight = 'bold';
-                    xMark.style.zIndex = '5';
-                    xMark.style.textShadow = '0px 0px 2px rgba(0,0,0,0.5)';
-                    
-                    // Only add the X mark if it doesn't already exist
-                    if (!buttonContainer.querySelector('.unavailable-mark')) {
-                        xMark.classList.add('unavailable-mark');
-                        buttonContainer.appendChild(xMark);
+            // Update the current letter index if current letter is no longer visible
+            const currentLetter = availableLetters[currentLetterIndex];
+            if (!visibleLetters.has(currentLetter)) {
+                // Find the first visible letter
+                for (let i = 0; i < availableLetters.length; i++) {
+                    if (visibleLetters.has(availableLetters[i])) {
+                        currentLetterIndex = i;
+                        break;
                     }
                 }
             }
             
-            // Also update the modal play button if this is the current modal audio
-            if (audioId === currentModalAudioId) {
-                markModalPlayButtonAsUnavailable();
+            // Update the handle indicator position
+            positionIndicator(currentLetterIndex);
+        }
+        
+        // Theme toggle functionality
+        function setupThemeToggle() {
+            // Set initial state based on current theme
+            themeToggle.checked = document.documentElement.classList.contains('dark');
+            
+            themeToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                }
+            });
+        }
+        
+        // Scroll to top
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+        
+        // Handle scroll events
+        function handleScroll() {
+            // Show/hide return to top button
+            if (window.scrollY > 300) {
+                returnToTopBtn.classList.remove('opacity-0', 'invisible');
+                returnToTopBtn.classList.add('opacity-100');
+            } else {
+                returnToTopBtn.classList.remove('opacity-100');
+                returnToTopBtn.classList.add('opacity-0');
+                setTimeout(() => {
+                    if (window.scrollY <= 300) {
+                        returnToTopBtn.classList.add('invisible');
+                    }
+                }, 300);
             }
             
-            // Initialize audio context if not already done
-            const context = initAudioContext();
+            // Show alphabet handle when scrolling
+            showHandleIndicator();
+            isScrolling = true;
             
-            // Create oscillator and gain node
-            const oscillator = context.createOscillator();
-            const gainNode = context.createGain();
+            // Clear existing timeout
+            clearTimeout(scrollTimeout);
             
-            // Different notes for different items
-            const frequencies = {
-                'audio-1': 261.63, // C4
-                'audio-2': 293.66, // D4
-                'audio-3': 329.63, // E4
-                'audio-4': 349.23, // F4
-                'audio-5': 392.00  // G4
-            };
+            // Set timeout to hide handle after scrolling stops
+            scrollTimeout = setTimeout(function() {
+                isScrolling = false;
+                hideHandleIndicator();
+            }, 1500); // Hide after 1.5 seconds of no scrolling
             
-            // Set the frequency and type
-            oscillator.type = 'sine';
-            oscillator.frequency.value = frequencies[audioId] || 440;
+            // Update current letter based on visible sections
+            updateCurrentLetterFromScroll();
+        }
+        
+        // Alphabet Handle Functions
+        
+        // Set up handle position and size
+        function setupHandle() {
+            // Position the indicator for the first letter
+            positionIndicator(0);
+        }
+        
+        // Show handle indicator
+        function showHandleIndicator() {
+            handleIndicator.classList.add('visible');
+        }
+        
+        // Hide handle indicator
+        function hideHandleIndicator() {
+            // Only hide if not dragging
+            if (!isDragging) {
+                handleIndicator.classList.remove('visible');
+            }
+        }
+        
+        // Position the indicator based on letter index
+        function positionIndicator(index) {
+            if (index < 0) index = 0;
+            if (index >= availableLetters.length) index = availableLetters.length - 1;
             
-            // Connect and configure
-            oscillator.connect(gainNode);
-            gainNode.connect(context.destination);
+            currentLetterIndex = index;
+            const letter = availableLetters[index];
             
-            // Apply fade-in
-            gainNode.gain.setValueAtTime(0, context.currentTime);
-            gainNode.gain.linearRampToValueAtTime(0.3, context.currentTime + 0.01);
+            // Update indicator letter
+            handleIndicator.textContent = letter;
+            letterDisplay.textContent = letter;
             
-            // Start the oscillator
-            oscillator.start(0);
+            // Calculate position based on index
+            const handleHeight = alphabetHandle.clientHeight;
+            const indicatorHeight = handleIndicator.clientHeight;
+            const maxY = handleHeight - indicatorHeight;
+            const ratio = index / (availableLetters.length - 1);
+            const y = ratio * maxY;
             
-            // Update UI
-            updatePlayButtonState(audioId, true);
+            // Update position
+            handleIndicator.style.top = `${y}px`;
+            handleY = y;
+        }
+        
+        // Scroll to a section
+        function scrollToSection(letter) {
+            const section = document.getElementById(`section-${letter}`);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+        
+        // Calculate letter index from Y position
+        function getLetterIndexFromY(y) {
+            const handleHeight = alphabetHandle.clientHeight;
+            const indicatorHeight = handleIndicator.clientHeight;
+            const maxY = handleHeight - indicatorHeight;
             
-            // Also update the modal play button state if needed
-            updateModalPlayButtonState();
+            // Ensure y is within bounds
+            y = Math.max(0, Math.min(maxY, y));
             
-            // Store references
-            currentOscillator = oscillator;
-            currentGain = gainNode;
-            playingButtonId = audioId;
+            // Calculate ratio of position
+            const ratio = y / maxY;
             
-            // Auto-stop after 2 seconds
-            setTimeout(() => {
-                if (currentOscillator === oscillator) {
-                    stopCurrentSound(true);
+            // Calculate letter index
+            const index = Math.round(ratio * (availableLetters.length - 1));
+            return index;
+        }
+        
+        // Show letter display
+        function showLetterDisplay() {
+            letterDisplay.classList.add('visible');
+        }
+        
+        // Hide letter display
+        function hideLetterDisplay() {
+            letterDisplay.classList.remove('visible');
+        }
+        
+        // Update the current letter indicator based on scroll position
+        function updateCurrentLetterFromScroll() {
+            const sections = document.querySelectorAll('.section-header:not(.hidden)');
+            let currentSection = null;
+            
+            // Find the section near the top of the viewport
+            sections.forEach(section => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top <= 180) {
+                    currentSection = section;
                 }
-            }, 2000);
+            });
+            
+            // If found a visible section, update the indicator
+            if (currentSection) {
+                const letter = currentSection.id.split('-')[1];
+                const index = availableLetters.indexOf(letter);
+                if (index !== -1) {
+                    // Only update position, don't scroll again
+                    currentLetterIndex = index;
+                    handleIndicator.textContent = letter;
+                    
+                    // Calculate position based on index
+                    const handleHeight = alphabetHandle.clientHeight;
+                    const indicatorHeight = handleIndicator.clientHeight;
+                    const maxY = handleHeight - indicatorHeight;
+                    const ratio = index / (availableLetters.length - 1);
+                    const y = ratio * maxY;
+                    
+                    // Update position
+                    handleIndicator.style.top = `${y}px`;
+                    handleY = y;
+                }
+            }
+        }
+        
+        // Touch event handlers
+        function handleTouchStart(e) {
+            // Only react if handle is visible or we're already dragging
+            if (!handleIndicator.classList.contains('visible') && !isDragging) {
+                showHandleIndicator();
+                // Give a small delay before processing the touch
+                setTimeout(() => {
+                    processTouchStart(e);
+                }, 50);
+            } else {
+                processTouchStart(e);
+            }
+        }
+        
+        function processTouchStart(e) {
+            e.preventDefault();
+            handleIndicator.classList.add('active');
+            isDragging = true;
+            
+            // Get touch position relative to handle
+            const touch = e.touches[0];
+            const handleRect = alphabetHandle.getBoundingClientRect();
+            const y = touch.clientY - handleRect.top;
+            
+            // Update letter based on position
+            const index = getLetterIndexFromY(y);
+            positionIndicator(index);
+            scrollToSection(availableLetters[index]);
+            
+            // Show letter display
+            showLetterDisplay();
+        }
+        
+        function handleTouchMove(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+            
+            // Get touch position relative to handle
+            const touch = e.touches[0];
+            const handleRect = alphabetHandle.getBoundingClientRect();
+            const y = touch.clientY - handleRect.top;
+            
+            // Update letter based on position
+            const index = getLetterIndexFromY(y);
+            positionIndicator(index);
+            scrollToSection(availableLetters[index]);
+        }
+        
+        function handleTouchEnd(e) {
+            handleIndicator.classList.remove('active');
+            isDragging = false;
+            
+            // Hide letter display after a delay
+            setTimeout(hideLetterDisplay, 500);
+            
+            // Start a timeout to hide the handle
+            setTimeout(function() {
+                if (!isScrolling) {
+                    hideHandleIndicator();
+                }
+            }, 1500);
+        }
+        
+        // Mouse event handlers
+        function handleMouseDown(e) {
+            // Only react if handle is visible or we're already dragging
+            if (!handleIndicator.classList.contains('visible') && !isDragging) {
+                showHandleIndicator();
+                // Give a small delay before processing the click
+                setTimeout(() => {
+                    processMouseDown(e);
+                }, 50);
+            } else {
+                processMouseDown(e);
+            }
+        }
+        
+        function processMouseDown(e) {
+            e.preventDefault();
+            handleIndicator.classList.add('active');
+            isDragging = true;
+            
+            // Get mouse position relative to handle
+            const handleRect = alphabetHandle.getBoundingClientRect();
+            const y = e.clientY - handleRect.top;
+            
+            // Update letter based on position
+            const index = getLetterIndexFromY(y);
+            positionIndicator(index);
+            scrollToSection(availableLetters[index]);
+            
+            // Show letter display
+            showLetterDisplay();
+        }
+        
+        function handleMouseMove(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+            
+            // Get mouse position relative to handle
+            const handleRect = alphabetHandle.getBoundingClientRect();
+            const y = e.clientY - handleRect.top;
+            
+            // Update letter based on position
+            const index = getLetterIndexFromY(y);
+            positionIndicator(index);
+            scrollToSection(availableLetters[index]);
+        }
+        
+        function handleMouseUp(e) {
+            if (!isDragging) return;
+            handleIndicator.classList.remove('active');
+            isDragging = false;
+            
+            // Hide letter display after a delay
+            setTimeout(hideLetterDisplay, 500);
+            
+            // Start a timeout to hide the handle
+            setTimeout(function() {
+                if (!isScrolling) {
+                    hideHandleIndicator();
+                }
+            }, 1500);
+        }
+        
+        // Modal Functions
+        function openModal(title) {
+            modalTitle.textContent = title;
+            modalContent.textContent = "Letra del cántico: " + title + "\n\nAquí iría la letra del cántico..."; // Placeholder
+            modal.classList.remove('hidden');
+            modal.classList.add('modal-fade-in');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+        
+        function closeModal() {
+            modal.classList.add('modal-fade-out');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('modal-fade-in', 'modal-fade-out');
+                document.body.style.overflow = ''; // Restore scrolling
+            }, 300);
+        }
+        
+        // Audio playback functions
+        function toggleMetronome(bpm) {
+            alert("Metronome functionality would go here: " + bpm + "bpm");
         }
         
         function stopCurrentAudio() {
-            // Stop any HTML audio element
-            if (currentAudio) {
-                try {
-                    currentAudio.pause();
-                    currentAudio.currentTime = 0;
-                } catch (e) {
-                    console.error("Error stopping audio:", e);
+            alert("Stop audio functionality would go here");
+        }
+        
+        // Set up event listeners
+        function setupEventListeners() {
+            // Scroll event
+            window.addEventListener('scroll', handleScroll);
+            
+            // Alphabet handle touch/mouse events
+            alphabetHandle.addEventListener('touchstart', handleTouchStart);
+            alphabetHandle.addEventListener('touchmove', handleTouchMove);
+            alphabetHandle.addEventListener('touchend', handleTouchEnd);
+            
+            alphabetHandle.addEventListener('mousedown', handleMouseDown);
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+            
+            // Close modal when clicking outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeModal();
                 }
-                currentAudio = null;
-            }
+            });
             
-            // Also stop any fallback oscillator sound
-            if (currentOscillator) {
-                stopCurrentSound(true);
-            }
-            
-            // Reset playing button ID
-            if (playingButtonId) {
-                updatePlayButtonState(playingButtonId, false);
-                playingButtonId = null;
-            }
-            
-            // Also update the modal play button state
-            updateModalPlayButtonState();
-        }
-        
-        function stopCurrentSound(updateButton = true) {
-            if (currentOscillator && currentGain) {
-                // Apply a fade-out
-                const now = audioContext.currentTime;
-                currentGain.gain.linearRampToValueAtTime(0, now + 0.1);
-                
-                // Schedule the oscillator to stop after the fade-out
-                setTimeout(() => {
-                    currentOscillator.stop();
-                    currentOscillator = null;
-                    currentGain = null;
-                    
-                    // Reset button state if requested
-                    if (updateButton && playingButtonId) {
-                        updatePlayButtonState(playingButtonId, false);
-                        playingButtonId = null;
-                        
-                        // Also update the modal play button state
-                        updateModalPlayButtonState();
-                    }
-                }, 100);
-            }
-        }
-        
-        function updatePlayButtonState(audioId, isPlaying) {
-            const playButton = document.querySelector(`[data-audio-id="${audioId}"]`);
-            const equalizerElement = document.querySelector(`[data-equalizer-id="${audioId}"]`);
-            const fixedStopButton = document.getElementById('fixedStopButton');
-            
-            if (isPlaying) {
-                // Change to pause icon (square)
-                playButton.querySelector('path').setAttribute('d', 'M9 9h6v6H9z');
-                
-                // Show equalizer animation when playing
-                if (equalizerElement) {
-                    equalizerElement.classList.remove('hidden');
+            // Close modal on Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                    closeModal();
                 }
-                
-                // Show fixed stop button with bounce effect (but not for clave)
-                if (!clavePlaying) {
-                    // Cancel any hiding that might be in progress
-                    fixedStopButton.dataset.hidingInProgress = "false";
-                    
-                    // First make sure button is visible
-                    fixedStopButton.classList.remove('hidden');
-                    
-                    // Remove any existing animation classes
-                    fixedStopButton.classList.remove('bounce-in', 'bounce-out');
-                    
-                    // Force a reflow to restart animation
-                    void fixedStopButton.offsetWidth;
-                    
-                    // Add the bounce-in animation
-                    fixedStopButton.classList.add('bounce-in');
-                }
-            } else {
-                // Change to play icon (triangle)
-                playButton.querySelector('path').setAttribute('d', 'M10 8l6 4-6 4V8z');
-                
-                // Hide equalizer animation when not playing
-                if (equalizerElement) {
-                    equalizerElement.classList.add('hidden');
-                }
-                
-                // Hide fixed stop button only if there's absolutely no audio playing
-                if (!currentAudio && !currentOscillator && !clavePlaying && !fixedStopButton.classList.contains('hidden')) {
-                    // Mark that we're in the process of hiding (we'll use this to cancel if needed)
-                    fixedStopButton.dataset.hidingInProgress = "true";
-                    
-                    // Remove any existing animation classes
-                    fixedStopButton.classList.remove('bounce-in', 'bounce-out');
-                    
-                    // Force a reflow to restart animation
-                    void fixedStopButton.offsetWidth;
-                    
-                    // Add the bounce-out animation
-                    fixedStopButton.classList.add('bounce-out');
-                    
-                    // After animation completes, hide the button
-                    setTimeout(() => {
-                        // Only hide if we haven't cancelled the hiding
-                        if (fixedStopButton.dataset.hidingInProgress === "true") {
-                            fixedStopButton.classList.add('hidden');
-                            fixedStopButton.classList.remove('bounce-out');
-                            fixedStopButton.dataset.hidingInProgress = "false";
-                        }
-                    }, 400); // Match the duration of the bounce-out animation
-                }
-            }
+            });
         }
         
-        /********************************
-         * CLAVE PATTERN FUNCTIONS
-         ********************************/
-        function toggleMetronome() {
-            if (clavePlaying) {
-                stopClave();
-            } else {
-                startClave();
-            }
-        }
-        
-        function startClave() {
-            // Initialize audio context if not already done
-            const context = initAudioContext();
-            
-            // Stop any playing HTML audio elements
-            stopCurrentAudio();
-            
-            // Also stop any fallback oscillator sounds
-            if (currentOscillator) {
-                stopCurrentSound();
-            }
-            
-            // BPM = 240, which is 240 quarter notes per minute
-            // For a clave pattern, we need 8th notes, so the interval is half
-            const bpm = 240;
-            const intervalMs = 60000 / bpm / 2; // 125ms for 8th notes at 240bpm
-            
-            // Reset step counter
-            claveStep = 0;
-            
-            // Update button state
-            const metronomeButton = document.getElementById('metronomeButton');
-            metronomeButton.classList.add('font-bold');
-            metronomeButton.classList.add('text-red-500');
-            clavePlaying = true;
-            
-            // Start clave pattern
-            playClaveTick(); // Play first tick immediately
-            
-            // Set up interval for subsequent ticks
-            claveInterval = setInterval(playClaveTick, intervalMs);
-        }
-        
-        function playClaveTick() {
-            // Only play sound when the pattern has a 1 at the current step
-            if (clavePattern[claveStep] === 1) {
-                const context = audioContext;
-                
-                // Create noise + resonant components for wooden stick sound
-                const bufferSize = 2 * context.sampleRate;
-                const noiseBuffer = context.createBuffer(1, bufferSize, context.sampleRate);
-                const output = noiseBuffer.getChannelData(0);
-                
-                // Fill buffer with noise
-                for (let i = 0; i < bufferSize; i++) {
-                    output[i] = Math.random() * 2 - 1;
-                }
-                
-                // Create noise source
-                const noise = context.createBufferSource();
-                noise.buffer = noiseBuffer;
-                
-                // Create bandpass filters to shape the noise into wooden tones
-                const filter1 = context.createBiquadFilter();
-                filter1.type = "bandpass";
-                filter1.frequency.value = 2800; // Higher resonance of wooden sticks
-                filter1.Q.value = 5;
-                
-                const filter2 = context.createBiquadFilter();
-                filter2.type = "bandpass";
-                filter2.frequency.value = 1200; // Lower resonance of wooden sticks
-                filter2.Q.value = 8;
-                
-                // Create short, sharp envelope for the "clack" sound
-                const gainNode = context.createGain();
-                gainNode.gain.value = 0;
-                gainNode.gain.setValueAtTime(0, context.currentTime);
-                gainNode.gain.linearRampToValueAtTime(1.0, context.currentTime + 0.001); // Very fast attack
-                gainNode.gain.setValueAtTime(1.0, context.currentTime + 0.005);          // Hold briefly
-                gainNode.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 0.03); // Fast decay
-                
-                // Connect everything
-                noise.connect(filter1);
-                noise.connect(filter2);
-                filter1.connect(gainNode);
-                filter2.connect(gainNode);
-                gainNode.connect(context.destination);
-                
-                // Add resonant tones for the wooden quality
-                const tone1 = context.createOscillator();
-                tone1.type = 'triangle';
-                tone1.frequency.value = 2400;
-                
-                const tone2 = context.createOscillator();
-                tone2.type = 'triangle';
-                tone2.frequency.value = 1600;
-                
-                const toneGain = context.createGain();
-                toneGain.gain.value = 0;
-                toneGain.gain.setValueAtTime(0, context.currentTime);
-                toneGain.gain.linearRampToValueAtTime(0.5, context.currentTime + 0.002);
-                toneGain.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 0.02);
-                
-                tone1.connect(toneGain);
-                tone2.connect(toneGain);
-                toneGain.connect(context.destination);
-                
-                // Start and stop all sources
-                noise.start(context.currentTime);
-                tone1.start(context.currentTime);
-                tone2.start(context.currentTime);
-                
-                noise.stop(context.currentTime + 0.05);
-                tone1.stop(context.currentTime + 0.05);
-                tone2.stop(context.currentTime + 0.05);
-            }
-            
-            // Move to next step in pattern
-            claveStep = (claveStep + 1) % clavePattern.length;
-        }
-        
-        function stopClave() {
-            if (claveInterval) {
-                clearInterval(claveInterval);
-                claveInterval = null;
-            }
-            
-            // Update button state
-            const metronomeButton = document.getElementById('metronomeButton');
-            metronomeButton.classList.remove('font-bold');
-            metronomeButton.classList.remove('text-red-500');
-            clavePlaying = false;
-        }
-        
-        /********************************
-         * DEVICE SIZE INDICATOR
-         ********************************/
-        function updateDeviceSizeIndicator() {
-            const indicator = document.getElementById('device-size-indicator');
-            const width = window.innerWidth;
-            
-            if (width >= 1536) {
-                indicator.textContent = '2xl: 1536px+';
-                indicator.style.backgroundColor = 'rgba(76, 29, 149, 0.8)'; // Purple for 2xl
-            } else if (width >= 1280) {
-                indicator.textContent = 'xl: 1280px+';
-                indicator.style.backgroundColor = 'rgba(30, 64, 175, 0.8)'; // Blue for xl
-            } else if (width >= 1024) {
-                indicator.textContent = 'lg: 1024px+';
-                indicator.style.backgroundColor = 'rgba(21, 128, 61, 0.8)'; // Green for lg
-            } else if (width >= 768) {
-                indicator.textContent = 'md: 768px+';
-                indicator.style.backgroundColor = 'rgba(180, 83, 9, 0.8)'; // Orange for md
-            } else if (width >= 640) {
-                indicator.textContent = 'sm: 640px+';
-                indicator.style.backgroundColor = 'rgba(185, 28, 28, 0.8)'; // Red for sm
-            } else {
-                indicator.textContent = 'mobile: <640px';
-                indicator.style.backgroundColor = 'rgba(0, 0, 0, 0.7)'; // Black for mobile
-            }
-            
-            // Add the width in pixels
-            indicator.textContent += ` (${width}px)`;
-        }
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', () => {
+            generateContentList();
+            setupSearch();
+            setupThemeToggle();
+            setupHandle();
+            setupEventListeners();
+        });
     </script>
 </body>
 </html>
