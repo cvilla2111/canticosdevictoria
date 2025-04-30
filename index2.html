@@ -524,6 +524,10 @@
         /********************************
          * INITIALIZATION
          ********************************/
+        // Fullscreen state management
+        let isFullScreen = false;
+        let lastTapTime = 0;
+        
         document.addEventListener('DOMContentLoaded', function() {
             // Set theme toggle initial state
             const themeToggle = document.getElementById('themeToggle');
@@ -545,7 +549,78 @@
                     playAudio(new Event('click'), currentModalAudioId);
                 }
             });
+            
+            // Set up double-tap fullscreen toggle on the h1 element
+            const appTitle = document.querySelector('h1');
+            if (appTitle) {
+                appTitle.addEventListener('touchend', handleDoubleTap);
+                appTitle.addEventListener('click', handleDoubleTap); // for desktop testing
+                
+                // Add subtle hint that this is interactive
+                appTitle.style.cursor = 'pointer';
+            }
         });
+        
+        // Handle double tap on h1 element to toggle fullscreen
+        function handleDoubleTap(event) {
+            const currentTime = new Date().getTime();
+            const tapLength = currentTime - lastTapTime;
+            
+            if (tapLength < 500 && tapLength > 0) {
+                // Double tap detected
+                event.preventDefault();
+                toggleFullScreen();
+                lastTapTime = 0;
+            } else {
+                // Not a double tap - store the current time
+                lastTapTime = currentTime;
+            }
+        }
+        
+        // Toggle fullscreen mode
+        function toggleFullScreen() {
+            if (!isFullScreen) {
+                // Request fullscreen on the appropriate element
+                const docEl = document.documentElement;
+                
+                if (docEl.requestFullscreen) {
+                    docEl.requestFullscreen();
+                } else if (docEl.webkitRequestFullscreen) { // Safari
+                    docEl.webkitRequestFullscreen();
+                } else if (docEl.msRequestFullscreen) { // IE11
+                    docEl.msRequestFullscreen();
+                }
+                
+                isFullScreen = true;
+            } else {
+                // Exit fullscreen
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) { // Safari
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) { // IE11
+                    document.msExitFullscreen();
+                }
+                
+                isFullScreen = false;
+            }
+        }
+        
+        // Listen for fullscreen change events
+        document.addEventListener('fullscreenchange', updateFullscreenState);
+        document.addEventListener('webkitfullscreenchange', updateFullscreenState);
+        document.addEventListener('mozfullscreenchange', updateFullscreenState);
+        document.addEventListener('MSFullscreenChange', updateFullscreenState);
+        
+        // Update fullscreen state when changed by browser UI (e.g., pressing Escape)
+        function updateFullscreenState() {
+            isFullScreen = Boolean(
+                document.fullscreenElement || 
+                document.webkitFullscreenElement || 
+                document.mozFullScreenElement ||
+                document.msFullscreenElement
+            );
+        }
         
         /********************************
          * BUTTON ANIMATIONS
