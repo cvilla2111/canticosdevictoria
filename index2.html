@@ -2200,11 +2200,11 @@
                         currentLetterElement.textContent = letter;
                     }
                     
-                    // Scroll to the letter's position
+                    // Scroll to the letter's position with smooth behavior
                     const scrollPosition = letterPositions.get(letter) || 0;
                     window.scrollTo({
                         top: scrollPosition - 60, // Adjust for header height
-                        behavior: 'instant' // Use instant scrolling for better responsiveness
+                        behavior: 'smooth' // Use smooth scrolling for better visual experience
                     });
                 }
             }
