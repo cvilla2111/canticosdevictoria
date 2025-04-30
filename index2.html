@@ -1964,8 +1964,48 @@
                 scrollIndicator.style.opacity = '1';
             }
             
-            // Update the initial letter based on position
-            updateLetterFromPosition(yPos);
+            // Show the initial letter based on position WITHOUT scrolling
+            // First, determine which letter to show based on current touch position
+            showLetterIndicatorOnly(yPos);
+            
+            // In this function, we just show the letter indicator without scrolling
+            // This prevents unexpected scroll jumps when the user first activates the feature
+            function showLetterIndicatorOnly(yPos) {
+                if (availableLetters.length === 0) return;
+                
+                // Calculate the relative position in the viewport
+                const viewportHeight = window.innerHeight;
+                const safeArea = viewportHeight * 0.8; // 80% of viewport height
+                const topOffset = viewportHeight * 0.1; // 10% from top
+                
+                // Normalize the position within the safe area
+                let relativePos = (yPos - topOffset) / safeArea;
+                relativePos = Math.max(0, Math.min(relativePos, 1));
+                
+                // INVERTED: Calculate the letter index using the inverted relative position
+                // Now A (index 0) will be at the bottom, Z will be at the top
+                const letterIndex = Math.floor((1 - relativePos) * availableLetters.length);
+                const adjustedIndex = Math.max(0, Math.min(letterIndex, availableLetters.length - 1));
+                
+                // Update the current letter index
+                currentLetterIndex = adjustedIndex;
+                const letter = availableLetters[currentLetterIndex];
+                
+                // Update the displayed letter
+                const currentLetterElement = document.getElementById('currentLetter');
+                if (currentLetterElement) {
+                    currentLetterElement.textContent = letter;
+                }
+                
+                // Update the scroll indicator position
+                const scrollIndicator = document.getElementById('scrollIndicator');
+                if (scrollIndicator) {
+                    const indicatorPos = topOffset + (safeArea * relativePos);
+                    scrollIndicator.style.top = `${indicatorPos}px`;
+                }
+                
+                // Importantly, we do NOT scroll the page here, just show the indicator
+            }
         }
         
         // Deactivate the alphabetical scrolling
