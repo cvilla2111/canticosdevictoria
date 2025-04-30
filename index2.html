@@ -1964,43 +1964,56 @@
                 scrollIndicator.style.opacity = '1';
             }
             
-            // Show the initial letter based on position WITHOUT scrolling
-            // First, determine which letter to show based on current touch position
-            showLetterIndicatorOnly(yPos);
+            // Show the initial letter based on what's actually visible in the viewport
+            // This gives a better starting point for the alphabet scroll
+            showCurrentlyVisibleLetter(yPos);
             
-            // In this function, we just show the letter indicator without scrolling
-            // This prevents unexpected scroll jumps when the user first activates the feature
-            function showLetterIndicatorOnly(yPos) {
+            // This function determines what letter is currently visible in the viewport
+            // and shows that letter in the indicator without scrolling
+            function showCurrentlyVisibleLetter(yPos) {
                 if (availableLetters.length === 0) return;
                 
-                // Calculate the relative position in the viewport
-                const viewportHeight = window.innerHeight;
-                const safeArea = viewportHeight * 0.8; // 80% of viewport height
-                const topOffset = viewportHeight * 0.1; // 10% from top
+                // Get the viewport's middle position
+                const viewportMiddle = window.scrollY + (window.innerHeight / 2);
                 
-                // Normalize the position within the safe area
-                let relativePos = (yPos - topOffset) / safeArea;
-                relativePos = Math.max(0, Math.min(relativePos, 1));
+                // Find the letter marker that's closest to the middle of the viewport
+                let closestLetter = availableLetters[0];
+                let closestDistance = Infinity;
                 
-                // INVERTED: Calculate the letter index using the inverted relative position
-                // Now A (index 0) will be at the bottom, Z will be at the top
-                const letterIndex = Math.floor((1 - relativePos) * availableLetters.length);
-                const adjustedIndex = Math.max(0, Math.min(letterIndex, availableLetters.length - 1));
+                // Check each letter's position relative to the viewport middle
+                for (const letter of availableLetters) {
+                    const letterPosition = letterPositions.get(letter) || 0;
+                    const distance = Math.abs(letterPosition - viewportMiddle);
+                    
+                    // Update closest if this letter is closer to the middle
+                    if (distance < closestDistance) {
+                        closestDistance = distance;
+                        closestLetter = letter;
+                    }
+                }
                 
-                // Update the current letter index
-                currentLetterIndex = adjustedIndex;
-                const letter = availableLetters[currentLetterIndex];
+                // Get the index of the closest letter
+                currentLetterIndex = availableLetters.indexOf(closestLetter);
                 
                 // Update the displayed letter
                 const currentLetterElement = document.getElementById('currentLetter');
                 if (currentLetterElement) {
-                    currentLetterElement.textContent = letter;
+                    currentLetterElement.textContent = closestLetter;
                 }
+                
+                // Calculate the relative position for the scroll indicator
+                // based on the letter index
+                const viewportHeight = window.innerHeight;
+                const safeArea = viewportHeight * 0.8; // 80% of viewport height
+                const topOffset = viewportHeight * 0.1; // 10% from top
+                
+                // Calculate the relative position based on the letter index (inverted)
+                const invertedRelativePos = 1 - (currentLetterIndex / Math.max(1, availableLetters.length - 1));
                 
                 // Update the scroll indicator position
                 const scrollIndicator = document.getElementById('scrollIndicator');
                 if (scrollIndicator) {
-                    const indicatorPos = topOffset + (safeArea * relativePos);
+                    const indicatorPos = topOffset + (safeArea * invertedRelativePos);
                     scrollIndicator.style.top = `${indicatorPos}px`;
                 }
                 
