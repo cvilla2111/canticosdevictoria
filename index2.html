@@ -2117,7 +2117,7 @@
         // State to track finger movement
         let previousFingerY = 0;
         let lastMovementDirection = 0; // 0: no movement, -1: up, 1: down
-        let movementThreshold = 10; // Minimum pixels of movement before changing letter
+        let movementThreshold = 30; // Increased threshold for less sensitivity (was 10)
         let movementAccumulator = 0; // Accumulates movement until threshold is reached
         
         // Update the current letter based on Y position
@@ -2129,9 +2129,14 @@
             const safeArea = viewportHeight * 0.8; // 80% of viewport height
             const topOffset = viewportHeight * 0.1; // 10% from top
             
-            // Normalize the position for indicator only
+            // Normalize the position for indicator only - this is just for visual feedback
             let relativePos = (yPos - topOffset) / safeArea;
             relativePos = Math.max(0, Math.min(relativePos, 1));
+            
+            // Calculate letter position based on finger position
+            // We're mapping the full alphabet to the safe area height
+            let directIndex = Math.floor((1 - relativePos) * availableLetters.length);
+            directIndex = Math.max(0, Math.min(directIndex, availableLetters.length - 1));
             
             // Update the scroll indicator position to follow finger
             const scrollIndicator = document.getElementById('scrollIndicator');
@@ -2157,19 +2162,31 @@
             // Save current position for next comparison
             previousFingerY = yPos;
             
-            // Only change letter if we've moved enough in the same direction
-            if (movementAccumulator >= movementThreshold) {
-                movementAccumulator = 0; // Reset accumulator
+            // Only change letter if we've moved enough OR if directly tapping on a letter region
+            const shouldChangeLetter = movementAccumulator >= movementThreshold || 
+                                     (previousFingerY === 0 && directIndex !== currentLetterIndex);
+            
+            if (shouldChangeLetter) {
+                // Reset the accumulator
+                movementAccumulator = 0;
                 
-                // Calculate new index based on direction
-                let newIndex = currentLetterIndex;
+                // Use either incremental movement or direct position, depending on context
+                let newIndex;
                 
-                if (currentDirection === -1 && currentLetterIndex < availableLetters.length - 1) {
-                    // Moving up - go to next letter in alphabet (inverted scroll)
-                    newIndex = currentLetterIndex + 1;
-                } else if (currentDirection === 1 && currentLetterIndex > 0) {
-                    // Moving down - go to previous letter in alphabet (inverted scroll)
-                    newIndex = currentLetterIndex - 1;
+                if (previousFingerY === 0) {
+                    // Initial tap - use direct index calculation
+                    newIndex = directIndex;
+                } else {
+                    // Continuous movement - use incremental change based on direction
+                    newIndex = currentLetterIndex;
+                    
+                    if (currentDirection === -1 && currentLetterIndex < availableLetters.length - 1) {
+                        // Moving up - go to next letter in alphabet (inverted scroll)
+                        newIndex = currentLetterIndex + 1;
+                    } else if (currentDirection === 1 && currentLetterIndex > 0) {
+                        // Moving down - go to previous letter in alphabet (inverted scroll)
+                        newIndex = currentLetterIndex - 1;
+                    }
                 }
                 
                 // Update if the letter has changed
@@ -2183,11 +2200,11 @@
                         currentLetterElement.textContent = letter;
                     }
                     
-                    // Scroll to the letter's position with smooth behavior
+                    // Scroll to the letter's position
                     const scrollPosition = letterPositions.get(letter) || 0;
                     window.scrollTo({
                         top: scrollPosition - 60, // Adjust for header height
-                        behavior: 'instant' // Now using instant scrolling for better responsiveness
+                        behavior: 'instant' // Use instant scrolling for better responsiveness
                     });
                 }
             }
