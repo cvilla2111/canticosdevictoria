@@ -2076,23 +2076,24 @@
                     currentLetterElement.textContent = closestLetter;
                 }
                 
-                // Calculate the relative position for the scroll indicator
-                // based on the letter index
+                // Initialize the position of the scroll indicator based on the current finger position
                 const viewportHeight = window.innerHeight;
                 const safeArea = viewportHeight * 0.8; // 80% of viewport height
                 const topOffset = viewportHeight * 0.1; // 10% from top
                 
-                // Calculate the relative position based on the letter index (inverted)
-                const invertedRelativePos = 1 - (currentLetterIndex / Math.max(1, availableLetters.length - 1));
+                // Calculate the relative position based on the finger position
+                let relativePos = (yPos - topOffset) / safeArea;
+                relativePos = Math.max(0, Math.min(relativePos, 1));
                 
-                // Update the scroll indicator position
+                // Update the scroll indicator position based on finger position
                 const scrollIndicator = document.getElementById('scrollIndicator');
                 if (scrollIndicator) {
-                    const indicatorPos = topOffset + (safeArea * invertedRelativePos);
+                    const indicatorPos = topOffset + (safeArea * relativePos);
                     scrollIndicator.style.top = `${indicatorPos}px`;
                 }
                 
-                // Importantly, we do NOT scroll the page here, just show the indicator
+                // Do NOT scroll the page here - just identify the closest letter and show indicator
+                // This ensures we stay at the current scroll position until the user intentionally moves
             }
         }
         
@@ -2186,7 +2187,7 @@
                     const scrollPosition = letterPositions.get(letter) || 0;
                     window.scrollTo({
                         top: scrollPosition - 60, // Adjust for header height
-                        behavior: 'smooth' // Smooth scrolling for better user experience
+                        behavior: 'instant' // Now using instant scrolling for better responsiveness
                     });
                 }
             }
