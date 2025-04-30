@@ -448,7 +448,12 @@ Fuego Fuego La Iglesia Pide Fuego
 Lugar donde va la letra del corito
 
 Fuego Ha Bajado Del Cielo
-Lugar donde va la letra del corito
+||Fuego ha bajado del cielo||
+||¿Qué quieres que haga?
+si ya está encendido, encendido||
+||si ya está encendido,
+¿Quién lo apagará?||
+¿Quién lo apagará?||||
 
 Fuego Pentecostal
 Lugar donde va la letra del corito
