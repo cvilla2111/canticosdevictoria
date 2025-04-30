@@ -777,15 +777,24 @@
                 listItems.forEach(item => item.classList.remove('hidden'));
                 noResults.classList.add('hidden');
                 
-                // All letters are available when search is empty
-                availableLetters.forEach(letter => {
-                    lettersWithVisibleItems.add(letter);
+                // Get all available letters in the original list
+                document.querySelectorAll('.letter-marker').forEach(marker => {
+                    const letter = marker.dataset.letter;
+                    if (letter) {
+                        lettersWithVisibleItems.add(letter);
+                        marker.classList.remove('hidden');
+                    }
                 });
                 
                 // Update the letter positions after showing all items
                 updateLetterPositions();
             } else {
-                // Filter items based on normalized search term
+                // First, hide all letter markers
+                document.querySelectorAll('.letter-marker').forEach(marker => {
+                    marker.classList.add('hidden');
+                });
+                
+                // Then filter items based on normalized search term
                 listItems.forEach(item => {
                     const title = normalizeText(item.querySelector('span').textContent);
                     const letter = title.trim()[0].toUpperCase();
@@ -795,9 +804,13 @@
                         item.classList.remove('hidden');
                         visibleCount++;
                         
-                        // Track which letter has visible items
+                        // Track which letter has visible items and unhide its marker
                         if (letter) {
                             lettersWithVisibleItems.add(letter);
+                            const marker = document.getElementById(`letter-${letter}`);
+                            if (marker) {
+                                marker.classList.remove('hidden');
+                            }
                         }
                     } else {
                         item.classList.add('hidden');
@@ -813,6 +826,14 @@
             
             // Update letter positions after filtering
             updateLetterPositions();
+            
+            // Reset alphabetic scroll state
+            if (alphaScrollActive) {
+                deactivateAlphaScroll();
+            }
+            currentLetterIndex = 0;
+            previousFingerY = 0;
+            movementAccumulator = 0;
         }
         
         function normalizeText(text) {
@@ -832,9 +853,13 @@
             
             searchInput.value = '';
             
-            // Show all items
+            // Show all items and letter markers
             document.querySelectorAll('#itemList li').forEach(item => {
                 item.classList.remove('hidden');
+            });
+            
+            document.querySelectorAll('.letter-marker').forEach(marker => {
+                marker.classList.remove('hidden');
             });
             
             // Hide no results message
@@ -843,8 +868,28 @@
             // Update icons
             toggleSearchIcons('');
             
+            // Get all available letters for the alphabetic scroll
+            const allLetters = new Set();
+            document.querySelectorAll('.letter-marker').forEach(marker => {
+                const letter = marker.dataset.letter;
+                if (letter) {
+                    allLetters.add(letter);
+                }
+            });
+            
+            // Update available letters
+            availableLetters = Array.from(allLetters).sort();
+            
             // Update letter positions after showing all items
             updateLetterPositions();
+            
+            // Reset alphabet scroll state if active
+            if (alphaScrollActive) {
+                deactivateAlphaScroll();
+            }
+            currentLetterIndex = 0;
+            previousFingerY = 0;
+            movementAccumulator = 0;
             
             // Focus the search input
             searchInput.focus();
@@ -1066,6 +1111,21 @@
                     letterPositions.set(letter, rect.top + window.scrollY);
                 }
             });
+            
+            // Check if we have any available letters at all
+            if (availableLetters.length === 0) {
+                // If no letters are available (like during an empty search result),
+                // collect all possible letters from markers
+                document.querySelectorAll('.letter-marker').forEach(marker => {
+                    if (!marker.classList.contains('hidden')) {
+                        const letter = marker.dataset.letter;
+                        if (letter) {
+                            const rect = marker.getBoundingClientRect();
+                            letterPositions.set(letter, rect.top + window.scrollY);
+                        }
+                    }
+                });
+            }
         }
         
         function checkAudioFileExists(audioPath, audioId) {
