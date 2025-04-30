@@ -184,49 +184,131 @@
             transform: scale(0.9);
         }
         
-        /* Base sunken effect for all clave buttons */
-        .tab-btn {
-            box-shadow: 
-                inset 0 1px 1px rgba(0, 0, 0, 0.2),
-                inset 0 2px 5px rgba(0, 0, 0, 0.15),
-                inset 0 -1px 1px rgba(255, 255, 255, 0.6);
-            background-color: #e5e7eb; /* gray-200 */
+        /* Flat Button Style for clave buttons */
+        .flat-btn {
+            background-color: #f3f4f6; /* gray-100 */
             color: #374151; /* gray-700 */
+            border: 1px solid #e5e7eb; /* gray-200 */
+            transition: all 0.2s ease;
         }
         
-        /* Dark mode support for base buttons */
-        .dark .tab-btn {
-            box-shadow: 
-                inset 0 1px 2px rgba(0, 0, 0, 0.4),
-                inset 0 2px 5px rgba(0, 0, 0, 0.3),
-                inset 0 -1px 1px rgba(255, 255, 255, 0.05);
+        /* Dark mode support for flat buttons */
+        .dark .flat-btn {
+            background-color: #374151; /* gray-700 */
+            color: #e5e7eb; /* gray-200 */
+            border: 1px solid #4b5563; /* gray-600 */
+        }
+        
+        /* Hover state */
+        .flat-btn:hover {
+            background-color: #f9fafb; /* gray-50 */
+        }
+        
+        .dark .flat-btn:hover {
             background-color: #4b5563; /* gray-600 */
-            color: #d1d5db; /* gray-300 */
         }
         
-        /* Active state with fill change */
-        .tab-btn.active-fill {
-            background: linear-gradient(to bottom, 
-                rgba(255, 255, 255, 0.95), 
-                rgba(255, 255, 255, 0.85)
-            );
+        /* Active state */
+        .flat-btn.active-fill {
+            background-color: #ffffff;
             color: #ef4444; /* red-500 */
+            border: 1px solid #ef4444; /* red-500 */
             font-weight: 600;
-            box-shadow: 
-                inset 0 1px 1px rgba(0, 0, 0, 0.1),
-                inset 0 2px 3px rgba(0, 0, 0, 0.05);
         }
         
         /* Dark mode support for active state */
-        .dark .tab-btn.active-fill {
-            background: linear-gradient(to bottom, 
-                rgba(31, 41, 55, 0.95), 
-                rgba(31, 41, 55, 0.85)
-            );
+        .dark .flat-btn.active-fill {
+            background-color: #1f2937; /* gray-800 */
             color: #f87171; /* red-400 */
-            box-shadow: 
-                inset 0 1px 1px rgba(0, 0, 0, 0.2),
-                inset 0 2px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #f87171; /* red-400 */
+        }
+
+        /* === ALPHABET SCROLL FEATURE === */
+        /* Letter overlay */
+        .letter-overlay {
+            position: fixed;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 100;
+            background-color: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            /* Disable text selection */
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        .letter-indicator {
+            width: 120px;
+            height: 120px;
+            background-color: rgba(93, 92, 222, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.7); /* More transparent white text */
+            font-size: 60px;
+            font-weight: bold;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            /* Disable text selection */
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        .dark .letter-indicator {
+            background-color: rgba(93, 92, 222, 0.9);
+            color: rgba(255, 255, 255, 0.7); /* Make text transparent in dark mode too */
+        }
+        
+        /* When active, show the overlay */
+        .letter-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        /* Letter marker (invisible anchor) */
+        .letter-marker {
+            position: relative;
+            height: 0;
+            overflow: hidden;
+            opacity: 0;
+        }
+        
+        /* Scroll indicator dot */
+        .scroll-indicator {
+            position: fixed;
+            right: 4px;
+            width: 8px;
+            height: 8px;
+            background-color: rgba(93, 92, 222, 0.8);
+            border-radius: 50%;
+            transition: top 0.1s linear;
+            opacity: 0;
+            z-index: 90;
+        }
+        
+        /* Disable text selection in item list */
+        #itemList {
+            -webkit-touch-callout: none; /* iOS Safari */
+            -webkit-user-select: none;   /* Safari */
+            -khtml-user-select: none;    /* Konqueror HTML */
+            -moz-user-select: none;      /* Firefox */
+            -ms-user-select: none;       /* Internet Explorer/Edge */
+            user-select: none;           /* Non-prefixed version */
         }
     </style>
 </head>
@@ -329,8 +411,8 @@
                     <div class="pl-1 pr-6 flex-1 flex items-center self-center min-h-[40px] -mt-1">
                         <h3 id="modalTitle" class="text-base md:text-lg lg:text-xl xl:text-2xl font-bold text-gray-800 dark:text-gray-200 leading-tight"></h3>
                     </div>
-                    <button id="closeModalBtn" onclick="closeModal()" class="w-6 h-6 flex items-center justify-center rounded-full bg-gray-400 dark:bg-gray-600 text-white hover:bg-gray-500 hover:dark:bg-gray-500 transition-colors duration-200 focus:outline-none flex-shrink-0 self-start -mt-2 close-button-effect">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <button id="closeModalBtn" onclick="closeModal()" class="w-7 h-7 flex items-center justify-center rounded-md border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:border-primary hover:text-primary dark:hover:border-primary dark:hover:text-primary bg-transparent transition-all duration-200 focus:outline-none flex-shrink-0 self-start -mt-2 close-button-effect">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
@@ -348,16 +430,16 @@
             <div class="px-3 py-3 sticky bottom-0 bg-white dark:bg-gray-800 z-10">
                 <div class="flex justify-end">
                     <div class="inline-flex rounded-md p-0.5 h-7">
-                        <button id="metronomeButton220" onclick="toggleMetronome(220)" class="tab-btn min-w-[45px] px-4 h-full flex items-center justify-center text-sm font-medium rounded transition-all hover:bg-white dark:hover:bg-gray-600 focus:outline-none relative mx-0.5 metronome-button-effect">
+                        <button id="metronomeButton220" onclick="toggleMetronome(220)" class="flat-btn min-w-[45px] px-4 h-full flex items-center justify-center text-sm font-medium rounded transition-all focus:outline-none relative mx-0.5 metronome-button-effect">
                             220
                         </button>
-                        <button id="metronomeButton240" onclick="toggleMetronome(240)" class="tab-btn min-w-[45px] px-4 h-full flex items-center justify-center text-sm font-medium rounded transition-all hover:bg-white dark:hover:bg-gray-600 focus:outline-none relative mx-0.5 metronome-button-effect">
+                        <button id="metronomeButton240" onclick="toggleMetronome(240)" class="flat-btn min-w-[45px] px-4 h-full flex items-center justify-center text-sm font-medium rounded transition-all focus:outline-none relative mx-0.5 metronome-button-effect">
                             240
                         </button>
-                        <button id="metronomeButton260" onclick="toggleMetronome(260)" class="tab-btn min-w-[45px] px-4 h-full flex items-center justify-center text-sm font-medium rounded transition-all hover:bg-white dark:hover:bg-gray-600 focus:outline-none relative mx-0.5 metronome-button-effect">
+                        <button id="metronomeButton260" onclick="toggleMetronome(260)" class="flat-btn min-w-[45px] px-4 h-full flex items-center justify-center text-sm font-medium rounded transition-all focus:outline-none relative mx-0.5 metronome-button-effect">
                             260
                         </button>
-                        <button id="metronomeButton280" onclick="toggleMetronome(280)" class="tab-btn min-w-[45px] px-4 h-full flex items-center justify-center text-sm font-medium rounded transition-all hover:bg-white dark:hover:bg-gray-600 focus:outline-none relative mx-0.5 metronome-button-effect">
+                        <button id="metronomeButton280" onclick="toggleMetronome(280)" class="flat-btn min-w-[45px] px-4 h-full flex items-center justify-center text-sm font-medium rounded transition-all focus:outline-none relative mx-0.5 metronome-button-effect">
                             280
                         </button>
                     </div>
@@ -400,6 +482,15 @@
         <source src="clave240bpm.mp3" type="audio/mpeg">
     </audio>
 
+    <!-- Alphabet Scroll Components -->
+    <div id="scrollIndicator" class="scroll-indicator"></div>
+    
+    <div id="letterOverlay" class="letter-overlay">
+        <div class="letter-indicator">
+            <span id="currentLetter">A</span>
+        </div>
+    </div>
+
     <script>
         /********************************
          * STATE MANAGEMENT
@@ -416,9 +507,21 @@
         // Clave state
         let clavePlaying = false;
         
+        // Alphabet scroll state
+        let alphaScrollActive = false;
+        let longPressTimer = null;
+        let touchStartY = 0;
+        let currentLetterIndex = 0;
+        let availableLetters = [];
+        let letterPositions = new Map(); // Maps letters to their Y positions in the list
+        
         /********************************
          * INITIALIZATION
          ********************************/
+        // Fullscreen state management
+        let isFullScreen = false;
+        let lastTapTime = 0;
+        
         document.addEventListener('DOMContentLoaded', function() {
             // Set theme toggle initial state
             const themeToggle = document.getElementById('themeToggle');
@@ -440,7 +543,78 @@
                     playAudio(new Event('click'), currentModalAudioId);
                 }
             });
+            
+            // Set up double-tap fullscreen toggle on the h1 element
+            const appTitle = document.querySelector('h1');
+            if (appTitle) {
+                appTitle.addEventListener('touchend', handleDoubleTap);
+                appTitle.addEventListener('click', handleDoubleTap); // for desktop testing
+                
+                // Add subtle hint that this is interactive
+                appTitle.style.cursor = 'pointer';
+            }
         });
+        
+        // Handle double tap on h1 element to toggle fullscreen
+        function handleDoubleTap(event) {
+            const currentTime = new Date().getTime();
+            const tapLength = currentTime - lastTapTime;
+            
+            if (tapLength < 500 && tapLength > 0) {
+                // Double tap detected
+                event.preventDefault();
+                toggleFullScreen();
+                lastTapTime = 0;
+            } else {
+                // Not a double tap - store the current time
+                lastTapTime = currentTime;
+            }
+        }
+        
+        // Toggle fullscreen mode
+        function toggleFullScreen() {
+            if (!isFullScreen) {
+                // Request fullscreen on the appropriate element
+                const docEl = document.documentElement;
+                
+                if (docEl.requestFullscreen) {
+                    docEl.requestFullscreen();
+                } else if (docEl.webkitRequestFullscreen) { // Safari
+                    docEl.webkitRequestFullscreen();
+                } else if (docEl.msRequestFullscreen) { // IE11
+                    docEl.msRequestFullscreen();
+                }
+                
+                isFullScreen = true;
+            } else {
+                // Exit fullscreen
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) { // Safari
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) { // IE11
+                    document.msExitFullscreen();
+                }
+                
+                isFullScreen = false;
+            }
+        }
+        
+        // Listen for fullscreen change events
+        document.addEventListener('fullscreenchange', updateFullscreenState);
+        document.addEventListener('webkitfullscreenchange', updateFullscreenState);
+        document.addEventListener('mozfullscreenchange', updateFullscreenState);
+        document.addEventListener('MSFullscreenChange', updateFullscreenState);
+        
+        // Update fullscreen state when changed by browser UI (e.g., pressing Escape)
+        function updateFullscreenState() {
+            isFullScreen = Boolean(
+                document.fullscreenElement || 
+                document.webkitFullscreenElement || 
+                document.mozFullScreenElement ||
+                document.msFullscreenElement
+            );
+        }
         
         /********************************
          * BUTTON ANIMATIONS
@@ -490,7 +664,7 @@
                 }
             });
             
-            // Add click effect for metronome buttons (already have CSS transitions in the styling)
+            // Add click effect for metronome buttons
             const bpmValues = [220, 240, 260, 280];
             bpmValues.forEach(bpm => {
                 const metronomeButton = document.getElementById(`metronomeButton${bpm}`);
@@ -511,6 +685,30 @@
             const fixedStopButton = document.getElementById('fixedStopButton');
             fixedStopButton.addEventListener('click', function() {
                 addButtonPulseAnimation(this);
+            });
+            
+            // Set up alphabet scroll event listeners - make them passive by default
+            const itemList = document.getElementById('itemList');
+            
+            // Use passive listeners for better scroll performance
+            itemList.addEventListener('touchstart', handleTouchStart, { passive: true });
+            itemList.addEventListener('touchmove', handleTouchMove, { passive: true });
+            itemList.addEventListener('touchend', handleTouchEnd);
+            
+            // Mouse events for desktop testing
+            itemList.addEventListener('mousedown', handleMouseDown);
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+            
+            // Handle window resize for alphabet scroll
+            window.addEventListener('resize', updateLetterPositions);
+            
+            // Prevent text selection conflicts during touch events
+            itemList.addEventListener('selectstart', function(e) {
+                if (alphaScrollActive) {
+                    e.preventDefault();
+                    return false;
+                }
             });
         }
         
@@ -558,34 +756,78 @@
          ********************************/
         function handleSearch() {
             const searchTerm = normalizeText(this.value);
-            const listItems = document.querySelectorAll('#itemList li');
+            const listItems = document.querySelectorAll('#itemList li:not(.letter-marker)');
             const noResults = document.getElementById('noResults');
             let visibleCount = 0;
             
             // Update icons based on input value
             toggleSearchIcons(this.value);
             
+            // Track which letters have visible items
+            const lettersWithVisibleItems = new Set();
+            
             // If search term is empty, show all items
             if (searchTerm === '') {
                 listItems.forEach(item => item.classList.remove('hidden'));
                 noResults.classList.add('hidden');
-                return;
+                
+                // Get all available letters in the original list
+                document.querySelectorAll('.letter-marker').forEach(marker => {
+                    const letter = marker.dataset.letter;
+                    if (letter) {
+                        lettersWithVisibleItems.add(letter);
+                        marker.classList.remove('hidden');
+                    }
+                });
+                
+                // Update the letter positions after showing all items
+                updateLetterPositions();
+            } else {
+                // First, hide all letter markers
+                document.querySelectorAll('.letter-marker').forEach(marker => {
+                    marker.classList.add('hidden');
+                });
+                
+                // Then filter items based on normalized search term
+                listItems.forEach(item => {
+                    const title = normalizeText(item.querySelector('span').textContent);
+                    const letter = title.trim()[0].toUpperCase();
+                    
+                    // If normalized item title contains search term, show it, otherwise hide it
+                    if (title.includes(searchTerm)) {
+                        item.classList.remove('hidden');
+                        visibleCount++;
+                        
+                        // Track which letter has visible items and unhide its marker
+                        if (letter) {
+                            lettersWithVisibleItems.add(letter);
+                            const marker = document.getElementById(`letter-${letter}`);
+                            if (marker) {
+                                marker.classList.remove('hidden');
+                            }
+                        }
+                    } else {
+                        item.classList.add('hidden');
+                    }
+                });
+                
+                // Show or hide the "no results" message
+                noResults.classList.toggle('hidden', visibleCount > 0);
             }
             
-            // Filter items based on normalized search term
-            listItems.forEach(item => {
-                const title = normalizeText(item.querySelector('span').textContent);
-                // If normalized item title contains search term, show it, otherwise hide it
-                if (title.includes(searchTerm)) {
-                    item.classList.remove('hidden');
-                    visibleCount++;
-                } else {
-                    item.classList.add('hidden');
-                }
-            });
+            // Update available letters based on visible items
+            availableLetters = Array.from(lettersWithVisibleItems).sort();
             
-            // Show or hide the "no results" message
-            noResults.classList.toggle('hidden', visibleCount > 0);
+            // Update letter positions after filtering
+            updateLetterPositions();
+            
+            // Reset alphabetic scroll state
+            if (alphaScrollActive) {
+                deactivateAlphaScroll();
+            }
+            currentLetterIndex = 0;
+            previousFingerY = 0;
+            movementAccumulator = 0;
         }
         
         function normalizeText(text) {
@@ -605,9 +847,13 @@
             
             searchInput.value = '';
             
-            // Show all items
+            // Show all items and letter markers
             document.querySelectorAll('#itemList li').forEach(item => {
                 item.classList.remove('hidden');
+            });
+            
+            document.querySelectorAll('.letter-marker').forEach(marker => {
+                marker.classList.remove('hidden');
             });
             
             // Hide no results message
@@ -615,6 +861,29 @@
             
             // Update icons
             toggleSearchIcons('');
+            
+            // Get all available letters for the alphabetic scroll
+            const allLetters = new Set();
+            document.querySelectorAll('.letter-marker').forEach(marker => {
+                const letter = marker.dataset.letter;
+                if (letter) {
+                    allLetters.add(letter);
+                }
+            });
+            
+            // Update available letters
+            availableLetters = Array.from(allLetters).sort();
+            
+            // Update letter positions after showing all items
+            updateLetterPositions();
+            
+            // Reset alphabet scroll state if active
+            if (alphaScrollActive) {
+                deactivateAlphaScroll();
+            }
+            currentLetterIndex = 0;
+            previousFingerY = 0;
+            movementAccumulator = 0;
             
             // Focus the search input
             searchInput.focus();
@@ -657,16 +926,50 @@
             } catch (error) {
                 console.error('Error loading canticos.txt:', error);
                 
+                // Fallback to demo data for testing
+                generateDemoData();
+                
                 // Show error message
                 loadingIndicator.classList.add('hidden');
                 errorMessage.classList.remove('hidden');
             }
         }
         
-        function processFileContent(content) {
-            const itemList = document.getElementById('itemList');
-            const subtitle = document.getElementById('subtitle');
+        function generateDemoData() {
+            // Demo canticos for testing
+            const demoItems = [
+                { title: "Alabanza y adoración", content: "Demo content for Alabanza y adoración" },
+                { title: "Al Rey de reyes", content: "Demo content for Al Rey de reyes" },
+                { title: "Aleluya Cristo vive", content: "Demo content for Aleluya Cristo vive" },
+                { title: "Bendito sea el Señor", content: "Demo content for Bendito sea el Señor" },
+                { title: "Cordero de Dios", content: "Demo content for Cordero de Dios" },
+                { title: "Digno es el Cordero", content: "Demo content for Digno es el Cordero" },
+                { title: "El gozo del Señor", content: "Demo content for El gozo del Señor" },
+                { title: "Grande es el Señor", content: "Demo content for Grande es el Señor" },
+                { title: "Hay poder", content: "Demo content for Hay poder" },
+                { title: "Incomparable", content: "Demo content for Incomparable" },
+                { title: "Jesucristo es el Señor", content: "Demo content for Jesucristo es el Señor" },
+                { title: "La alegría del Señor", content: "Demo content for La alegría del Señor" },
+                { title: "Mi salvador vive", content: "Demo content for Mi salvador vive" },
+                { title: "No hay nadie como tú", content: "Demo content for No hay nadie como tú" },
+                { title: "Poderoso Dios", content: "Demo content for Poderoso Dios" },
+                { title: "Rey de reyes", content: "Demo content for Rey de reyes" },
+                { title: "Santo es el Señor", content: "Demo content for Santo es el Señor" },
+                { title: "Tú eres santo", content: "Demo content for Tú eres santo" },
+                { title: "Vine a adorarte", content: "Demo content for Vine a adorarte" },
+                { title: "Yo te busco", content: "Demo content for Yo te busco" }
+            ];
             
+            // Process the demo data
+            const groupedItems = groupItemsByFirstLetter(demoItems);
+            generateContent(groupedItems);
+            
+            // Update subtitle with item count
+            const subtitle = document.getElementById('subtitle');
+            subtitle.innerHTML = `Una colección de <strong>${demoItems.length}</strong> coritos`;
+        }
+        
+        function processFileContent(content) {
             // Split content by blank lines to separate items
             const blocks = content.split(/\r?\n\r?\n+/);
             const items = [];
@@ -689,61 +992,134 @@
                 items.push({ title, content });
             });
             
-            // Clear existing items
-            itemList.innerHTML = '';
+            // Group items by first letter
+            const groupedItems = groupItemsByFirstLetter(items);
             
-            // Generate new items from the parsed content
-            items.forEach((item, index) => {
-                const itemId = `audio-${index + 1}`;
-                const isLastItem = index === items.length - 1;
-                
-                const listItem = document.createElement('li');
-                listItem.className = `py-3 px-2 ${!isLastItem ? 'border-b border-gray-200 dark:border-gray-700' : ''} hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors`;
-                listItem.onclick = function() {
-                    openModal(item.title, item.content, itemId);
-                };
-                
-                // Generate audio filename from title
-                const audioFilename = generateAudioFilename(item.title);
-                const audioPath = `audio/${audioFilename}.mp3`;
-                
-                // Create the button HTML with conditional styling based on audio availability
-                listItem.innerHTML = `
-                    <div class="flex items-center">
-                        <div class="relative h-10 w-10 mr-3 cursor-pointer play-button-container" onclick="playAudio(event, '${itemId}')">
-                            <!-- Play button background and border -->
-                            <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-10 w-10 text-gray-900 dark:text-gray-100 play-button" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" data-audio-id="${itemId}">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="white" class="dark:fill-gray-800" />
-                                <path class="play-icon" d="M10 8l6 4-6 4V8z" fill="currentColor" />
-                            </svg>
-                            
-                            <!-- Equalizer animation (hidden by default) -->
-                            <div class="absolute inset-0 pointer-events-none hidden" data-equalizer-id="${itemId}">
-                                <div class="absolute bottom-2 left-0 right-0 flex items-end justify-center h-[calc(100%-8px)]">
-                                    <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq1"></div>
-                                    <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq2"></div>
-                                    <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq3"></div>
-                                    <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq4"></div>
-                                    <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq5"></div>
-                                    <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq6"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <span class="font-bold md:text-lg lg:text-xl xl:text-2xl">${item.title}</span>
-                    </div>
-                    <audio id="${itemId}" preload="none">
-                        <source src="${audioPath}" type="audio/mpeg">
-                    </audio>
-                `;
-                
-                itemList.appendChild(listItem);
-                
-                // Check if audio file exists and mark as grayed if not available
-                checkAudioFileExists(audioPath, itemId);
+            // Generate the content
+            generateContent(groupedItems);
+            
+            // Update subtitle with item count
+            const subtitle = document.getElementById('subtitle');
+            subtitle.innerHTML = `Una colección de <strong>${items.length}</strong> coritos`;
+        }
+        
+        function groupItemsByFirstLetter(items) {
+            // Group items by first letter
+            const grouped = {};
+            
+            items.forEach(item => {
+                const firstLetter = item.title.charAt(0).toUpperCase();
+                if (!grouped[firstLetter]) {
+                    grouped[firstLetter] = [];
+                }
+                grouped[firstLetter].push(item);
             });
             
-            // Update subtitle with item count after processing all items - bold number
-            subtitle.innerHTML = `Una colección de <strong>${items.length}</strong> coritos`;
+            return grouped;
+        }
+        
+        function generateContent(groupedItems) {
+            const itemList = document.getElementById('itemList');
+            
+            // Clear existing content
+            itemList.innerHTML = '';
+            
+            // Get sorted letters
+            availableLetters = Object.keys(groupedItems).sort();
+            
+            // For each letter group
+            availableLetters.forEach(letter => {
+                const items = groupedItems[letter];
+                
+                // Create an invisible marker for this letter - no visible headers
+                const marker = document.createElement('div');
+                marker.id = `letter-${letter}`;
+                marker.className = 'letter-marker';
+                marker.dataset.letter = letter;
+                itemList.appendChild(marker);
+                
+                // Add items for this letter
+                items.forEach((item, index) => {
+                    const itemId = `audio-${letter}-${index}`;
+                    
+                    const listItem = document.createElement('li');
+                    listItem.className = 'py-3 px-2 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors';
+                    listItem.onclick = function() {
+                        if (!alphaScrollActive) { // Only open modal if not in alpha scroll mode
+                            openModal(item.title, item.content, itemId);
+                        }
+                    };
+                    
+                    // Generate audio filename from title
+                    const audioFilename = generateAudioFilename(item.title);
+                    const audioPath = `audio/${audioFilename}.mp3`;
+                    
+                    // Create the button HTML with conditional styling based on audio availability
+                    listItem.innerHTML = `
+                        <div class="flex items-center">
+                            <div class="relative h-10 w-10 mr-3 cursor-pointer play-button-container" onclick="playAudio(event, '${itemId}')">
+                                <!-- Play button background and border -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-10 w-10 text-gray-900 dark:text-gray-100 play-button" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" data-audio-id="${itemId}">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="white" class="dark:fill-gray-800" />
+                                    <path class="play-icon" d="M10 8l6 4-6 4V8z" fill="currentColor" />
+                                </svg>
+                                
+                                <!-- Equalizer animation (hidden by default) -->
+                                <div class="absolute inset-0 pointer-events-none hidden" data-equalizer-id="${itemId}">
+                                    <div class="absolute bottom-2 left-0 right-0 flex items-end justify-center h-[calc(100%-8px)]">
+                                        <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq1"></div>
+                                        <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq2"></div>
+                                        <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq3"></div>
+                                        <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq4"></div>
+                                        <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq5"></div>
+                                        <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq6"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="font-bold md:text-lg lg:text-xl xl:text-2xl">${item.title}</span>
+                        </div>
+                        <audio id="${itemId}" preload="none">
+                            <source src="${audioPath}" type="audio/mpeg">
+                        </audio>
+                    `;
+                    
+                    itemList.appendChild(listItem);
+                    
+                    // Check if audio file exists and mark as grayed if not available
+                    checkAudioFileExists(audioPath, itemId);
+                });
+            });
+            
+            // Update letter positions after content is loaded
+            updateLetterPositions();
+        }
+        
+        function updateLetterPositions() {
+            letterPositions.clear();
+            
+            // Store the position of each letter marker
+            availableLetters.forEach(letter => {
+                const marker = document.getElementById(`letter-${letter}`);
+                if (marker && !marker.classList.contains('hidden')) {
+                    const rect = marker.getBoundingClientRect();
+                    letterPositions.set(letter, rect.top + window.scrollY);
+                }
+            });
+            
+            // Check if we have any available letters at all
+            if (availableLetters.length === 0) {
+                // If no letters are available (like during an empty search result),
+                // collect all possible letters from markers
+                document.querySelectorAll('.letter-marker').forEach(marker => {
+                    if (!marker.classList.contains('hidden')) {
+                        const letter = marker.dataset.letter;
+                        if (letter) {
+                            const rect = marker.getBoundingClientRect();
+                            letterPositions.set(letter, rect.top + window.scrollY);
+                        }
+                    }
+                });
+            }
         }
         
         function checkAudioFileExists(audioPath, audioId) {
@@ -899,7 +1275,11 @@
          ********************************/
         function initAudioContext() {
             if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                try {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                } catch (e) {
+                    console.error("Could not create audio context:", e);
+                }
             }
             return audioContext;
         }
@@ -911,28 +1291,38 @@
             if (unavailableAudioFiles.has(audioId)) {
                 // Just show an indication of the unavailable state
                 const buttonContainer = document.querySelector(`[data-audio-id="${audioId}"]`).closest('.relative');
-                buttonContainer.classList.add('pulse-error');
-                setTimeout(() => {
-                    buttonContainer.classList.remove('pulse-error');
-                }, 300);
+                if (buttonContainer) {
+                    buttonContainer.classList.add('pulse-error');
+                    setTimeout(() => {
+                        buttonContainer.classList.remove('pulse-error');
+                    }, 300);
+                }
                 
                 // Also pulse the modal play button if this is the current modal audio
                 if (audioId === currentModalAudioId) {
                     const modalPlayButton = document.getElementById('modalPlayButton').parentElement;
-                    modalPlayButton.classList.add('pulse-error');
-                    setTimeout(() => {
-                        modalPlayButton.classList.remove('pulse-error');
-                    }, 300);
+                    if (modalPlayButton) {
+                        modalPlayButton.classList.add('pulse-error');
+                        setTimeout(() => {
+                            modalPlayButton.classList.remove('pulse-error');
+                        }, 300);
+                    }
                 }
                 return;
             }
             
             // Add button animation to the play button
             const buttonContainer = document.querySelector(`[data-audio-id="${audioId}"]`).closest('.play-button-container');
-            addButtonPulseAnimation(buttonContainer);
+            if (buttonContainer) {
+                addButtonPulseAnimation(buttonContainer);
+            }
             
             // Get the associated audio element
             const audioElement = document.getElementById(audioId);
+            if (!audioElement) {
+                console.error(`Audio element with ID ${audioId} not found`);
+                return;
+            }
             
             // Check if we're already playing this audio
             if (playingButtonId === audioId && currentAudio === audioElement) {
@@ -979,6 +1369,7 @@
                         .catch(error => {
                             console.error("Playback error:", error);
                             // If autoplay is blocked or file not found, mark as unavailable
+                            markAudioAsUnavailable(audioId);
                             playFallbackTone(audioId);
                             
                             // Also update the modal play button if this is the current modal audio
@@ -990,6 +1381,7 @@
             } catch (error) {
                 console.error("Audio playback error:", error);
                 // Fall back to playing a tone
+                markAudioAsUnavailable(audioId);
                 playFallbackTone(audioId);
                 
                 // Also update the modal play button if this is the current modal audio
@@ -1023,6 +1415,7 @@
                 updatePlayButtonState(audioId, false);
                 
                 // If there's an error (e.g., file not found), mark as unavailable
+                markAudioAsUnavailable(audioId);
                 playFallbackTone(audioId);
                 
                 // Also update the modal play button if this is the current modal audio
@@ -1104,6 +1497,8 @@
         
         function markModalPlayButtonAsUnavailable() {
             const modalPlayButton = document.getElementById('modalPlayButton');
+            if (!modalPlayButton) return;
+            
             const buttonContainer = modalPlayButton.parentElement;
             
             // Change the stroke color to gray
@@ -1152,6 +1547,8 @@
         
         function resetModalPlayButton() {
             const modalPlayButton = document.getElementById('modalPlayButton');
+            if (!modalPlayButton) return;
+            
             const buttonContainer = modalPlayButton.parentElement;
             
             // Reset stroke color
@@ -1189,18 +1586,23 @@
             if (!currentModalAudioId) return;
             
             const modalPlayButton = document.getElementById('modalPlayButton');
+            if (!modalPlayButton) return;
+            
             const modalEqualizer = document.getElementById('modalEqualizer');
             
             // Check if the associated audio is playing
             const isPlaying = playingButtonId === currentModalAudioId;
             
             // Change icon (play triangle or pause square)
-            modalPlayButton.querySelector('path').setAttribute('d', 
-                isPlaying ? 'M9 9h6v6H9z' : 'M10 8l6 4-6 4V8z'
-            );
+            const pathElement = modalPlayButton.querySelector('path');
+            if (pathElement) {
+                pathElement.setAttribute('d', isPlaying ? 'M9 9h6v6H9z' : 'M10 8l6 4-6 4V8z');
+            }
             
             // Show/hide equalizer animation
-            modalEqualizer.classList.toggle('hidden', !isPlaying);
+            if (modalEqualizer) {
+                modalEqualizer.classList.toggle('hidden', !isPlaying);
+            }
         }
         
         function playFallbackTone(audioId) {
@@ -1210,54 +1612,62 @@
             // Update button appearance
             updateUnavailableButton(audioId);
             
-            // Initialize audio context if not already done
-            const context = initAudioContext();
-            
-            // Create oscillator and gain node
-            const oscillator = context.createOscillator();
-            const gainNode = context.createGain();
-            
-            // Different notes for different items
-            const frequencies = {
-                'audio-1': 261.63, // C4
-                'audio-2': 293.66, // D4
-                'audio-3': 329.63, // E4
-                'audio-4': 349.23, // F4
-                'audio-5': 392.00  // G4
-            };
-            
-            // Set the frequency and type
-            oscillator.type = 'sine';
-            oscillator.frequency.value = frequencies[audioId] || 440;
-            
-            // Connect and configure
-            oscillator.connect(gainNode);
-            gainNode.connect(context.destination);
-            
-            // Apply fade-in
-            gainNode.gain.setValueAtTime(0, context.currentTime);
-            gainNode.gain.linearRampToValueAtTime(0.3, context.currentTime + 0.01);
-            
-            // Start the oscillator
-            oscillator.start(0);
-            
-            // Update UI
-            updatePlayButtonState(audioId, true);
-            
-            // Also update the modal play button state if needed
-            updateModalPlayButtonState();
-            
-            // Store references
-            currentOscillator = oscillator;
-            currentGain = gainNode;
-            playingButtonId = audioId;
-            
-            // Auto-stop after 2 seconds
-            setTimeout(() => {
-                if (currentOscillator === oscillator) {
-                    stopCurrentSound(true);
+            try {
+                // Initialize audio context if not already done
+                const context = initAudioContext();
+                if (!context) {
+                    console.error("Could not create audio context");
+                    return;
                 }
-            }, 2000);
+                
+                // Create oscillator and gain node
+                const oscillator = context.createOscillator();
+                const gainNode = context.createGain();
+                
+                // Different notes for different items
+                const frequencies = {
+                    'audio-1': 261.63, // C4
+                    'audio-2': 293.66, // D4
+                    'audio-3': 329.63, // E4
+                    'audio-4': 349.23, // F4
+                    'audio-5': 392.00  // G4
+                };
+                
+                // Set the frequency and type
+                oscillator.type = 'sine';
+                oscillator.frequency.value = frequencies[audioId] || 440;
+                
+                // Connect and configure
+                oscillator.connect(gainNode);
+                gainNode.connect(context.destination);
+                
+                // Apply fade-in
+                gainNode.gain.setValueAtTime(0, context.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.3, context.currentTime + 0.01);
+                
+                // Start the oscillator
+                oscillator.start(0);
+                
+                // Update UI
+                updatePlayButtonState(audioId, true);
+                
+                // Also update the modal play button state if needed
+                updateModalPlayButtonState();
+                
+                // Store references
+                currentOscillator = oscillator;
+                currentGain = gainNode;
+                playingButtonId = audioId;
+                
+                // Auto-stop after 2 seconds
+                setTimeout(() => {
+                    if (currentOscillator === oscillator) {
+                        stopCurrentSound(true);
+                    }
+                }, 2000);
+            } catch (e) {
+                console.error("Error playing fallback tone:", e);
+            }
         }
         
         function updateUnavailableButton(audioId) {
@@ -1338,36 +1748,51 @@
         
         function stopCurrentSound(updateButton = true) {
             if (currentOscillator && currentGain) {
-                // Apply a fade-out
-                const now = audioContext.currentTime;
-                currentGain.gain.linearRampToValueAtTime(0, now + 0.1);
-                
-                // Schedule the oscillator to stop after the fade-out
-                setTimeout(() => {
-                    currentOscillator.stop();
+                try {
+                    // Apply a fade-out
+                    const now = audioContext.currentTime;
+                    currentGain.gain.linearRampToValueAtTime(0, now + 0.1);
+                    
+                    // Schedule the oscillator to stop after the fade-out
+                    setTimeout(() => {
+                        try {
+                            currentOscillator.stop();
+                        } catch (e) {
+                            console.error("Error stopping oscillator:", e);
+                        }
+                        currentOscillator = null;
+                        currentGain = null;
+                        
+                        // Reset button state if requested
+                        if (updateButton && playingButtonId) {
+                            updatePlayButtonState(playingButtonId, false);
+                            playingButtonId = null;
+                            
+                            // Also update the modal play button state
+                            updateModalPlayButtonState();
+                        }
+                    }, 100);
+                } catch (e) {
+                    console.error("Error stopping sound:", e);
                     currentOscillator = null;
                     currentGain = null;
-                    
-                    // Reset button state if requested
-                    if (updateButton && playingButtonId) {
-                        updatePlayButtonState(playingButtonId, false);
-                        playingButtonId = null;
-                        
-                        // Also update the modal play button state
-                        updateModalPlayButtonState();
-                    }
-                }, 100);
+                }
             }
         }
         
         function updatePlayButtonState(audioId, isPlaying) {
             const playButton = document.querySelector(`[data-audio-id="${audioId}"]`);
+            if (!playButton) return;
+            
             const equalizerElement = document.querySelector(`[data-equalizer-id="${audioId}"]`);
             const fixedStopButton = document.getElementById('fixedStopButton');
             
             if (isPlaying) {
                 // Change to pause icon (square)
-                playButton.querySelector('path').setAttribute('d', 'M9 9h6v6H9z');
+                const pathElement = playButton.querySelector('path');
+                if (pathElement) {
+                    pathElement.setAttribute('d', 'M9 9h6v6H9z');
+                }
                 
                 // Show equalizer animation when playing
                 if (equalizerElement) {
@@ -1380,7 +1805,10 @@
                 }
             } else {
                 // Change to play icon (triangle)
-                playButton.querySelector('path').setAttribute('d', 'M10 8l6 4-6 4V8z');
+                const pathElement = playButton.querySelector('path');
+                if (pathElement) {
+                    pathElement.setAttribute('d', 'M10 8l6 4-6 4V8z');
+                }
                 
                 // Hide equalizer animation when not playing
                 if (equalizerElement) {
@@ -1388,7 +1816,7 @@
                 }
                 
                 // Hide fixed stop button only if there's absolutely no audio playing
-                if (!currentAudio && !currentOscillator && !clavePlaying && !fixedStopButton.classList.contains('hidden')) {
+                if (!currentAudio && !currentOscillator && !clavePlaying && fixedStopButton && !fixedStopButton.classList.contains('hidden')) {
                     hideStopButton();
                 }
             }
@@ -1396,6 +1824,7 @@
         
         function showStopButton() {
             const fixedStopButton = document.getElementById('fixedStopButton');
+            if (!fixedStopButton) return;
             
             // Cancel any hiding that might be in progress
             fixedStopButton.dataset.hidingInProgress = "false";
@@ -1415,6 +1844,7 @@
         
         function hideStopButton() {
             const fixedStopButton = document.getElementById('fixedStopButton');
+            if (!fixedStopButton) return;
             
             // Mark that we're in the process of hiding (we'll use this to cancel if needed)
             fixedStopButton.dataset.hidingInProgress = "true";
@@ -1469,6 +1899,7 @@
             
             // Get the clave audio element
             const claveAudio = document.getElementById('claveAudio');
+            if (!claveAudio) return;
             
             try {
                 // Reset to beginning
@@ -1506,6 +1937,7 @@
         function stopClave() {
             // Get the clave audio element
             const claveAudio = document.getElementById('claveAudio');
+            if (!claveAudio) return;
             
             try {
                 // Pause and reset the audio
@@ -1534,20 +1966,294 @@
                     if (bpm === activeBPM) {
                         // Active button - add active styling
                         metronomeButton.classList.add('active-fill');
-                        
-                        // Remove hover classes that might conflict with active state
-                        metronomeButton.classList.remove('hover:bg-white', 'dark:hover:bg-gray-600');
                     } else {
                         // Inactive button - reset styling
                         metronomeButton.classList.remove('active-fill');
-                        
-                        // Ensure hover classes are present
-                        if (!metronomeButton.classList.contains('hover:bg-white')) {
-                            metronomeButton.classList.add('hover:bg-white', 'dark:hover:bg-gray-600');
-                        }
                     }
                 }
             });
+        }
+        
+        /********************************
+         * ALPHABET SCROLL FUNCTIONALITY
+         ********************************/
+        // Handle touch start event
+        function handleTouchStart(e) {
+            // Store the starting Y position
+            touchStartY = e.touches[0].clientY;
+            
+            // Start a timer for long press
+            longPressTimer = setTimeout(() => {
+                // Cancel the scroll behavior if we're activating alpha scroll
+                if (longPressTimer) {
+                    // Switch to non-passive event listener for the touchmove events
+                    const itemList = document.getElementById('itemList');
+                    if (itemList) {
+                        itemList.removeEventListener('touchmove', handleTouchMove, { passive: true });
+                        itemList.addEventListener('touchmove', handleTouchMove, { passive: false });
+                    }
+                    
+                    activateAlphaScroll(touchStartY);
+                }
+            }, 300); // 300ms for long press
+        }
+        
+        // Handle touch move event
+        function handleTouchMove(e) {
+            if (!alphaScrollActive) {
+                // If we've moved significantly before the long press triggers, cancel it
+                if (Math.abs(e.touches[0].clientY - touchStartY) > 10) {
+                    clearTimeout(longPressTimer);
+                    longPressTimer = null;
+                }
+                return;
+            }
+            
+            // Prevent default scrolling only during alpha scroll
+            e.preventDefault();
+            
+            // Update the letter based on touch position
+            updateLetterFromPosition(e.touches[0].clientY);
+        }
+        
+        // Handle touch end event
+        function handleTouchEnd() {
+            // Reset the touch move event listener to passive
+            const itemList = document.getElementById('itemList');
+            if (itemList) {
+                itemList.removeEventListener('touchmove', handleTouchMove, { passive: false });
+                itemList.addEventListener('touchmove', handleTouchMove, { passive: true });
+            }
+            
+            clearTimeout(longPressTimer);
+            longPressTimer = null;
+            deactivateAlphaScroll();
+        }
+        
+        // Handle mouse down event (for desktop testing)
+        function handleMouseDown(e) {
+            // Store the starting Y position
+            touchStartY = e.clientY;
+            
+            // Start a timer for long press
+            longPressTimer = setTimeout(() => {
+                activateAlphaScroll(touchStartY);
+            }, 300); // 300ms for long press
+        }
+        
+        // Handle mouse move event
+        function handleMouseMove(e) {
+            if (!alphaScrollActive) {
+                // If we've moved significantly before the long press triggers, cancel it
+                if (longPressTimer && Math.abs(e.clientY - touchStartY) > 10) {
+                    clearTimeout(longPressTimer);
+                    longPressTimer = null;
+                }
+                return;
+            }
+            
+            // Prevent default scrolling only during alpha scroll
+            e.preventDefault();
+            
+            // Update the letter based on mouse position
+            updateLetterFromPosition(e.clientY);
+        }
+        
+        // Handle mouse up event
+        function handleMouseUp() {
+            clearTimeout(longPressTimer);
+            longPressTimer = null;
+            deactivateAlphaScroll();
+        }
+        
+        // Activate the alphabetical scrolling
+        function activateAlphaScroll(yPos) {
+            // Skip if no letters available
+            if (availableLetters.length === 0) return;
+            
+            alphaScrollActive = true;
+            
+            // Show the letter overlay
+            const letterOverlay = document.getElementById('letterOverlay');
+            if (letterOverlay) {
+                letterOverlay.classList.add('active');
+            }
+            
+            // Show the scroll indicator
+            const scrollIndicator = document.getElementById('scrollIndicator');
+            if (scrollIndicator) {
+                scrollIndicator.style.opacity = '1';
+            }
+            
+            // Show the initial letter based on what's actually visible in the viewport
+            // This gives a better starting point for the alphabet scroll
+            showCurrentlyVisibleLetter(yPos);
+            
+            // This function determines what letter is currently visible in the viewport
+            // and shows that letter in the indicator without scrolling
+            function showCurrentlyVisibleLetter(yPos) {
+                if (availableLetters.length === 0) return;
+                
+                // Get the viewport's middle position
+                const viewportMiddle = window.scrollY + (window.innerHeight / 2);
+                
+                // Find the letter marker that's closest to the middle of the viewport
+                let closestLetter = availableLetters[0];
+                let closestDistance = Infinity;
+                
+                // Check each letter's position relative to the viewport middle
+                for (const letter of availableLetters) {
+                    const letterPosition = letterPositions.get(letter) || 0;
+                    const distance = Math.abs(letterPosition - viewportMiddle);
+                    
+                    // Update closest if this letter is closer to the middle
+                    if (distance < closestDistance) {
+                        closestDistance = distance;
+                        closestLetter = letter;
+                    }
+                }
+                
+                // Get the index of the closest letter
+                currentLetterIndex = availableLetters.indexOf(closestLetter);
+                
+                // Update the displayed letter
+                const currentLetterElement = document.getElementById('currentLetter');
+                if (currentLetterElement) {
+                    currentLetterElement.textContent = closestLetter;
+                }
+                
+                // Initialize the position of the scroll indicator based on the current finger position
+                const viewportHeight = window.innerHeight;
+                const safeArea = viewportHeight * 0.8; // 80% of viewport height
+                const topOffset = viewportHeight * 0.1; // 10% from top
+                
+                // Calculate the relative position based on the finger position
+                let relativePos = (yPos - topOffset) / safeArea;
+                relativePos = Math.max(0, Math.min(relativePos, 1));
+                
+                // Update the scroll indicator position based on finger position
+                const scrollIndicator = document.getElementById('scrollIndicator');
+                if (scrollIndicator) {
+                    const indicatorPos = topOffset + (safeArea * relativePos);
+                    scrollIndicator.style.top = `${indicatorPos}px`;
+                }
+                
+                // Do NOT scroll the page here - just identify the closest letter and show indicator
+                // This ensures we stay at the current scroll position until the user intentionally moves
+            }
+        }
+        
+        // Deactivate the alphabetical scrolling
+        function deactivateAlphaScroll() {
+            alphaScrollActive = false;
+            
+            // Hide the letter overlay
+            const letterOverlay = document.getElementById('letterOverlay');
+            if (letterOverlay) {
+                letterOverlay.classList.remove('active');
+            }
+            
+            // Hide the scroll indicator
+            const scrollIndicator = document.getElementById('scrollIndicator');
+            if (scrollIndicator) {
+                scrollIndicator.style.opacity = '0';
+            }
+        }
+        
+        // State to track finger movement
+        let previousFingerY = 0;
+        let lastMovementDirection = 0; // 0: no movement, -1: up, 1: down
+        let movementThreshold = 30; // Increased threshold for less sensitivity (was 10)
+        let movementAccumulator = 0; // Accumulates movement until threshold is reached
+        
+        // Update the current letter based on Y position
+        function updateLetterFromPosition(yPos) {
+            if (!alphaScrollActive || availableLetters.length === 0) return;
+            
+            // Calculate the relative position in the viewport (for indicator position only)
+            const viewportHeight = window.innerHeight;
+            const safeArea = viewportHeight * 0.8; // 80% of viewport height
+            const topOffset = viewportHeight * 0.1; // 10% from top
+            
+            // Normalize the position for indicator only - this is just for visual feedback
+            let relativePos = (yPos - topOffset) / safeArea;
+            relativePos = Math.max(0, Math.min(relativePos, 1));
+            
+            // Calculate letter position based on finger position
+            // We're mapping the full alphabet to the safe area height
+            let directIndex = Math.floor((1 - relativePos) * availableLetters.length);
+            directIndex = Math.max(0, Math.min(directIndex, availableLetters.length - 1));
+            
+            // Update the scroll indicator position to follow finger
+            const scrollIndicator = document.getElementById('scrollIndicator');
+            if (scrollIndicator) {
+                const indicatorPos = topOffset + (safeArea * relativePos);
+                scrollIndicator.style.top = `${indicatorPos}px`;
+            }
+            
+            // Determine movement direction
+            const currentDirection = previousFingerY === 0 ? 0 : (yPos < previousFingerY ? -1 : (yPos > previousFingerY ? 1 : 0));
+            
+            // If direction changed, reset accumulator
+            if (currentDirection !== 0 && currentDirection !== lastMovementDirection) {
+                movementAccumulator = 0;
+                lastMovementDirection = currentDirection;
+            }
+            
+            // Accumulate movement in the same direction
+            if (previousFingerY !== 0) {
+                movementAccumulator += Math.abs(yPos - previousFingerY);
+            }
+            
+            // Save current position for next comparison
+            previousFingerY = yPos;
+            
+            // Only change letter if we've moved enough OR if directly tapping on a letter region
+            const shouldChangeLetter = movementAccumulator >= movementThreshold || 
+                                     (previousFingerY === 0 && directIndex !== currentLetterIndex);
+            
+            if (shouldChangeLetter) {
+                // Reset the accumulator
+                movementAccumulator = 0;
+                
+                // Use either incremental movement or direct position, depending on context
+                let newIndex;
+                
+                if (previousFingerY === 0) {
+                    // Initial tap - use direct index calculation
+                    newIndex = directIndex;
+                } else {
+                    // Continuous movement - use incremental change based on direction
+                    newIndex = currentLetterIndex;
+                    
+                    if (currentDirection === -1 && currentLetterIndex < availableLetters.length - 1) {
+                        // Moving up - go to next letter in alphabet (inverted scroll)
+                        newIndex = currentLetterIndex + 1;
+                    } else if (currentDirection === 1 && currentLetterIndex > 0) {
+                        // Moving down - go to previous letter in alphabet (inverted scroll)
+                        newIndex = currentLetterIndex - 1;
+                    }
+                }
+                
+                // Update if the letter has changed
+                if (newIndex !== currentLetterIndex) {
+                    currentLetterIndex = newIndex;
+                    const letter = availableLetters[currentLetterIndex];
+                    
+                    // Update the displayed letter
+                    const currentLetterElement = document.getElementById('currentLetter');
+                    if (currentLetterElement) {
+                        currentLetterElement.textContent = letter;
+                    }
+                    
+                    // Scroll to the letter's position with smooth behavior
+                    const scrollPosition = letterPositions.get(letter) || 0;
+                    window.scrollTo({
+                        top: scrollPosition - 60, // Adjust for header height
+                        behavior: 'smooth' // Use smooth scrolling for better visual experience
+                    });
+                }
+            }
         }
         
         /********************************
