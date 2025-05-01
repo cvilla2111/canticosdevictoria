@@ -276,19 +276,6 @@
             pointer-events: auto;
         }
         
-        /* Letter marker - make this visible for debugging */
-        .letter-marker {
-            position: relative;
-            background-color: rgba(93, 92, 222, 0.7);
-            color: white;
-            text-align: center;
-            padding: 8px;
-            margin-top: 5px;
-            font-weight: bold;
-            font-size: 18px;
-            border-radius: 4px 4px 0 0;
-        }
-        
         /* Scroll indicator dot */
         .scroll-indicator {
             position: fixed;
@@ -808,7 +795,7 @@
          ********************************/
         function handleSearch() {
             const searchTerm = normalizeText(this.value);
-            const listItems = document.querySelectorAll('#itemList li:not(.letter-marker)');
+            const listItems = document.querySelectorAll('#itemList li');
             const noResults = document.getElementById('noResults');
             let visibleCount = 0;
             
@@ -823,26 +810,15 @@
                 listItems.forEach(item => item.classList.remove('hidden'));
                 noResults.classList.add('hidden');
                 
-                // Get all available letters in the original list
-                document.querySelectorAll('.letter-marker').forEach(marker => {
-                    const letter = marker.dataset.letter;
-                    if (letter) {
-                        lettersWithVisibleItems.add(letter);
-                        marker.classList.remove('hidden');
-                    }
-                });
-                
                 // Update the letter positions after showing all items
                 buildLetterIndex();
             } else {
-                // First, hide all letter markers
-                document.querySelectorAll('.letter-marker').forEach(marker => {
-                    marker.classList.add('hidden');
-                });
-                
-                // Then filter items based on normalized search term
+                // Filter items based on normalized search term
                 listItems.forEach(item => {
-                    const title = normalizeText(item.querySelector('span').textContent);
+                    const titleSpan = item.querySelector('span');
+                    if (!titleSpan) return;
+                    
+                    const title = normalizeText(titleSpan.textContent);
                     const letter = title.trim()[0].toUpperCase();
                     
                     // If normalized item title contains search term, show it, otherwise hide it
@@ -850,13 +826,9 @@
                         item.classList.remove('hidden');
                         visibleCount++;
                         
-                        // Track which letter has visible items and unhide its marker
+                        // Track which letter has visible items
                         if (letter) {
                             lettersWithVisibleItems.add(letter);
-                            const marker = document.getElementById(`letter-${letter}`);
-                            if (marker) {
-                                marker.classList.remove('hidden');
-                            }
                         }
                     } else {
                         item.classList.add('hidden');
@@ -897,13 +869,9 @@
             
             searchInput.value = '';
             
-            // Show all items and letter markers
+            // Show all items
             document.querySelectorAll('#itemList li').forEach(item => {
                 item.classList.remove('hidden');
-            });
-            
-            document.querySelectorAll('.letter-marker').forEach(marker => {
-                marker.classList.remove('hidden');
             });
             
             // Hide no results message
@@ -911,18 +879,6 @@
             
             // Update icons
             toggleSearchIcons('');
-            
-            // Get all available letters for the alphabetic scroll
-            const allLetters = new Set();
-            document.querySelectorAll('.letter-marker').forEach(marker => {
-                const letter = marker.dataset.letter;
-                if (letter) {
-                    allLetters.add(letter);
-                }
-            });
-            
-            // Update available letters
-            availableLetters = Array.from(allLetters).sort();
             
             // Update letter positions after showing all items
             buildLetterIndex();
@@ -1079,20 +1035,21 @@
             availableLetters.forEach(letter => {
                 const items = groupedItems[letter];
                 
-                // Create an EMPTY marker for this letter - completely invisible
-                const marker = document.createElement('span'); // Use span instead of div
-                marker.id = `letter-${letter}`;
-                marker.setAttribute('style', 'display:none; height:0; width:0; opacity:0; visibility:hidden; overflow:hidden; position:absolute;');
-                marker.dataset.letter = letter;
-                // No text content
-                itemList.appendChild(marker);
-                
                 // Add items for this letter
                 items.forEach((item, index) => {
                     const itemId = `audio-${letter}-${index}`;
                     
                     const listItem = document.createElement('li');
-                    listItem.className = 'py-3 px-2 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors';
+                    
+                    // First item of each letter group: add data attribute for scrolling
+                    if (index === 0) {
+                        listItem.dataset.letterSection = letter;
+                        // Add a small top padding to first items to visually separate letter groups
+                        listItem.className = 'py-3 pt-5 px-2 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors relative';
+                    } else {
+                        listItem.className = 'py-3 px-2 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors';
+                    }
+                    
                     listItem.onclick = function() {
                         if (!alphaScrollActive) { // Only open modal if not in alpha scroll mode
                             openModal(item.title, item.content, itemId);
@@ -1147,35 +1104,71 @@
         function buildLetterIndex() {
             letterSections = [];
             
-            // Get all letter markers
-            const markers = document.querySelectorAll('.letter-marker');
+            // Get all items with a letter section data attribute
+            const items = document.querySelectorAll('#itemList li[data-letter-section]');
+            const processedLetters = new Set();
             
-            // Process each marker
-            markers.forEach(marker => {
-                if (marker.classList.contains('hidden')) return;
+            // If no items with data-letter-section, build from all visible items
+            if (items.length === 0) {
+                // Get all visible list items
+                const allItems = document.querySelectorAll('#itemList li');
                 
-                const letter = marker.dataset.letter;
-                if (!letter) return;
-                
-                // Get position information
-                const rect = marker.getBoundingClientRect();
-                const position = rect.top + window.scrollY;
-                
-                // Store the letter section
-                letterSections.push({
-                    letter: letter,
-                    position: position,
-                    element: marker
+                // Process each list item to find the first of each letter
+                allItems.forEach(item => {
+                    if (item.classList.contains('hidden')) return;
+                    
+                    // Get the item's title span
+                    const titleSpan = item.querySelector('span');
+                    if (!titleSpan || !titleSpan.textContent.trim() === '') return;
+                    
+                    // Get the first letter of the title
+                    const title = titleSpan.textContent.trim();
+                    const letter = title.charAt(0).toUpperCase();
+                    
+                    // Only process each letter once (first occurrence)
+                    if (!processedLetters.has(letter)) {
+                        processedLetters.add(letter);
+                        
+                        // Get the position of this item
+                        const rect = item.getBoundingClientRect();
+                        const position = rect.top + window.scrollY;
+                        
+                        // Add this letter to the sections
+                        letterSections.push({
+                            letter: letter,
+                            position: position,
+                            element: item
+                        });
+                    }
                 });
-            });
+            } else {
+                // We have items with data-letter-section attributes
+                items.forEach(item => {
+                    if (item.classList.contains('hidden')) return;
+                    
+                    const letter = item.dataset.letterSection;
+                    if (!letter) return;
+                    
+                    // Get position
+                    const rect = item.getBoundingClientRect();
+                    const position = rect.top + window.scrollY;
+                    
+                    // Add to sections
+                    letterSections.push({
+                        letter: letter,
+                        position: position,
+                        element: item
+                    });
+                });
+            }
             
-            // Sort sections by position (top to bottom)
+            // Sort sections by position
             letterSections.sort((a, b) => a.position - b.position);
             
-            // Update available letters from visible sections
+            // Update available letters
             availableLetters = letterSections.map(section => section.letter);
             
-            debugLog(`Built letter index with ${letterSections.length} sections`);
+            debugLog(`Built letter index with ${letterSections.length} letters`);
         }
         
         function checkAudioFileExists(audioPath, audioId) {
@@ -2042,7 +2035,9 @@
             longPressTimer = setTimeout(() => {
                 // Cancel the scroll behavior if we're activating alpha scroll
                 if (longPressTimer) {
-                    // Update letter positions before activating scroll
+                    debugLog("Long press detected, activating alpha scroll");
+                    
+                    // First build the letter index from list items
                     buildLetterIndex();
                     
                     // Switch to non-passive event listener
@@ -2096,7 +2091,7 @@
             
             // Start a timer for long press
             longPressTimer = setTimeout(() => {
-                // Update letter positions before activating scroll
+                // Build letter index before activating
                 buildLetterIndex();
                 
                 activateAlphaScroll(touchStartY);
@@ -2155,8 +2150,7 @@
                 scrollIndicator.style.opacity = '1';
                 
                 // Position the scroll indicator
-                const position = calculatePositionFromIndex(currentLetterIndex);
-                scrollIndicator.style.top = `${position}px`;
+                scrollIndicator.style.top = `${yPos}px`;
             }
             
             // Update the displayed letter
@@ -2211,13 +2205,11 @@
         function handleAlphaScroll(yPos) {
             if (!alphaScrollActive || letterSections.length === 0) return;
             
-            // Calculate the relative position (0 to 1) based on screen height
+            // Calculate the letter index based on screen position
             const viewportHeight = window.innerHeight;
             const relativePos = Math.max(0, Math.min(1, yPos / viewportHeight));
-            
-            // Map position to letter index (0 to letters.length-1)
-            const rawIndex = relativePos * (letterSections.length - 1);
-            const newIndex = Math.round(rawIndex);
+            const letterIndex = Math.floor(relativePos * letterSections.length);
+            const boundedIndex = Math.max(0, Math.min(letterSections.length - 1, letterIndex));
             
             // Update scroll indicator position
             const scrollIndicator = document.getElementById('scrollIndicator');
@@ -2226,8 +2218,8 @@
             }
             
             // Only update if the letter changed
-            if (newIndex !== currentLetterIndex && newIndex >= 0 && newIndex < letterSections.length) {
-                currentLetterIndex = newIndex;
+            if (boundedIndex !== currentLetterIndex) {
+                currentLetterIndex = boundedIndex;
                 const letter = availableLetters[currentLetterIndex];
                 
                 // Update letter display
@@ -2236,9 +2228,10 @@
                     currentLetterElement.textContent = letter;
                 }
                 
-                // Scroll to this letter
+                // Scroll to this letter section
                 const section = letterSections[currentLetterIndex];
                 if (section && section.element) {
+                    // Scroll directly to the letter position
                     window.scrollTo({
                         top: section.position - 60, // Adjust for header
                         behavior: 'auto'
@@ -2247,13 +2240,6 @@
                     debugLog(`Scrolled to: ${letter} (index ${currentLetterIndex}, position ${section.position})`);
                 }
             }
-        }
-        
-        // Calculate Y position from letter index
-        function calculatePositionFromIndex(index) {
-            const viewportHeight = window.innerHeight;
-            const position = (index / (letterSections.length - 1)) * viewportHeight;
-            return position;
         }
         
         /********************************
