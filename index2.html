@@ -321,7 +321,7 @@
         <!-- Main Content Area -->
         <div>
             <!-- App Header -->
-            <h1 class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-0 text-gray-800 dark:text-gray-200 text-center font-headings">Cánticos de Victoria</h1>
+            <h1 class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-0 text-gray-800 dark:text-gray-200 text-center font-headings">Cánticos de Victoria@</h1>
             <p id="subtitle" class="mb-2 text-sm md:text-base lg:text-lg xl:text-xl text-gray-600 dark:text-gray-400 text-center">Una colección de coritos</p>
             
             <!-- Search Bar -->
@@ -518,7 +518,10 @@
         let alphaScrollActive = false;
         let longPressTimer = null;
         let touchStartY = 0;
+        let initialScrollPosition = 0; // Store initial scroll position
+        let initialLetterIndex = 0;    // Store initial letter index
         let currentLetterIndex = 0;
+        let fingerHasMoved = false;    // Track if the finger has moved after long press
         let availableLetters = [];
         let letterSections = []; // Store letter sections with their positions
         
@@ -2031,6 +2034,9 @@
             // Store the starting Y position
             touchStartY = e.touches[0].clientY;
             
+            // Store the current scroll position
+            initialScrollPosition = window.scrollY;
+            
             // Start a timer for long press
             longPressTimer = setTimeout(() => {
                 // Cancel the scroll behavior if we're activating alpha scroll
@@ -2039,6 +2045,13 @@
                     
                     // First build the letter index from list items
                     buildLetterIndex();
+                    
+                    // Get the current letter index based on visible content
+                    initialLetterIndex = findCurrentLetterIndex();
+                    currentLetterIndex = initialLetterIndex;
+                    
+                    // Reset the finger moved flag
+                    fingerHasMoved = false;
                     
                     // Switch to non-passive event listener
                     const itemList = document.getElementById('itemList');
@@ -2066,8 +2079,16 @@
             // Prevent default scrolling only during alpha scroll
             e.preventDefault();
             
-            // Update the letter based on touch position
-            handleAlphaScroll(e.touches[0].clientY);
+            // If finger has moved significantly from start position, mark as moved
+            if (Math.abs(e.touches[0].clientY - touchStartY) > 10) {
+                fingerHasMoved = true;
+            }
+            
+            // Only process alphabetical scrolling if the finger has moved
+            if (fingerHasMoved) {
+                // Update the letter based on touch position
+                handleAlphaScroll(e.touches[0].clientY);
+            }
         }
         
         // Handle touch end event
@@ -2082,6 +2103,9 @@
             clearTimeout(longPressTimer);
             longPressTimer = null;
             deactivateAlphaScroll();
+            
+            // Reset the finger moved flag
+            fingerHasMoved = false;
         }
         
         // Handle mouse down event (for desktop testing)
@@ -2089,10 +2113,20 @@
             // Store the starting Y position
             touchStartY = e.clientY;
             
+            // Store the current scroll position
+            initialScrollPosition = window.scrollY;
+            
             // Start a timer for long press
             longPressTimer = setTimeout(() => {
                 // Build letter index before activating
                 buildLetterIndex();
+                
+                // Get the current letter index based on visible content
+                initialLetterIndex = findCurrentLetterIndex();
+                currentLetterIndex = initialLetterIndex;
+                
+                // Reset the finger moved flag
+                fingerHasMoved = false;
                 
                 activateAlphaScroll(touchStartY);
             }, 300); // 300ms for long press
@@ -2112,8 +2146,16 @@
             // Prevent default scrolling only during alpha scroll
             e.preventDefault();
             
-            // Update the letter based on mouse position
-            handleAlphaScroll(e.clientY);
+            // If mouse has moved significantly from start position, mark as moved
+            if (Math.abs(e.clientY - touchStartY) > 10) {
+                fingerHasMoved = true;
+            }
+            
+            // Only process alphabetical scrolling if the mouse has moved
+            if (fingerHasMoved) {
+                // Update the letter based on mouse position
+                handleAlphaScroll(e.clientY);
+            }
         }
         
         // Handle mouse up event
@@ -2121,6 +2163,9 @@
             clearTimeout(longPressTimer);
             longPressTimer = null;
             deactivateAlphaScroll();
+            
+            // Reset the finger moved flag
+            fingerHasMoved = false;
         }
         
         // Activate the alphabetical scrolling
@@ -2133,10 +2178,6 @@
             
             alphaScrollActive = true;
             debugLog("Alpha scroll activated");
-            
-            // Get the letter that's most visible in the viewport
-            currentLetterIndex = findCurrentLetterIndex();
-            debugLog(`Initial letter: ${availableLetters[currentLetterIndex]} (index ${currentLetterIndex})`);
             
             // Show the letter overlay
             const letterOverlay = document.getElementById('letterOverlay');
@@ -2205,21 +2246,32 @@
         function handleAlphaScroll(yPos) {
             if (!alphaScrollActive || letterSections.length === 0) return;
             
-            // Calculate the letter index based on screen position
-            const viewportHeight = window.innerHeight;
-            const relativePos = Math.max(0, Math.min(1, yPos / viewportHeight));
-            const letterIndex = Math.floor(relativePos * letterSections.length);
-            const boundedIndex = Math.max(0, Math.min(letterSections.length - 1, letterIndex));
-            
             // Update scroll indicator position
             const scrollIndicator = document.getElementById('scrollIndicator');
             if (scrollIndicator) {
                 scrollIndicator.style.top = `${yPos}px`;
             }
             
+            // If finger hasn't moved enough, don't change the letter
+            if (!fingerHasMoved) return;
+            
+            // Calculate how far the finger has moved from its starting position
+            const fingerMovement = yPos - touchStartY;
+            
+            // Map this movement to a letter index change
+            // Use a relative approach: movement determines how many letters to move from initial
+            const movementScaleFactor = 20; // Pixels per letter (adjust as needed)
+            const letterIndexChange = Math.round(fingerMovement / movementScaleFactor);
+            
+            // Calculate the new letter index relative to the initial one
+            let newIndex = initialLetterIndex + letterIndexChange;
+            
+            // Bound the index to valid range
+            newIndex = Math.max(0, Math.min(letterSections.length - 1, newIndex));
+            
             // Only update if the letter changed
-            if (boundedIndex !== currentLetterIndex) {
-                currentLetterIndex = boundedIndex;
+            if (newIndex !== currentLetterIndex) {
+                currentLetterIndex = newIndex;
                 const letter = availableLetters[currentLetterIndex];
                 
                 // Update letter display
