@@ -321,7 +321,7 @@
         <!-- Main Content Area -->
         <div>
             <!-- App Header -->
-            <h1 class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-0 text-gray-800 dark:text-gray-200 text-center font-headings">Cánticos de Victoria@</h1>
+            <h1 class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-0 text-gray-800 dark:text-gray-200 text-center font-headings">Cánticos de Victoria</h1>
             <p id="subtitle" class="mb-2 text-sm md:text-base lg:text-lg xl:text-xl text-gray-600 dark:text-gray-400 text-center">Una colección de coritos</p>
             
             <!-- Search Bar -->
@@ -524,6 +524,8 @@
         let fingerHasMoved = false;    // Track if the finger has moved after long press
         let availableLetters = [];
         let letterSections = []; // Store letter sections with their positions
+        let scrollTimer = null;  // Timer for debouncing scroll actions
+        let isScrolling = false; // Track if a scroll is in progress
         
         // Debugging
         let debugMode = false;
@@ -2240,6 +2242,13 @@
             if (scrollIndicator) {
                 scrollIndicator.style.opacity = '0';
             }
+            
+            // Cancel any pending scroll operations
+            if (scrollTimer) {
+                clearTimeout(scrollTimer);
+                scrollTimer = null;
+            }
+            isScrolling = false;
         }
         
         // Handle alphabetical scrolling
@@ -2274,24 +2283,54 @@
                 currentLetterIndex = newIndex;
                 const letter = availableLetters[currentLetterIndex];
                 
-                // Update letter display
+                // Update letter display immediately
                 const currentLetterElement = document.getElementById('currentLetter');
                 if (currentLetterElement) {
                     currentLetterElement.textContent = letter;
                 }
                 
-                // Scroll to this letter section
-                const section = letterSections[currentLetterIndex];
-                if (section && section.element) {
-                    // Scroll directly to the letter position
-                    window.scrollTo({
-                        top: section.position - 60, // Adjust for header
-                        behavior: 'auto'
-                    });
-                    
-                    debugLog(`Scrolled to: ${letter} (index ${currentLetterIndex}, position ${section.position})`);
+                // Debounce the scroll operation to prevent too many scrolls
+                if (scrollTimer) {
+                    clearTimeout(scrollTimer);
+                }
+                
+                // If we're already scrolling, wait for the current scroll to finish
+                if (!isScrolling) {
+                    scrollToLetter(letter);
+                } else {
+                    // Queue up the next scroll after a short delay
+                    scrollTimer = setTimeout(() => {
+                        scrollToLetter(letter);
+                    }, 100);
                 }
             }
+        }
+        
+        // Smoothly scroll to the section for a given letter
+        function scrollToLetter(letter) {
+            // Find the section for this letter
+            const section = letterSections.find(s => s.letter === letter);
+            if (!section || !section.element) return;
+            
+            // Mark that we're currently scrolling
+            isScrolling = true;
+            
+            // Calculate the position to scroll to (with adjustment for header)
+            const targetPosition = section.position - 60;
+            
+            // Perform the smooth scroll
+            window.scrollTo({
+                top: targetPosition,
+                behavior: 'smooth'
+            });
+            
+            debugLog(`Smoothly scrolling to: ${letter} (position ${targetPosition})`);
+            
+            // Reset scrolling state after animation completes (approx 300ms)
+            scrollTimer = setTimeout(() => {
+                isScrolling = false;
+                scrollTimer = null;
+            }, 300);
         }
         
         /********************************
