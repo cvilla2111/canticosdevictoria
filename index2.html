@@ -322,7 +322,7 @@
         <div>
             <!-- App Header -->
             <h1 class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-0 text-gray-800 dark:text-gray-200 text-center font-headings">Cánticos de Victoria</h1>
-            <p id="subtitle" class="mb-2 text-sm md:text-base lg:text-lg xl:text-xl text-gray-600 dark:text-gray-400 text-center">Una colección de coritos</p>
+            <p id="subtitle" class="mb-4 text-sm md:text-base lg:text-lg xl:text-xl text-gray-600 dark:text-gray-400 text-center">Una colección de coritos</p>
             
             <!-- Search Bar -->
             <div id="searchBarContainer" class="sticky top-0 z-10 bg-white dark:bg-gray-900 pt-2 pb-1 mb-4 transition-shadow duration-300">
@@ -2033,6 +2033,11 @@
          ********************************/
         // Handle touch start event
         function handleTouchStart(e) {
+            // Only enable alpha scroll in fullscreen mode
+            if (!isFullScreen) {
+                return;
+            }
+            
             // Store the starting Y position
             touchStartY = e.touches[0].clientY;
             
@@ -2112,6 +2117,11 @@
         
         // Handle mouse down event (for desktop testing)
         function handleMouseDown(e) {
+            // Only enable alpha scroll in fullscreen mode
+            if (!isFullScreen) {
+                return;
+            }
+            
             // Store the starting Y position
             touchStartY = e.clientY;
             
