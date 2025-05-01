@@ -334,7 +334,7 @@
         <!-- Main Content Area -->
         <div>
             <!-- App Header -->
-            <h1 class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-0 text-gray-800 dark:text-gray-200 text-center font-headings">Cánticos de Victoria@</h1>
+            <h1 class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-0 text-gray-800 dark:text-gray-200 text-center font-headings">Cánticos de Victoria</h1>
             <p id="subtitle" class="mb-2 text-sm md:text-base lg:text-lg xl:text-xl text-gray-600 dark:text-gray-400 text-center">Una colección de coritos</p>
             
             <!-- Search Bar -->
@@ -2204,44 +2204,12 @@
             const scrollIndicator = document.getElementById('scrollIndicator');
             if (scrollIndicator) {
                 scrollIndicator.style.opacity = '0';
-                scrollIndicator.style.transform = 'scale(1)';
-                scrollIndicator.style.backgroundColor = 'rgba(93, 92, 222, 0.8)';
             }
-            
-            // Hide neutral zone indicator
-            const neutralZoneIndicator = document.getElementById('neutralZoneIndicator');
-            if (neutralZoneIndicator) {
-                neutralZoneIndicator.style.opacity = '0';
-            }
-            
-            // Reset letter indicator style
-            const letterIndicator = document.querySelector('.letter-indicator');
-            if (letterIndicator) {
-                letterIndicator.style.transform = 'scale(1)';
-                letterIndicator.style.backgroundColor = 'rgba(93, 92, 222, 0.9)';
-            }
-            
-            // Reset speed tracking variables
-            previousFingerY = 0;
-            previousTime = 0;
-            fingerVelocity = 0;
-            currentSpeed = 1;
-            
-            // Reset initial touch position
-            initialTouchY = null;
         }
         
         // Handle alphabetical scrolling
         function handleAlphaScroll(yPos) {
             if (!alphaScrollActive || letterSections.length === 0) return;
-            
-            // Calculate the relative position (0 to 1) based on screen height
-            const viewportHeight = window.innerHeight;
-            const relativePos = Math.max(0, Math.min(1, yPos / viewportHeight));
-            
-            // Map position to letter index (0 to letters.length-1)
-            const rawIndex = relativePos * (letterSections.length - 1);
-            const newIndex = Math.round(rawIndex);
             
             // Update scroll indicator position
             const scrollIndicator = document.getElementById('scrollIndicator');
@@ -2249,26 +2217,35 @@
                 scrollIndicator.style.top = `${yPos}px`;
             }
             
-            // Only update if the letter changed
-            if (newIndex !== currentLetterIndex && newIndex >= 0 && newIndex < letterSections.length) {
-                currentLetterIndex = newIndex;
+            // Calculate the letter index based on the finger position
+            const viewportHeight = window.innerHeight;
+            const screenPercentage = yPos / viewportHeight;
+            const letterIndex = Math.floor(screenPercentage * letterSections.length);
+            const boundedIndex = Math.max(0, Math.min(letterSections.length - 1, letterIndex));
+            
+            // Only update if we've moved to a different letter
+            if (boundedIndex !== currentLetterIndex) {
+                currentLetterIndex = boundedIndex;
+                
+                // Get the new letter
                 const letter = availableLetters[currentLetterIndex];
                 
-                // Update letter display
+                // Update the letter display
                 const currentLetterElement = document.getElementById('currentLetter');
                 if (currentLetterElement) {
                     currentLetterElement.textContent = letter;
                 }
                 
-                // Scroll to this letter
+                // Get the letter section and scroll to it
                 const section = letterSections[currentLetterIndex];
-                if (section && section.element) {
+                if (section) {
+                    // Scroll directly to the letter position
                     window.scrollTo({
                         top: section.position - 60, // Adjust for header
-                        behavior: 'auto'
+                        behavior: 'auto', // Instant scroll
                     });
                     
-                    debugLog(`Scrolled to: ${letter} (index ${currentLetterIndex}, position ${section.position})`);
+                    debugLog(`Scrolled to: ${letter} (index ${currentLetterIndex})`);
                 }
             }
         }
