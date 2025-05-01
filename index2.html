@@ -1079,12 +1079,12 @@
             availableLetters.forEach(letter => {
                 const items = groupedItems[letter];
                 
-                // Create a visible marker for this letter
-                const marker = document.createElement('div');
+                // Create an EMPTY marker for this letter - completely invisible
+                const marker = document.createElement('span'); // Use span instead of div
                 marker.id = `letter-${letter}`;
-                marker.className = 'letter-marker';
+                marker.setAttribute('style', 'display:none; height:0; width:0; opacity:0; visibility:hidden; overflow:hidden; position:absolute;');
                 marker.dataset.letter = letter;
-                marker.textContent = letter;
+                // No text content
                 itemList.appendChild(marker);
                 
                 // Add items for this letter
@@ -2211,41 +2211,40 @@
         function handleAlphaScroll(yPos) {
             if (!alphaScrollActive || letterSections.length === 0) return;
             
+            // Calculate the relative position (0 to 1) based on screen height
+            const viewportHeight = window.innerHeight;
+            const relativePos = Math.max(0, Math.min(1, yPos / viewportHeight));
+            
+            // Map position to letter index (0 to letters.length-1)
+            const rawIndex = relativePos * (letterSections.length - 1);
+            const newIndex = Math.round(rawIndex);
+            
             // Update scroll indicator position
             const scrollIndicator = document.getElementById('scrollIndicator');
             if (scrollIndicator) {
                 scrollIndicator.style.top = `${yPos}px`;
             }
             
-            // Calculate the letter index based on the finger position
-            const viewportHeight = window.innerHeight;
-            const screenPercentage = yPos / viewportHeight;
-            const letterIndex = Math.floor(screenPercentage * letterSections.length);
-            const boundedIndex = Math.max(0, Math.min(letterSections.length - 1, letterIndex));
-            
-            // Only update if we've moved to a different letter
-            if (boundedIndex !== currentLetterIndex) {
-                currentLetterIndex = boundedIndex;
-                
-                // Get the new letter
+            // Only update if the letter changed
+            if (newIndex !== currentLetterIndex && newIndex >= 0 && newIndex < letterSections.length) {
+                currentLetterIndex = newIndex;
                 const letter = availableLetters[currentLetterIndex];
                 
-                // Update the letter display
+                // Update letter display
                 const currentLetterElement = document.getElementById('currentLetter');
                 if (currentLetterElement) {
                     currentLetterElement.textContent = letter;
                 }
                 
-                // Get the letter section and scroll to it
+                // Scroll to this letter
                 const section = letterSections[currentLetterIndex];
-                if (section) {
-                    // Scroll directly to the letter position
+                if (section && section.element) {
                     window.scrollTo({
                         top: section.position - 60, // Adjust for header
-                        behavior: 'auto', // Instant scroll
+                        behavior: 'auto'
                     });
                     
-                    debugLog(`Scrolled to: ${letter} (index ${currentLetterIndex})`);
+                    debugLog(`Scrolled to: ${letter} (index ${currentLetterIndex}, position ${section.position})`);
                 }
             }
         }
