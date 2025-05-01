@@ -311,6 +311,21 @@
             -ms-user-select: none;       /* Internet Explorer/Edge */
             user-select: none;           /* Non-prefixed version */
         }
+        
+        /* Neutral zone indicator (visual feedback for debugging) */
+        .neutral-zone-indicator {
+            position: fixed;
+            height: 40px; /* 2 × deadZoneSize */
+            width: 20px;
+            border: 2px solid rgba(93, 92, 222, 0.5);
+            border-radius: 10px;
+            background-color: rgba(93, 92, 222, 0.1);
+            right: 20px;
+            opacity: 0;
+            transition: opacity 0.3s, top 0.1s;
+            z-index: 89;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-200">
@@ -491,6 +506,9 @@
             <span id="currentLetter">A</span>
         </div>
     </div>
+    
+    <!-- Neutral zone visual indicator (optional, for debugging) -->
+    <div id="neutralZoneIndicator" class="neutral-zone-indicator"></div>
 
     <script>
         /********************************
@@ -512,6 +530,8 @@
         let alphaScrollActive = false;
         let longPressTimer = null;
         let touchStartY = 0;
+        let initialTouchY = null; // Initial touch position for neutral zone
+        let initialLetterIndex = 0; // Letter index when scrolling began
         let currentLetterIndex = 0;
         let availableLetters = [];
         let letterPositions = new Map(); // Maps letters to their Y positions in the list
@@ -2101,6 +2121,16 @@
             fingerVelocity = 0;
             currentSpeed = 1;
             
+            // Store initial touch position for the neutral zone
+            initialTouchY = yPos;
+            
+            // Set up neutral zone indicator (optional, for visual feedback)
+            const neutralZoneIndicator = document.getElementById('neutralZoneIndicator');
+            if (neutralZoneIndicator) {
+                neutralZoneIndicator.style.top = (yPos - 20) + 'px'; // Center at initial touch
+                neutralZoneIndicator.style.opacity = '0.7';
+            }
+            
             // Show the initial letter based on what's actually visible in the viewport
             showCurrentlyVisibleLetter(yPos);
             
@@ -2128,8 +2158,9 @@
                     }
                 }
                 
-                // Get the index of the closest letter
+                // Get the index of the closest letter and store it as our initial letter
                 currentLetterIndex = availableLetters.indexOf(closestLetter);
+                initialLetterIndex = currentLetterIndex;
                 
                 // Update the displayed letter
                 const currentLetterElement = document.getElementById('currentLetter');
@@ -2169,6 +2200,14 @@
             const scrollIndicator = document.getElementById('scrollIndicator');
             if (scrollIndicator) {
                 scrollIndicator.style.opacity = '0';
+                scrollIndicator.style.transform = 'scale(1)';
+                scrollIndicator.style.backgroundColor = 'rgba(93, 92, 222, 0.8)';
+            }
+            
+            // Hide the neutral zone indicator
+            const neutralZoneIndicator = document.getElementById('neutralZoneIndicator');
+            if (neutralZoneIndicator) {
+                neutralZoneIndicator.style.opacity = '0';
             }
             
             // Reset letter indicator style
@@ -2185,9 +2224,13 @@
             lastMovementDirection = 0;
             movementAccumulator = 0;
             currentSpeed = 1;
+            
+            // Reset initial touch position and letter index
+            initialTouchY = null;
+            initialLetterIndex = 0;
         }
         
-        // Update the current letter based on Y position with dynamic speed
+        // Update the current letter based on Y position with dynamic speed and continuous scrolling
         function updateLetterFromPosition(yPos, timestamp) {
             if (!alphaScrollActive || availableLetters.length === 0) return;
             
@@ -2278,67 +2321,62 @@
                 }
             }
             
-            // Determine movement direction
-            const currentDirection = previousFingerY === 0 ? 0 : (yPos < previousFingerY ? -1 : (yPos > previousFingerY ? 1 : 0));
-            
-            // If direction changed, reset accumulator
-            if (currentDirection !== 0 && currentDirection !== lastMovementDirection) {
-                movementAccumulator = 0;
-                lastMovementDirection = currentDirection;
-            }
-            
-            // Accumulate movement in the same direction
-            if (previousFingerY !== 0) {
-                movementAccumulator += Math.abs(yPos - previousFingerY);
+            // Determine distance from initial touch point for continuous scrolling
+            if (initialTouchY !== null) {
+                const deltaFromStart = yPos - initialTouchY;
+                
+                // Define a dead zone (neutral area) around the initial touch point
+                const deadZoneSize = 20; // 20px radius where no scrolling happens
+                
+                // Only apply scrolling if outside the dead zone
+                if (Math.abs(deltaFromStart) > deadZoneSize) {
+                    // Direction: -1 for moving finger up (scroll down), 1 for moving finger down (scroll up)
+                    const direction = deltaFromStart > 0 ? 1 : -1;
+                    
+                    // Calculate distance beyond the dead zone
+                    const effectiveDistance = Math.abs(deltaFromStart) - deadZoneSize;
+                    
+                    // Calculate a continuous position in the alphabet (0 to length-1)
+                    // The division factor controls sensitivity - higher means less sensitive
+                    const scrollSensitivity = 100 / currentSpeed; // Adjust based on screen size and preference
+                    
+                    // Calculate the continuous index position
+                    let continuousIndex = initialLetterIndex + (direction * effectiveDistance / scrollSensitivity);
+                    
+                    // Clamp to valid range
+                    continuousIndex = Math.max(0, Math.min(availableLetters.length - 1, continuousIndex));
+                    
+                    // Get the discrete index (floor or ceiling based on direction)
+                    const discreteIndex = direction > 0 ? 
+                        Math.floor(continuousIndex) : 
+                        Math.ceil(continuousIndex);
+                    
+                    // Only update if the discrete index changed
+                    if (discreteIndex !== currentLetterIndex) {
+                        currentLetterIndex = discreteIndex;
+                        const letter = availableLetters[currentLetterIndex];
+                        
+                        // Update the displayed letter
+                        const currentLetterElement = document.getElementById('currentLetter');
+                        if (currentLetterElement) {
+                            currentLetterElement.textContent = letter;
+                        }
+                        
+                        // Scroll to the letter's position - use instant scrolling for faster speeds
+                        const scrollPosition = letterPositions.get(letter) || 0;
+                        const scrollBehavior = currentSpeed > 2 ? 'auto' : 'smooth';
+                        
+                        window.scrollTo({
+                            top: scrollPosition - 60, // Adjust for header height
+                            behavior: scrollBehavior
+                        });
+                    }
+                }
             }
             
             // Save current position and time for next velocity calculation
             previousFingerY = yPos;
             previousTime = timestamp;
-            
-            // Adjust movement threshold based on speed - faster movement needs less accumulation
-            const dynamicThreshold = baseMovementThreshold / Math.max(1, Math.min(currentSpeed, 3));
-            
-            // Only change letter if we've moved enough
-            if (movementAccumulator >= dynamicThreshold) {
-                // Reset the accumulator
-                movementAccumulator = 0;
-                
-                // Calculate how many letters to skip based on current speed
-                const lettersToSkip = Math.max(1, Math.round(currentSpeed));
-                
-                // Calculate new index based on direction and speed
-                let newIndex = currentLetterIndex;
-                
-                if (currentDirection === -1 && currentLetterIndex < availableLetters.length - 1) {
-                    // Moving up - go to next letter in alphabet (inverted scroll)
-                    newIndex = Math.min(availableLetters.length - 1, currentLetterIndex + lettersToSkip);
-                } else if (currentDirection === 1 && currentLetterIndex > 0) {
-                    // Moving down - go to previous letter in alphabet (inverted scroll)
-                    newIndex = Math.max(0, currentLetterIndex - lettersToSkip);
-                }
-                
-                // Update if the letter has changed
-                if (newIndex !== currentLetterIndex) {
-                    currentLetterIndex = newIndex;
-                    const letter = availableLetters[currentLetterIndex];
-                    
-                    // Update the displayed letter
-                    const currentLetterElement = document.getElementById('currentLetter');
-                    if (currentLetterElement) {
-                        currentLetterElement.textContent = letter;
-                    }
-                    
-                    // Scroll to the letter's position - use instant scrolling for faster speeds
-                    const scrollPosition = letterPositions.get(letter) || 0;
-                    const scrollBehavior = currentSpeed > 2 ? 'auto' : 'smooth';
-                    
-                    window.scrollTo({
-                        top: scrollPosition - 60, // Adjust for header height
-                        behavior: scrollBehavior
-                    });
-                }
-            }
         }
         
         /********************************
