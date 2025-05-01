@@ -302,16 +302,6 @@
             z-index: 90;
         }
         
-        /* Disable text selection in item list */
-        #itemList {
-            -webkit-touch-callout: none; /* iOS Safari */
-            -webkit-user-select: none;   /* Safari */
-            -khtml-user-select: none;    /* Konqueror HTML */
-            -moz-user-select: none;      /* Firefox */
-            -ms-user-select: none;       /* Internet Explorer/Edge */
-            user-select: none;           /* Non-prefixed version */
-        }
-        
         /* Neutral zone indicator (visual feedback for debugging) */
         .neutral-zone-indicator {
             position: fixed;
@@ -325,6 +315,16 @@
             transition: opacity 0.3s, top 0.1s;
             z-index: 89;
             pointer-events: none;
+        }
+        
+        /* Disable text selection in item list */
+        #itemList {
+            -webkit-touch-callout: none; /* iOS Safari */
+            -webkit-user-select: none;   /* Safari */
+            -khtml-user-select: none;    /* Konqueror HTML */
+            -moz-user-select: none;      /* Firefox */
+            -ms-user-select: none;       /* Internet Explorer/Edge */
+            user-select: none;           /* Non-prefixed version */
         }
     </style>
 </head>
@@ -540,9 +540,6 @@
         let previousFingerY = 0;
         let previousTime = 0;
         let fingerVelocity = 0;
-        let lastMovementDirection = 0; // 0: no movement, -1: up, 1: down
-        let movementAccumulator = 0;
-        let baseMovementThreshold = 10; // Base threshold for movement
         let currentSpeed = 1; // Current speed multiplier
         
         /********************************
@@ -857,7 +854,6 @@
             }
             currentLetterIndex = 0;
             previousFingerY = 0;
-            movementAccumulator = 0;
         }
         
         function normalizeText(text) {
@@ -913,7 +909,6 @@
             }
             currentLetterIndex = 0;
             previousFingerY = 0;
-            movementAccumulator = 0;
             
             // Focus the search input
             searchInput.focus();
@@ -1121,7 +1116,7 @@
             });
             
             // Update letter positions after content is loaded
-            updateLetterPositions();
+            setTimeout(updateLetterPositions, 100);
         }
         
         function updateLetterPositions() {
@@ -1137,7 +1132,7 @@
             });
             
             // Check if we have any available letters at all
-            if (availableLetters.length === 0) {
+            if (letterPositions.size === 0) {
                 // If no letters are available (like during an empty search result),
                 // collect all possible letters from markers
                 document.querySelectorAll('.letter-marker').forEach(marker => {
@@ -2016,6 +2011,9 @@
             longPressTimer = setTimeout(() => {
                 // Cancel the scroll behavior if we're activating alpha scroll
                 if (longPressTimer) {
+                    // Update letter positions before activating scroll
+                    updateLetterPositions();
+                    
                     // Switch to non-passive event listener for the touchmove events
                     const itemList = document.getElementById('itemList');
                     if (itemList) {
@@ -2067,6 +2065,9 @@
             
             // Start a timer for long press
             longPressTimer = setTimeout(() => {
+                // Update letter positions before activating scroll
+                updateLetterPositions();
+                
                 activateAlphaScroll(touchStartY);
             }, 300); // 300ms for long press
         }
@@ -2099,9 +2100,24 @@
         // Activate the alphabetical scrolling
         function activateAlphaScroll(yPos) {
             // Skip if no letters available
-            if (availableLetters.length === 0) return;
+            if (availableLetters.length === 0 || letterPositions.size === 0) return;
             
+            // FIXED: Get the currently visible letter first
+            const currentVisibleLetter = getCurrentlyVisibleLetter();
+            if (!currentVisibleLetter) return;
+            
+            // Set the current and initial letter index
+            currentLetterIndex = availableLetters.indexOf(currentVisibleLetter);
+            if (currentLetterIndex === -1) {
+                currentLetterIndex = 0;
+            }
+            initialLetterIndex = currentLetterIndex;
+            
+            // Now activate the scroll
             alphaScrollActive = true;
+            
+            // Store initial touch position for the neutral zone
+            initialTouchY = yPos;
             
             // Show the letter overlay
             const letterOverlay = document.getElementById('letterOverlay');
@@ -2115,79 +2131,68 @@
                 scrollIndicator.style.opacity = '1';
             }
             
+            // Set up neutral zone indicator (optional, for visual feedback)
+            const neutralZoneIndicator = document.getElementById('neutralZoneIndicator');
+            if (neutralZoneIndicator) {
+                neutralZoneIndicator.style.top = (initialTouchY - 20) + 'px'; // Center at initial touch
+                neutralZoneIndicator.style.opacity = '0.7';
+            }
+            
             // Reset speed tracking
             previousFingerY = yPos;
             previousTime = performance.now();
             fingerVelocity = 0;
             currentSpeed = 1;
             
-            // Store initial touch position for the neutral zone
-            initialTouchY = yPos;
-            
-            // Set up neutral zone indicator (optional, for visual feedback)
-            const neutralZoneIndicator = document.getElementById('neutralZoneIndicator');
-            if (neutralZoneIndicator) {
-                neutralZoneIndicator.style.top = (yPos - 20) + 'px'; // Center at initial touch
-                neutralZoneIndicator.style.opacity = '0.7';
+            // Update the displayed letter
+            const currentLetterElement = document.getElementById('currentLetter');
+            if (currentLetterElement) {
+                currentLetterElement.textContent = currentVisibleLetter;
             }
             
-            // Show the initial letter based on what's actually visible in the viewport
-            showCurrentlyVisibleLetter(yPos);
+            // Initialize the position of the scroll indicator based on the current finger position
+            const viewportHeight = window.innerHeight;
+            const safeArea = viewportHeight * 0.8; // 80% of viewport height
+            const topOffset = viewportHeight * 0.1; // 10% from top
             
-            // This function determines what letter is currently visible in the viewport
-            // and shows that letter in the indicator without scrolling
-            function showCurrentlyVisibleLetter(yPos) {
-                if (availableLetters.length === 0) return;
-                
-                // Get the viewport's middle position
-                const viewportMiddle = window.scrollY + (window.innerHeight / 2);
-                
-                // Find the letter marker that's closest to the middle of the viewport
-                let closestLetter = availableLetters[0];
-                let closestDistance = Infinity;
-                
-                // Check each letter's position relative to the viewport middle
-                for (const letter of availableLetters) {
-                    const letterPosition = letterPositions.get(letter) || 0;
-                    const distance = Math.abs(letterPosition - viewportMiddle);
-                    
-                    // Update closest if this letter is closer to the middle
-                    if (distance < closestDistance) {
-                        closestDistance = distance;
-                        closestLetter = letter;
-                    }
-                }
-                
-                // Get the index of the closest letter and store it as our initial letter
-                currentLetterIndex = availableLetters.indexOf(closestLetter);
-                initialLetterIndex = currentLetterIndex;
-                
-                // Update the displayed letter
-                const currentLetterElement = document.getElementById('currentLetter');
-                if (currentLetterElement) {
-                    currentLetterElement.textContent = closestLetter;
-                }
-                
-                // Initialize the position of the scroll indicator based on the current finger position
-                const viewportHeight = window.innerHeight;
-                const safeArea = viewportHeight * 0.8; // 80% of viewport height
-                const topOffset = viewportHeight * 0.1; // 10% from top
-                
-                // Calculate the relative position based on the finger position
-                let relativePos = (yPos - topOffset) / safeArea;
-                relativePos = Math.max(0, Math.min(relativePos, 1));
-                
-                // Update the scroll indicator position based on finger position
-                const scrollIndicator = document.getElementById('scrollIndicator');
-                if (scrollIndicator) {
-                    const indicatorPos = topOffset + (safeArea * relativePos);
-                    scrollIndicator.style.top = `${indicatorPos}px`;
-                }
+            // Calculate the relative position based on the finger position
+            let relativePos = (yPos - topOffset) / safeArea;
+            relativePos = Math.max(0, Math.min(relativePos, 1));
+            
+            // Update the scroll indicator position based on finger position
+            if (scrollIndicator) {
+                const indicatorPos = topOffset + (safeArea * relativePos);
+                scrollIndicator.style.top = `${indicatorPos}px`;
             }
+        }
+        
+        // Get the letter currently visible in the viewport
+        function getCurrentlyVisibleLetter() {
+            // Get the viewport's middle position
+            const viewportMiddle = window.scrollY + (window.innerHeight / 2);
+            
+            // Find the letter marker that's closest to the middle of the viewport
+            let closestLetter = null;
+            let closestDistance = Infinity;
+            
+            // Check each letter's position relative to the viewport middle
+            letterPositions.forEach((position, letter) => {
+                const distance = Math.abs(position - viewportMiddle);
+                
+                // Update closest if this letter is closer to the middle
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestLetter = letter;
+                }
+            });
+            
+            return closestLetter;
         }
         
         // Deactivate the alphabetical scrolling
         function deactivateAlphaScroll() {
+            if (!alphaScrollActive) return;
+            
             alphaScrollActive = false;
             
             // Hide the letter overlay
@@ -2221,8 +2226,6 @@
             previousFingerY = 0;
             previousTime = 0;
             fingerVelocity = 0;
-            lastMovementDirection = 0;
-            movementAccumulator = 0;
             currentSpeed = 1;
             
             // Reset initial touch position and letter index
@@ -2230,7 +2233,7 @@
             initialLetterIndex = 0;
         }
         
-        // Update the current letter based on Y position with dynamic speed and continuous scrolling
+        // Update the current letter based on Y position with dynamic speed
         function updateLetterFromPosition(yPos, timestamp) {
             if (!alphaScrollActive || availableLetters.length === 0) return;
             
@@ -2330,8 +2333,9 @@
                 
                 // Only apply scrolling if outside the dead zone
                 if (Math.abs(deltaFromStart) > deadZoneSize) {
-                    // Direction: -1 for moving finger up (scroll down), 1 for moving finger down (scroll up)
-                    const direction = deltaFromStart > 0 ? 1 : -1;
+                    // FIXED: Direction is now properly calculated (moving up = later letters)
+                    // Direction: -1 for moving finger up (scroll forward), 1 for moving finger down (scroll backward)
+                    const direction = deltaFromStart > 0 ? -1 : 1;
                     
                     // Calculate distance beyond the dead zone
                     const effectiveDistance = Math.abs(deltaFromStart) - deadZoneSize;
@@ -2346,30 +2350,26 @@
                     // Clamp to valid range
                     continuousIndex = Math.max(0, Math.min(availableLetters.length - 1, continuousIndex));
                     
-                    // Get the discrete index (floor or ceiling based on direction)
-                    const discreteIndex = direction > 0 ? 
-                        Math.floor(continuousIndex) : 
-                        Math.ceil(continuousIndex);
+                    // FIXED: Use Math.round for more natural scrolling behavior
+                    const discreteIndex = Math.round(continuousIndex);
                     
                     // Only update if the discrete index changed
                     if (discreteIndex !== currentLetterIndex) {
                         currentLetterIndex = discreteIndex;
-                        const letter = availableLetters[currentLetterIndex];
                         
-                        // Update the displayed letter
-                        const currentLetterElement = document.getElementById('currentLetter');
-                        if (currentLetterElement) {
-                            currentLetterElement.textContent = letter;
+                        // Make sure index is within bounds
+                        if (currentLetterIndex >= 0 && currentLetterIndex < availableLetters.length) {
+                            const letter = availableLetters[currentLetterIndex];
+                            
+                            // Update the displayed letter
+                            const currentLetterElement = document.getElementById('currentLetter');
+                            if (currentLetterElement) {
+                                currentLetterElement.textContent = letter;
+                            }
+                            
+                            // Scroll to the letter's position - use instant scrolling for faster speeds
+                            scrollToLetter(letter);
                         }
-                        
-                        // Scroll to the letter's position - use instant scrolling for faster speeds
-                        const scrollPosition = letterPositions.get(letter) || 0;
-                        const scrollBehavior = currentSpeed > 2 ? 'auto' : 'smooth';
-                        
-                        window.scrollTo({
-                            top: scrollPosition - 60, // Adjust for header height
-                            behavior: scrollBehavior
-                        });
                     }
                 }
             }
@@ -2377,6 +2377,20 @@
             // Save current position and time for next velocity calculation
             previousFingerY = yPos;
             previousTime = timestamp;
+        }
+        
+        // FIXED: Added dedicated function to scroll to a letter
+        function scrollToLetter(letter) {
+            const position = letterPositions.get(letter);
+            if (position === undefined) return;
+            
+            // Use instant scrolling for faster speeds
+            const scrollBehavior = currentSpeed > 2 ? 'auto' : 'smooth';
+            
+            window.scrollTo({
+                top: position - 60, // Adjust for header height
+                behavior: scrollBehavior
+            });
         }
         
         /********************************
