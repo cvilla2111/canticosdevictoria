@@ -431,9 +431,9 @@ Dile A Mi Pueblo Que Marche
 Lugar donde va la letra del corito
 
 Dime Tú Dónde Estás Parado
-•••Dime tú dónde estás parado•••
+|||Dime tú dónde estás parado|||
 En la arena, en la arena no te pares.
-•••Párate, párate en la roca•••
+|||Párate, párate en la roca|||
 en la arena, en la arena no te pares.
 
 Dios Es Nuestro Amparo Nuestra Fortaleza
@@ -653,13 +653,13 @@ Estas Son Las Fiestas
 Lugar donde va la letra del corito
 
 Este Corito Es, Para Alabar A Dios
-••Este corito es, para alabar a Dios,
+||Este corito es, para alabar a Dios,
 si tu lo alabas también,
-sientes lo mismo que yo.••
-••Siento que el Espíritu Santo
+sientes lo mismo que yo.||
+||Siento que el Espíritu Santo
 se está derramando en mi corazón.
 Y que una lluvia del cielo
-se va vislumbrando en la casa de Dios.••
+se va vislumbrando en la casa de Dios.||
 
 Este Es El Cristo Que Yo Predico
 este es el Cristo que yo predico
@@ -677,10 +677,10 @@ a su viña a trabajar.
 en la viña del Señor.||
 
 Fuego Fuego La Iglesia Pide Fuego
-••Fuego, fuego, la iglesia pide fuego••
-••Hermano querido, pidelo tu también••
-••Porque Cristo viene
-a llevar su iglesia a Jerusalén.••
+||Fuego, fuego, la iglesia pide fuego||
+||Hermano querido, pidelo tu también||
+||Porque Cristo viene
+a llevar su iglesia a Jerusalén.||
 
 Fuego Ha Bajado Del Cielo
 ||Fuego ha bajado del cielo||
@@ -704,7 +704,7 @@ Gozo Yo Quería
 Lugar donde va la letra del corito
 
 Guiado Por Tu Espíritu
-••Guiado por su Espíritu no podré caer••
+||Guiado por su Espíritu no podré caer||
 El es el paracleto que a mi lado va,
 guiándome por sendas de justicia y paz.
 
@@ -1305,10 +1305,10 @@ grande que la que la Mar,
 tu misericordia es más grande que el sol,
 la luna y las estrellas, 
 tu misericordia Señor.
-••tu misericordia me ha  cambiado a mí,
+||tu misericordia me ha  cambiado a mí,
 tu misericordia me enseñó a vivir,
 tu misericordia me muestra el camino
-que Cristo trazó para mí.••
+que Cristo trazó para mí.||
 
 Tu Tienes Dinamita
 Lugar donde va la letra del corito
