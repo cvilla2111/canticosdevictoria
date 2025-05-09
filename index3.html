@@ -5,8 +5,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cánticos de Victoria</title>
     
-    <!-- Favicon -->
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#5D5CDE">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Cánticos de Victoria">
+    <meta name="application-name" content="Cánticos de Victoria">
+    
+    <!-- PWA Icons and Manifest -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M18.7,5.1c-0.2-0.6-0.6-1.1-1.2-1.4c-0.9-0.5-2-0.6-2.9-0.1L11.8,5H6C3.8,5,2,6.8,2,9v7c0,2.2,1.8,4,4,4h6h6c2.2,0,4-1.8,4-4V9C22,7,20.6,5.4,18.7,5.1z' fill='%2346b961'/><path d='M11,18H6c-1.1,0-2-0.9-2-2V9c0-1.1,0.9-2,2-2h5V18z' fill='%2368c97f'/><path d='M15.3,16.2L13,17.4V6.6l2.6-1.3c0.4-0.2,0.8,0,1,0C16.7,5.5,17,5.7,17,6.2v7.3C17,14.7,16.4,15.7,15.3,16.2z' fill='%233b5e2f'/><path d='M20,16c0,1.1-0.9,2-2,2h-1.8c1.7-0.9,2.8-2.6,2.8-4.5V7.3c0.6,0.3,1,1,1,1.7V16z' fill='%23c7ce49'/></svg>" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIgMTkyIiBmaWxsPSJub25lIj4KICAgIDxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iNDgiIGZpbGw9IiM1RDVDREUiLz4KICAgIDxwYXRoIGQ9Ik0xMzIuNyw4NS4xYy0wLjItMC42LTAuNi0xLjEtMS4yLTEuNGMtMC45LTAuNS0yLTAuNi0yLjktMC4xTDEyNS44LDg1SDEyMEM5NS44LDg1LDc0LDEwNi44LDc0LDEzMXYyNWMwLDE4LjIsMTQuOCwzMywzMywzM2g2aDI1YzE4LjIsMCwzMy0xNC44LDMzLTMzdi0zNUMxNzEsOTksNTUuNiw4NS40LDEzMi43LDg1LjF6IiBmaWxsPSIjNDZiOTYxIi8+CiAgICA8cGF0aCBkPSJNMTI2LDE4OUgxMjBjLTkuMSwwLTE2LjUtNy40LTE2LjUtMTYuNXYtNThDMTAzLjUsODcuOSwxMTEsODAuNSwxMjAsODAuNWg2VjE4OXoiIGZpbGw9IiM2OGM5N2YiLz4KICAgIDxwYXRoIGQ9Ik0xMjkuMywxNjcuMkwxMjcsMTY4LjRWMTA2LjZsMjYtMTMuM2M0LTIuMSw4LDAsMTAsMEMxNjcuNyw4NS41LDE3MCw4Ny43LDE3MCw5Mi4ydjQzLjNDMTcwLDE0OS43LDE2My40LDE2Mi43LDEyOS4zLDE2Ny4yeiIgZmlsbD0iIzNiNWUyZiIvPgogICAgPHBhdGggZD0iTTE1MiwxNjdjMTAuOSwwLDE5LjgtOS45LDE5LjgtMjJoLTE5LjhjLTkuMSwwLTE2LjUtOC4yLTE2LjUtMTguM3YtNDNoMTYuNnY4MyIgZmlsbD0iI2M3Y2U0OSIvPgo8L3N2Zz4=">
+    <link rel="manifest" id="manifest">
+    
+    <!-- Dynamically create and inject manifest -->
+    <script>
+        // Create the manifest JSON
+        const manifestData = {
+            "name": "Cánticos de Victoria",
+            "short_name": "Cánticos",
+            "description": "Una colección de coritos cristianos",
+            "start_url": "./",
+            "display": "standalone",
+            "background_color": "#FFFFFF",
+            "theme_color": "#5D5CDE",
+            "icons": [
+                {
+                    "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIgMTkyIiBmaWxsPSJub25lIj4KICAgIDxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iNDgiIGZpbGw9IiM1RDVDREUiLz4KICAgIDxwYXRoIGQ9Ik0xMzIuNyw4NS4xYy0wLjItMC42LTAuNi0xLjEtMS4yLTEuNGMtMC45LTAuNS0yLTAuNi0yLjktMC4xTDEyNS44LDg1SDEyMEM5NS44LDg1LDc0LDEwNi44LDc0LDEzMXYyNWMwLDE4LjIsMTQuOCwzMywzMywzM2g2aDI1YzE4LjIsMCwzMy0xNC44LDMzLTMzdi0zNUMxNzEsOTksNTUuNiw4NS40LDEzMi43LDg1LjF6IiBmaWxsPSIjNDZiOTYxIi8+CiAgICA8cGF0aCBkPSJNMTI2LDE4OUgxMjBjLTkuMSwwLTE2LjUtNy40LTE2LjUtMTYuNXYtNThDMTAzLjUsODcuOSwxMTEsODAuNSwxMjAsODAuNWg2VjE4OXoiIGZpbGw9IiM2OGM5N2YiLz4KICAgIDxwYXRoIGQ9Ik0xMjkuMywxNjcuMkwxMjcsMTY4LjRWMTA2LjZsMjYtMTMuM2M0LTIuMSw4LDAsMTAsMEMxNjcuNyw4NS41LDE3MCw4Ny43LDE3MCw5Mi4ydjQzLjNDMTcwLDE0OS43LDE2My40LDE2Mi43LDEyOS4zLDE2Ny4yeiIgZmlsbD0iIzNiNWUyZiIvPgogICAgPHBhdGggZD0iTTE1MiwxNjdjMTAuOSwwLDE5LjgtOS45LDE5LjgtMjJoLTE5LjhjLTkuMSwwLTE2LjUtOC4yLTE2LjUtMTguM3YtNDNoMTYuNnY4MyIgZmlsbD0iI2M3Y2U0OSIvPgo8L3N2Zz4=",
+                    "sizes": "192x192",
+                    "type": "image/svg+xml",
+                    "purpose": "any"
+                },
+                {
+                    "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBmaWxsPSJub25lIj4KICAgIDxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiByeD0iMTI4IiBmaWxsPSIjNUQ1Q0RFIi8+CiAgICA8cGF0aCBkPSJNMzUyLjcsMjE1LjFjLTAuMi0wLjYtMC42LTEuMS0xLjItMS40Yy0wLjktMC41LTItMC42LTIuOS0wLjFMMzQ1LjgsMjE1SDMzMEMyNTcuOCwyMTUsMTk4LDI3NC44LDE5OCwzNDd2NzBjMCw0OC4yLDM5LjgsODgsODgsODhoNmg3MGM0OC4yLDAsODgtMzkuOCw4OC04OHYtOTBDNDUwLDI2MSwyOTEuNiwyMTUuNCwzNTIuNywyMTUuMXoiIGZpbGw9IiM0NmI5NjEiLz4KICAgIDxwYXRoIGQ9Ik0zNDAsNTA1SDMzMGMtMjQuMywwLTQ0LTE5LjctNDQtNDR2LTE1NUM2NiwyMDYuNCwyOTYsMjA1LjUsMzMwLDIwNS41aDEwVjUwNXoiIGZpbGw9IiM2OGM5N2YiLz4KICAgIDxwYXRoIGQ9Ik0zNDksNDQ3LjJMMzQ3LDQ0OC40VjI4Ni42bDI2LTEzLjNjNC0yLjEsOCwwLDEwLDBDMzg3LjcsMjY1LjUsMzkwLDI2Ny43LDM5MCwyNzIuMnYxMjMuM0MzOTAsNDA5LjcsMzgzLjQsNDQyLjcsMzQ5LDQ0Ny4yeiIgZmlsbD0iIzNiNWUyZiIvPgogICAgPHBhdGggZD0iTTQwMCw0NDdjMjkuMSwwLDUyLjgtMjYuNCw1Mi44LTU4LjhoLTUyLjhDMzc1LjcsMzg4LjIsMzU2LDM2NCwzNTYsMzM2LjV2LTExNWg0NHYyMjUuNSIgZmlsbD0iI2M3Y2U0OSIvPgo8L3N2Zz4=",
+                    "sizes": "512x512",
+                    "type": "image/svg+xml",
+                    "purpose": "any"
+                }
+            ]
+        };
+        
+        // Create a Blob with the manifest data
+        const manifestBlob = new Blob([JSON.stringify(manifestData)], {type: 'application/json'});
+        
+        // Create a URL for the Blob
+        const manifestURL = URL.createObjectURL(manifestBlob);
+        
+        // Set the manifest URL on the link element
+        document.getElementById('manifest').href = manifestURL;
+    </script>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -539,6 +585,156 @@
         // Fullscreen state management
         let isFullScreen = false;
         let lastTapTime = 0;
+        
+        // Register Service Worker for PWA installability
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                // Create and register a service worker that caches the app shell
+                const swCode = `
+                    // Service Worker version
+                    const CACHE_NAME = 'canticos-v1';
+                    
+                    // Files to cache for offline use
+                    const urlsToCache = [
+                        './',
+                        './clave240bpm.mp3'
+                    ];
+                    
+                    // Install event - cache app shell
+                    self.addEventListener('install', event => {
+                        event.waitUntil(
+                            caches.open(CACHE_NAME)
+                                .then(cache => {
+                                    console.log('Opened cache');
+                                    return cache.addAll(urlsToCache);
+                                })
+                        );
+                        self.skipWaiting();
+                    });
+                    
+                    // Activate event - clean up old caches
+                    self.addEventListener('activate', event => {
+                        const cacheWhitelist = [CACHE_NAME];
+                        event.waitUntil(
+                            caches.keys().then(cacheNames => {
+                                return Promise.all(
+                                    cacheNames.map(cacheName => {
+                                        if (cacheWhitelist.indexOf(cacheName) === -1) {
+                                            return caches.delete(cacheName);
+                                        }
+                                    })
+                                );
+                            })
+                        );
+                        self.clients.claim();
+                    });
+                    
+                    // Fetch event - serve from cache or network
+                    self.addEventListener('fetch', event => {
+                        event.respondWith(
+                            caches.match(event.request)
+                                .then(response => {
+                                    // Cache hit - return the response
+                                    if (response) {
+                                        return response;
+                                    }
+                                    
+                                    // Clone the request
+                                    const fetchRequest = event.request.clone();
+                                    
+                                    // Try network, then cache if successful
+                                    return fetch(fetchRequest)
+                                        .then(response => {
+                                            // Check if valid response
+                                            if (!response || response.status !== 200 || response.type !== 'basic') {
+                                                return response;
+                                            }
+                                            
+                                            // Clone the response
+                                            const responseToCache = response.clone();
+                                            
+                                            // Cache the fetched response
+                                            caches.open(CACHE_NAME)
+                                                .then(cache => {
+                                                    cache.put(event.request, responseToCache);
+                                                });
+                                                
+                                            return response;
+                                        })
+                                        .catch(() => {
+                                            // Network failed, try to serve offline fallback
+                                            return caches.match('./');
+                                        });
+                                })
+                        );
+                    });
+                `;
+                
+                // Create a Blob with the service worker code
+                const blob = new Blob([swCode], {type: 'application/javascript'});
+                
+                // Create a URL for the Blob
+                const swUrl = URL.createObjectURL(blob);
+                
+                // Register the service worker
+                navigator.serviceWorker.register(swUrl)
+                    .then(registration => {
+                        console.log('Service Worker registered with scope:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.error('Service Worker registration failed:', error);
+                    });
+            });
+        }
+        
+        // Add "Install" button and functionality
+        let deferredPrompt;
+        const installButton = document.createElement('button');
+        installButton.id = 'installButton';
+        installButton.className = 'fixed bottom-5 left-5 bg-primary text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg z-40 transition-all hover:scale-110 active:scale-95';
+        installButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>';
+        installButton.style.display = 'none';
+        document.body.appendChild(installButton);
+        
+        // Capture install prompt and show button
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent Chrome <= 67 from automatically showing the prompt
+            e.preventDefault();
+            
+            // Stash the event so it can be triggered later
+            deferredPrompt = e;
+            
+            // Show the install button
+            installButton.style.display = 'flex';
+            
+            // Add click handler for the install button
+            installButton.addEventListener('click', () => {
+                // Hide the button
+                installButton.style.display = 'none';
+                
+                // Show the install prompt
+                deferredPrompt.prompt();
+                
+                // Wait for the user to respond to the prompt
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                    } else {
+                        console.log('User dismissed the install prompt');
+                        // Show the button again
+                        installButton.style.display = 'flex';
+                    }
+                    deferredPrompt = null;
+                });
+            });
+        });
+        
+        // Hide button after successful installation
+        window.addEventListener('appinstalled', (evt) => {
+            console.log('App was installed');
+            installButton.style.display = 'none';
+            deferredPrompt = null;
+        });
         
         document.addEventListener('DOMContentLoaded', function() {
             // Set theme toggle initial state
