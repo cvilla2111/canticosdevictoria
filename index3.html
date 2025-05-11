@@ -379,7 +379,7 @@
         <!-- Main Content Area -->
         <div>
             <!-- App Header -->
-            <h1 class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-0 text-gray-800 dark:text-gray-200 text-center font-headings">Cánticos de Victoria#</h1>
+            <h1 class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-0 text-gray-800 dark:text-gray-200 text-center font-headings">Cánticos de Victoria</h1>
             <p id="subtitle" class="mb-4 text-sm md:text-base lg:text-lg xl:text-xl text-gray-600 dark:text-gray-400 text-center">Una colección de coritos</p>
             
             <!-- Search Bar -->
@@ -1034,79 +1034,164 @@
         /********************************
          * SEARCH FUNCTIONALITY
          ********************************/
-        // Add debug function to examine data structure
-        function debugAllItems() {
-            console.log(`allItems has ${allItems.length} items:`, allItems);
-            // Show first item details
-            if (allItems.length > 0) {
-                console.log('First item sample:', allItems[0]);
+        /* ULTRA-SIMPLE SEARCH IMPLEMENTATION */
+        
+        // Add a debug bar to the UI
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create the debug button
+            const debugBar = document.createElement('div');
+            debugBar.innerHTML = `
+                <div class="bg-blue-100 dark:bg-blue-900 p-2 mb-4 flex gap-2 rounded-lg">
+                    <button id="debugDataBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded">
+                        Debug Data
+                    </button>
+                    <button id="searchTestBtn" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded">
+                        Test Search
+                    </button>
+                    <div id="dataCounter" class="bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded ml-auto">
+                        Items: 0
+                    </div>
+                </div>
+                <div id="debugResults" class="hidden p-2 mb-4 bg-gray-100 dark:bg-gray-800 rounded-lg text-xs overflow-auto"></div>
+            `;
+            
+            // Insert after the search bar
+            const searchBar = document.getElementById('searchBarContainer');
+            if (searchBar && searchBar.parentNode) {
+                searchBar.parentNode.insertBefore(debugBar, searchBar.nextSibling);
+            }
+            
+            // Set up the debug button event
+            document.getElementById('debugDataBtn').addEventListener('click', function() {
+                showDebugInfo();
+            });
+            
+            // Set up the test search button
+            document.getElementById('searchTestBtn').addEventListener('click', function() {
+                const searchInput = document.getElementById('searchInput');
+                if (searchInput) {
+                    // Run a test search for "aleluya"
+                    searchInput.value = "aleluya";
+                    simpleSearch(searchInput.value);
+                }
+            });
+        });
+        
+        // Update counter when data loads
+        function updateDataCounter() {
+            const counter = document.getElementById('dataCounter');
+            if (counter) {
+                counter.textContent = `Items: ${allItems.length}`;
             }
         }
         
-        // Call after content loading to debug data
-        document.addEventListener('DOMContentLoaded', function() {
-            // Wait a bit to make sure data is loaded
-            setTimeout(debugAllItems, 2000);
-        });
+        // Show detailed debug info about our data
+        function showDebugInfo() {
+            console.log("Showing debug info");
+            const debugResults = document.getElementById('debugResults');
+            if (!debugResults) return;
+            
+            // Toggle visibility
+            debugResults.classList.toggle('hidden');
+            
+            // If now visible, populate with data
+            if (!debugResults.classList.contains('hidden')) {
+                let html = `<h3 class="font-bold mb-2">Data Structure: ${allItems.length} items</h3>`;
+                
+                // Show first 3 items as samples
+                for (let i = 0; i < Math.min(3, allItems.length); i++) {
+                    const item = allItems[i];
+                    html += `
+                        <div class="mb-2 p-1 border border-gray-300 dark:border-gray-600">
+                            <div><strong>Index ${i}:</strong></div>
+                            <div><strong>ID:</strong> ${item.id}</div>
+                            <div><strong>Title:</strong> ${item.title}</div>
+                            <div><strong>Content:</strong> ${item.content ? item.content.substring(0, 50) + '...' : 'none'}</div>
+                        </div>
+                    `;
+                }
+                
+                // Add a search test form
+                html += `
+                    <div class="mt-4 p-2 bg-blue-50 dark:bg-blue-900 rounded">
+                        <div class="font-bold mb-2">Search Test</div>
+                        <div class="flex gap-2">
+                            <input type="text" id="testSearchInput" class="flex-grow p-1 border rounded dark:bg-gray-700" value="aleluya">
+                            <button id="runTestSearch" class="bg-green-500 text-white px-2 py-1 rounded">Search</button>
+                        </div>
+                    </div>
+                `;
+                
+                debugResults.innerHTML = html;
+                
+                // Set up the test search button
+                const searchBtn = document.getElementById('runTestSearch');
+                if (searchBtn) {
+                    searchBtn.addEventListener('click', function() {
+                        const input = document.getElementById('testSearchInput');
+                        if (input) {
+                            // Copy to main search box
+                            const mainSearch = document.getElementById('searchInput');
+                            if (mainSearch) {
+                                mainSearch.value = input.value;
+                                // Run search
+                                simpleSearch(input.value);
+                            }
+                        }
+                    });
+                }
+            }
+        }
         
-        // COMPLETELY NEW SEARCH FUNCTION WITH EXTRA DEBUGGING
-        function handleSearch() {
-            console.log("===== SEARCH STARTED =====");
+        // COMPLETELY BASIC SEARCH FUNCTION
+        function simpleSearch(query) {
+            console.log("BASIC SEARCH:", query);
             
-            // Get the search input value
-            const query = this.value || "";
-            
-            // Debug the search input
-            console.log(`Search input: "${query}"`);
-            
-            // Show visual feedback about search status
-            const debugElement = document.getElementById('debugInfo');
-            if (debugElement) {
-                debugElement.classList.remove('hidden');
-                debugElement.innerHTML = `<div>Searching for: "${query}"</div>`;
+            // Make debug visible
+            const debugInfo = document.getElementById('debugInfo');
+            if (debugInfo) {
+                debugInfo.classList.remove('hidden');
+                debugInfo.innerHTML = `<div>Basic search for: "${query}"</div>`;
             }
             
-            // Update icons for X or magnifying glass
+            // Update search icons
             toggleSearchIcons(query);
             
-            // Get all list items
-            const listItems = document.querySelectorAll('#itemList li');
-            console.log(`Total items to search: ${listItems.length}`);
-            
-            // Store current search for highlighting
+            // Store search term
             currentSearchTerm = query.trim();
             
-            // Get no results message element
+            // Get DOM elements
+            const items = document.querySelectorAll('#itemList li');
             const noResults = document.getElementById('noResults');
             
-            // Track matches for debugging
-            let visibleCount = 0;
+            // Initialize counters
             let titleMatches = 0;
             let contentMatches = 0;
+            let visibleCount = 0;
             
-            // Clear existing search visibility
+            // Initialize visible letters for alphabet navigation
             const visibleLetters = new Set();
             
             // EMPTY SEARCH - show everything
             if (!currentSearchTerm) {
                 console.log("Empty search, showing all items");
                 
-                // Show all items
-                listItems.forEach(item => {
+                items.forEach(item => {
+                    // Show the item
                     item.classList.remove('hidden');
-                    item.style.backgroundColor = ''; // Clear any highlight
                     
-                    // Reset title without highlight
-                    const titleElem = item.querySelector('span');
-                    if (titleElem) {
-                        const audioElem = item.querySelector('audio');
-                        if (audioElem) {
-                            const itemInfo = allItems.find(i => i.id === audioElem.id);
-                            if (itemInfo && itemInfo.title) {
-                                titleElem.textContent = itemInfo.title;
-                            }
+                    // Reset title styling
+                    const span = item.querySelector('span');
+                    const audio = item.querySelector('audio');
+                    if (span && audio) {
+                        const data = allItems.find(d => d.id === audio.id);
+                        if (data) {
+                            span.textContent = data.title;
                         }
                     }
+                    
+                    // Highlight for debugging
+                    item.style.backgroundColor = '';
                 });
                 
                 // Hide no results message
@@ -1115,127 +1200,80 @@
                 // Update letter positions
                 buildLetterIndex();
                 
-                if (debugElement) {
-                    debugElement.innerHTML += `<div>Empty search - showing all items</div>`;
+                // Log to debug
+                if (debugInfo) {
+                    debugInfo.innerHTML += `<div>Showing all ${items.length} items</div>`;
                 }
                 
-                console.log("===== SEARCH COMPLETE =====");
                 return;
             }
             
-            // NON-EMPTY SEARCH
-            // Normalize search term for comparison
-            const normalizedQuery = normalizeText(currentSearchTerm);
-            console.log(`Normalized search term: "${normalizedQuery}"`);
-            
-            if (debugElement) {
-                debugElement.innerHTML += `<div>Normalized search: "${normalizedQuery}"</div>`;
-            }
-            
-            // Data validation
-            console.log(`allItems has ${allItems.length} items`);
-            if (allItems.length === 0) {
-                console.error("ERROR: No items in search data array!");
-                if (debugElement) {
-                    debugElement.innerHTML += `<div style="color:red">ERROR: No items in search data</div>`;
-                }
+            // Search term normalization
+            const normalizedQuery = query.toLowerCase();
+            if (debugInfo) {
+                debugInfo.innerHTML += `<div>Search term: "${normalizedQuery}"</div>`;
             }
             
             // Process each list item
-            listItems.forEach((item, index) => {
-                // For testing, add visual feedback to first few items
-                const isTestItem = index < 3;
-                if (isTestItem) {
-                    console.log(`Testing item ${index}:`, item.textContent.trim());
-                }
+            items.forEach(item => {
+                // Get title element and audio for ID
+                const span = item.querySelector('span');
+                const audio = item.querySelector('audio');
                 
-                // Get elements
-                const titleSpan = item.querySelector('span');
-                const audioElem = item.querySelector('audio');
-                
-                // Skip invalid items
-                if (!titleSpan || !audioElem) {
-                    if (isTestItem) console.log(`Missing elements: span=${!!titleSpan}, audio=${!!audioElem}`);
+                if (!span || !audio) {
+                    item.classList.add('hidden'); // Hide invalid items
                     return;
                 }
                 
-                // Get item ID from audio element
-                const itemId = audioElem.id;
-                if (isTestItem) console.log(`Item ID: ${itemId}`);
-                
-                // Find matching data in our array
-                const itemData = allItems.find(item => item.id === itemId);
-                
-                // Skip if we can't find metadata
-                if (!itemData) {
-                    if (isTestItem) console.log(`No itemData found for ID ${itemId}`);
+                // Find corresponding data
+                const data = allItems.find(d => d.id === audio.id);
+                if (!data) {
+                    item.classList.add('hidden'); // Hide if no data found
                     return;
                 }
                 
-                if (isTestItem) {
-                    console.log(`Item data:`, itemData);
-                }
+                // Very simple case-insensitive search
+                const title = data.title || "";
+                const content = data.content || "";
                 
-                // Normalize text for comparison
-                const normalizedTitle = normalizeText(itemData.title || "");
-                const normalizedContent = normalizeText(itemData.content || "");
+                // Look for matches
+                const hasMatchTitle = title.toLowerCase().includes(normalizedQuery);
+                const hasMatchContent = content.toLowerCase().includes(normalizedQuery);
                 
-                if (isTestItem) {
-                    console.log(`Normalized data: title="${normalizedTitle}", content="${normalizedContent}"`);
-                }
-                
-                // Check if the title or content contains the search term
-                const titleMatches = normalizedTitle.includes(normalizedQuery);
-                const contentMatches = normalizedContent.includes(normalizedQuery);
-                
-                if (isTestItem) {
-                    console.log(`Match results: title=${titleMatches}, content=${contentMatches}`);
-                }
-                
-                // Handle search results
-                if (titleMatches || contentMatches) {
-                    // Show this item
+                if (hasMatchTitle || hasMatchContent) {
+                    // Item matches! Show it
                     item.classList.remove('hidden');
-                    
-                    // Count result type
-                    if (titleMatches) {
-                        titleMatch++;
-                        
-                        // Add visual feedback for title match
-                        titleSpan.innerHTML = highlightMatchingText(itemData.title, currentSearchTerm);
-                        
-                        // Add background highlight for test items
-                        if (isTestItem) {
-                            item.style.backgroundColor = 'rgba(93, 92, 222, 0.1)';
-                        }
-                    } else {
-                        contentMatch++;
-                        
-                        // Show normal title for content-only matches
-                        titleSpan.textContent = itemData.title;
-                        
-                        // Add subtle background for content matches
-                        if (isTestItem) {
-                            item.style.backgroundColor = 'rgba(93, 92, 222, 0.05)';
-                        }
-                    }
-                    
-                    // Count total visible items
                     visibleCount++;
                     
-                    // Track first letter for alphabet navigation
-                    const firstLetter = itemData.title.charAt(0).toUpperCase();
-                    visibleLetters.add(firstLetter);
-                } else {
-                    // Hide this item
-                    item.classList.add('hidden');
-                    
-                    // Clear any highlighting
-                    item.style.backgroundColor = '';
-                    
-                    if (isTestItem) {
-                        console.log(`Item hidden - no match`);
+                    // Track match type
+                    if (hasMatchTitle) {
+                        titleMatches++;
+                        
+                        // Add highlighting to title (crude but functional)
+                        const parts = title.split(new RegExp(`(${normalizedQuery})`, 'i'));
+                        span.innerHTML = parts.map(part => 
+                            part.toLowerCase() === normalizedQuery.toLowerCase() 
+                                ? `<span class="bg-yellow-200 dark:bg-yellow-800">${part}</span>` 
+                                : part
+                        ).join('');
+                        
+                        // Add visual feedback
+                        item.style.backgroundColor = 'rgba(93, 92, 222, 0.1)';
+                    } else {
+                        contentMatches++;
+                        span.textContent = title; // Just show title
+                        item.style.backgroundColor = 'rgba(93, 92, 222, 0.05)';
                     }
+                    
+                    // Track first letter for alphabet navigation
+                    if (title) {
+                        const firstLetter = title.charAt(0).toUpperCase();
+                        visibleLetters.add(firstLetter);
+                    }
+                } else {
+                    // No match, hide it
+                    item.classList.add('hidden');
+                    item.style.backgroundColor = '';
                 }
             });
             
@@ -1244,26 +1282,27 @@
                 noResults.classList.toggle('hidden', visibleCount > 0);
             }
             
-            // Update debug info
-            console.log(`Search results: ${visibleCount} matches (${titleMatch} in titles, ${contentMatch} in content)`);
-            
-            if (debugElement) {
-                debugElement.innerHTML += `<div>Results: ${visibleCount} total matches</div>`;
-            }
-            
             // Update alphabet navigation
             availableLetters = Array.from(visibleLetters).sort();
             
             // Update letter positions
             buildLetterIndex();
             
-            // Reset alphabet scroll if active
-            if (alphaScrollActive) {
-                deactivateAlphaScroll();
+            // Log results
+            if (debugInfo) {
+                debugInfo.innerHTML += `
+                    <div>Results: ${visibleCount} total matches</div>
+                    <div>- ${titleMatches} in titles</div>
+                    <div>- ${contentMatches} in content</div>
+                `;
             }
-            currentLetterIndex = 0;
             
-            console.log("===== SEARCH COMPLETE =====");
+            console.log(`Search results: ${visibleCount} (${titleMatches} titles, ${contentMatches} content)`);
+        }
+        
+        // Link to simpleSearch from the main search input
+        function handleSearch() {
+            simpleSearch(this.value);
         }
         
         function highlightMatchingText(text, searchTerm) {
