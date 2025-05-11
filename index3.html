@@ -379,7 +379,7 @@
         <!-- Main Content Area -->
         <div>
             <!-- App Header -->
-            <h1 class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-0 text-gray-800 dark:text-gray-200 text-center font-headings">Cánticos de Victoria</h1>
+            <h1 class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-0 text-gray-800 dark:text-gray-200 text-center font-headings">Cánticos de Victoria#</h1>
             <p id="subtitle" class="mb-4 text-sm md:text-base lg:text-lg xl:text-xl text-gray-600 dark:text-gray-400 text-center">Una colección de coritos</p>
             
             <!-- Search Bar -->
@@ -1034,128 +1034,227 @@
         /********************************
          * SEARCH FUNCTIONALITY
          ********************************/
-        // Initialize search-related event listeners
+        // Add debug function to examine data structure
+        function debugAllItems() {
+            console.log(`allItems has ${allItems.length} items:`, allItems);
+            // Show first item details
+            if (allItems.length > 0) {
+                console.log('First item sample:', allItems[0]);
+            }
+        }
+        
+        // Call after content loading to debug data
         document.addEventListener('DOMContentLoaded', function() {
-            const searchInput = document.getElementById('searchInput');
-            searchInput.addEventListener('input', function() {
-                performSearch(this.value);
-            });
+            // Wait a bit to make sure data is loaded
+            setTimeout(debugAllItems, 2000);
         });
         
-        // Primary search function
-        function performSearch(query) {
-            console.log("Search triggered with query:", query);
+        // COMPLETELY NEW SEARCH FUNCTION WITH EXTRA DEBUGGING
+        function handleSearch() {
+            console.log("===== SEARCH STARTED =====");
             
-            // Get and store the search term
-            const searchText = query.trim();
-            currentSearchTerm = searchText;
+            // Get the search input value
+            const query = this.value || "";
             
-            // Update search icons (X or magnifying glass)
+            // Debug the search input
+            console.log(`Search input: "${query}"`);
+            
+            // Show visual feedback about search status
+            const debugElement = document.getElementById('debugInfo');
+            if (debugElement) {
+                debugElement.classList.remove('hidden');
+                debugElement.innerHTML = `<div>Searching for: "${query}"</div>`;
+            }
+            
+            // Update icons for X or magnifying glass
             toggleSearchIcons(query);
             
-            // Get DOM elements
+            // Get all list items
             const listItems = document.querySelectorAll('#itemList li');
+            console.log(`Total items to search: ${listItems.length}`);
+            
+            // Store current search for highlighting
+            currentSearchTerm = query.trim();
+            
+            // Get no results message element
             const noResults = document.getElementById('noResults');
             
-            // For debugging
+            // Track matches for debugging
+            let visibleCount = 0;
             let titleMatches = 0;
             let contentMatches = 0;
-            let totalMatches = 0;
             
-            // Track visible items' first letters for the alphabet navigator
+            // Clear existing search visibility
             const visibleLetters = new Set();
             
-            // If search is empty, show everything
-            if (searchText === '') {
+            // EMPTY SEARCH - show everything
+            if (!currentSearchTerm) {
                 console.log("Empty search, showing all items");
                 
-                // Show all items and reset titles
+                // Show all items
                 listItems.forEach(item => {
-                    // Make visible
                     item.classList.remove('hidden');
+                    item.style.backgroundColor = ''; // Clear any highlight
                     
-                    // Find the title element and reset its content
-                    const titleSpan = item.querySelector('span');
-                    if (titleSpan) {
-                        // Get the original item data
-                        const audio = item.querySelector('audio');
-                        if (audio) {
-                            const itemData = allItems.find(data => data.id === audio.id);
-                            if (itemData) {
-                                titleSpan.textContent = itemData.title;
+                    // Reset title without highlight
+                    const titleElem = item.querySelector('span');
+                    if (titleElem) {
+                        const audioElem = item.querySelector('audio');
+                        if (audioElem) {
+                            const itemInfo = allItems.find(i => i.id === audioElem.id);
+                            if (itemInfo && itemInfo.title) {
+                                titleElem.textContent = itemInfo.title;
                             }
                         }
                     }
                 });
                 
-                // Hide "no results" message
-                noResults.classList.add('hidden');
+                // Hide no results message
+                if (noResults) noResults.classList.add('hidden');
                 
-                // Update the letter index
+                // Update letter positions
                 buildLetterIndex();
+                
+                if (debugElement) {
+                    debugElement.innerHTML += `<div>Empty search - showing all items</div>`;
+                }
+                
+                console.log("===== SEARCH COMPLETE =====");
                 return;
             }
             
-            // Normalize the search term
-            const normalizedSearch = normalizeText(searchText);
-            console.log("Normalized search term:", normalizedSearch);
+            // NON-EMPTY SEARCH
+            // Normalize search term for comparison
+            const normalizedQuery = normalizeText(currentSearchTerm);
+            console.log(`Normalized search term: "${normalizedQuery}"`);
             
-            // Check each item
-            listItems.forEach(item => {
-                // Get the span which contains the title text
+            if (debugElement) {
+                debugElement.innerHTML += `<div>Normalized search: "${normalizedQuery}"</div>`;
+            }
+            
+            // Data validation
+            console.log(`allItems has ${allItems.length} items`);
+            if (allItems.length === 0) {
+                console.error("ERROR: No items in search data array!");
+                if (debugElement) {
+                    debugElement.innerHTML += `<div style="color:red">ERROR: No items in search data</div>`;
+                }
+            }
+            
+            // Process each list item
+            listItems.forEach((item, index) => {
+                // For testing, add visual feedback to first few items
+                const isTestItem = index < 3;
+                if (isTestItem) {
+                    console.log(`Testing item ${index}:`, item.textContent.trim());
+                }
+                
+                // Get elements
                 const titleSpan = item.querySelector('span');
-                if (!titleSpan) return;
+                const audioElem = item.querySelector('audio');
                 
-                // Get the item's audio element to find its ID
-                const audio = item.querySelector('audio');
-                if (!audio) return;
+                // Skip invalid items
+                if (!titleSpan || !audioElem) {
+                    if (isTestItem) console.log(`Missing elements: span=${!!titleSpan}, audio=${!!audioElem}`);
+                    return;
+                }
                 
-                // Find the corresponding item data
-                const itemData = allItems.find(data => data.id === audio.id);
-                if (!itemData) return;
+                // Get item ID from audio element
+                const itemId = audioElem.id;
+                if (isTestItem) console.log(`Item ID: ${itemId}`);
                 
-                // Normalize both title and content for comparison
-                const normalizedTitle = normalizeText(itemData.title);
-                const normalizedContent = normalizeText(itemData.content || '');
+                // Find matching data in our array
+                const itemData = allItems.find(item => item.id === itemId);
                 
-                // Check if either contains the search term
-                const titleMatch = normalizedTitle.includes(normalizedSearch);
-                const contentMatch = normalizedContent.includes(normalizedSearch);
+                // Skip if we can't find metadata
+                if (!itemData) {
+                    if (isTestItem) console.log(`No itemData found for ID ${itemId}`);
+                    return;
+                }
                 
-                // If either matches, show the item
-                if (titleMatch || contentMatch) {
-                    // Track match type
-                    if (titleMatch) {
-                        titleMatches++;
-                        // Highlight the matched text in title
-                        titleSpan.innerHTML = highlightMatchingText(itemData.title, searchText);
+                if (isTestItem) {
+                    console.log(`Item data:`, itemData);
+                }
+                
+                // Normalize text for comparison
+                const normalizedTitle = normalizeText(itemData.title || "");
+                const normalizedContent = normalizeText(itemData.content || "");
+                
+                if (isTestItem) {
+                    console.log(`Normalized data: title="${normalizedTitle}", content="${normalizedContent}"`);
+                }
+                
+                // Check if the title or content contains the search term
+                const titleMatches = normalizedTitle.includes(normalizedQuery);
+                const contentMatches = normalizedContent.includes(normalizedQuery);
+                
+                if (isTestItem) {
+                    console.log(`Match results: title=${titleMatches}, content=${contentMatches}`);
+                }
+                
+                // Handle search results
+                if (titleMatches || contentMatches) {
+                    // Show this item
+                    item.classList.remove('hidden');
+                    
+                    // Count result type
+                    if (titleMatches) {
+                        titleMatch++;
+                        
+                        // Add visual feedback for title match
+                        titleSpan.innerHTML = highlightMatchingText(itemData.title, currentSearchTerm);
+                        
+                        // Add background highlight for test items
+                        if (isTestItem) {
+                            item.style.backgroundColor = 'rgba(93, 92, 222, 0.1)';
+                        }
                     } else {
-                        contentMatches++;
-                        // Just show normal title for content-only matches
+                        contentMatch++;
+                        
+                        // Show normal title for content-only matches
                         titleSpan.textContent = itemData.title;
+                        
+                        // Add subtle background for content matches
+                        if (isTestItem) {
+                            item.style.backgroundColor = 'rgba(93, 92, 222, 0.05)';
+                        }
                     }
                     
-                    // Show the item and track it
-                    item.classList.remove('hidden');
-                    totalMatches++;
+                    // Count total visible items
+                    visibleCount++;
                     
-                    // Track the first letter for alphabet navigator
+                    // Track first letter for alphabet navigation
                     const firstLetter = itemData.title.charAt(0).toUpperCase();
                     visibleLetters.add(firstLetter);
                 } else {
-                    // Hide non-matching items
+                    // Hide this item
                     item.classList.add('hidden');
+                    
+                    // Clear any highlighting
+                    item.style.backgroundColor = '';
+                    
+                    if (isTestItem) {
+                        console.log(`Item hidden - no match`);
+                    }
                 }
             });
             
-            // Show or hide "no results" message
-            noResults.classList.toggle('hidden', totalMatches > 0);
+            // Update no results message
+            if (noResults) {
+                noResults.classList.toggle('hidden', visibleCount > 0);
+            }
             
-            // Log match results for debugging
-            console.log(`Search results: ${totalMatches} total matches (${titleMatches} in titles, ${contentMatches} in content)`);
+            // Update debug info
+            console.log(`Search results: ${visibleCount} matches (${titleMatch} in titles, ${contentMatch} in content)`);
             
-            // Update the alphabet navigation
+            if (debugElement) {
+                debugElement.innerHTML += `<div>Results: ${visibleCount} total matches</div>`;
+            }
+            
+            // Update alphabet navigation
             availableLetters = Array.from(visibleLetters).sort();
+            
+            // Update letter positions
             buildLetterIndex();
             
             // Reset alphabet scroll if active
@@ -1163,12 +1262,8 @@
                 deactivateAlphaScroll();
             }
             currentLetterIndex = 0;
-        }
-        
-        function handleSearch() {
-            // This function is kept for compatibility with existing event listeners
-            // Just forward to the new implementation
-            performSearch(this.value);
+            
+            console.log("===== SEARCH COMPLETE =====");
         }
         
         function highlightMatchingText(text, searchTerm) {
