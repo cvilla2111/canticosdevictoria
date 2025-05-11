@@ -379,7 +379,7 @@
         <!-- Main Content Area -->
         <div>
             <!-- App Header -->
-            <h1 class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-0 text-gray-800 dark:text-gray-200 text-center font-headings">Cánticos de Victoria</h1>
+            <h1 class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-0 text-gray-800 dark:text-gray-200 text-center font-headings">Cánticos de Victoria@</h1>
             <p id="subtitle" class="mb-4 text-sm md:text-base lg:text-lg xl:text-xl text-gray-600 dark:text-gray-400 text-center">Una colección de coritos</p>
             
             <!-- Search Bar -->
@@ -1053,6 +1053,7 @@
                     </div>
                 </div>
                 <div id="debugResults" class="hidden p-2 mb-4 bg-gray-100 dark:bg-gray-800 rounded-lg text-xs overflow-auto"></div>
+                <div id="searchDiagnostics" class="p-2 mb-4 bg-gray-100 dark:bg-gray-800 rounded-lg text-xs overflow-auto"></div>
             `;
             
             // Insert after the search bar
@@ -1143,15 +1144,26 @@
             }
         }
         
-        // COMPLETELY BASIC SEARCH FUNCTION
+        // DIAGNOSTIC SEARCH FUNCTION WITH COMPLETE TRACE
         function simpleSearch(query) {
-            console.log("BASIC SEARCH:", query);
+            console.log("SEARCH DIAGNOSTICS FOR:", query);
             
-            // Make debug visible
-            const debugInfo = document.getElementById('debugInfo');
-            if (debugInfo) {
-                debugInfo.classList.remove('hidden');
-                debugInfo.innerHTML = `<div>Basic search for: "${query}"</div>`;
+            // Clear previous debug panel 
+            const debugPanel = document.getElementById('searchDiagnostics');
+            if (debugPanel) {
+                debugPanel.innerHTML = `
+                    <div class="text-lg font-bold mb-2">Search Diagnostics</div>
+                    <div class="mb-2 p-2 bg-blue-100 dark:bg-blue-900 rounded">
+                        <div><strong>Query:</strong> "${query}"</div>
+                        <div><strong>Normalized:</strong> "${query.toLowerCase()}"</div>
+                    </div>
+                    <div id="resultsSummary" class="mb-2"></div>
+                    <div id="matchDetails" class="text-xs overflow-auto max-h-40 mb-2"></div>
+                    <div id="nonMatchExamples" class="text-xs overflow-auto max-h-40"></div>
+                `;
+                
+                // Make sure the panel is visible
+                debugPanel.classList.remove('hidden');
             }
             
             // Update search icons
@@ -1172,9 +1184,22 @@
             // Initialize visible letters for alphabet navigation
             const visibleLetters = new Set();
             
+            // Arrays to store details for diagnostic display
+            const matchDetails = [];
+            const nonMatchExamples = [];
+            
             // EMPTY SEARCH - show everything
             if (!currentSearchTerm) {
                 console.log("Empty search, showing all items");
+                
+                // Update results summary
+                if (debugPanel) {
+                    document.getElementById('resultsSummary').innerHTML = `
+                        <div class="p-2 bg-green-100 dark:bg-green-900/30 rounded">
+                            <strong>Empty search</strong> - showing all ${items.length} items
+                        </div>
+                    `;
+                }
                 
                 items.forEach(item => {
                     // Show the item
@@ -1190,7 +1215,7 @@
                         }
                     }
                     
-                    // Highlight for debugging
+                    // Clear any highlight
                     item.style.backgroundColor = '';
                 });
                 
@@ -1200,22 +1225,31 @@
                 // Update letter positions
                 buildLetterIndex();
                 
-                // Log to debug
-                if (debugInfo) {
-                    debugInfo.innerHTML += `<div>Showing all ${items.length} items</div>`;
-                }
-                
                 return;
             }
             
-            // Search term normalization
-            const normalizedQuery = query.toLowerCase();
-            if (debugInfo) {
-                debugInfo.innerHTML += `<div>Search term: "${normalizedQuery}"</div>`;
+            // Search term normalization - we'll try both approaches
+            const lowercaseQuery = query.toLowerCase();
+            // Remove accents as alternative normalization
+            const noAccentsQuery = lowercaseQuery
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "");
+            
+            console.log("Search debug:", { 
+                lowercaseQuery, 
+                noAccentsQuery,
+                item_count: items.length,
+                data_count: allItems.length 
+            });
+            
+            // Check if we have any demo data for faster debugging
+            if (allItems.length > 0) {
+                const sampleItem = allItems[0];
+                console.log("Sample data item:", sampleItem);
             }
             
             // Process each list item
-            items.forEach(item => {
+            items.forEach((item, i) => {
                 // Get title element and audio for ID
                 const span = item.querySelector('span');
                 const audio = item.querySelector('audio');
@@ -1232,50 +1266,189 @@
                     return;
                 }
                 
-                // Very simple case-insensitive search
+                // IMPORTANT: Try multiple search methods
                 const title = data.title || "";
                 const content = data.content || "";
                 
-                // Look for matches
-                const hasMatchTitle = title.toLowerCase().includes(normalizedQuery);
-                const hasMatchContent = content.toLowerCase().includes(normalizedQuery);
+                // Method 1: Simple toLowerCase includes
+                const titleMatch1 = title.toLowerCase().includes(lowercaseQuery);
+                const contentMatch1 = content.toLowerCase().includes(lowercaseQuery);
                 
-                if (hasMatchTitle || hasMatchContent) {
-                    // Item matches! Show it
+                // Method 2: Normalize and remove accents
+                const titleNoAccents = title
+                    .toLowerCase()
+                    .normalize("NFD")
+                    .replace(/[\u0300-\u036f]/g, "");
+                    
+                const contentNoAccents = content
+                    .toLowerCase()
+                    .normalize("NFD")
+                    .replace(/[\u0300-\u036f]/g, "");
+                    
+                const titleMatch2 = titleNoAccents.includes(noAccentsQuery);
+                const contentMatch2 = contentNoAccents.includes(noAccentsQuery);
+                
+                // Combined result (show item if EITHER method works)
+                const titleMatches = titleMatch1 || titleMatch2;
+                const contentMatches = contentMatch1 || contentMatch2;
+                
+                // Store details for diagnostics
+                const itemDetails = {
+                    index: i,
+                    title: title,
+                    titleLower: title.toLowerCase(),
+                    titleNoAccents: titleNoAccents,
+                    contentLower: content.toLowerCase().substring(0, 50) + '...',
+                    contentNoAccents: contentNoAccents.substring(0, 50) + '...',
+                    titleMatch1: titleMatch1,
+                    contentMatch1: contentMatch1,
+                    titleMatch2: titleMatch2,
+                    contentMatch2: contentMatch2
+                };
+                
+                // Store first 5 matches and first 5 non-matches for debugging
+                if (titleMatches || contentMatches) {
+                    if (matchDetails.length < 5) {
+                        matchDetails.push(itemDetails);
+                    }
+                } else {
+                    if (nonMatchExamples.length < 5) {
+                        nonMatchExamples.push(itemDetails);
+                    }
+                }
+                
+                if (titleMatches || contentMatches) {
+                    // Item matches! Show it and track stats
                     item.classList.remove('hidden');
                     visibleCount++;
                     
                     // Track match type
-                    if (hasMatchTitle) {
+                    if (titleMatches) {
                         titleMatches++;
                         
-                        // Add highlighting to title (crude but functional)
-                        const parts = title.split(new RegExp(`(${normalizedQuery})`, 'i'));
-                        span.innerHTML = parts.map(part => 
-                            part.toLowerCase() === normalizedQuery.toLowerCase() 
-                                ? `<span class="bg-yellow-200 dark:bg-yellow-800">${part}</span>` 
-                                : part
-                        ).join('');
+                        // Highlight the title with our custom direct approach
+                        try {
+                            // First method: highlight based on exact match 
+                            let highlightedTitle = title;
+                            
+                            // Find the matching portion for highlighting (case-insensitive)
+                            const matchIndex = title.toLowerCase().indexOf(lowercaseQuery);
+                            if (matchIndex >= 0) {
+                                const matchEnd = matchIndex + lowercaseQuery.length;
+                                const before = title.substring(0, matchIndex);
+                                const match = title.substring(matchIndex, matchEnd);
+                                const after = title.substring(matchEnd);
+                                
+                                highlightedTitle = `${before}<span class="bg-yellow-200 dark:bg-yellow-800">${match}</span>${after}`;
+                            } else {
+                                // Try alternative: find match after removing accents
+                                const noAccentIndex = titleNoAccents.indexOf(noAccentsQuery);
+                                if (noAccentIndex >= 0) {
+                                    const matchEnd = noAccentIndex + noAccentsQuery.length;
+                                    const before = title.substring(0, noAccentIndex);
+                                    const match = title.substring(noAccentIndex, matchEnd);
+                                    const after = title.substring(matchEnd);
+                                    
+                                    highlightedTitle = `${before}<span class="bg-yellow-200 dark:bg-yellow-800">${match}</span>${after}`;
+                                }
+                            }
+                            
+                            span.innerHTML = highlightedTitle;
+                        } catch (e) {
+                            // Fallback if highlighting fails
+                            console.error("Highlight error:", e);
+                            span.textContent = title;
+                        }
                         
-                        // Add visual feedback
+                        // Background color for matched items 
                         item.style.backgroundColor = 'rgba(93, 92, 222, 0.1)';
                     } else {
                         contentMatches++;
-                        span.textContent = title; // Just show title
+                        span.textContent = title;
                         item.style.backgroundColor = 'rgba(93, 92, 222, 0.05)';
                     }
                     
                     // Track first letter for alphabet navigation
-                    if (title) {
-                        const firstLetter = title.charAt(0).toUpperCase();
-                        visibleLetters.add(firstLetter);
-                    }
+                    const firstLetter = title.charAt(0).toUpperCase();
+                    visibleLetters.add(firstLetter);
                 } else {
                     // No match, hide it
                     item.classList.add('hidden');
                     item.style.backgroundColor = '';
                 }
             });
+            
+            // Update diagnostic panel with results
+            if (debugPanel) {
+                // Results summary
+                document.getElementById('resultsSummary').innerHTML = `
+                    <div class="p-2 ${visibleCount > 0 ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'} rounded">
+                        <strong>Results:</strong> ${visibleCount} total matches (${titleMatches} in titles, ${contentMatches} in content)
+                    </div>
+                `;
+                
+                // Match details 
+                let matchHTML = `<div class="font-bold my-2">Sample Matches (${matchDetails.length})</div>`;
+                
+                if (matchDetails.length > 0) {
+                    matchHTML += `<div class="border border-gray-300 dark:border-gray-600 rounded overflow-hidden">`;
+                    matchDetails.forEach(item => {
+                        matchHTML += `
+                            <div class="border-b border-gray-300 dark:border-gray-600 p-2">
+                                <div class="font-bold">${item.title}</div>
+                                <div class="grid grid-cols-2 gap-1 text-[10px]">
+                                    <div><strong>Title (lower):</strong> ${item.titleLower}</div>
+                                    <div><strong>Title (no accents):</strong> ${item.titleNoAccents}</div>
+                                </div>
+                                <div class="mt-1 text-[10px]">
+                                    <div class="font-bold">Match results:</div>
+                                    <div class="grid grid-cols-2 gap-1">
+                                        <div>Method 1 (title): <span class="${item.titleMatch1 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}">${item.titleMatch1 ? 'YES' : 'NO'}</span></div>
+                                        <div>Method 2 (title): <span class="${item.titleMatch2 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}">${item.titleMatch2 ? 'YES' : 'NO'}</span></div>
+                                        <div>Method 1 (content): <span class="${item.contentMatch1 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}">${item.contentMatch1 ? 'YES' : 'NO'}</span></div>
+                                        <div>Method 2 (content): <span class="${item.contentMatch2 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}">${item.contentMatch2 ? 'YES' : 'NO'}</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    matchHTML += `</div>`;
+                } else {
+                    matchHTML += `<div class="italic text-gray-500 dark:text-gray-400 p-2">No matches found</div>`;
+                }
+                
+                document.getElementById('matchDetails').innerHTML = matchHTML;
+                
+                // Non-match examples
+                let nonMatchHTML = `<div class="font-bold my-2">Sample Non-Matches (${nonMatchExamples.length})</div>`;
+                
+                if (nonMatchExamples.length > 0) {
+                    nonMatchHTML += `<div class="border border-gray-300 dark:border-gray-600 rounded overflow-hidden">`;
+                    nonMatchExamples.forEach(item => {
+                        nonMatchHTML += `
+                            <div class="border-b border-gray-300 dark:border-gray-600 p-2">
+                                <div class="font-bold">${item.title}</div>
+                                <div class="grid grid-cols-2 gap-1 text-[10px]">
+                                    <div><strong>Title (lower):</strong> ${item.titleLower}</div>
+                                    <div><strong>Title (no accents):</strong> ${item.titleNoAccents}</div>
+                                </div>
+                                <div class="mt-1 text-[10px]">
+                                    <div class="font-bold">Match results:</div>
+                                    <div class="grid grid-cols-2 gap-1">
+                                        <div>Method 1 (title): <span class="text-red-600 dark:text-red-400">NO</span></div>
+                                        <div>Method 2 (title): <span class="text-red-600 dark:text-red-400">NO</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    nonMatchHTML += `</div>`;
+                } else {
+                    nonMatchHTML += `<div class="italic text-gray-500 dark:text-gray-400 p-2">No non-matches to show</div>`;
+                }
+                
+                document.getElementById('nonMatchExamples').innerHTML = nonMatchHTML;
+            }
             
             // Update no results message
             if (noResults) {
@@ -1287,15 +1460,6 @@
             
             // Update letter positions
             buildLetterIndex();
-            
-            // Log results
-            if (debugInfo) {
-                debugInfo.innerHTML += `
-                    <div>Results: ${visibleCount} total matches</div>
-                    <div>- ${titleMatches} in titles</div>
-                    <div>- ${contentMatches} in content</div>
-                `;
-            }
             
             console.log(`Search results: ${visibleCount} (${titleMatches} titles, ${contentMatches} content)`);
         }
