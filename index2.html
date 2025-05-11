@@ -1,2358 +1,271 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cánticos de Victoria</title>
-    
-    <!-- Favicon -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M18.7,5.1c-0.2-0.6-0.6-1.1-1.2-1.4c-0.9-0.5-2-0.6-2.9-0.1L11.8,5H6C3.8,5,2,6.8,2,9v7c0,2.2,1.8,4,4,4h6h6c2.2,0,4-1.8,4-4V9C22,7,20.6,5.4,18.7,5.1z' fill='%2346b961'/><path d='M11,18H6c-1.1,0-2-0.9-2-2V9c0-1.1,0.9-2,2-2h5V18z' fill='%2368c97f'/><path d='M15.3,16.2L13,17.4V6.6l2.6-1.3c0.4-0.2,0.8,0,1,0C16.7,5.5,17,5.7,17,6.2v7.3C17,14.7,16.4,15.7,15.3,16.2z' fill='%233b5e2f'/><path d='M20,16c0,1.1-0.9,2-2,2h-1.8c1.7-0.9,2.8-2.6,2.8-4.5V7.3c0.6,0.3,1,1,1,1.7V16z' fill='%23c7ce49'/></svg>" type="image/svg+xml">
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        // Tailwind Configuration
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                fontFamily: {
-                    'sans': ['Quicksand', 'sans-serif'],
-                    'headings': ['Chewy', 'cursive'],
-                },
-                extend: {
-                    colors: {
-                        primary: '#5D5CDE',
-                    },
-                    animation: {
-                        'eq1': 'equalize 0.45s ease-in-out infinite alternate',
-                        'eq2': 'equalize 0.38s ease-in-out infinite alternate',
-                        'eq3': 'equalize 0.3s ease-in-out infinite alternate',
-                        'eq4': 'equalize 0.42s ease-in-out infinite alternate',
-                        'eq5': 'equalize 0.35s ease-in-out infinite alternate',
-                        'eq6': 'equalize 0.4s ease-in-out infinite alternate'
-                    },
-                    keyframes: {
-                        equalize: {
-                            '0%': { height: '0%' },
-                            '50%': { height: '75%' },
-                            '100%': { height: '30%' }
-                        }
-                    }
-                }
-            }
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cánticos de Victoria</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Open+Sans&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        // Theme management
-        const storedTheme = localStorage.getItem('theme');
-        const systemDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        
-        if (storedTheme === 'dark' || (!storedTheme && systemDarkMode)) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-        
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
-            if (!localStorage.getItem('theme')) {
-                if (event.matches) {
-                    document.documentElement.classList.add('dark');
-                } else {
-                    document.documentElement.classList.remove('dark');
-                }
-            }
-        });
-    </script>
-    <style>
-        /* === ANIMATION KEYFRAMES === */
-        /* Button animations */
-        @keyframes pulseError {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #F5F5F5;
+    }
 
-        @keyframes buttonPulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 rgba(93, 92, 222, 0); }
-            40% { transform: scale(0.88); box-shadow: 0 0 0 rgba(93, 92, 222, 0); }
-            60% { transform: scale(1.15); box-shadow: 0 0 10px rgba(93, 92, 222, 0.5); }
-            100% { transform: scale(1); box-shadow: 0 0 0 rgba(93, 92, 222, 0); }
-        }
-        
-        /* Stop button animations */
-        @keyframes bounceIn {
-            0% { transform: translate(-50%, 100px); opacity: 0; }
-            60% { transform: translate(-50%, -10px); opacity: 1; }
-            80% { transform: translate(-50%, 5px); }
-            100% { transform: translate(-50%, 0); }
-        }
-        
-        @keyframes bounceOut {
-            0% { transform: translate(-50%, 0); opacity: 1; }
-            20% { transform: translate(-50%, 5px); opacity: 1; }
-            100% { transform: translate(-50%, 100px); opacity: 0; }
-        }
-        
-        /* Modal animations */
-        @keyframes modalFadeIn {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
-        
-        @keyframes modalFadeOut {
-            0% { opacity: 1; }
-            100% { opacity: 0; }
-        }
-        
-        @keyframes modalContentIn {
-            0% { opacity: 0; transform: scale(0.9); }
-            70% { opacity: 1; transform: scale(1.02); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-        
-        @keyframes modalContentOut {
-            0% { opacity: 1; transform: scale(1); }
-            30% { opacity: 1; transform: scale(1.02); }
-            100% { opacity: 0; transform: scale(0.9); }
-        }
-        
-        /* === ANIMATION CLASSES === */
-        .pulse-error { animation: pulseError 0.3s ease-in-out; }
-        .button-pulse { animation: buttonPulse 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
-        .bounce-in { animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        .bounce-out { animation: bounceOut 0.4s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards; }
-        .modal-fade-in { animation: modalFadeIn 0.3s ease-out forwards; }
-        .modal-fade-out { animation: modalFadeOut 0.3s ease-in forwards; }
-        .modal-content-in { animation: modalContentIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        .modal-content-out { animation: modalContentOut 0.3s ease-in forwards; }
+    header {
+      background: linear-gradient(135deg, #FF2E63, #00DDEB);
+      padding: 20px;
+      text-align: center;
+      position: relative;
+    }
 
-        /* === AUDIO BUTTON STATES === */
-        .audio-unavailable {
-            position: relative;
-        }
-        
-        .audio-unavailable svg.play-button {
-            color: #888888 !important;
-            stroke: #888888 !important;
-        }
-        
-        .audio-unavailable svg.play-button rect {
-            fill: rgba(136, 136, 136, 0.15) !important;
-        }
-        
-        .audio-unavailable svg.play-button path {
-            fill: #888888 !important;
-        }
-        
-        .audio-unavailable::after {
-            content: '✕';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 24px;
-            color: white;
-            font-weight: bold;
-            z-index: 5;
-            text-shadow: 0px 0px 2px rgba(0,0,0,0.5);
-        }
-        
-        .audio-unavailable .play-button {
-            cursor: not-allowed;
-        }
-        
-        /* Button styling */
-        .play-button-container {
-            transition: transform 0.2s ease;
-            transform-origin: center;
-        }
-        
-        .close-button-effect {
-            transition: transform 0.2s, background-color 0.2s;
-        }
-        
-        .close-button-effect:active {
-            transform: scale(0.85);
-        }
-        
-        .metronome-button-effect {
-            transition: transform 0.2s, color 0.2s;
-        }
-        
-        .metronome-button-effect:active {
-            transform: scale(0.9);
-        }
-        
-        /* Flat Button Style for clave buttons */
-        .flat-btn {
-            background-color: #f3f4f6; /* gray-100 */
-            color: #374151; /* gray-700 */
-            border: 1px solid #e5e7eb; /* gray-200 */
-            transition: all 0.2s ease;
-        }
-        
-        /* Dark mode support for flat buttons */
-        .dark .flat-btn {
-            background-color: #374151; /* gray-700 */
-            color: #e5e7eb; /* gray-200 */
-            border: 1px solid #4b5563; /* gray-600 */
-        }
-        
-        /* Hover state */
-        .flat-btn:hover {
-            background-color: #f9fafb; /* gray-50 */
-        }
-        
-        .dark .flat-btn:hover {
-            background-color: #4b5563; /* gray-600 */
-        }
-        
-        /* Active state */
-        .flat-btn.active-fill {
-            background-color: #ffffff;
-            color: #ef4444; /* red-500 */
-            border: 1px solid #ef4444; /* red-500 */
-            font-weight: 600;
-        }
-        
-        /* Dark mode support for active state */
-        .dark .flat-btn.active-fill {
-            background-color: #1f2937; /* gray-800 */
-            color: #f87171; /* red-400 */
-            border: 1px solid #f87171; /* red-400 */
-        }
+    .search-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      max-width: 500px;
+      z-index: 1;
+    }
 
-        /* === ALPHABET SCROLL FEATURE === */
-        /* Letter overlay */
-        .letter-overlay {
-            position: fixed;
-            left: 0;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 100;
-            background-color: transparent; /* Removed dark background */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s;
-            /* Disable text selection */
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            -khtml-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
-        
-        .letter-indicator {
-            width: 120px;
-            height: 120px;
-            background-color: rgba(93, 92, 222, 0.9);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 60px;
-            font-weight: bold;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            transition: transform 0.2s, background-color 0.2s;
-            /* Disable text selection */
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            -khtml-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
-        
-        /* When active, show the overlay */
-        .letter-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        
-        /* Scroll indicator dot */
-        .scroll-indicator {
-            position: fixed;
-            right: 4px;
-            width: 8px;
-            height: 8px;
-            background-color: rgba(93, 92, 222, 0.8);
-            border-radius: 50%;
-            transition: top 0.1s linear, transform 0.2s, background-color 0.2s;
-            opacity: 0;
-            z-index: 90;
-        }
-        
-        /* Disable text selection in item list */
-        #itemList {
-            -webkit-touch-callout: none; /* iOS Safari */
-            -webkit-user-select: none;   /* Safari */
-            -khtml-user-select: none;    /* Konqueror HTML */
-            -moz-user-select: none;      /* Firefox */
-            -ms-user-select: none;       /* Internet Explorer/Edge */
-            user-select: none;           /* Non-prefixed version */
-        }
-        
-        /* Debug info panel */
-        #debugInfo {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            z-index: 1000;
-            background-color: rgba(0,0,0,0.7);
-            color: white;
-            padding: 5px;
-            font-family: monospace;
-            font-size: 10px;
-            max-width: 100%;
-            max-height: 30vh;
-            overflow: auto;
-        }
-    </style>
+    #search-bar {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 20px;
+      font-size: 16px;
+      background: rgba(255, 255, 255, 0.8);
+      outline: none;
+    }
+
+    h1 {
+      font-size: 36px;
+      color: white;
+      position: relative;
+      z-index: 2;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    main {
+      padding: 20px;
+    }
+
+    .song-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .song-card {
+      display: flex;
+      align-items: center;
+      background: linear-gradient(135deg, #FF2E63, #00DDEB);
+      border-radius: 10px;
+      padding: 10px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .song-card:hover {
+      transform: scale(1.05);
+    }
+
+    .song-card img {
+      width: 60px;
+      height: 60px;
+      border-radius: 5px;
+      object-fit: cover;
+    }
+
+    .song-info {
+      margin-left: 10px;
+      color: white;
+    }
+
+    .song-info h3 {
+      font-size: 18px;
+      margin: 0;
+    }
+
+    .song-info p {
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: #FFF;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #333;
+    }
+
+    .modal-content h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .modal-content p {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    #modal-lyrics {
+      font-family: 'Open Sans', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      color: #333;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 24px;
+      }
+      .song-list {
+        grid-template-columns: 1fr;
+      }
+      .song-card img {
+        width: 50px;
+        height: 50px;
+      }
+    }
+  </style>
 </head>
-<body class="min-h-screen bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-200">
-    <div class="container mx-auto px-2 sm:px-3 pt-10 pb-20 max-w-md md:max-w-lg lg:max-w-2xl xl:max-w-4xl 2xl:max-w-6xl min-h-screen flex flex-col">
-        <!-- Main Content Area -->
-        <div>
-            <!-- App Header -->
-            <h1 class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-0 text-gray-800 dark:text-gray-200 text-center font-headings">Cánticos de Victoria@</h1>
-            <p id="subtitle" class="mb-4 text-sm md:text-base lg:text-lg xl:text-xl text-gray-600 dark:text-gray-400 text-center">Una colección de coritos</p>
-            
-            <!-- Search Bar -->
-            <div id="searchBarContainer" class="sticky top-0 z-10 bg-white dark:bg-gray-900 pt-2 pb-1 mb-4 transition-shadow duration-300">
-                <div class="relative">
-                    <input type="text" id="searchInput" class="w-full px-4 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors text-base md:text-lg lg:text-xl" placeholder="Search...">
-                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 dark:text-gray-500">
-                        <!-- Search icon -->
-                        <svg id="searchIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                        
-                        <!-- Clear search icon -->
-                        <svg id="clearSearchIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden cursor-pointer hover:text-gray-600 dark:hover:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" onclick="clearSearch()">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </div>
-                </div>
-                <p id="noResults" class="mt-2 text-sm md:text-base lg:text-lg text-red-500 dark:text-red-400 text-center hidden">No se encontraron resultados</p>
-            </div>
-            
-            <!-- Loading Indicator -->
-            <div id="loadingIndicator" class="flex items-center justify-center py-4">
-                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                <span class="md:text-lg lg:text-xl">Cargando cánticos...</span>
-            </div>
-            
-            <!-- Error Message -->
-            <div id="errorMessage" class="hidden py-4 px-4 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg mb-4">
-                <p class="md:text-lg lg:text-xl">Error al cargar el archivo de cánticos. Por favor, verifique que exista el archivo "canticos.txt" en el directorio raíz.</p>
-            </div>
-            
-            <!-- Item List -->
-            <ul id="itemList" class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-md cursor-pointer">
-                <!-- Items will be populated dynamically -->
-            </ul>
-        </div>
-        
-        <!-- Footer -->
-        <footer class="mt-auto pt-8 pb-4 text-center text-sm text-gray-500 dark:text-gray-400">
-            <!-- Theme Toggle Switch -->
-            <div class="flex justify-center items-center mb-3">
-                <span class="mr-2 text-yellow-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                </span>
-                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                    <input type="checkbox" name="toggle" id="themeToggle" class="absolute block w-6 h-6 rounded-full bg-white border-4 border-gray-300 appearance-none cursor-pointer focus:outline-none checked:right-0 checked:border-gray-700 dark:checked:border-gray-200 focus:ring-0 transition-all duration-200" />
-                    <label for="themeToggle" class="block overflow-hidden h-6 rounded-full bg-gray-300 dark:bg-gray-700 cursor-pointer"></label>
-                </div>
-                <span class="ml-2 text-blue-900 dark:text-blue-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                    </svg>
-                </span>
-            </div>
-            
-            <p class="md:text-base lg:text-lg">Cánticos De Victoria. <span class="text-green-600 dark:text-green-500">Ministerio Monte de Dios</span>. Manatí, P.R.</p>
-        </footer>
+<body>
+  <header>
+    <div class="search-container">
+      <input type="text" id="search-bar" placeholder="Buscar canciones..." />
     </div>
+    <h1>Cánticos de Victoria</h1>
+  </header>
+  <main>
+    <div class="song-list" id="song-list">
+      <!-- Song items will be dynamically added via JavaScript -->
+    </div>
+  </main>
+  <div class="modal" id="lyrics-modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal()">×</span>
+      <h2 id="modal-song-title"></h2>
+      <p id="modal-song-artist"></p>
+      <div id="modal-lyrics"></div>
+    </div>
+  </div>
+  <script>
+    // Sample song data (20 items)
+    const songs = [
+      { id: 1, title: "Victoria Eterna", artist: "Coro Celestial", lyrics: "En el cielo cantaremos, victoria eterna hallaremos..." },
+      { id: 2, title: "Luz Divina", artist: "Hermanos de Fe", lyrics: "Luz divina, guía nuestro camino, en tu amor vivimos..." },
+      { id: 3, title: "Cántico de Gloria", artist: "Voces Santas", lyrics: "Gloria al Rey, cantamos con fervor..." },
+      { id: 4, title: "Paz en la Tormenta", artist: "Alabanza Viva", lyrics: "En la tormenta, tu paz nos guarda..." },
+      { id: 5, title: "Alma Redimida", artist: "Coro Celestial", lyrics: "Alma redimida, libre en tu amor..." },
+      { id: 6, title: "Rey de Reyes", artist: "Hermanos de Fe", lyrics: "Rey de reyes, te adoramos hoy..." },
+      { id: 7, title: "Camino al Cielo", artist: "Voces Santas", lyrics: "Por el camino al cielo, seguimos tu luz..." },
+      { id: 8, title: "Fuego Sagrado", artist: "Alabanza Viva", lyrics: "Fuego sagrado, quema en nuestro ser..." },
+      { id: 9, title: "Gracia Infinita", artist: "Coro Celestial", lyrics: "Gracia infinita, nos cubre tu amor..." },
+      { id: 10, title: "Himno de Fe", artist: "Hermanos de Fe", lyrics: "Con fe cantamos, tu nombre exaltamos..." },
+      { id: 11, title: "Ríos de Vida", artist: "Voces Santas", lyrics: "Ríos de vida fluyen de tu trono..." },
+      { id: 12, title: "Santo Es Tu Nombre", artist: "Alabanza Viva", lyrics: "Santo es tu nombre, te alabamos..." },
+      { id: 13, title: "Esperanza Eterna", artist: "Coro Celestial", lyrics: "Esperanza eterna, en ti confiamos..." },
+      { id: 14, title: "Amor Sin Fin", artist: "Hermanos de Fe", lyrics: "Amor sin fin, nos das tu paz..." },
+      { id: 15, title: "Cielos Abiertos", artist: "Voces Santas", lyrics: "Cielos abiertos, tu gloria vemos..." },
+      { id: 16, title: "Fortaleza Divina", artist: "Alabanza Viva", lyrics: "Fortaleza divina, nos sostienes..." },
+      { id: 17, title: "Luz de Salvación", artist: "Coro Celestial", lyrics: "Luz de salvación, brilla en nosotros..." },
+      { id: 18, title: "Canto de Libertad", artist: "Hermanos de Fe", lyrics: "Canto de libertad, en ti somos libres..." },
+      { id: 19, title: "Promesa Cumplida", artist: "Voces Santas", lyrics: "Promesa cumplida, tu palabra es fiel..." },
+      { id: 20, title: "Gloria al Creador", artist: "Alabanza Viva", lyrics: "Gloria al Creador, cantamos con gozo..." }
+    ];
 
-    <!-- Modal -->
-    <div id="modal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-75 flex items-center justify-center p-4 sm:p-2">
-        <div style="border-radius: 8px !important; overflow: hidden;" class="bg-white dark:bg-gray-800 shadow-xl max-w-md md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-[75vw] w-full max-h-[80vh] flex flex-col">
-            <!-- Fixed Header -->
-            <div class="px-3 pt-5 pb-3 sticky top-0 bg-white dark:bg-gray-800 z-10">
-                <div class="flex">
-                    <!-- Play button for the modal -->
-                    <div class="relative h-10 w-10 mr-3 flex-shrink-0 cursor-pointer play-button-container -mt-1" id="modalPlayButtonContainer">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-900 dark:text-gray-100 play-button" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" id="modalPlayButton">
-                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="white" class="dark:fill-gray-800" />
-                            <path class="play-icon" d="M10 8l6 4-6 4V8z" fill="currentColor" />
-                        </svg>
-                        
-                        <!-- Equalizer animation (hidden by default) -->
-                        <div class="absolute inset-0 pointer-events-none hidden" id="modalEqualizer">
-                            <div class="absolute bottom-2 left-0 right-0 flex items-end justify-center h-[calc(100%-8px)]">
-                                <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq1"></div>
-                                <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq2"></div>
-                                <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq3"></div>
-                                <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq4"></div>
-                                <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq5"></div>
-                                <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq6"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="pl-1 pr-6 flex-1 flex items-center self-center min-h-[40px] -mt-1">
-                        <h3 id="modalTitle" class="text-base md:text-lg lg:text-xl xl:text-2xl font-bold text-gray-800 dark:text-gray-200 leading-tight"></h3>
-                    </div>
-                    <button id="closeModalBtn" onclick="closeModal()" class="w-7 h-7 flex items-center justify-center rounded-md border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:border-primary hover:text-primary dark:hover:border-primary dark:hover:text-primary bg-transparent transition-all duration-200 focus:outline-none flex-shrink-0 self-start -mt-2 close-button-effect">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Scrollable Content Area -->
-            <div class="flex-1 overflow-y-auto px-3 py-3 md:py-4 lg:py-5 xl:py-6 flex justify-center" id="scrollableContent">
-                <div class="w-full text-center max-w-3xl">
-                    <p id="modalContent" class="text-gray-800 dark:text-gray-200 text-lg md:text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl text-left font-medium inline-block"></p>
-                </div>
-            </div>
-            
-            <!-- Fixed Footer -->
-            <div class="px-3 py-3 sticky bottom-0 bg-white dark:bg-gray-800 z-10">
-                <div class="flex justify-end">
-                    <div class="inline-flex rounded-md p-0.5 h-7">
-                        <button id="metronomeButton220" onclick="toggleMetronome(220)" class="flat-btn min-w-[45px] px-4 h-full flex items-center justify-center text-sm font-medium rounded transition-all focus:outline-none relative mx-0.5 metronome-button-effect">
-                            220
-                        </button>
-                        <button id="metronomeButton240" onclick="toggleMetronome(240)" class="flat-btn min-w-[45px] px-4 h-full flex items-center justify-center text-sm font-medium rounded transition-all focus:outline-none relative mx-0.5 metronome-button-effect">
-                            240
-                        </button>
-                        <button id="metronomeButton260" onclick="toggleMetronome(260)" class="flat-btn min-w-[45px] px-4 h-full flex items-center justify-center text-sm font-medium rounded transition-all focus:outline-none relative mx-0.5 metronome-button-effect">
-                            260
-                        </button>
-                        <button id="metronomeButton280" onclick="toggleMetronome(280)" class="flat-btn min-w-[45px] px-4 h-full flex items-center justify-center text-sm font-medium rounded transition-all focus:outline-none relative mx-0.5 metronome-button-effect">
-                            280
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Fixed Stop Button -->
-    <div id="fixedStopButton" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 w-14 h-14 rounded-full bg-red-500 shadow-xl flex items-center justify-center cursor-pointer z-50 hidden transition-all duration-300 hover:scale-110 active:scale-95" onclick="stopCurrentAudio()">
-        <div class="w-5 h-5 bg-white rounded-sm"></div>
-    </div>
-    
-    <!-- Return to Top Button -->
-    <div id="returnToTopBtn" class="fixed bottom-5 right-5 w-10 h-10 cursor-pointer z-40 shadow-md rounded-full bg-white dark:bg-gray-800 transition-all duration-300 opacity-0 invisible hover:scale-110 active:scale-95 flex items-center justify-center" onclick="scrollToTop()">
-        <div class="w-7 h-7">
-            <svg width="100%" height="100%" fill="none" stroke-linecap="square" stroke-miterlimit="10" version="1.1" viewBox="0 0 510.2 411.55" xmlns="http://www.w3.org/2000/svg" class="up-icon">
-                <defs>
-                    <clipPath id="clipPath411-up">
-                        <path d="m129.72-5.7707h800v600h-800z"/>
-                    </clipPath>
-                    <clipPath id="clipPath417-up">
-                        <path d="m129.72-5.7707h800v600h-800z"/>
-                    </clipPath>
-                    <clipPath id="clipPath423-up">
-                        <path d="m129.72-5.7707h800v600h-800z"/>
-                    </clipPath>
-                </defs>
-                <g fill-rule="evenodd">
-                    <path transform="translate(-133.27 -88.454)" d="m376.97 88.454c-57.43 69.504-138.67 206.23-243.7 411.55h510.2c-93.146-103.81-182.14-240.98-266.49-411.55z" clip-path="url(#clipPath423-up)" fill="#46b961"/>
-                    <path transform="translate(-133.27 -88.454)" d="m376.97 205.97c-28.441 8.7006-109.68 106.54-243.7 294.03h510.2c-107.62-134.9-196.63-233.21-266.49-294.03z" clip-path="url(#clipPath417-up)" fill="#3b5e2f"/>
-                    <path transform="translate(-133.27 -88.454)" d="m243.99 205.97c-46.564 87.807-83.811 185.65-110.72 294.03 37.776-9.3852 99.08-14.061 184.08-14.061 84.983 0 193.64 4.6759 326.12 14.061-99.345-39.328-232.33-137.19-399.48-294.03z" clip-path="url(#clipPath411-up)" fill="#c7ce49"/>
-                </g>
-            </svg>
-        </div>
-    </div>
-    
-    <!-- Hidden Audio Element for Clave -->
-    <audio id="claveAudio" preload="auto" loop>
-        <source src="clave240bpm.mp3" type="audio/mpeg">
-    </audio>
+    // Render song list
+    function renderSongs(songArray) {
+      const songList = document.getElementById('song-list');
+      songList.innerHTML = '';
+      songArray.forEach(song => {
+        const songCard = document.createElement('div');
+        songCard.className = 'song-card';
+        songCard.innerHTML = `
+          <img src="https://via.placeholder.com/60" alt="Album Art">
+          <div class="song-info">
+            <h3>${song.title}</h3>
+            <p>${song.artist}</p>
+          </div>
+        `;
+        songCard.onclick = () => openModal(song);
+        songList.appendChild(songCard);
+      });
+    }
 
-    <!-- Alphabet Scroll Components -->
-    <div id="scrollIndicator" class="scroll-indicator"></div>
-    
-    <div id="letterOverlay" class="letter-overlay">
-        <div class="letter-indicator">
-            <span id="currentLetter">A</span>
-        </div>
-    </div>
-    
-    <!-- Debug information -->
-    <div id="debugInfo" class="hidden"></div>
+    // Open modal with lyrics
+    function openModal(song) {
+      const modal = document.getElementById('lyrics-modal');
+      const modalTitle = document.getElementById('modal-song-title');
+      const modalArtist = document.getElementById('modal-song-artist');
+      const modalLyrics = document.getElementById('modal-lyrics');
+      modalTitle.textContent = song.title;
+      modalArtist.textContent = song.artist;
+      modalLyrics.textContent = song.lyrics;
+      modal.style.display = 'flex';
+    }
 
-    <script>
-        /********************************
-         * STATE MANAGEMENT
-         ********************************/
-        // Audio playback state
-        let audioContext;
-        let currentOscillator = null;
-        let currentGain = null;
-        let currentAudio = null;
-        let playingButtonId = null;
-        let currentModalAudioId = null; // Stores the audio ID associated with the currently open modal
-        const unavailableAudioFiles = new Set();
-        
-        // Clave state
-        let clavePlaying = false;
-        
-        // Alphabet scroll state
-        let alphaScrollActive = false;
-        let longPressTimer = null;
-        let touchStartY = 0;
-        let initialScrollPosition = 0; // Store initial scroll position
-        let initialLetterIndex = 0;    // Store initial letter index
-        let currentLetterIndex = 0;
-        let fingerHasMoved = false;    // Track if the finger has moved after long press
-        let availableLetters = [];
-        let letterSections = []; // Store letter sections with their positions
-        let scrollTimer = null;  // Timer for debouncing scroll actions
-        let isScrolling = false; // Track if a scroll is in progress
-        
-        // Debugging
-        let debugMode = false;
-        
-        /********************************
-         * INITIALIZATION
-         ********************************/
-        // Fullscreen state management
-        let isFullScreen = false;
-        let lastTapTime = 0;
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            // Set theme toggle initial state
-            const themeToggle = document.getElementById('themeToggle');
-            if (document.documentElement.classList.contains('dark')) {
-                themeToggle.checked = true;
-            }
-            
-            // Load content
-            loadCanticosFile();
-            
-            // Set up event listeners
-            setupEventListeners();
-            
-            // Set up modal play button event listener
-            document.getElementById('modalPlayButtonContainer').addEventListener('click', function() {
-                if (currentModalAudioId) {
-                    // Add intense pulse animation when clicking modal play button
-                    addButtonPulseAnimation(this);
-                    playAudio(new Event('click'), currentModalAudioId);
-                }
-            });
-            
-            // Set up double-tap fullscreen toggle on the h1 element
-            const appTitle = document.querySelector('h1');
-            if (appTitle) {
-                appTitle.addEventListener('touchend', handleDoubleTap);
-                appTitle.addEventListener('click', handleDoubleTap); // for desktop testing
-                
-                // Add subtle hint that this is interactive
-                appTitle.style.cursor = 'pointer';
-            }
-            
-            // Enable debug mode with URL param ?debug=true
-            if (window.location.search.includes('debug=true')) {
-                debugMode = true;
-                document.getElementById('debugInfo').classList.remove('hidden');
-            }
-        });
-        
-        function debugLog(message) {
-            if (!debugMode) return;
-            
-            const debugInfo = document.getElementById('debugInfo');
-            const now = new Date();
-            const timestamp = now.getHours().toString().padStart(2, '0') + ':' + 
-                             now.getMinutes().toString().padStart(2, '0') + ':' + 
-                             now.getSeconds().toString().padStart(2, '0');
-            
-            debugInfo.innerHTML += `<div>[${timestamp}] ${message}</div>`;
-            
-            // Keep only the last 20 messages
-            const messages = debugInfo.querySelectorAll('div');
-            if (messages.length > 20) {
-                for (let i = 0; i < messages.length - 20; i++) {
-                    debugInfo.removeChild(messages[i]);
-                }
-            }
-            
-            // Auto-scroll to bottom
-            debugInfo.scrollTop = debugInfo.scrollHeight;
-        }
-        
-        // Handle double tap on h1 element to toggle fullscreen
-        function handleDoubleTap(event) {
-            const currentTime = new Date().getTime();
-            const tapLength = currentTime - lastTapTime;
-            
-            if (tapLength < 500 && tapLength > 0) {
-                // Double tap detected
-                event.preventDefault();
-                toggleFullScreen();
-                lastTapTime = 0;
-            } else {
-                // Not a double tap - store the current time
-                lastTapTime = currentTime;
-            }
-        }
-        
-        // Toggle fullscreen mode
-        function toggleFullScreen() {
-            if (!isFullScreen) {
-                // Request fullscreen on the appropriate element
-                const docEl = document.documentElement;
-                
-                if (docEl.requestFullscreen) {
-                    docEl.requestFullscreen();
-                } else if (docEl.webkitRequestFullscreen) { // Safari
-                    docEl.webkitRequestFullscreen();
-                } else if (docEl.msRequestFullscreen) { // IE11
-                    docEl.msRequestFullscreen();
-                }
-                
-                isFullScreen = true;
-            } else {
-                // Exit fullscreen
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.webkitExitFullscreen) { // Safari
-                    document.webkitExitFullscreen();
-                } else if (document.msExitFullscreen) { // IE11
-                    document.msExitFullscreen();
-                }
-                
-                isFullScreen = false;
-            }
-        }
-        
-        // Listen for fullscreen change events
-        document.addEventListener('fullscreenchange', updateFullscreenState);
-        document.addEventListener('webkitfullscreenchange', updateFullscreenState);
-        document.addEventListener('mozfullscreenchange', updateFullscreenState);
-        document.addEventListener('MSFullscreenChange', updateFullscreenState);
-        
-        // Update fullscreen state when changed by browser UI (e.g., pressing Escape)
-        function updateFullscreenState() {
-            isFullScreen = Boolean(
-                document.fullscreenElement || 
-                document.webkitFullscreenElement || 
-                document.mozFullScreenElement ||
-                document.msFullscreenElement
-            );
-        }
-        
-        /********************************
-         * BUTTON ANIMATIONS
-         ********************************/
-        function addButtonPulseAnimation(element) {
-            // Remove any existing animation
-            element.classList.remove('button-pulse');
-            
-            // Force a reflow to restart animation
-            void element.offsetWidth;
-            
-            // Add the pulse animation
-            element.classList.add('button-pulse');
-            
-            // Remove the animation class after it completes
-            setTimeout(() => {
-                element.classList.remove('button-pulse');
-            }, 400);
-        }
-        
-        /********************************
-         * EVENT LISTENERS
-         ********************************/
-        function setupEventListeners() {
-            // Search functionality
-            const searchInput = document.getElementById('searchInput');
-            searchInput.addEventListener('input', handleSearch);
-            
-            // Theme toggle
-            const themeToggle = document.getElementById('themeToggle');
-            themeToggle.addEventListener('change', toggleTheme);
-            
-            // Search bar shadow and return-to-top button on scroll
-            window.addEventListener('scroll', handleScroll);
-            
-            // Modal close events
-            document.getElementById('modal').addEventListener('click', function(event) {
-                if (event.target === this) {
-                    closeModal();
-                }
-            });
-            
-            // Close modal on Escape key
-            document.addEventListener('keydown', function(event) {
-                if (event.key === 'Escape' && !document.getElementById('modal').classList.contains('hidden')) {
-                    closeModal();
-                }
-            });
-            
-            // Add click effect for metronome buttons
-            const bpmValues = [220, 240, 260, 280];
-            bpmValues.forEach(bpm => {
-                const metronomeButton = document.getElementById(`metronomeButton${bpm}`);
-                if (metronomeButton) {
-                    metronomeButton.addEventListener('click', function() {
-                        addButtonPulseAnimation(this);
-                    });
-                }
-            });
-            
-            // Add click effect for return to top button
-            const returnToTopBtn = document.getElementById('returnToTopBtn');
-            returnToTopBtn.addEventListener('click', function() {
-                addButtonPulseAnimation(this);
-            });
-            
-            // Add click effect for fixed stop button
-            const fixedStopButton = document.getElementById('fixedStopButton');
-            fixedStopButton.addEventListener('click', function() {
-                addButtonPulseAnimation(this);
-            });
-            
-            // Set up alphabet scroll event listeners
-            const itemList = document.getElementById('itemList');
-            
-            // Use passive listeners for better scroll performance
-            itemList.addEventListener('touchstart', handleTouchStart, { passive: true });
-            itemList.addEventListener('touchmove', handleTouchMove, { passive: true });
-            itemList.addEventListener('touchend', handleTouchEnd);
-            
-            // Mouse events for desktop testing
-            itemList.addEventListener('mousedown', handleMouseDown);
-            document.addEventListener('mousemove', handleMouseMove);
-            document.addEventListener('mouseup', handleMouseUp);
-            
-            // Handle window resize for alphabet scroll
-            window.addEventListener('resize', buildLetterIndex);
-            
-            // Prevent text selection conflicts during touch events
-            itemList.addEventListener('selectstart', function(e) {
-                if (alphaScrollActive) {
-                    e.preventDefault();
-                    return false;
-                }
-            });
-        }
-        
-        function handleScroll() {
-            const searchBar = document.getElementById('searchBarContainer');
-            const returnToTopBtn = document.getElementById('returnToTopBtn');
-            
-            // Add shadow to search bar when scrolling
-            if (window.scrollY > 10) {
-                searchBar.classList.add('shadow-md');
-            } else {
-                searchBar.classList.remove('shadow-md');
-            }
-            
-            // Show/hide return-to-top button based on scroll position
-            if (window.scrollY > 300) {
-                returnToTopBtn.classList.remove('opacity-0', 'invisible');
-                returnToTopBtn.classList.add('opacity-100');
-            } else {
-                returnToTopBtn.classList.remove('opacity-100');
-                returnToTopBtn.classList.add('opacity-0');
-                // Add a delay before making it invisible to allow the transition to complete
-                setTimeout(() => {
-                    if (window.scrollY <= 300) {
-                        returnToTopBtn.classList.add('invisible');
-                    }
-                }, 300);
-            }
-        }
-        
-        function toggleTheme() {
-            if (this.checked) {
-                // Switch to dark mode
-                document.documentElement.classList.add('dark');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                // Switch to light mode
-                document.documentElement.classList.remove('dark');
-                localStorage.setItem('theme', 'light');
-            }
-        }
-        
-        /********************************
-         * SEARCH FUNCTIONALITY
-         ********************************/
-        function handleSearch() {
-            const searchTerm = normalizeText(this.value);
-            const listItems = document.querySelectorAll('#itemList li');
-            const noResults = document.getElementById('noResults');
-            let visibleCount = 0;
-            
-            // Update icons based on input value
-            toggleSearchIcons(this.value);
-            
-            // Track which letters have visible items
-            const lettersWithVisibleItems = new Set();
-            
-            // If search term is empty, show all items
-            if (searchTerm === '') {
-                listItems.forEach(item => item.classList.remove('hidden'));
-                noResults.classList.add('hidden');
-                
-                // Update the letter positions after showing all items
-                buildLetterIndex();
-            } else {
-                // Filter items based on normalized search term
-                listItems.forEach(item => {
-                    const titleSpan = item.querySelector('span');
-                    if (!titleSpan) return;
-                    
-                    const title = normalizeText(titleSpan.textContent);
-                    const letter = title.trim()[0].toUpperCase();
-                    
-                    // If normalized item title contains search term, show it, otherwise hide it
-                    if (title.includes(searchTerm)) {
-                        item.classList.remove('hidden');
-                        visibleCount++;
-                        
-                        // Track which letter has visible items
-                        if (letter) {
-                            lettersWithVisibleItems.add(letter);
-                        }
-                    } else {
-                        item.classList.add('hidden');
-                    }
-                });
-                
-                // Show or hide the "no results" message
-                noResults.classList.toggle('hidden', visibleCount > 0);
-            }
-            
-            // Update available letters based on visible items
-            availableLetters = Array.from(lettersWithVisibleItems).sort();
-            
-            // Update letter positions after filtering
-            buildLetterIndex();
-            
-            // Reset alphabetic scroll state
-            if (alphaScrollActive) {
-                deactivateAlphaScroll();
-            }
-            currentLetterIndex = 0;
-        }
-        
-        function normalizeText(text) {
-            return text
-                .toLowerCase()
-                .replace(/ñ/g, "n")                 // Replace ñ with n explicitly
-                .normalize("NFD")                   // Normalize accented characters
-                .replace(/[\u0300-\u036f]/g, "")    // Remove diacritics (accents)
-                .replace(/[^\w\s]/g, " ")          // Replace special chars with spaces
-                .replace(/\s+/g, " ")              // Normalize multiple spaces
-                .trim();                           // Remove leading/trailing whitespace
-        }
-        
-        function clearSearch() {
-            const searchInput = document.getElementById('searchInput');
-            const noResults = document.getElementById('noResults');
-            
-            searchInput.value = '';
-            
-            // Show all items
-            document.querySelectorAll('#itemList li').forEach(item => {
-                item.classList.remove('hidden');
-            });
-            
-            // Hide no results message
-            noResults.classList.add('hidden');
-            
-            // Update icons
-            toggleSearchIcons('');
-            
-            // Update letter positions after showing all items
-            buildLetterIndex();
-            
-            // Reset alphabet scroll state if active
-            if (alphaScrollActive) {
-                deactivateAlphaScroll();
-            }
-            currentLetterIndex = 0;
-            
-            // Focus the search input
-            searchInput.focus();
-        }
-        
-        function toggleSearchIcons(value) {
-            const searchIcon = document.getElementById('searchIcon');
-            const clearSearchIcon = document.getElementById('clearSearchIcon');
-            
-            const isEmpty = value.trim() === '';
-            searchIcon.classList.toggle('hidden', !isEmpty);
-            clearSearchIcon.classList.toggle('hidden', isEmpty);
-        }
-        
-        /********************************
-         * CONTENT LOADING
-         ********************************/
-        async function loadCanticosFile() {
-            const itemList = document.getElementById('itemList');
-            const subtitle = document.getElementById('subtitle');
-            const loadingIndicator = document.getElementById('loadingIndicator');
-            const errorMessage = document.getElementById('errorMessage');
-            
-            try {
-                // Fetch the canticos.txt file
-                const response = await fetch('canticos.txt');
-                
-                if (!response.ok) {
-                    throw new Error(`Error ${response.status}: ${response.statusText}`);
-                }
-                
-                // Read the text content
-                const content = await response.text();
-                
-                // Process the file content
-                processFileContent(content);
-                
-                // Hide loading indicator
-                loadingIndicator.classList.add('hidden');
-            } catch (error) {
-                console.error('Error loading canticos.txt:', error);
-                
-                // Fallback to demo data for testing
-                generateDemoData();
-                
-                // Show error message
-                loadingIndicator.classList.add('hidden');
-                errorMessage.classList.remove('hidden');
-            }
-        }
-        
-        function generateDemoData() {
-            // Demo canticos for testing
-            const demoItems = [
-                { title: "Alabanza y adoración", content: "Demo content for Alabanza y adoración" },
-                { title: "Al Rey de reyes", content: "Demo content for Al Rey de reyes" },
-                { title: "Aleluya Cristo vive", content: "Demo content for Aleluya Cristo vive" },
-                { title: "Bendito sea el Señor", content: "Demo content for Bendito sea el Señor" },
-                { title: "Cordero de Dios", content: "Demo content for Cordero de Dios" },
-                { title: "Digno es el Cordero", content: "Demo content for Digno es el Cordero" },
-                { title: "El gozo del Señor", content: "Demo content for El gozo del Señor" },
-                { title: "Grande es el Señor", content: "Demo content for Grande es el Señor" },
-                { title: "Hay poder", content: "Demo content for Hay poder" },
-                { title: "Incomparable", content: "Demo content for Incomparable" },
-                { title: "Jesucristo es el Señor", content: "Demo content for Jesucristo es el Señor" },
-                { title: "La alegría del Señor", content: "Demo content for La alegría del Señor" },
-                { title: "Mi salvador vive", content: "Demo content for Mi salvador vive" },
-                { title: "No hay nadie como tú", content: "Demo content for No hay nadie como tú" },
-                { title: "Poderoso Dios", content: "Demo content for Poderoso Dios" },
-                { title: "Rey de reyes", content: "Demo content for Rey de reyes" },
-                { title: "Santo es el Señor", content: "Demo content for Santo es el Señor" },
-                { title: "Tú eres santo", content: "Demo content for Tú eres santo" },
-                { title: "Vine a adorarte", content: "Demo content for Vine a adorarte" },
-                { title: "Yo te busco", content: "Demo content for Yo te busco" }
-            ];
-            
-            // Process the demo data
-            const groupedItems = groupItemsByFirstLetter(demoItems);
-            generateContent(groupedItems);
-            
-            // Update subtitle with item count
-            const subtitle = document.getElementById('subtitle');
-            subtitle.innerHTML = `Una colección de <strong>${demoItems.length}</strong> coritos`;
-        }
-        
-        function processFileContent(content) {
-            // Split content by blank lines to separate items
-            const blocks = content.split(/\r?\n\r?\n+/);
-            const items = [];
-            
-            // Process each block as an item
-            blocks.forEach(block => {
-                if (!block.trim()) return; // Skip empty blocks
-                
-                // Split the block into lines
-                const lines = block.split(/\r?\n/);
-                
-                // First line is the title
-                const title = lines[0].trim();
-                
-                // Remaining lines are the content (if any)
-                const contentLines = lines.slice(1);
-                const content = contentLines.join('\n').trim();
-                
-                // Add this item to our collection
-                items.push({ title, content });
-            });
-            
-            // Group items by first letter
-            const groupedItems = groupItemsByFirstLetter(items);
-            
-            // Generate the content
-            generateContent(groupedItems);
-            
-            // Update subtitle with item count
-            const subtitle = document.getElementById('subtitle');
-            subtitle.innerHTML = `Una colección de <strong>${items.length}</strong> coritos`;
-        }
-        
-        function groupItemsByFirstLetter(items) {
-            // Group items by first letter
-            const grouped = {};
-            
-            items.forEach(item => {
-                const firstLetter = item.title.charAt(0).toUpperCase();
-                if (!grouped[firstLetter]) {
-                    grouped[firstLetter] = [];
-                }
-                grouped[firstLetter].push(item);
-            });
-            
-            return grouped;
-        }
-        
-        function generateContent(groupedItems) {
-            const itemList = document.getElementById('itemList');
-            
-            // Clear existing content
-            itemList.innerHTML = '';
-            
-            // Get sorted letters
-            availableLetters = Object.keys(groupedItems).sort();
-            
-            // For each letter group
-            availableLetters.forEach(letter => {
-                const items = groupedItems[letter];
-                
-                // Add items for this letter
-                items.forEach((item, index) => {
-                    const itemId = `audio-${letter}-${index}`;
-                    
-                    const listItem = document.createElement('li');
-                    
-                    // First item of each letter group: add data attribute for scrolling
-                    if (index === 0) {
-                        listItem.dataset.letterSection = letter;
-                        // Add a small top padding to first items to visually separate letter groups
-                        listItem.className = 'py-3 pt-5 px-2 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors relative';
-                    } else {
-                        listItem.className = 'py-3 px-2 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors';
-                    }
-                    
-                    listItem.onclick = function() {
-                        if (!alphaScrollActive) { // Only open modal if not in alpha scroll mode
-                            openModal(item.title, item.content, itemId);
-                        }
-                    };
-                    
-                    // Generate audio filename from title
-                    const audioFilename = generateAudioFilename(item.title);
-                    const audioPath = `audio/${audioFilename}.mp3`;
-                    
-                    // Create the button HTML with conditional styling based on audio availability
-                    listItem.innerHTML = `
-                        <div class="flex items-center">
-                            <div class="relative h-10 w-10 mr-3 cursor-pointer play-button-container" onclick="playAudio(event, '${itemId}')">
-                                <!-- Play button background and border -->
-                                <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-10 w-10 text-gray-900 dark:text-gray-100 play-button" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" data-audio-id="${itemId}">
-                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="white" class="dark:fill-gray-800" />
-                                    <path class="play-icon" d="M10 8l6 4-6 4V8z" fill="currentColor" />
-                                </svg>
-                                
-                                <!-- Equalizer animation (hidden by default) -->
-                                <div class="absolute inset-0 pointer-events-none hidden" data-equalizer-id="${itemId}">
-                                    <div class="absolute bottom-2 left-0 right-0 flex items-end justify-center h-[calc(100%-8px)]">
-                                        <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq1"></div>
-                                        <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq2"></div>
-                                        <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq3"></div>
-                                        <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq4"></div>
-                                        <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq5"></div>
-                                        <div class="eq-bar bg-red-500 bg-opacity-75 w-[3px] mx-[0.4px] h-0 animate-eq6"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <span class="font-bold md:text-lg lg:text-xl xl:text-2xl">${item.title}</span>
-                        </div>
-                        <audio id="${itemId}" preload="none">
-                            <source src="${audioPath}" type="audio/mpeg">
-                        </audio>
-                    `;
-                    
-                    itemList.appendChild(listItem);
-                    
-                    // Check if audio file exists and mark as grayed if not available
-                    checkAudioFileExists(audioPath, itemId);
-                });
-            });
-            
-            // Build letter index after content is loaded
-            setTimeout(buildLetterIndex, 100);
-        }
-        
-        // New function to build the letter index
-        function buildLetterIndex() {
-            letterSections = [];
-            
-            // Get all items with a letter section data attribute
-            const items = document.querySelectorAll('#itemList li[data-letter-section]');
-            const processedLetters = new Set();
-            
-            // If no items with data-letter-section, build from all visible items
-            if (items.length === 0) {
-                // Get all visible list items
-                const allItems = document.querySelectorAll('#itemList li');
-                
-                // Process each list item to find the first of each letter
-                allItems.forEach(item => {
-                    if (item.classList.contains('hidden')) return;
-                    
-                    // Get the item's title span
-                    const titleSpan = item.querySelector('span');
-                    if (!titleSpan || !titleSpan.textContent.trim() === '') return;
-                    
-                    // Get the first letter of the title
-                    const title = titleSpan.textContent.trim();
-                    const letter = title.charAt(0).toUpperCase();
-                    
-                    // Only process each letter once (first occurrence)
-                    if (!processedLetters.has(letter)) {
-                        processedLetters.add(letter);
-                        
-                        // Get the position of this item
-                        const rect = item.getBoundingClientRect();
-                        const position = rect.top + window.scrollY;
-                        
-                        // Add this letter to the sections
-                        letterSections.push({
-                            letter: letter,
-                            position: position,
-                            element: item
-                        });
-                    }
-                });
-            } else {
-                // We have items with data-letter-section attributes
-                items.forEach(item => {
-                    if (item.classList.contains('hidden')) return;
-                    
-                    const letter = item.dataset.letterSection;
-                    if (!letter) return;
-                    
-                    // Get position
-                    const rect = item.getBoundingClientRect();
-                    const position = rect.top + window.scrollY;
-                    
-                    // Add to sections
-                    letterSections.push({
-                        letter: letter,
-                        position: position,
-                        element: item
-                    });
-                });
-            }
-            
-            // Sort sections by position
-            letterSections.sort((a, b) => a.position - b.position);
-            
-            // Update available letters
-            availableLetters = letterSections.map(section => section.letter);
-            
-            debugLog(`Built letter index with ${letterSections.length} letters`);
-        }
-        
-        function checkAudioFileExists(audioPath, audioId) {
-            fetch(audioPath, { method: 'HEAD' })
-                .then(response => {
-                    if (!response.ok) {
-                        // If fetch returns not OK, mark the audio as potentially unavailable
-                        markAudioAsGrayed(audioId);
-                    }
-                })
-                .catch(error => {
-                    // If fetch fails, mark the audio as potentially unavailable
-                    console.error(`Error checking audio file ${audioPath}:`, error);
-                    markAudioAsGrayed(audioId);
-                });
-        }
-        
-        function markAudioAsGrayed(audioId) {
-            // Apply visual styling to make the button appear subtly grayed initially
-            // This way it will still try to play when clicked
-            const svgElement = document.querySelector(`[data-audio-id="${audioId}"]`);
-            if (svgElement) {
-                // Use different colors based on current theme
-                const isDarkMode = document.documentElement.classList.contains('dark');
-                const grayColor = isDarkMode ? "#888888" : "#CCCCCC";
-                
-                // Change the stroke color based on theme
-                svgElement.setAttribute("stroke", grayColor);
-                
-                // Change the opacity to make it more subtle
-                svgElement.style.opacity = "0.7";
-                
-                // Find and update the path element
-                const pathElement = svgElement.querySelector('path');
-                if (pathElement) {
-                    // Change the fill color of the play triangle to appropriate gray
-                    pathElement.setAttribute("fill", grayColor);
-                }
-            }
-            
-            // Also update the modal play button if this is the current modal audio
-            if (audioId === currentModalAudioId) {
-                markModalPlayButtonAsGrayed();
-            }
-        }
-        
-        function markModalPlayButtonAsGrayed() {
-            const modalPlayButton = document.getElementById('modalPlayButton');
-            
-            // Use different colors based on current theme
-            const isDarkMode = document.documentElement.classList.contains('dark');
-            const grayColor = isDarkMode ? "#888888" : "#CCCCCC";
-            
-            // Change the stroke color based on theme
-            modalPlayButton.setAttribute("stroke", grayColor);
-            
-            // Change the opacity to make it more subtle
-            modalPlayButton.style.opacity = "0.7";
-            
-            // Find and update the path element
-            const pathElement = modalPlayButton.querySelector('path');
-            if (pathElement) {
-                // Change the fill color of the play triangle to appropriate gray
-                pathElement.setAttribute("fill", grayColor);
-            }
-        }
-        
-        function generateAudioFilename(title) {
-            return title
-                .toLowerCase()                      // Convert to lowercase
-                .replace(/ñ/g, "n")                 // Replace ñ with n explicitly
-                .normalize("NFD")                   // Normalize accented characters
-                .replace(/[\u0300-\u036f]/g, "")    // Remove diacritics (accents)
-                .replace(/[^\w\s]/g, "")           // Remove punctuation and special characters
-                .replace(/\s+/g, "_")              // Replace spaces with underscores
-                .trim();                            // Remove any leading/trailing whitespace
-        }
-        
-        /********************************
-         * MODAL FUNCTIONALITY
-         ********************************/
-        function openModal(title, content, audioId) {
-            const modal = document.getElementById('modal');
-            const modalContentEl = modal.querySelector('.bg-white.dark\\:bg-gray-800');
-            const modalContent = document.getElementById('modalContent');
-            
-            // Store the current audio ID for the modal play button
-            currentModalAudioId = audioId;
-            
-            // Update modal play button state if current audio is playing
-            updateModalPlayButtonState();
-            
-            // Check if the audio is unavailable and update modal play button accordingly
-            if (unavailableAudioFiles.has(audioId)) {
-                markModalPlayButtonAsUnavailable();
-            } else {
-                // Make sure we remove any unavailable styling if it was previously applied
-                resetModalPlayButton();
-            }
-            
-            // Set the title and content
-            document.getElementById('modalTitle').textContent = title;
-            
-            // Format the content to:
-            // 1. Make text in parentheses smaller and lighter color
-            // 2. Preserve line breaks
-            const formattedContent = content
-                .replace(/\(([^)]+)\)/g, '<span class="text-sm md:text-base lg:text-xl xl:text-2xl 2xl:text-3xl text-gray-500 dark:text-gray-400">($1)</span>')
-                .replace(/\n/g, '<br>');
-                
-            modalContent.innerHTML = formattedContent;
-            
-            // First make the modal container visible
-            modal.classList.remove('hidden');
-            modal.classList.add('modal-fade-in');
-            
-            // Animate the modal content with a slight zoom effect
-            modalContentEl.classList.add('modal-content-in');
-            
-            // Prevent scrolling of the body
-            document.body.classList.add('overflow-hidden');
-        }
+    // Close modal
+    function closeModal() {
+      const modal = document.getElementById('lyrics-modal');
+      modal.style.display = 'none';
+    }
 
-        function closeModal() {
-            // Stop the clave sound if it's playing
-            if (clavePlaying) {
-                stopClave();
-            }
-            
-            const modal = document.getElementById('modal');
-            const modalContentEl = modal.querySelector('.bg-white.dark\\:bg-gray-800');
-            
-            // Add the fade-out animations
-            modal.classList.add('modal-fade-out');
-            modalContentEl.classList.add('modal-content-out');
-            
-            // When animation completes, hide the modal
-            setTimeout(() => {
-                modal.classList.remove('modal-fade-in', 'modal-fade-out');
-                modalContentEl.classList.remove('modal-content-in', 'modal-content-out');
-                modal.classList.add('hidden');
-                
-                // Reset current modal audio ID
-                currentModalAudioId = null;
-                
-                // Allow scrolling again
-                document.body.classList.remove('overflow-hidden');
-            }, 300); // Match the animation duration
-        }
-        
-        /********************************
-         * AUDIO PLAYBACK
-         ********************************/
-        function initAudioContext() {
-            if (!audioContext) {
-                try {
-                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                } catch (e) {
-                    console.error("Could not create audio context:", e);
-                }
-            }
-            return audioContext;
-        }
-        
-        function playAudio(event, audioId) {
-            event.stopPropagation(); // Prevent modal from opening when clicking the play button
-            
-            // Skip interaction if the audio file is already known to be unavailable
-            if (unavailableAudioFiles.has(audioId)) {
-                // Just show an indication of the unavailable state
-                const buttonContainer = document.querySelector(`[data-audio-id="${audioId}"]`).closest('.relative');
-                if (buttonContainer) {
-                    buttonContainer.classList.add('pulse-error');
-                    setTimeout(() => {
-                        buttonContainer.classList.remove('pulse-error');
-                    }, 300);
-                }
-                
-                // Also pulse the modal play button if this is the current modal audio
-                if (audioId === currentModalAudioId) {
-                    const modalPlayButton = document.getElementById('modalPlayButton').parentElement;
-                    if (modalPlayButton) {
-                        modalPlayButton.classList.add('pulse-error');
-                        setTimeout(() => {
-                            modalPlayButton.classList.remove('pulse-error');
-                        }, 300);
-                    }
-                }
-                return;
-            }
-            
-            // Add button animation to the play button
-            const buttonContainer = document.querySelector(`[data-audio-id="${audioId}"]`).closest('.play-button-container');
-            if (buttonContainer) {
-                addButtonPulseAnimation(buttonContainer);
-            }
-            
-            // Get the associated audio element
-            const audioElement = document.getElementById(audioId);
-            if (!audioElement) {
-                console.error(`Audio element with ID ${audioId} not found`);
-                return;
-            }
-            
-            // Check if we're already playing this audio
-            if (playingButtonId === audioId && currentAudio === audioElement) {
-                // Stop current audio
-                stopCurrentAudio();
-                return;
-            }
-            
-            // If another button's audio is playing, make sure to reset its button state
-            if (playingButtonId && playingButtonId !== audioId) {
-                updatePlayButtonState(playingButtonId, false);
-            }
-            
-            // Stop any currently playing audio
-            stopCurrentAudio();
-            
-            // Also stop the clave pattern if it's playing
-            if (clavePlaying) {
-                stopClave();
-            }
-            
-            try {
-                // Start the audio
-                audioElement.currentTime = 0; // Reset to beginning
-                
-                // Set up audio events
-                setupAudioEvents(audioElement, audioId);
-                
-                // Play the audio file
-                const playPromise = audioElement.play();
-                
-                // Handle the play promise (required for modern browsers)
-                if (playPromise !== undefined) {
-                    playPromise
-                        .then(() => {
-                            // Update button state to show it's playing
-                            updatePlayButtonState(audioId, true);
-                            currentAudio = audioElement;
-                            playingButtonId = audioId;
-                            
-                            // Also update the modal play button state if needed
-                            updateModalPlayButtonState();
-                        })
-                        .catch(error => {
-                            console.error("Playback error:", error);
-                            // If autoplay is blocked or file not found, mark as unavailable
-                            markAudioAsUnavailable(audioId);
-                            playFallbackTone(audioId);
-                            
-                            // Also update the modal play button if this is the current modal audio
-                            if (audioId === currentModalAudioId) {
-                                markModalPlayButtonAsUnavailable();
-                            }
-                        });
-                }
-            } catch (error) {
-                console.error("Audio playback error:", error);
-                // Fall back to playing a tone
-                markAudioAsUnavailable(audioId);
-                playFallbackTone(audioId);
-                
-                // Also update the modal play button if this is the current modal audio
-                if (audioId === currentModalAudioId) {
-                    markModalPlayButtonAsUnavailable();
-                }
-            }
-        }
-        
-        function setupAudioEvents(audioElement, audioId) {
-            audioElement.onended = function() {
-                handleAudioEnd();
-                
-                // Update the play button state
-                updatePlayButtonState(audioId, false);
-                currentAudio = null;
-                playingButtonId = null;
-                
-                // Also update the modal play button state if needed
-                updateModalPlayButtonState();
-            };
-            
-            audioElement.onpause = function() {
-                updatePlayButtonState(audioId, false);
-                // Also update the modal play button state if needed
-                updateModalPlayButtonState();
-            };
-            
-            audioElement.onerror = function() {
-                console.error("Error playing audio:", audioElement.error);
-                updatePlayButtonState(audioId, false);
-                
-                // If there's an error (e.g., file not found), mark as unavailable
-                markAudioAsUnavailable(audioId);
-                playFallbackTone(audioId);
-                
-                // Also update the modal play button if this is the current modal audio
-                if (audioId === currentModalAudioId) {
-                    markModalPlayButtonAsUnavailable();
-                }
-            };
-        }
-        
-        function handleAudioEnd() {
-            // Hide the stop button with animation when audio ends naturally
-            const fixedStopButton = document.getElementById('fixedStopButton');
-            if (!fixedStopButton.classList.contains('hidden')) {
-                // Only do this if stop button is visible and there's no other audio playing
-                if (!clavePlaying && !currentOscillator) {
-                    // Start the hide animation
-                    fixedStopButton.dataset.hidingInProgress = "true";
-                    fixedStopButton.classList.remove('bounce-in');
-                    fixedStopButton.classList.add('bounce-out');
-                    
-                    // After animation completes, hide the button
-                    setTimeout(() => {
-                        if (fixedStopButton.dataset.hidingInProgress === "true") {
-                            fixedStopButton.classList.add('hidden');
-                            fixedStopButton.classList.remove('bounce-out');
-                            fixedStopButton.dataset.hidingInProgress = "false";
-                        }
-                    }, 400);
-                }
-            }
-        }
-        
-        function markAudioAsUnavailable(audioId) {
-            // Add to the set of unavailable files
-            unavailableAudioFiles.add(audioId);
-            
-            // Apply visual styling directly to the existing SVG
-            const svgElement = document.querySelector(`[data-audio-id="${audioId}"]`);
-            if (svgElement) {
-                // Get the parent container
-                const buttonContainer = svgElement.closest('.relative');
-                if (buttonContainer) {
-                    // Update the SVG colors directly - turn everything gray
-                    svgElement.setAttribute("stroke", "#888888");
-                    
-                    // Update the triangle path to be gray
-                    const pathElement = svgElement.querySelector('path');
-                    if (pathElement) {
-                        pathElement.setAttribute("fill", "#888888");
-                    }
-                    
-                    // Add the not-allowed cursor to the button container
-                    buttonContainer.style.cursor = 'not-allowed';
-                    
-                    // Add the X mark
-                    const xMark = document.createElement('div');
-                    xMark.textContent = '✕';
-                    xMark.style.position = 'absolute';
-                    xMark.style.top = '50%';
-                    xMark.style.left = '50%';
-                    xMark.style.transform = 'translate(-50%, -50%)';
-                    xMark.style.fontSize = '24px';
-                    xMark.style.color = 'white';
-                    xMark.style.fontWeight = 'bold';
-                    xMark.style.zIndex = '5';
-                    xMark.style.textShadow = '0px 0px 2px rgba(0,0,0,0.5)';
-                    
-                    // Only add the X mark if it doesn't already exist
-                    if (!buttonContainer.querySelector('.unavailable-mark')) {
-                        xMark.classList.add('unavailable-mark');
-                        buttonContainer.appendChild(xMark);
-                    }
-                    
-                    // Add a class that we can use to style all unavailable buttons consistently
-                    buttonContainer.classList.add('audio-unavailable');
-                }
-            }
-        }
-        
-        function markModalPlayButtonAsUnavailable() {
-            const modalPlayButton = document.getElementById('modalPlayButton');
-            if (!modalPlayButton) return;
-            
-            const buttonContainer = modalPlayButton.parentElement;
-            
-            // Change the stroke color to gray
-            modalPlayButton.setAttribute("stroke", "#888888");
-            
-            // Find and update the path and rect elements
-            const pathElement = modalPlayButton.querySelector('path');
-            const rectElement = modalPlayButton.querySelector('rect');
-            
-            if (pathElement) {
-                // Change the fill color of the play triangle
-                pathElement.setAttribute("fill", "#888888");
-            }
-            
-            if (rectElement) {
-                // Keep the background white but change the border color to gray
-                rectElement.setAttribute("fill", "white");
-                rectElement.setAttribute("class", "dark:fill-gray-800");
-            }
-            
-            // Add not-allowed cursor to the button container
-            if (buttonContainer) {
-                buttonContainer.style.cursor = 'not-allowed';
-                
-                // Add a class that we can use to style all unavailable buttons consistently
-                buttonContainer.classList.add('audio-unavailable');
-                
-                // Add the X mark if it doesn't already exist
-                if (!buttonContainer.querySelector('.unavailable-mark')) {
-                    const xMark = document.createElement('div');
-                    xMark.textContent = '✕';
-                    xMark.style.position = 'absolute';
-                    xMark.style.top = '50%';
-                    xMark.style.left = '50%';
-                    xMark.style.transform = 'translate(-50%, -50%)';
-                    xMark.style.fontSize = '24px';
-                    xMark.style.color = 'white';
-                    xMark.style.fontWeight = 'bold';
-                    xMark.style.zIndex = '5';
-                    xMark.style.textShadow = '0px 0px 2px rgba(0,0,0,0.5)';
-                    xMark.classList.add('unavailable-mark');
-                    buttonContainer.appendChild(xMark);
-                }
-            }
-        }
-        
-        function resetModalPlayButton() {
-            const modalPlayButton = document.getElementById('modalPlayButton');
-            if (!modalPlayButton) return;
-            
-            const buttonContainer = modalPlayButton.parentElement;
-            
-            // Reset stroke color
-            modalPlayButton.setAttribute("stroke", "currentColor");
-            
-            // Find and update the path and rect elements
-            const pathElement = modalPlayButton.querySelector('path');
-            const rectElement = modalPlayButton.querySelector('rect');
-            
-            if (pathElement) {
-                // Reset fill color
-                pathElement.setAttribute("fill", "currentColor");
-            }
-            
-            if (rectElement) {
-                // Reset background
-                rectElement.setAttribute("fill", "white");
-                rectElement.setAttribute("class", "dark:fill-gray-800");
-            }
-            
-            // Reset cursor and remove unavailable class/element
-            if (buttonContainer) {
-                buttonContainer.style.cursor = 'pointer';
-                buttonContainer.classList.remove('audio-unavailable');
-                
-                // Remove the X mark if it exists
-                const xMark = buttonContainer.querySelector('.unavailable-mark');
-                if (xMark) {
-                    buttonContainer.removeChild(xMark);
-                }
-            }
-        }
-        
-        function updateModalPlayButtonState() {
-            if (!currentModalAudioId) return;
-            
-            const modalPlayButton = document.getElementById('modalPlayButton');
-            if (!modalPlayButton) return;
-            
-            const modalEqualizer = document.getElementById('modalEqualizer');
-            
-            // Check if the associated audio is playing
-            const isPlaying = playingButtonId === currentModalAudioId;
-            
-            // Change icon (play triangle or pause square)
-            const pathElement = modalPlayButton.querySelector('path');
-            if (pathElement) {
-                pathElement.setAttribute('d', isPlaying ? 'M9 9h6v6H9z' : 'M10 8l6 4-6 4V8z');
-            }
-            
-            // Show/hide equalizer animation
-            if (modalEqualizer) {
-                modalEqualizer.classList.toggle('hidden', !isPlaying);
-            }
-        }
-        
-        function playFallbackTone(audioId) {
-            // Mark this audio file as unavailable
-            unavailableAudioFiles.add(audioId);
-            
-            // Update button appearance
-            updateUnavailableButton(audioId);
-            
-            try {
-                // Initialize audio context if not already done
-                const context = initAudioContext();
-                if (!context) {
-                    console.error("Could not create audio context");
-                    return;
-                }
-                
-                // Create oscillator and gain node
-                const oscillator = context.createOscillator();
-                const gainNode = context.createGain();
-                
-                // Different notes for different items
-                const frequencies = {
-                    'audio-1': 261.63, // C4
-                    'audio-2': 293.66, // D4
-                    'audio-3': 329.63, // E4
-                    'audio-4': 349.23, // F4
-                    'audio-5': 392.00  // G4
-                };
-                
-                // Set the frequency and type
-                oscillator.type = 'sine';
-                oscillator.frequency.value = frequencies[audioId] || 440;
-                
-                // Connect and configure
-                oscillator.connect(gainNode);
-                gainNode.connect(context.destination);
-                
-                // Apply fade-in
-                gainNode.gain.setValueAtTime(0, context.currentTime);
-                gainNode.gain.linearRampToValueAtTime(0.3, context.currentTime + 0.01);
-                
-                // Start the oscillator
-                oscillator.start(0);
-                
-                // Update UI
-                updatePlayButtonState(audioId, true);
-                
-                // Also update the modal play button state if needed
-                updateModalPlayButtonState();
-                
-                // Store references
-                currentOscillator = oscillator;
-                currentGain = gainNode;
-                playingButtonId = audioId;
-                
-                // Auto-stop after 2 seconds
-                setTimeout(() => {
-                    if (currentOscillator === oscillator) {
-                        stopCurrentSound(true);
-                    }
-                }, 2000);
-            } catch (e) {
-                console.error("Error playing fallback tone:", e);
-            }
-        }
-        
-        function updateUnavailableButton(audioId) {
-            // Get the SVG element
-            const svgElement = document.querySelector(`[data-audio-id="${audioId}"]`);
-            if (svgElement) {
-                // Get the parent container
-                const buttonContainer = svgElement.closest('.relative');
-                if (buttonContainer) {
-                    // Update the SVG colors directly - turn everything gray
-                    svgElement.setAttribute("stroke", "#888888");
-                    
-                    // Update the triangle path to be gray
-                    const pathElement = svgElement.querySelector('path');
-                    if (pathElement) {
-                        pathElement.setAttribute("fill", "#888888");
-                    }
-                    
-                    // Add the not-allowed cursor to the button container
-                    buttonContainer.style.cursor = 'not-allowed';
-                    
-                    // Add the X mark
-                    const xMark = document.createElement('div');
-                    xMark.textContent = '✕';
-                    xMark.style.position = 'absolute';
-                    xMark.style.top = '50%';
-                    xMark.style.left = '50%';
-                    xMark.style.transform = 'translate(-50%, -50%)';
-                    xMark.style.fontSize = '24px';
-                    xMark.style.color = 'white';
-                    xMark.style.fontWeight = 'bold';
-                    xMark.style.zIndex = '5';
-                    xMark.style.textShadow = '0px 0px 2px rgba(0,0,0,0.5)';
-                    
-                    // Only add the X mark if it doesn't already exist
-                    if (!buttonContainer.querySelector('.unavailable-mark')) {
-                        xMark.classList.add('unavailable-mark');
-                        buttonContainer.appendChild(xMark);
-                    }
-                    
-                    // Add a class that we can use to style all unavailable buttons consistently
-                    buttonContainer.classList.add('audio-unavailable');
-                }
-            }
-            
-            // Also update the modal play button if this is the current modal audio
-            if (audioId === currentModalAudioId) {
-                markModalPlayButtonAsUnavailable();
-            }
-        }
-        
-        function stopCurrentAudio() {
-            // Stop any HTML audio element
-            if (currentAudio) {
-                try {
-                    currentAudio.pause();
-                    currentAudio.currentTime = 0;
-                } catch (e) {
-                    console.error("Error stopping audio:", e);
-                }
-                currentAudio = null;
-            }
-            
-            // Also stop any fallback oscillator sound
-            if (currentOscillator) {
-                stopCurrentSound(true);
-            }
-            
-            // Reset playing button ID
-            if (playingButtonId) {
-                updatePlayButtonState(playingButtonId, false);
-                playingButtonId = null;
-            }
-            
-            // Also update the modal play button state
-            updateModalPlayButtonState();
-        }
-        
-        function stopCurrentSound(updateButton = true) {
-            if (currentOscillator && currentGain) {
-                try {
-                    // Apply a fade-out
-                    const now = audioContext.currentTime;
-                    currentGain.gain.linearRampToValueAtTime(0, now + 0.1);
-                    
-                    // Schedule the oscillator to stop after the fade-out
-                    setTimeout(() => {
-                        try {
-                            currentOscillator.stop();
-                        } catch (e) {
-                            console.error("Error stopping oscillator:", e);
-                        }
-                        currentOscillator = null;
-                        currentGain = null;
-                        
-                        // Reset button state if requested
-                        if (updateButton && playingButtonId) {
-                            updatePlayButtonState(playingButtonId, false);
-                            playingButtonId = null;
-                            
-                            // Also update the modal play button state
-                            updateModalPlayButtonState();
-                        }
-                    }, 100);
-                } catch (e) {
-                    console.error("Error stopping sound:", e);
-                    currentOscillator = null;
-                    currentGain = null;
-                }
-            }
-        }
-        
-        function updatePlayButtonState(audioId, isPlaying) {
-            const playButton = document.querySelector(`[data-audio-id="${audioId}"]`);
-            if (!playButton) return;
-            
-            const equalizerElement = document.querySelector(`[data-equalizer-id="${audioId}"]`);
-            const fixedStopButton = document.getElementById('fixedStopButton');
-            
-            if (isPlaying) {
-                // Change to pause icon (square)
-                const pathElement = playButton.querySelector('path');
-                if (pathElement) {
-                    pathElement.setAttribute('d', 'M9 9h6v6H9z');
-                }
-                
-                // Show equalizer animation when playing
-                if (equalizerElement) {
-                    equalizerElement.classList.remove('hidden');
-                }
-                
-                // Show fixed stop button with bounce effect (but not for clave)
-                if (!clavePlaying) {
-                    showStopButton();
-                }
-            } else {
-                // Change to play icon (triangle)
-                const pathElement = playButton.querySelector('path');
-                if (pathElement) {
-                    pathElement.setAttribute('d', 'M10 8l6 4-6 4V8z');
-                }
-                
-                // Hide equalizer animation when not playing
-                if (equalizerElement) {
-                    equalizerElement.classList.add('hidden');
-                }
-                
-                // Hide fixed stop button only if there's absolutely no audio playing
-                if (!currentAudio && !currentOscillator && !clavePlaying && fixedStopButton && !fixedStopButton.classList.contains('hidden')) {
-                    hideStopButton();
-                }
-            }
-        }
-        
-        function showStopButton() {
-            const fixedStopButton = document.getElementById('fixedStopButton');
-            if (!fixedStopButton) return;
-            
-            // Cancel any hiding that might be in progress
-            fixedStopButton.dataset.hidingInProgress = "false";
-            
-            // First make sure button is visible
-            fixedStopButton.classList.remove('hidden');
-            
-            // Remove any existing animation classes
-            fixedStopButton.classList.remove('bounce-in', 'bounce-out');
-            
-            // Force a reflow to restart animation
-            void fixedStopButton.offsetWidth;
-            
-            // Add the bounce-in animation
-            fixedStopButton.classList.add('bounce-in');
-        }
-        
-        function hideStopButton() {
-            const fixedStopButton = document.getElementById('fixedStopButton');
-            if (!fixedStopButton) return;
-            
-            // Mark that we're in the process of hiding (we'll use this to cancel if needed)
-            fixedStopButton.dataset.hidingInProgress = "true";
-            
-            // Remove any existing animation classes
-            fixedStopButton.classList.remove('bounce-in', 'bounce-out');
-            
-            // Force a reflow to restart animation
-            void fixedStopButton.offsetWidth;
-            
-            // Add the bounce-out animation
-            fixedStopButton.classList.add('bounce-out');
-            
-            // After animation completes, hide the button
-            setTimeout(() => {
-                // Only hide if we haven't cancelled the hiding
-                if (fixedStopButton.dataset.hidingInProgress === "true") {
-                    fixedStopButton.classList.add('hidden');
-                    fixedStopButton.classList.remove('bounce-out');
-                    fixedStopButton.dataset.hidingInProgress = "false";
-                }
-            }, 400); // Match the duration of the bounce-out animation
-        }
-        
-        /********************************
-         * METRONOME FUNCTIONS
-         ********************************/
-        // State for currently active metronome BPM
-        let currentBPM = 0;
-        
-        function toggleMetronome(bpm) {
-            if (clavePlaying && currentBPM === bpm) {
-                // If the same BPM button is clicked, stop playing
-                stopClave();
-            } else {
-                // If different BPM or not playing, start with new BPM
-                startClave(bpm);
-            }
-        }
-        
-        function startClave(bpm) {
-            // Stop any playing HTML audio elements or oscillators
-            stopCurrentAudio();
-            
-            // Stop clave if already playing (with different BPM)
-            if (clavePlaying) {
-                stopClave();
-            }
-            
-            // Store the current BPM
-            currentBPM = bpm;
-            
-            // Get the clave audio element
-            const claveAudio = document.getElementById('claveAudio');
-            if (!claveAudio) return;
-            
-            try {
-                // Reset to beginning
-                claveAudio.currentTime = 0;
-                
-                // Set the playback rate based on BPM
-                // Base rate is 1.0 at 240bpm, adjust proportionally for other BPMs
-                claveAudio.playbackRate = bpm / 240;
-                
-                // Play the clave audio file
-                const playPromise = claveAudio.play();
-                
-                // Handle the play promise (required for modern browsers)
-                if (playPromise !== undefined) {
-                    playPromise
-                        .then(() => {
-                            // Update all button states
-                            updateMetronomeButtonStates(bpm);
-                            clavePlaying = true;
-                        })
-                        .catch(error => {
-                            console.error("Clave playback error:", error);
-                            // Reset state if audio can't play
-                            clavePlaying = false;
-                            currentBPM = 0;
-                        });
-                }
-            } catch (error) {
-                console.error("Clave audio error:", error);
-                clavePlaying = false;
-                currentBPM = 0;
-            }
-        }
-        
-        function stopClave() {
-            // Get the clave audio element
-            const claveAudio = document.getElementById('claveAudio');
-            if (!claveAudio) return;
-            
-            try {
-                // Pause and reset the audio
-                claveAudio.pause();
-                claveAudio.currentTime = 0;
-            } catch (e) {
-                console.error("Error stopping clave audio:", e);
-            }
-            
-            // Reset all button states
-            updateMetronomeButtonStates(0);
-            
-            // Reset state
-            clavePlaying = false;
-            currentBPM = 0;
-        }
-        
-        function updateMetronomeButtonStates(activeBPM) {
-            // Define all BPM values we have buttons for
-            const bpmValues = [220, 240, 260, 280];
-            
-            // Update each button's state
-            bpmValues.forEach(bpm => {
-                const metronomeButton = document.getElementById(`metronomeButton${bpm}`);
-                if (metronomeButton) {
-                    if (bpm === activeBPM) {
-                        // Active button - add active styling
-                        metronomeButton.classList.add('active-fill');
-                    } else {
-                        // Inactive button - reset styling
-                        metronomeButton.classList.remove('active-fill');
-                    }
-                }
-            });
-        }
-        
-        /********************************
-         * ALPHABET SCROLL FUNCTIONALITY
-         ********************************/
-        // Handle touch start event
-        function handleTouchStart(e) {
-            // Only enable alpha scroll in fullscreen mode
-            if (!isFullScreen) {
-                return;
-            }
-            
-            // Store the starting Y position
-            touchStartY = e.touches[0].clientY;
-            
-            // Store the current scroll position
-            initialScrollPosition = window.scrollY;
-            
-            // Start a timer for long press
-            longPressTimer = setTimeout(() => {
-                // Cancel the scroll behavior if we're activating alpha scroll
-                if (longPressTimer) {
-                    debugLog("Long press detected, activating alpha scroll");
-                    
-                    // First build the letter index from list items
-                    buildLetterIndex();
-                    
-                    // Get the current letter index based on visible content
-                    initialLetterIndex = findCurrentLetterIndex();
-                    currentLetterIndex = initialLetterIndex;
-                    
-                    // Reset the finger moved flag
-                    fingerHasMoved = false;
-                    
-                    // Switch to non-passive event listener
-                    const itemList = document.getElementById('itemList');
-                    if (itemList) {
-                        itemList.removeEventListener('touchmove', handleTouchMove, { passive: true });
-                        itemList.addEventListener('touchmove', handleTouchMove, { passive: false });
-                    }
-                    
-                    activateAlphaScroll(touchStartY);
-                }
-            }, 700); // 700ms for long press (increased from 300ms)
-        }
-        
-        // Handle touch move event
-        function handleTouchMove(e) {
-            if (!alphaScrollActive) {
-                // If we've moved significantly before the long press triggers, cancel it
-                if (Math.abs(e.touches[0].clientY - touchStartY) > 10) {
-                    clearTimeout(longPressTimer);
-                    longPressTimer = null;
-                }
-                return;
-            }
-            
-            // Prevent default scrolling only during alpha scroll
-            e.preventDefault();
-            
-            // If finger has moved significantly from start position, mark as moved
-            if (Math.abs(e.touches[0].clientY - touchStartY) > 10) {
-                fingerHasMoved = true;
-            }
-            
-            // Only process alphabetical scrolling if the finger has moved
-            if (fingerHasMoved) {
-                // Update the letter based on touch position
-                handleAlphaScroll(e.touches[0].clientY);
-            }
-        }
-        
-        // Handle touch end event
-        function handleTouchEnd() {
-            // Reset the touch move event listener to passive
-            const itemList = document.getElementById('itemList');
-            if (itemList) {
-                itemList.removeEventListener('touchmove', handleTouchMove, { passive: false });
-                itemList.addEventListener('touchmove', handleTouchMove, { passive: true });
-            }
-            
-            clearTimeout(longPressTimer);
-            longPressTimer = null;
-            deactivateAlphaScroll();
-            
-            // Reset the finger moved flag
-            fingerHasMoved = false;
-        }
-        
-        // Handle mouse down event (for desktop testing)
-        function handleMouseDown(e) {
-            // Only enable alpha scroll in fullscreen mode
-            if (!isFullScreen) {
-                return;
-            }
-            
-            // Store the starting Y position
-            touchStartY = e.clientY;
-            
-            // Store the current scroll position
-            initialScrollPosition = window.scrollY;
-            
-            // Start a timer for long press
-            longPressTimer = setTimeout(() => {
-                // Build letter index before activating
-                buildLetterIndex();
-                
-                // Get the current letter index based on visible content
-                initialLetterIndex = findCurrentLetterIndex();
-                currentLetterIndex = initialLetterIndex;
-                
-                // Reset the finger moved flag
-                fingerHasMoved = false;
-                
-                activateAlphaScroll(touchStartY);
-            }, 700); // 700ms for long press (increased from 300ms, matching touch event)
-        }
-        
-        // Handle mouse move event
-        function handleMouseMove(e) {
-            if (!alphaScrollActive) {
-                // If we've moved significantly before the long press triggers, cancel it
-                if (longPressTimer && Math.abs(e.clientY - touchStartY) > 10) {
-                    clearTimeout(longPressTimer);
-                    longPressTimer = null;
-                }
-                return;
-            }
-            
-            // Prevent default scrolling only during alpha scroll
-            e.preventDefault();
-            
-            // If mouse has moved significantly from start position, mark as moved
-            if (Math.abs(e.clientY - touchStartY) > 10) {
-                fingerHasMoved = true;
-            }
-            
-            // Only process alphabetical scrolling if the mouse has moved
-            if (fingerHasMoved) {
-                // Update the letter based on mouse position
-                handleAlphaScroll(e.clientY);
-            }
-        }
-        
-        // Handle mouse up event
-        function handleMouseUp() {
-            clearTimeout(longPressTimer);
-            longPressTimer = null;
-            deactivateAlphaScroll();
-            
-            // Reset the finger moved flag
-            fingerHasMoved = false;
-        }
-        
-        // Activate the alphabetical scrolling
-        function activateAlphaScroll(yPos) {
-            // Skip if no letters available
-            if (letterSections.length === 0) {
-                debugLog("No letter sections available, cannot activate alpha scroll");
-                return;
-            }
-            
-            alphaScrollActive = true;
-            debugLog("Alpha scroll activated");
-            
-            // Show the letter overlay
-            const letterOverlay = document.getElementById('letterOverlay');
-            if (letterOverlay) {
-                letterOverlay.classList.add('active');
-            }
-            
-            // Show the scroll indicator
-            const scrollIndicator = document.getElementById('scrollIndicator');
-            if (scrollIndicator) {
-                scrollIndicator.style.opacity = '1';
-                
-                // Position the scroll indicator
-                scrollIndicator.style.top = `${yPos}px`;
-            }
-            
-            // Update the displayed letter
-            const currentLetterElement = document.getElementById('currentLetter');
-            if (currentLetterElement && currentLetterIndex >= 0 && currentLetterIndex < availableLetters.length) {
-                currentLetterElement.textContent = availableLetters[currentLetterIndex];
-            }
-        }
-        
-        // Find which letter is currently most visible in the viewport
-        function findCurrentLetterIndex() {
-            if (letterSections.length === 0) return 0;
-            
-            const windowMiddle = window.scrollY + window.innerHeight / 2;
-            
-            // Find the closest letter section to the middle of the viewport
-            let closestIndex = 0;
-            let closestDistance = Infinity;
-            
-            for (let i = 0; i < letterSections.length; i++) {
-                const distance = Math.abs(letterSections[i].position - windowMiddle);
-                if (distance < closestDistance) {
-                    closestDistance = distance;
-                    closestIndex = i;
-                }
-            }
-            
-            return closestIndex;
-        }
-        
-        // Deactivate the alphabetical scrolling
-        function deactivateAlphaScroll() {
-            if (!alphaScrollActive) return;
-            
-            alphaScrollActive = false;
-            debugLog("Alpha scroll deactivated");
-            
-            // Hide the letter overlay
-            const letterOverlay = document.getElementById('letterOverlay');
-            if (letterOverlay) {
-                letterOverlay.classList.remove('active');
-            }
-            
-            // Hide the scroll indicator
-            const scrollIndicator = document.getElementById('scrollIndicator');
-            if (scrollIndicator) {
-                scrollIndicator.style.opacity = '0';
-            }
-            
-            // Cancel any pending scroll operations
-            if (scrollTimer) {
-                clearTimeout(scrollTimer);
-                scrollTimer = null;
-            }
-            isScrolling = false;
-        }
-        
-        // Handle alphabetical scrolling
-        function handleAlphaScroll(yPos) {
-            if (!alphaScrollActive || letterSections.length === 0) return;
-            
-            // Update scroll indicator position
-            const scrollIndicator = document.getElementById('scrollIndicator');
-            if (scrollIndicator) {
-                scrollIndicator.style.top = `${yPos}px`;
-            }
-            
-            // If finger hasn't moved enough, don't change the letter
-            if (!fingerHasMoved) return;
-            
-            // Calculate how far the finger has moved from its starting position
-            const fingerMovement = yPos - touchStartY;
-            
-            // Map this movement to a letter index change
-            // Use a relative approach: movement determines how many letters to move from initial
-            const movementScaleFactor = 20; // Pixels per letter (adjust as needed)
-            const letterIndexChange = Math.round(fingerMovement / movementScaleFactor);
-            
-            // Calculate the new letter index relative to the initial one
-            let newIndex = initialLetterIndex + letterIndexChange;
-            
-            // Bound the index to valid range
-            newIndex = Math.max(0, Math.min(letterSections.length - 1, newIndex));
-            
-            // Only update if the letter changed
-            if (newIndex !== currentLetterIndex) {
-                currentLetterIndex = newIndex;
-                const letter = availableLetters[currentLetterIndex];
-                
-                // Update letter display immediately
-                const currentLetterElement = document.getElementById('currentLetter');
-                if (currentLetterElement) {
-                    currentLetterElement.textContent = letter;
-                }
-                
-                // Debounce the scroll operation to prevent too many scrolls
-                if (scrollTimer) {
-                    clearTimeout(scrollTimer);
-                }
-                
-                // If we're already scrolling, wait for the current scroll to finish
-                if (!isScrolling) {
-                    scrollToLetter(letter);
-                } else {
-                    // Queue up the next scroll after a short delay
-                    scrollTimer = setTimeout(() => {
-                        scrollToLetter(letter);
-                    }, 100);
-                }
-            }
-        }
-        
-        // Smoothly scroll to the section for a given letter
-        function scrollToLetter(letter) {
-            // Find the section for this letter
-            const section = letterSections.find(s => s.letter === letter);
-            if (!section || !section.element) return;
-            
-            // Mark that we're currently scrolling
-            isScrolling = true;
-            
-            // Calculate the position to scroll to (with adjustment for header)
-            const targetPosition = section.position - 60;
-            
-            // Perform the smooth scroll
-            window.scrollTo({
-                top: targetPosition,
-                behavior: 'smooth'
-            });
-            
-            debugLog(`Smoothly scrolling to: ${letter} (position ${targetPosition})`);
-            
-            // Reset scrolling state after animation completes (approx 300ms)
-            scrollTimer = setTimeout(() => {
-                isScrolling = false;
-                scrollTimer = null;
-            }, 300);
-        }
-        
-        /********************************
-         * UTILITY FUNCTIONS
-         ********************************/
-        function scrollToTop() {
-            // Scroll to top with smooth animation
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }
-    </script>
+    // Search functionality
+    document.getElementById('search-bar').addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase();
+      const filteredSongs = songs.filter(song =>
+        song.title.toLowerCase().includes(query) || song.artist.toLowerCase().includes(query)
+      );
+      renderSongs(filteredSongs);
+    });
+
+    // Initial render
+    renderSongs(songs);
+
+    // Close modal on outside click
+    window.onclick = (e) => {
+      const modal = document.getElementById('lyrics-modal');
+      if (e.target === modal) {
+        modal.style.display = 'none';
+      }
+    };
+  </script>
 </body>
 </html>
