@@ -1,191 +1,546 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ultra-Basic Search Test</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cánticos de Victoria</title>
     
-    .search-form {
-      background: #f0f0f0;
-      padding: 20px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-    }
-    
-    input[type="text"] {
-      width: 70%;
-      padding: 10px;
-      font-size: 16px;
-    }
-    
-    button {
-      padding: 10px 15px;
-      background: #ff3333;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    
-    .item {
-      padding: 10px;
-      border-bottom: 1px solid #ddd;
-    }
-    
-    .highlighted {
-      background: #ffff99;
-    }
-    
-    .debug-panel {
-      background: #eee;
-      padding: 10px;
-      margin-top: 20px;
-      border-radius: 8px;
-      font-family: monospace;
-      font-size: 14px;
-    }
-  </style>
-</head>
-<body>
-  <h1>Ultra-Basic Search Test</h1>
-  
-  <!-- Status display -->
-  <div id="status" style="padding:10px; background:#ccffcc; margin-bottom:20px; display:none;"></div>
-  
-  <!-- Super simple search form - intentionally uses a GET method -->
-  <div class="search-form">
-    <form action="" method="get">
-      <input type="text" name="q" id="searchInput" placeholder="Type search term" value="">
-      <button type="submit">Search</button>
-    </form>
-  </div>
-  
-  <!-- Search results -->
-  <div id="results">
-    <div class="item" data-title="Alabanza y adoración">Alabanza y adoración</div>
-    <div class="item" data-title="Al Rey de reyes">Al Rey de reyes</div>
-    <div class="item" data-title="Aleluya Cristo vive">Aleluya Cristo vive</div>
-    <div class="item" data-title="Bendito sea el Señor">Bendito sea el Señor</div>
-    <div class="item" data-title="Cordero de Dios">Cordero de Dios</div>
-    <div class="item" data-title="Digno es el Cordero">Digno es el Cordero</div>
-    <div class="item" data-title="El gozo del Señor">El gozo del Señor</div>
-    <div class="item" data-title="Grande es el Señor">Grande es el Señor</div>
-    <div class="item" data-title="Hay poder">Hay poder</div>
-    <div class="item" data-title="Incomparable">Incomparable</div>
-    <div class="item" data-title="Jesucristo es el Señor">Jesucristo es el Señor</div>
-    <div class="item" data-title="La alegría del Señor">La alegría del Señor</div>
-    <div class="item" data-title="Mi salvador vive">Mi salvador vive</div>
-    <div class="item" data-title="No hay nadie como tú">No hay nadie como tú</div>
-    <div class="item" data-title="Poderoso Dios">Poderoso Dios</div>
-    <div class="item" data-title="Rey de reyes">Rey de reyes</div>
-    <div class="item" data-title="Santo es el Señor">Santo es el Señor</div>
-    <div class="item" data-title="Tú eres santo">Tú eres santo</div>
-    <div class="item" data-title="Vine a adorarte">Vine a adorarte</div>
-    <div class="item" data-title="Yo te busco">Yo te busco</div>
-  </div>
-  
-  <!-- Debug panel -->
-  <div class="debug-panel">
-    <h3>Debug Panel</h3>
-    <div id="debug-output"></div>
-  </div>
-
-  <script>
-    // DETECT URL PARAMETERS
-    function getQueryParam(name) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(name);
-    }
-    
-    // IMMEDIATE EXECUTION
-    document.addEventListener("DOMContentLoaded", function() {
-      // Show a status message that the page loaded
-      showStatus("Page loaded successfully at " + new Date().toLocaleTimeString());
-      
-      // Check for query parameter
-      const query = getQueryParam('q');
-      if (query) {
-        document.getElementById('searchInput').value = query;
-        performSearch(query);
-      }
-      
-      // Also add a manual search button
-      const debugPanel = document.querySelector('.debug-panel');
-      const searchButton = document.createElement('button');
-      searchButton.textContent = 'Run JavaScript Search';
-      searchButton.style.marginTop = '10px';
-      searchButton.addEventListener('click', function() {
-        const searchInput = document.getElementById('searchInput');
-        performSearch(searchInput.value);
-      });
-      debugPanel.appendChild(searchButton);
-      
-      // Add some debug info
-      logDebug("Browser: " + navigator.userAgent);
-      logDebug("Query param: " + (query || "none"));
-    });
-    
-    // BASIC SEARCH FUNCTION
-    function performSearch(query) {
-      if (!query) {
-        showStatus("Empty search - showing all items");
-        document.querySelectorAll('.item').forEach(item => {
-          item.style.display = 'block';
-          item.classList.remove('highlighted');
-        });
-        return;
-      }
-      
-      showStatus("Searching for: " + query);
-      logDebug("Search executed: " + query);
-      
-      const items = document.querySelectorAll('.item');
-      let matchCount = 0;
-      
-      items.forEach(item => {
-        const title = item.getAttribute('data-title').toLowerCase();
-        
-        if (title.includes(query.toLowerCase())) {
-          // Match found - show and highlight
-          item.style.display = 'block';
-          item.classList.add('highlighted');
-          matchCount++;
-        } else {
-          // No match - hide
-          item.style.display = 'none';
-          item.classList.remove('highlighted');
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Tailwind Configuration
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                fontFamily: {
+                    'sans': ['Quicksand', 'sans-serif'],
+                    'headings': ['Chewy', 'cursive'],
+                },
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                    }
+                }
+            }
         }
-      });
-      
-      // Update status with results
-      showStatus("Found " + matchCount + " matches for: " + query);
-    }
-    
-    // HELPER FUNCTIONS
-    function showStatus(message) {
-      const status = document.getElementById('status');
-      status.textContent = message;
-      status.style.display = 'block';
-    }
-    
-    function logDebug(message) {
-      const debug = document.getElementById('debug-output');
-      const timestamp = new Date().toLocaleTimeString();
-      const entry = document.createElement('div');
-      entry.textContent = `[${timestamp}] ${message}`;
-      debug.appendChild(entry);
-      
-      // Log to console too
-      console.log(message);
-    }
-  </script>
+
+        // Theme management
+        function initTheme() {
+            const storedTheme = localStorage.getItem('theme');
+            const systemDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (storedTheme === 'dark' || (!storedTheme && systemDarkMode)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+            
+            // Set theme toggle state
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle && document.documentElement.classList.contains('dark')) {
+                themeToggle.checked = true;
+            }
+        }
+    </script>
+    <style>
+        /* Search highlight */
+        .search-highlight {
+            background-color: rgba(93, 92, 222, 0.2);
+            border-radius: 2px;
+            padding: 0 2px;
+            margin: 0 -2px;
+        }
+        
+        .dark .search-highlight {
+            background-color: rgba(93, 92, 222, 0.4);
+        }
+        
+        .hidden-item {
+            display: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-200">
+    <div class="container mx-auto px-4 pt-10 pb-20 max-w-4xl min-h-screen flex flex-col">
+        <!-- App Header -->
+        <h1 class="text-4xl md:text-6xl font-bold mb-0 text-center font-headings">Cánticos de Victoria</h1>
+        <p id="subtitle" class="mb-6 text-center text-gray-600 dark:text-gray-400">Una colección de coritos</p>
+        
+        <!-- URL-Parameter Based Search Form -->
+        <div id="searchBarContainer" class="sticky top-0 z-10 bg-white dark:bg-gray-900 pt-2 pb-4 mb-4 transition-shadow duration-300">
+            <form action="" method="get" class="mb-2">
+                <div class="flex gap-2">
+                    <input 
+                        type="text" 
+                        name="q" 
+                        id="searchInput" 
+                        class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:outline-none text-base" 
+                        placeholder="Buscar cántico..." 
+                        value="">
+                    <button type="submit" class="bg-primary hover:bg-opacity-90 text-white px-4 py-2 rounded-lg">
+                        Buscar
+                    </button>
+                </div>
+            </form>
+            
+            <!-- Status bar -->
+            <div id="statusBar" class="mt-2 p-2 bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200 rounded-lg text-sm hidden"></div>
+            
+            <!-- No results message -->
+            <p id="noResults" class="mt-2 text-center text-red-500 dark:text-red-400 hidden">No se encontraron resultados</p>
+        </div>
+        
+        <!-- Loading Indicator -->
+        <div id="loadingIndicator" class="flex items-center justify-center py-8">
+            <svg class="animate-spin h-8 w-8 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span class="ml-3 text-lg">Cargando cánticos...</span>
+        </div>
+        
+        <!-- Error Message -->
+        <div id="errorMessage" class="hidden py-4 px-4 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg mb-4">
+            <p>Error al cargar el archivo de cánticos.</p>
+        </div>
+        
+        <!-- Item List -->
+        <ul id="itemList" class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-md">
+            <!-- Items will be populated dynamically -->
+        </ul>
+        
+        <!-- Footer -->
+        <footer class="mt-auto pt-8 pb-4 text-center text-sm text-gray-500 dark:text-gray-400">
+            <!-- Theme Toggle Switch -->
+            <div class="flex justify-center items-center mb-3">
+                <span class="mr-2 text-yellow-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                </span>
+                <div class="relative inline-block w-10 mr-2 align-middle select-none">
+                    <input type="checkbox" name="toggle" id="themeToggle" class="absolute block w-6 h-6 rounded-full bg-white border-4 border-gray-300 appearance-none cursor-pointer focus:outline-none checked:right-0 checked:border-gray-700 dark:checked:border-gray-200 focus:ring-0 transition-all duration-200" />
+                    <label for="themeToggle" class="block overflow-hidden h-6 rounded-full bg-gray-300 dark:bg-gray-700 cursor-pointer"></label>
+                </div>
+                <span class="ml-2 text-blue-900 dark:text-blue-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                </span>
+            </div>
+            
+            <p>Cánticos De Victoria. <span class="text-green-600 dark:text-green-500">Ministerio Monte de Dios</span>. Manatí, P.R.</p>
+        </footer>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-75 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-3xl w-full max-h-[80vh] flex flex-col">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex justify-between items-center">
+                    <h3 id="modalTitle" class="text-xl font-bold text-gray-800 dark:text-gray-200"></h3>
+                    <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Modal Content -->
+            <div class="flex-1 overflow-y-auto p-6">
+                <p id="modalContent" class="text-gray-800 dark:text-gray-200 text-lg whitespace-pre-line"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ----------------------------
+        // STATE MANAGEMENT
+        // ----------------------------
+        let allItems = []; // Array to store all items (title and content)
+        let currentSearchTerm = ''; // Keep track of current search term for highlighting
+        
+        // ----------------------------
+        // INITIALIZATION
+        // ----------------------------
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize theme
+            initTheme();
+            
+            // Set up theme toggle
+            const themeToggle = document.getElementById('themeToggle');
+            themeToggle.addEventListener('change', toggleTheme);
+            
+            // Check for search query parameter
+            const query = getQueryParam('q');
+            if (query) {
+                document.getElementById('searchInput').value = query;
+                showStatus(`Searching for: ${query}`);
+            }
+            
+            // Load content
+            loadCanticosFile();
+            
+            // Set up modal close event
+            document.getElementById('modal').addEventListener('click', function(event) {
+                if (event.target === this) {
+                    closeModal();
+                }
+            });
+            
+            // Close modal on Escape key
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape' && !document.getElementById('modal').classList.contains('hidden')) {
+                    closeModal();
+                }
+            });
+        });
+        
+        // ----------------------------
+        // THEME MANAGEMENT
+        // ----------------------------
+        function toggleTheme() {
+            if (this.checked) {
+                // Switch to dark mode
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                // Switch to light mode
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+        
+        // ----------------------------
+        // URL PARAMETER HANDLING
+        // ----------------------------
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+        
+        function showStatus(message) {
+            const statusBar = document.getElementById('statusBar');
+            statusBar.textContent = message;
+            statusBar.classList.remove('hidden');
+            
+            // Log to console too
+            console.log(message);
+        }
+        
+        // ----------------------------
+        // CONTENT LOADING
+        // ----------------------------
+        async function loadCanticosFile() {
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            try {
+                // Try to fetch the canticos.txt file
+                const response = await fetch('canticos.txt');
+                
+                if (!response.ok) {
+                    throw new Error(`Error ${response.status}: ${response.statusText}`);
+                }
+                
+                // Read the text content
+                const content = await response.text();
+                
+                // Process the file content
+                processFileContent(content);
+                
+                // Hide loading indicator
+                loadingIndicator.classList.add('hidden');
+                
+                // If there's a search query, perform search
+                const query = getQueryParam('q');
+                if (query) {
+                    performSearch(query);
+                }
+            } catch (error) {
+                console.error('Error loading canticos.txt:', error);
+                
+                // Fallback to demo data for testing
+                generateDemoData();
+                
+                // Hide loading indicator and show error
+                loadingIndicator.classList.add('hidden');
+                errorMessage.classList.remove('hidden');
+                
+                // If there's a search query, perform search on demo data
+                const query = getQueryParam('q');
+                if (query) {
+                    performSearch(query);
+                }
+            }
+        }
+        
+        function generateDemoData() {
+            // Demo canticos for testing
+            const demoItems = [
+                { title: "Alabanza y adoración", content: "Venimos a adorarte\nCon todo el corazón\nA rendirnos ante ti Señor" },
+                { title: "Al Rey de reyes", content: "Al Rey de reyes\nEl Señor de señores\nA él la gloria y el honor\n\nPorque él es Rey, porque él es Señor\nPorque él es digno\nEs digno de honor" },
+                { title: "Aleluya Cristo vive", content: "Aleluya Cristo vive\nÉl vive para siempre\nÉl es mi esperanza\n\nCada día me sostiene\nCon él puedo caminar\nCon él puedo caminar" },
+                { title: "Bendito sea el Señor", content: "Bendito sea el Señor, Dios poderoso\nQuien fue, quien es, y quien vendrá\nBendito sea el Señor, Dios poderoso\nQuien reina hoy y siempre reinará" },
+                { title: "Cordero de Dios", content: "Cordero de Dios\nQue quitas el pecado\nLa maldad del mundo\nTen piedad, ten piedad de mí" },
+                { title: "Digno es el Cordero", content: "¡Digno es el Cordero\nQue fue inmolado!\n¡Digno es el Cordero\nDe recibir honor y gloria!" },
+                { title: "El gozo del Señor", content: "El gozo del Señor es mi fortaleza\nEl gozo del Señor me da la victoria\nEl gozo del Señor es mi fortaleza\n¡Aleluya, Aleluya!" },
+                { title: "Grande es el Señor", content: "Grande es el Señor\nY digno de suprema alabanza\nSu grandeza es insondable\nDe generación en generación\nTus obras alabaré" },
+                { title: "Hay poder", content: "Hay poder, poder, sin igual poder\nEn Jesús quien murió\nHay poder, poder, sin igual poder\nEn la sangre que Él derramó" },
+                { title: "Incomparable", content: "Incomparable es tu amor\nNo hay nadie como tú\nJesús, mi Salvador\nIncomparable es tu amor" },
+                { title: "Jesucristo es el Señor", content: "Jesucristo es el Señor\nEl Señor, el Señor\nJesucristo es el Señor\nÉl es el Rey de reyes" },
+                { title: "La alegría del Señor", content: "La alegría del Señor es nuestra fuerza\nLa alegría del Señor es nuestra fuerza\nEs nuestra fuerza, es nuestra fuerza\nLa alegría del Señor es nuestra fuerza" },
+                { title: "Mi salvador vive", content: "Mi salvador vive\nÉl vive por siempre\nMi salvador vive\nJesús vive hoy" },
+                { title: "No hay nadie como tú", content: "No hay nadie como tú\nNo lo hay, no lo hay\nNo hay nadie como tú\nNadie como tú" },
+                { title: "Poderoso Dios", content: "Poderoso Dios\nRey del universo\nEl que Era, que Es y que Será\nEl Alfa y Omega\nPrincipio y Fin\nEl que estaba y estará" },
+                { title: "Rey de reyes", content: "Rey de reyes y Señor de señores\nGloria, Aleluya\nRey de reyes y Señor de señores\nGloria, Aleluya" },
+                { title: "Santo es el Señor", content: "Santo, santo\nSanto es el Señor\nDios poderoso\nDigno es el Señor" },
+                { title: "Tú eres santo", content: "Tú eres santo, santo\nTú eres poderoso\nTú eres digno, digno\nDe toda gloria y honor" },
+                { title: "Vine a adorarte", content: "Vine a adorarte\nVine a rendirme\nVine a decir que eres mi Rey\nEres mi Señor" },
+                { title: "Yo te busco", content: "Yo te busco\nCon todo el corazón\nEspero en ti\nQuiero conocerte más\n\nYo te busco\nCon todo el corazón\nTe alabaré\nCon todo mi ser" }
+            ];
+            
+            // Store all items in global array for searching
+            allItems = demoItems.map((item, index) => ({
+                id: `demo-${index}`,
+                title: item.title,
+                content: item.content
+            }));
+            
+            // Generate the content
+            generateContent(allItems);
+            
+            // Update subtitle with item count
+            document.getElementById('subtitle').innerHTML = `Una colección de <strong>${demoItems.length}</strong> coritos`;
+        }
+        
+        function processFileContent(content) {
+            // Split content by blank lines to separate items
+            const blocks = content.split(/\r?\n\r?\n+/);
+            const items = [];
+            
+            // Process each block as an item
+            blocks.forEach(block => {
+                if (!block.trim()) return; // Skip empty blocks
+                
+                // Split the block into lines
+                const lines = block.split(/\r?\n/);
+                
+                // First line is the title
+                const title = lines[0].trim();
+                
+                // Remaining lines are the content (if any)
+                const contentLines = lines.slice(1);
+                const content = contentLines.join('\n').trim();
+                
+                // Add this item to our collection
+                items.push({ title, content });
+            });
+            
+            // Store all items in global array for searching
+            allItems = items.map((item, i) => {
+                const letter = item.title.charAt(0).toUpperCase();
+                return {
+                    id: `item-${letter}-${i}`,
+                    title: item.title,
+                    content: item.content
+                };
+            });
+            
+            // Generate the content
+            generateContent(allItems);
+            
+            // Update subtitle with item count
+            document.getElementById('subtitle').innerHTML = `Una colección de <strong>${items.length}</strong> coritos`;
+        }
+        
+        function generateContent(items) {
+            const itemList = document.getElementById('itemList');
+            
+            // Clear existing content
+            itemList.innerHTML = '';
+            
+            // Group items by first letter for display
+            const groupedItems = {};
+            
+            // First group items by letter
+            items.forEach(item => {
+                const firstLetter = item.title.charAt(0).toUpperCase();
+                if (!groupedItems[firstLetter]) {
+                    groupedItems[firstLetter] = [];
+                }
+                groupedItems[firstLetter].push(item);
+            });
+            
+            // Get sorted letters
+            const sortedLetters = Object.keys(groupedItems).sort();
+            
+            // Now create the items in order
+            sortedLetters.forEach(letter => {
+                // Create a letter heading
+                const letterHeading = document.createElement('li');
+                letterHeading.className = 'bg-gray-100 dark:bg-gray-700 px-4 py-2 font-bold text-sm';
+                letterHeading.textContent = letter;
+                itemList.appendChild(letterHeading);
+                
+                // Add all items for this letter
+                groupedItems[letter].forEach(item => {
+                    const listItem = document.createElement('li');
+                    listItem.className = 'py-3 px-4 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-750';
+                    listItem.dataset.title = item.title.toLowerCase();
+                    listItem.dataset.id = item.id;
+                    listItem.textContent = item.title;
+                    
+                    // Add click handler to open modal
+                    listItem.addEventListener('click', function() {
+                        openModal(item.title, item.content);
+                    });
+                    
+                    itemList.appendChild(listItem);
+                });
+            });
+        }
+        
+        // ----------------------------
+        // SEARCH FUNCTIONS
+        // ----------------------------
+        function performSearch(query) {
+            // Save the search term
+            currentSearchTerm = query.trim();
+            
+            // No search term - show everything
+            if (!currentSearchTerm) {
+                document.querySelectorAll('#itemList li').forEach(item => {
+                    item.classList.remove('hidden-item');
+                });
+                document.getElementById('noResults').classList.add('hidden');
+                return;
+            }
+            
+            // Normalize the search term
+            const normalizedQuery = normalizeText(currentSearchTerm);
+            
+            // Show status
+            showStatus(`Searching for: ${currentSearchTerm}`);
+            
+            // Get all list items (except the letter headings)
+            const letterHeadings = document.querySelectorAll('#itemList li.bg-gray-100, #itemList li.bg-gray-700');
+            const listItems = document.querySelectorAll('#itemList li:not(.bg-gray-100):not(.bg-gray-700)');
+            
+            // Track matches for statistical purposes
+            let matchCount = 0;
+            let visibleLetters = new Set();
+            
+            // Check each list item
+            listItems.forEach(item => {
+                // Get item data
+                const title = item.dataset.title || '';
+                const id = item.dataset.id;
+                const itemData = allItems.find(d => d.id === id);
+                
+                // Get content if available
+                const content = itemData ? itemData.content.toLowerCase() : '';
+                
+                // Check for match in title or content
+                const normalizedTitle = normalizeText(title);
+                const normalizedContent = normalizeText(content);
+                
+                const titleMatch = normalizedTitle.includes(normalizedQuery);
+                const contentMatch = normalizedContent.includes(normalizedQuery);
+                
+                if (titleMatch || contentMatch) {
+                    // Show the item
+                    item.classList.remove('hidden-item');
+                    matchCount++;
+                    
+                    // Highlight matching text in title if it's a title match
+                    if (titleMatch) {
+                        // Get the first letter to track for letter headings
+                        const firstLetter = item.textContent.charAt(0).toUpperCase();
+                        visibleLetters.add(firstLetter);
+                        
+                        // Highlight the text
+                        item.innerHTML = highlightMatchingText(item.textContent, currentSearchTerm);
+                    }
+                } else {
+                    // Hide the item
+                    item.classList.add('hidden-item');
+                }
+            });
+            
+            // Handle letter headings - show only if they have visible items
+            letterHeadings.forEach(heading => {
+                const letter = heading.textContent.trim();
+                const hasVisibleItems = visibleLetters.has(letter);
+                
+                if (hasVisibleItems) {
+                    heading.classList.remove('hidden-item');
+                } else {
+                    heading.classList.add('hidden-item');
+                }
+            });
+            
+            // Show/hide no results message
+            document.getElementById('noResults').classList.toggle('hidden', matchCount > 0);
+            
+            // Update status message
+            showStatus(`Found ${matchCount} match${matchCount !== 1 ? 'es' : ''} for: ${currentSearchTerm}`);
+        }
+        
+        function normalizeText(text) {
+            return text
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, ""); // Remove diacritics (accents)
+        }
+        
+        function highlightMatchingText(text, searchTerm) {
+            if (!searchTerm) return text;
+            
+            // Case-insensitive search
+            const regex = new RegExp(escapeRegExp(searchTerm), 'gi');
+            return text.replace(regex, match => `<span class="search-highlight">${match}</span>`);
+        }
+        
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+        
+        // ----------------------------
+        // MODAL FUNCTIONS
+        // ----------------------------
+        function openModal(title, content) {
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
+            
+            // Set title and content
+            modalTitle.textContent = title;
+            modalContent.textContent = content;
+            
+            // If we're searching, highlight matches in content
+            if (currentSearchTerm) {
+                modalContent.innerHTML = highlightMatchingText(content, currentSearchTerm);
+            }
+            
+            // Show the modal
+            modal.classList.remove('hidden');
+            
+            // Prevent scrolling of the body
+            document.body.classList.add('overflow-hidden');
+        }
+        
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.classList.add('hidden');
+            
+            // Allow scrolling again
+            document.body.classList.remove('overflow-hidden');
+        }
+    </script>
 </body>
 </html>
