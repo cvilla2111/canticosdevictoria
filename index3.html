@@ -379,7 +379,7 @@
         <!-- Main Content Area -->
         <div>
             <!-- App Header -->
-            <h1 class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-0 text-gray-800 dark:text-gray-200 text-center font-headings">Cánticos de Victoria@</h1>
+            <h1 class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-0 text-gray-800 dark:text-gray-200 text-center font-headings">Cánticos de Victoria</h1>
             <p id="subtitle" class="mb-4 text-sm md:text-base lg:text-lg xl:text-xl text-gray-600 dark:text-gray-400 text-center">Una colección de coritos</p>
             
             <!-- Search Bar -->
@@ -1464,10 +1464,90 @@
             console.log(`Search results: ${visibleCount} (${titleMatches} titles, ${contentMatches} content)`);
         }
         
-        // Link to simpleSearch from the main search input
+        // EMERGENCY DIRECT SEARCH FUNCTION
         function handleSearch() {
-            simpleSearch(this.value);
+            console.log("ORIGINAL handleSearch called with:", this.value);
+            
+            // Try direct binding as a workaround - don't rely on 'this'
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                const value = searchInput.value;
+                console.log("Direct access search value:", value);
+                
+                // Add visual feedback that search was triggered
+                const feedbackDiv = document.createElement('div');
+                feedbackDiv.innerHTML = `<div class="fixed top-0 left-0 right-0 bg-red-500 text-white p-2 text-center z-[1000]">
+                    Search triggered for: "${value}" at ${new Date().toLocaleTimeString()}
+                </div>`;
+                document.body.appendChild(feedbackDiv);
+                
+                // Auto-remove after 3 seconds
+                setTimeout(() => {
+                    document.body.removeChild(feedbackDiv);
+                }, 3000);
+                
+                // Call search function with direct value
+                simpleSearch(value);
+            } else {
+                console.error("Search input element not found!");
+            }
         }
+        
+        // Add a direct search button right next to the search box
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchBarDiv = document.querySelector('#searchBarContainer > div');
+            if (searchBarDiv) {
+                // Create the direct search button
+                const searchButton = document.createElement('button');
+                searchButton.className = "absolute inset-y-0 right-10 flex items-center pr-3 text-white bg-red-500 px-2 rounded-r-full";
+                searchButton.innerHTML = "Search Now";
+                searchButton.id = "directSearchButton";
+                searchButton.onclick = function() {
+                    // Get value directly
+                    const searchInput = document.getElementById('searchInput');
+                    if (searchInput) {
+                        console.log("Direct button search with:", searchInput.value);
+                        simpleSearch(searchInput.value);
+                    }
+                };
+                
+                // Add the button to the DOM
+                searchBarDiv.appendChild(searchButton);
+            }
+            
+            // Directly bind to search input with inline handler
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                console.log("Found search input, adding event listeners");
+                
+                // Try multiple event binding approaches
+                searchInput.addEventListener('input', function(e) {
+                    console.log("Input event triggered with:", e.target.value);
+                    simpleSearch(e.target.value);
+                });
+                
+                searchInput.addEventListener('change', function(e) {
+                    console.log("Change event triggered with:", e.target.value);
+                    simpleSearch(e.target.value);
+                });
+                
+                searchInput.addEventListener('keyup', function(e) {
+                    console.log("Keyup event triggered with:", e.target.value);
+                    // Only trigger on key up for certain keys
+                    if (e.key === 'Enter' || e.key === 'Tab') {
+                        simpleSearch(e.target.value);
+                    }
+                });
+                
+                // Also attempt direct property assignment
+                searchInput.oninput = function() {
+                    console.log("oninput property triggered with:", this.value);
+                    simpleSearch(this.value);
+                };
+            } else {
+                console.error("Could not find search input element during initialization");
+            }
+        });
         
         function highlightMatchingText(text, searchTerm) {
             // Create case-insensitive global regex that also handles accented characters
