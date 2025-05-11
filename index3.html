@@ -379,7 +379,7 @@
         <!-- Main Content Area -->
         <div>
             <!-- App Header -->
-            <h1 class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-0 text-gray-800 dark:text-gray-200 text-center font-headings">Cánticos de Victoria@</h1>
+            <h1 class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-0 text-gray-800 dark:text-gray-200 text-center font-headings">Cánticos de Victoria</h1>
             <p id="subtitle" class="mb-4 text-sm md:text-base lg:text-lg xl:text-xl text-gray-600 dark:text-gray-400 text-center">Una colección de coritos</p>
             
             <!-- Search Bar -->
@@ -1034,42 +1034,56 @@
         /********************************
          * SEARCH FUNCTIONALITY
          ********************************/
-        function handleSearch() {
-            // Get the user's search term and normalize it
-            const searchTerm = normalizeText(this.value.trim());
-            currentSearchTerm = searchTerm; // Store for highlighting
+        // Initialize search-related event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', function() {
+                performSearch(this.value);
+            });
+        });
+        
+        // Primary search function
+        function performSearch(query) {
+            console.log("Search triggered with query:", query);
             
-            // Show/hide the clear button based on search term
-            toggleSearchIcons(this.value);
+            // Get and store the search term
+            const searchText = query.trim();
+            currentSearchTerm = searchText;
             
-            // Get all list items and results message element
+            // Update search icons (X or magnifying glass)
+            toggleSearchIcons(query);
+            
+            // Get DOM elements
             const listItems = document.querySelectorAll('#itemList li');
             const noResults = document.getElementById('noResults');
             
-            // Track visible items
-            let visibleCount = 0;
-            const lettersWithVisibleItems = new Set();
+            // For debugging
+            let titleMatches = 0;
+            let contentMatches = 0;
+            let totalMatches = 0;
             
-            // Statistics for debugging
-            let titleMatchCount = 0;
-            let contentMatchCount = 0;
+            // Track visible items' first letters for the alphabet navigator
+            const visibleLetters = new Set();
             
-            console.log("Searching for:", searchTerm);
-            
-            // If search is empty, show all items
-            if (!searchTerm) {
-                // Show all items
+            // If search is empty, show everything
+            if (searchText === '') {
+                console.log("Empty search, showing all items");
+                
+                // Show all items and reset titles
                 listItems.forEach(item => {
-                    // Show the item
+                    // Make visible
                     item.classList.remove('hidden');
                     
-                    // Reset title text (remove any highlighting)
-                    const itemId = item.querySelector('audio')?.id;
-                    const itemData = allItems.find(i => i.id === itemId);
-                    if (itemData) {
-                        const titleSpan = item.querySelector('span');
-                        if (titleSpan) {
-                            titleSpan.textContent = itemData.title;
+                    // Find the title element and reset its content
+                    const titleSpan = item.querySelector('span');
+                    if (titleSpan) {
+                        // Get the original item data
+                        const audio = item.querySelector('audio');
+                        if (audio) {
+                            const itemData = allItems.find(data => data.id === audio.id);
+                            if (itemData) {
+                                titleSpan.textContent = itemData.title;
+                            }
                         }
                     }
                 });
@@ -1077,70 +1091,71 @@
                 // Hide "no results" message
                 noResults.classList.add('hidden');
                 
-                // Since all items are visible, update letter index
+                // Update the letter index
                 buildLetterIndex();
-                
-                return; // Exit early
+                return;
             }
             
-            // Process each list item
+            // Normalize the search term
+            const normalizedSearch = normalizeText(searchText);
+            console.log("Normalized search term:", normalizedSearch);
+            
+            // Check each item
             listItems.forEach(item => {
-                // Get item data
+                // Get the span which contains the title text
                 const titleSpan = item.querySelector('span');
                 if (!titleSpan) return;
                 
-                const itemId = item.querySelector('audio')?.id;
-                const itemData = allItems.find(i => i.id === itemId);
+                // Get the item's audio element to find its ID
+                const audio = item.querySelector('audio');
+                if (!audio) return;
                 
+                // Find the corresponding item data
+                const itemData = allItems.find(data => data.id === audio.id);
                 if (!itemData) return;
                 
-                // Normalize the title and content for comparison
+                // Normalize both title and content for comparison
                 const normalizedTitle = normalizeText(itemData.title);
                 const normalizedContent = normalizeText(itemData.content || '');
                 
-                // Check if title or content contains the search term
-                const titleMatches = normalizedTitle.includes(searchTerm);
-                const contentMatches = normalizedContent.includes(searchTerm);
+                // Check if either contains the search term
+                const titleMatch = normalizedTitle.includes(normalizedSearch);
+                const contentMatch = normalizedContent.includes(normalizedSearch);
                 
-                // Process match result
-                if (titleMatches || contentMatches) {
-                    // Count match type
-                    if (titleMatches) titleMatchCount++;
-                    else if (contentMatches) contentMatchCount++;
-                    
-                    // Show this item
-                    item.classList.remove('hidden');
-                    visibleCount++;
-                    
-                    // Get the first letter of the title for alphabet navigation
-                    const letter = itemData.title.trim()[0].toUpperCase();
-                    if (letter) {
-                        lettersWithVisibleItems.add(letter);
-                    }
-                    
-                    // Update the title display
-                    if (titleMatches) {
-                        // Highlight the matching part in the title
-                        titleSpan.innerHTML = highlightMatchingText(itemData.title, searchTerm);
+                // If either matches, show the item
+                if (titleMatch || contentMatch) {
+                    // Track match type
+                    if (titleMatch) {
+                        titleMatches++;
+                        // Highlight the matched text in title
+                        titleSpan.innerHTML = highlightMatchingText(itemData.title, searchText);
                     } else {
-                        // For content-only matches, just show the normal title
+                        contentMatches++;
+                        // Just show normal title for content-only matches
                         titleSpan.textContent = itemData.title;
                     }
+                    
+                    // Show the item and track it
+                    item.classList.remove('hidden');
+                    totalMatches++;
+                    
+                    // Track the first letter for alphabet navigator
+                    const firstLetter = itemData.title.charAt(0).toUpperCase();
+                    visibleLetters.add(firstLetter);
                 } else {
-                    // Hide this item - no match
+                    // Hide non-matching items
                     item.classList.add('hidden');
                 }
             });
             
-            console.log(`Found ${visibleCount} total matches: ${titleMatchCount} in titles, ${contentMatchCount} in content only`);
-            
             // Show or hide "no results" message
-            noResults.classList.toggle('hidden', visibleCount > 0);
+            noResults.classList.toggle('hidden', totalMatches > 0);
             
-            // Update available letters for alphabet navigation
-            availableLetters = Array.from(lettersWithVisibleItems).sort();
+            // Log match results for debugging
+            console.log(`Search results: ${totalMatches} total matches (${titleMatches} in titles, ${contentMatches} in content)`);
             
-            // Update letter positions after filtering
+            // Update the alphabet navigation
+            availableLetters = Array.from(visibleLetters).sort();
             buildLetterIndex();
             
             // Reset alphabet scroll if active
@@ -1148,6 +1163,12 @@
                 deactivateAlphaScroll();
             }
             currentLetterIndex = 0;
+        }
+        
+        function handleSearch() {
+            // This function is kept for compatibility with existing event listeners
+            // Just forward to the new implementation
+            performSearch(this.value);
         }
         
         function highlightMatchingText(text, searchTerm) {
