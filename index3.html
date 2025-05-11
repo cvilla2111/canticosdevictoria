@@ -372,41 +372,6 @@
         .dark .search-highlight {
             background-color: rgba(93, 92, 222, 0.4);
         }
-        
-        /* Content match indicator */
-        .content-match-indicator {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin-left: 6px;
-            opacity: 0.75;
-            transition: opacity 0.2s;
-            vertical-align: middle;
-        }
-        
-        .content-match-indicator:hover {
-            opacity: 1;
-        }
-        
-        /* Content match pill */
-        .content-match-pill {
-            font-size: 0.65rem;
-            padding: 1px 6px;
-            border-radius: 100px;
-            margin-left: 8px;
-            background-color: rgba(93, 92, 222, 0.15);
-            color: #5D5CDE;
-            border: 1px solid rgba(93, 92, 222, 0.3);
-            font-weight: 500;
-            vertical-align: middle;
-            white-space: nowrap;
-        }
-        
-        .dark .content-match-pill {
-            background-color: rgba(93, 92, 222, 0.2);
-            color: #9090FF;
-            border-color: rgba(144, 144, 255, 0.3);
-        }
     </style>
 </head>
 <body class="min-h-screen bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-200">
@@ -414,7 +379,7 @@
         <!-- Main Content Area -->
         <div>
             <!-- App Header -->
-            <h1 class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-0 text-gray-800 dark:text-gray-200 text-center font-headings">Cánticos de Victoria@</h1>
+            <h1 class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-0 text-gray-800 dark:text-gray-200 text-center font-headings">Cánticos de Victoria</h1>
             <p id="subtitle" class="mb-4 text-sm md:text-base lg:text-lg xl:text-xl text-gray-600 dark:text-gray-400 text-center">Una colección de coritos</p>
             
             <!-- Search Bar -->
@@ -1136,17 +1101,8 @@
                             // Highlight the matching text in the title
                             titleSpan.innerHTML = highlightMatchingText(itemData.title, searchTerm);
                         } else {
-                            // Just show the title but add a content match indicator
+                            // Just show the title with no indicators
                             titleSpan.textContent = itemData.title;
-                            
-                            // Add a pill indicator for content matches
-                            // First check if there's already a content match indicator
-                            if (!titleSpan.nextElementSibling || !titleSpan.nextElementSibling.classList.contains('content-match-pill')) {
-                                const contentMatchPill = document.createElement('span');
-                                contentMatchPill.className = 'content-match-pill';
-                                contentMatchPill.textContent = 'in lyrics';
-                                titleSpan.parentNode.insertBefore(contentMatchPill, titleSpan.nextSibling);
-                            }
                         }
                     } else {
                         item.classList.add('hidden');
@@ -1155,13 +1111,6 @@
                 
                 // Show or hide the "no results" message
                 noResults.classList.toggle('hidden', visibleCount > 0);
-            }
-            
-            // Clean up content match indicators if search is empty
-            if (searchTerm === '') {
-                document.querySelectorAll('.content-match-pill').forEach(pill => {
-                    pill.remove();
-                });
             }
             
             // Update available letters based on visible items
@@ -1254,11 +1203,6 @@
                         titleSpan.textContent = itemData.title;
                     }
                 }
-            });
-            
-            // Remove all content match pills
-            document.querySelectorAll('.content-match-pill').forEach(pill => {
-                pill.remove();
             });
             
             // Hide no results message
@@ -1736,6 +1680,93 @@
             }, 300); // Match the animation duration
         }
         
+        function markModalPlayButtonAsUnavailable() {
+            const modalPlayButton = document.getElementById('modalPlayButton');
+            if (!modalPlayButton) return;
+            
+            const buttonContainer = modalPlayButton.parentElement;
+            
+            // Change the stroke color to gray
+            modalPlayButton.setAttribute("stroke", "#888888");
+            
+            // Find and update the path and rect elements
+            const pathElement = modalPlayButton.querySelector('path');
+            const rectElement = modalPlayButton.querySelector('rect');
+            
+            if (pathElement) {
+                // Change the fill color of the play triangle
+                pathElement.setAttribute("fill", "#888888");
+            }
+            
+            if (rectElement) {
+                // Keep the background white but change the border color to gray
+                rectElement.setAttribute("fill", "white");
+                rectElement.setAttribute("class", "dark:fill-gray-800");
+            }
+            
+            // Add not-allowed cursor to the button container
+            if (buttonContainer) {
+                buttonContainer.style.cursor = 'not-allowed';
+                
+                // Add a class that we can use to style all unavailable buttons consistently
+                buttonContainer.classList.add('audio-unavailable');
+                
+                // Add the X mark if it doesn't already exist
+                if (!buttonContainer.querySelector('.unavailable-mark')) {
+                    const xMark = document.createElement('div');
+                    xMark.textContent = '✕';
+                    xMark.style.position = 'absolute';
+                    xMark.style.top = '50%';
+                    xMark.style.left = '50%';
+                    xMark.style.transform = 'translate(-50%, -50%)';
+                    xMark.style.fontSize = '24px';
+                    xMark.style.color = 'white';
+                    xMark.style.fontWeight = 'bold';
+                    xMark.style.zIndex = '5';
+                    xMark.style.textShadow = '0px 0px 2px rgba(0,0,0,0.5)';
+                    xMark.classList.add('unavailable-mark');
+                    buttonContainer.appendChild(xMark);
+                }
+            }
+        }
+        
+        function resetModalPlayButton() {
+            const modalPlayButton = document.getElementById('modalPlayButton');
+            if (!modalPlayButton) return;
+            
+            const buttonContainer = modalPlayButton.parentElement;
+            
+            // Reset stroke color
+            modalPlayButton.setAttribute("stroke", "currentColor");
+            
+            // Find and update the path and rect elements
+            const pathElement = modalPlayButton.querySelector('path');
+            const rectElement = modalPlayButton.querySelector('rect');
+            
+            if (pathElement) {
+                // Reset fill color
+                pathElement.setAttribute("fill", "currentColor");
+            }
+            
+            if (rectElement) {
+                // Reset background
+                rectElement.setAttribute("fill", "white");
+                rectElement.setAttribute("class", "dark:fill-gray-800");
+            }
+            
+            // Reset cursor and remove unavailable class/element
+            if (buttonContainer) {
+                buttonContainer.style.cursor = 'pointer';
+                buttonContainer.classList.remove('audio-unavailable');
+                
+                // Remove the X mark if it exists
+                const xMark = buttonContainer.querySelector('.unavailable-mark');
+                if (xMark) {
+                    buttonContainer.removeChild(xMark);
+                }
+            }
+        }
+        
         /********************************
          * AUDIO PLAYBACK
          ********************************/
@@ -1961,116 +1992,6 @@
             }
         }
         
-        function markModalPlayButtonAsUnavailable() {
-            const modalPlayButton = document.getElementById('modalPlayButton');
-            if (!modalPlayButton) return;
-            
-            const buttonContainer = modalPlayButton.parentElement;
-            
-            // Change the stroke color to gray
-            modalPlayButton.setAttribute("stroke", "#888888");
-            
-            // Find and update the path and rect elements
-            const pathElement = modalPlayButton.querySelector('path');
-            const rectElement = modalPlayButton.querySelector('rect');
-            
-            if (pathElement) {
-                // Change the fill color of the play triangle
-                pathElement.setAttribute("fill", "#888888");
-            }
-            
-            if (rectElement) {
-                // Keep the background white but change the border color to gray
-                rectElement.setAttribute("fill", "white");
-                rectElement.setAttribute("class", "dark:fill-gray-800");
-            }
-            
-            // Add not-allowed cursor to the button container
-            if (buttonContainer) {
-                buttonContainer.style.cursor = 'not-allowed';
-                
-                // Add a class that we can use to style all unavailable buttons consistently
-                buttonContainer.classList.add('audio-unavailable');
-                
-                // Add the X mark if it doesn't already exist
-                if (!buttonContainer.querySelector('.unavailable-mark')) {
-                    const xMark = document.createElement('div');
-                    xMark.textContent = '✕';
-                    xMark.style.position = 'absolute';
-                    xMark.style.top = '50%';
-                    xMark.style.left = '50%';
-                    xMark.style.transform = 'translate(-50%, -50%)';
-                    xMark.style.fontSize = '24px';
-                    xMark.style.color = 'white';
-                    xMark.style.fontWeight = 'bold';
-                    xMark.style.zIndex = '5';
-                    xMark.style.textShadow = '0px 0px 2px rgba(0,0,0,0.5)';
-                    xMark.classList.add('unavailable-mark');
-                    buttonContainer.appendChild(xMark);
-                }
-            }
-        }
-        
-        function resetModalPlayButton() {
-            const modalPlayButton = document.getElementById('modalPlayButton');
-            if (!modalPlayButton) return;
-            
-            const buttonContainer = modalPlayButton.parentElement;
-            
-            // Reset stroke color
-            modalPlayButton.setAttribute("stroke", "currentColor");
-            
-            // Find and update the path and rect elements
-            const pathElement = modalPlayButton.querySelector('path');
-            const rectElement = modalPlayButton.querySelector('rect');
-            
-            if (pathElement) {
-                // Reset fill color
-                pathElement.setAttribute("fill", "currentColor");
-            }
-            
-            if (rectElement) {
-                // Reset background
-                rectElement.setAttribute("fill", "white");
-                rectElement.setAttribute("class", "dark:fill-gray-800");
-            }
-            
-            // Reset cursor and remove unavailable class/element
-            if (buttonContainer) {
-                buttonContainer.style.cursor = 'pointer';
-                buttonContainer.classList.remove('audio-unavailable');
-                
-                // Remove the X mark if it exists
-                const xMark = buttonContainer.querySelector('.unavailable-mark');
-                if (xMark) {
-                    buttonContainer.removeChild(xMark);
-                }
-            }
-        }
-        
-        function updateModalPlayButtonState() {
-            if (!currentModalAudioId) return;
-            
-            const modalPlayButton = document.getElementById('modalPlayButton');
-            if (!modalPlayButton) return;
-            
-            const modalEqualizer = document.getElementById('modalEqualizer');
-            
-            // Check if the associated audio is playing
-            const isPlaying = playingButtonId === currentModalAudioId;
-            
-            // Change icon (play triangle or pause square)
-            const pathElement = modalPlayButton.querySelector('path');
-            if (pathElement) {
-                pathElement.setAttribute('d', isPlaying ? 'M9 9h6v6H9z' : 'M10 8l6 4-6 4V8z');
-            }
-            
-            // Show/hide equalizer animation
-            if (modalEqualizer) {
-                modalEqualizer.classList.toggle('hidden', !isPlaying);
-            }
-        }
-        
         function playFallbackTone(audioId) {
             // Mark this audio file as unavailable
             unavailableAudioFiles.add(audioId);
@@ -2285,6 +2206,29 @@
                 if (!currentAudio && !currentOscillator && !clavePlaying && fixedStopButton && !fixedStopButton.classList.contains('hidden')) {
                     hideStopButton();
                 }
+            }
+        }
+        
+        function updateModalPlayButtonState() {
+            if (!currentModalAudioId) return;
+            
+            const modalPlayButton = document.getElementById('modalPlayButton');
+            if (!modalPlayButton) return;
+            
+            const modalEqualizer = document.getElementById('modalEqualizer');
+            
+            // Check if the associated audio is playing
+            const isPlaying = playingButtonId === currentModalAudioId;
+            
+            // Change icon (play triangle or pause square)
+            const pathElement = modalPlayButton.querySelector('path');
+            if (pathElement) {
+                pathElement.setAttribute('d', isPlaying ? 'M9 9h6v6H9z' : 'M10 8l6 4-6 4V8z');
+            }
+            
+            // Show/hide equalizer animation
+            if (modalEqualizer) {
+                modalEqualizer.classList.toggle('hidden', !isPlaying);
             }
         }
         
