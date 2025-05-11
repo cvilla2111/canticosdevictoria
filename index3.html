@@ -360,6 +360,18 @@
             max-height: 30vh;
             overflow: auto;
         }
+        
+        /* Search highlight */
+        .search-highlight {
+            background-color: rgba(93, 92, 222, 0.2);
+            border-radius: 2px;
+            padding: 0 2px;
+            margin: 0 -2px;
+        }
+        
+        .dark .search-highlight {
+            background-color: rgba(93, 92, 222, 0.4);
+        }
     </style>
 </head>
 <body class="min-h-screen bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-200">
@@ -373,15 +385,15 @@
             <!-- Search Bar -->
             <div id="searchBarContainer" class="sticky top-0 z-10 bg-white dark:bg-gray-900 pt-2 pb-1 mb-4 transition-shadow duration-300">
                 <div class="relative">
-                    <input type="text" id="searchInput" class="w-full px-4 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors text-base md:text-lg lg:text-xl" placeholder="Search...">
+                    <input type="text" id="searchInput" class="w-full px-4 py-2 pr-12 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors text-base md:text-lg lg:text-xl" placeholder="Search...">
                     <div class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 dark:text-gray-500">
                         <!-- Search icon -->
                         <svg id="searchIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
                         
-                        <!-- Clear search icon -->
-                        <svg id="clearSearchIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden cursor-pointer hover:text-gray-600 dark:hover:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" onclick="clearSearch()">
+                        <!-- Clear search icon - bigger -->
+                        <svg id="clearSearchIcon" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 hidden cursor-pointer hover:text-gray-600 dark:hover:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" onclick="clearSearch()">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </div>
@@ -575,6 +587,10 @@
         let letterSections = []; // Store letter sections with their positions
         let scrollTimer = null;  // Timer for debouncing scroll actions
         let isScrolling = false; // Track if a scroll is in progress
+        
+        // Search state
+        let allItems = []; // Array to store all items (title and content)
+        let currentSearchTerm = ''; // Keep track of current search term for highlighting
         
         // Debugging
         let debugMode = false;
@@ -1020,6 +1036,8 @@
          ********************************/
         function handleSearch() {
             const searchTerm = normalizeText(this.value);
+            currentSearchTerm = searchTerm; // Update current search term for highlighting
+            
             const listItems = document.querySelectorAll('#itemList li');
             const noResults = document.getElementById('noResults');
             let visibleCount = 0;
@@ -1030,30 +1048,59 @@
             // Track which letters have visible items
             const lettersWithVisibleItems = new Set();
             
-            // If search term is empty, show all items
+            // If search term is empty, show all items and reset content
             if (searchTerm === '') {
-                listItems.forEach(item => item.classList.remove('hidden'));
+                listItems.forEach(item => {
+                    item.classList.remove('hidden');
+                    
+                    // Reset the content to remove any highlighting
+                    const itemId = item.querySelector('audio')?.id;
+                    const itemData = allItems.find(i => i.id === itemId);
+                    if (itemData) {
+                        const titleSpan = item.querySelector('span');
+                        if (titleSpan) {
+                            titleSpan.textContent = itemData.title;
+                        }
+                    }
+                });
+                
                 noResults.classList.add('hidden');
                 
                 // Update the letter positions after showing all items
                 buildLetterIndex();
             } else {
-                // Filter items based on normalized search term
+                // Filter items based on normalized search term in TITLE and CONTENT
                 listItems.forEach(item => {
                     const titleSpan = item.querySelector('span');
                     if (!titleSpan) return;
                     
-                    const title = normalizeText(titleSpan.textContent);
-                    const letter = title.trim()[0].toUpperCase();
+                    const itemId = item.querySelector('audio')?.id;
+                    const itemData = allItems.find(i => i.id === itemId);
                     
-                    // If normalized item title contains search term, show it, otherwise hide it
-                    if (title.includes(searchTerm)) {
+                    if (!itemData) return;
+                    
+                    const normalizedTitle = normalizeText(itemData.title);
+                    const normalizedContent = normalizeText(itemData.content);
+                    const letter = normalizedTitle.trim()[0].toUpperCase();
+                    
+                    // Check if title or content contains the search term
+                    const titleMatches = normalizedTitle.includes(searchTerm);
+                    const contentMatches = normalizedContent.includes(searchTerm);
+                    
+                    if (titleMatches || contentMatches) {
                         item.classList.remove('hidden');
                         visibleCount++;
                         
                         // Track which letter has visible items
                         if (letter) {
                             lettersWithVisibleItems.add(letter);
+                        }
+                        
+                        // Highlight the matching text in the title
+                        if (titleMatches) {
+                            titleSpan.innerHTML = highlightMatchingText(itemData.title, searchTerm);
+                        } else {
+                            titleSpan.textContent = itemData.title;
                         }
                     } else {
                         item.classList.add('hidden');
@@ -1077,6 +1124,52 @@
             currentLetterIndex = 0;
         }
         
+        function highlightMatchingText(text, searchTerm) {
+            // Create case-insensitive global regex that also handles accented characters
+            const normalizedText = text;
+            const normalizedSearchTerm = searchTerm;
+            
+            // Use a safer approach with direct string methods
+            let result = '';
+            let remainingText = normalizedText;
+            let lastIndex = 0;
+            
+            const lowerText = normalizeText(text);
+            const lowerSearchTerm = normalizeText(searchTerm);
+            
+            while (true) {
+                const startIndex = lowerText.indexOf(lowerSearchTerm, lastIndex);
+                if (startIndex === -1) break;
+                
+                // Add the text before the match
+                result += escapeHTML(text.substring(lastIndex, startIndex));
+                
+                // Add the highlighted match (using the original casing from the text)
+                const endIndex = startIndex + lowerSearchTerm.length;
+                const matchedText = text.substring(startIndex, endIndex);
+                result += `<span class="search-highlight">${escapeHTML(matchedText)}</span>`;
+                
+                lastIndex = endIndex;
+            }
+            
+            // Add any remaining text
+            if (lastIndex < text.length) {
+                result += escapeHTML(text.substring(lastIndex));
+            }
+            
+            return result;
+        }
+        
+        // Helper function to escape HTML special characters
+        function escapeHTML(str) {
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+        
         function normalizeText(text) {
             return text
                 .toLowerCase()
@@ -1093,10 +1186,21 @@
             const noResults = document.getElementById('noResults');
             
             searchInput.value = '';
+            currentSearchTerm = '';
             
-            // Show all items
+            // Reset content and show all items
             document.querySelectorAll('#itemList li').forEach(item => {
                 item.classList.remove('hidden');
+                
+                // Reset the title to remove any highlighting
+                const itemId = item.querySelector('audio')?.id;
+                const itemData = allItems.find(i => i.id === itemId);
+                if (itemData) {
+                    const titleSpan = item.querySelector('span');
+                    if (titleSpan) {
+                        titleSpan.textContent = itemData.title;
+                    }
+                }
             });
             
             // Hide no results message
@@ -1167,27 +1271,34 @@
         function generateDemoData() {
             // Demo canticos for testing
             const demoItems = [
-                { title: "Alabanza y adoración", content: "Demo content for Alabanza y adoración" },
-                { title: "Al Rey de reyes", content: "Demo content for Al Rey de reyes" },
-                { title: "Aleluya Cristo vive", content: "Demo content for Aleluya Cristo vive" },
-                { title: "Bendito sea el Señor", content: "Demo content for Bendito sea el Señor" },
-                { title: "Cordero de Dios", content: "Demo content for Cordero de Dios" },
-                { title: "Digno es el Cordero", content: "Demo content for Digno es el Cordero" },
-                { title: "El gozo del Señor", content: "Demo content for El gozo del Señor" },
-                { title: "Grande es el Señor", content: "Demo content for Grande es el Señor" },
-                { title: "Hay poder", content: "Demo content for Hay poder" },
-                { title: "Incomparable", content: "Demo content for Incomparable" },
-                { title: "Jesucristo es el Señor", content: "Demo content for Jesucristo es el Señor" },
-                { title: "La alegría del Señor", content: "Demo content for La alegría del Señor" },
-                { title: "Mi salvador vive", content: "Demo content for Mi salvador vive" },
-                { title: "No hay nadie como tú", content: "Demo content for No hay nadie como tú" },
-                { title: "Poderoso Dios", content: "Demo content for Poderoso Dios" },
-                { title: "Rey de reyes", content: "Demo content for Rey de reyes" },
-                { title: "Santo es el Señor", content: "Demo content for Santo es el Señor" },
-                { title: "Tú eres santo", content: "Demo content for Tú eres santo" },
-                { title: "Vine a adorarte", content: "Demo content for Vine a adorarte" },
-                { title: "Yo te busco", content: "Demo content for Yo te busco" }
+                { title: "Alabanza y adoración", content: "Venimos a adorarte\nCon todo el corazón\nA rendirnos ante ti Señor" },
+                { title: "Al Rey de reyes", content: "Al Rey de reyes\nEl Señor de señores\nA él la gloria y el honor\n\nPorque él es Rey, porque él es Señor\nPorque él es digno\nEs digno de honor" },
+                { title: "Aleluya Cristo vive", content: "Aleluya Cristo vive\nÉl vive para siempre\nÉl es mi esperanza\n\nCada día me sostiene\nCon él puedo caminar\nCon él puedo caminar" },
+                { title: "Bendito sea el Señor", content: "Bendito sea el Señor, Dios poderoso\nQuien fue, quien es, y quien vendrá\nBendito sea el Señor, Dios poderoso\nQuien reina hoy y siempre reinará" },
+                { title: "Cordero de Dios", content: "Cordero de Dios\nQue quitas el pecado\nLa maldad del mundo\nTen piedad, ten piedad de mí" },
+                { title: "Digno es el Cordero", content: "¡Digno es el Cordero\nQue fue inmolado!\n¡Digno es el Cordero\nDe recibir honor y gloria!" },
+                { title: "El gozo del Señor", content: "El gozo del Señor es mi fortaleza\nEl gozo del Señor me da la victoria\nEl gozo del Señor es mi fortaleza\n¡Aleluya, Aleluya!" },
+                { title: "Grande es el Señor", content: "Grande es el Señor\nY digno de suprema alabanza\nSu grandeza es insondable\nDe generación en generación\nTus obras alabaré" },
+                { title: "Hay poder", content: "Hay poder, poder, sin igual poder\nEn Jesús quien murió\nHay poder, poder, sin igual poder\nEn la sangre que Él derramó" },
+                { title: "Incomparable", content: "Incomparable es tu amor\nNo hay nadie como tú\nJesús, mi Salvador\nIncomparable es tu amor" },
+                { title: "Jesucristo es el Señor", content: "Jesucristo es el Señor\nEl Señor, el Señor\nJesucristo es el Señor\nÉl es el Rey de reyes" },
+                { title: "La alegría del Señor", content: "La alegría del Señor es nuestra fuerza\nLa alegría del Señor es nuestra fuerza\nEs nuestra fuerza, es nuestra fuerza\nLa alegría del Señor es nuestra fuerza" },
+                { title: "Mi salvador vive", content: "Mi salvador vive\nÉl vive por siempre\nMi salvador vive\nJesús vive hoy" },
+                { title: "No hay nadie como tú", content: "No hay nadie como tú\nNo lo hay, no lo hay\nNo hay nadie como tú\nNadie como tú" },
+                { title: "Poderoso Dios", content: "Poderoso Dios\nRey del universo\nEl que Era, que Es y que Será\nEl Alfa y Omega\nPrincipio y Fin\nEl que estaba y estará" },
+                { title: "Rey de reyes", content: "Rey de reyes y Señor de señores\nGloria, Aleluya\nRey de reyes y Señor de señores\nGloria, Aleluya" },
+                { title: "Santo es el Señor", content: "Santo, santo\nSanto es el Señor\nDios poderoso\nDigno es el Señor" },
+                { title: "Tú eres santo", content: "Tú eres santo, santo\nTú eres poderoso\nTú eres digno, digno\nDe toda gloria y honor" },
+                { title: "Vine a adorarte", content: "Vine a adorarte\nVine a rendirme\nVine a decir que eres mi Rey\nEres mi Señor" },
+                { title: "Yo te busco", content: "Yo te busco\nCon todo el corazón\nEspero en ti\nQuiero conocerte más\n\nYo te busco\nCon todo el corazón\nTe alabaré\nCon todo mi ser" }
             ];
+            
+            // Store all items in global array for searching
+            allItems = demoItems.map((item, index) => ({
+                id: `audio-Demo-${index}`,
+                title: item.title,
+                content: item.content
+            }));
             
             // Process the demo data
             const groupedItems = groupItemsByFirstLetter(demoItems);
@@ -1219,6 +1330,16 @@
                 
                 // Add this item to our collection
                 items.push({ title, content });
+            });
+            
+            // Store all items in global array for searching
+            allItems = items.map((item, i) => {
+                const letter = item.title.charAt(0).toUpperCase();
+                return {
+                    id: `audio-${letter}-${i}`,
+                    title: item.title,
+                    content: item.content
+                };
             });
             
             // Group items by first letter
@@ -1500,9 +1621,22 @@
             // Format the content to:
             // 1. Make text in parentheses smaller and lighter color
             // 2. Preserve line breaks
-            const formattedContent = content
+            let formattedContent = content
                 .replace(/\(([^)]+)\)/g, '<span class="text-sm md:text-base lg:text-xl xl:text-2xl 2xl:text-3xl text-gray-500 dark:text-gray-400">($1)</span>')
                 .replace(/\n/g, '<br>');
+                
+            // Highlight search terms in content if search is active
+            if (currentSearchTerm) {
+                const contentLines = formattedContent.split('<br>');
+                const highlightedLines = contentLines.map(line => {
+                    // Only apply highlighting to lines that don't have HTML already
+                    if (!line.includes('<span')) {
+                        return highlightMatchingText(line, currentSearchTerm);
+                    }
+                    return line;
+                });
+                formattedContent = highlightedLines.join('<br>');
+            }
                 
             modalContent.innerHTML = formattedContent;
             
