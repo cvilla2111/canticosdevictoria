@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cánticos de Victoria</title>
+    <title>Canticos - Basic Search</title>
     
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#5D5CDE">
@@ -382,22 +382,22 @@
             <h1 class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-0 text-gray-800 dark:text-gray-200 text-center font-headings">Cánticos de Victoria</h1>
             <p id="subtitle" class="mb-4 text-sm md:text-base lg:text-lg xl:text-xl text-gray-600 dark:text-gray-400 text-center">Una colección de coritos</p>
             
-            <!-- Search Bar -->
+            <!-- Super Basic Form-Based Search -->
             <div id="searchBarContainer" class="sticky top-0 z-10 bg-white dark:bg-gray-900 pt-2 pb-1 mb-4 transition-shadow duration-300">
-                <div class="relative">
-                    <input type="text" id="searchInput" class="w-full px-4 py-2 pr-12 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors text-base md:text-lg lg:text-xl" placeholder="Search...">
-                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 dark:text-gray-500">
-                        <!-- Search icon -->
-                        <svg id="searchIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                        
-                        <!-- Clear search icon - bigger -->
-                        <svg id="clearSearchIcon" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 hidden cursor-pointer hover:text-gray-600 dark:hover:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" onclick="clearSearch()">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                <form id="searchForm" onsubmit="handleFormSearch(event)" class="mb-2">
+                    <div class="flex gap-2">
+                        <input type="text" id="searchInput" name="q" class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:outline-none text-base md:text-lg" placeholder="Type search term...">
+                        <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg">
+                            Search
+                        </button>
                     </div>
+                </form>
+                
+                <!-- Fixed top search status -->
+                <div id="searchStatus" class="bg-orange-500 text-white font-bold p-2 mt-2 mb-2 rounded text-center hidden">
+                    SEARCH STATUS: Ready
                 </div>
+                
                 <p id="noResults" class="mt-2 text-sm md:text-base lg:text-lg text-red-500 dark:text-red-400 text-center hidden">No se encontraron resultados</p>
             </div>
             
@@ -1144,8 +1144,45 @@
             }
         }
         
-        // DIAGNOSTIC SEARCH FUNCTION WITH COMPLETE TRACE
-        function simpleSearch(query) {
+        // Super-Basic Form search handler
+        function handleFormSearch(event) {
+            event.preventDefault();
+            
+            // Show search status
+            const status = document.getElementById('searchStatus');
+            status.classList.remove('hidden');
+            status.textContent = `SEARCH STATUS: Processing search at ${new Date().toLocaleTimeString()}`;
+            status.classList.remove('bg-orange-500');
+            status.classList.add('bg-blue-500');
+            
+            // Get the search term
+            const searchInput = document.getElementById('searchInput');
+            const query = searchInput.value;
+            
+            // Log to console
+            console.log('Form search triggered:', query);
+            
+            // Update status
+            status.textContent = `SEARCH STATUS: Searching for "${query}"`;
+            
+            // Perform the actual search after a slight delay to update UI
+            setTimeout(() => {
+                basicSearch(query);
+                
+                // Update status when complete
+                status.textContent = `SEARCH STATUS: Found results for "${query}"`;
+                status.classList.remove('bg-blue-500');
+                status.classList.add('bg-green-500');
+                
+                // Hide status after 3 seconds
+                setTimeout(() => {
+                    status.classList.add('hidden');
+                }, 3000);
+            }, 100);
+        }
+        
+        // EXTREMELY MINIMAL SEARCH FUNCTION
+        function basicSearch(query) {
             console.log("SEARCH DIAGNOSTICS FOR:", query);
             
             // Clear previous debug panel 
