@@ -134,7 +134,11 @@
             background: none;
             border: none;
             cursor: pointer;
-            z-index: 1001;
+            z-index: 999; /* Lower than lyrics panel */
+        }
+
+        .lyrics-panel.open ~ .toggle-mode {
+            display: none; /* Hide toggle when panel is open */
         }
 
         .toggle-mode svg {
@@ -202,7 +206,7 @@
             { title: "Song 16", artist: "Artist 16", lyrics: "Lyrics for Song 16...\nHold on tight.\nLove the night." },
             { title: "Song 17", artist: "Artist 17", lyrics: "Lyrics for Song 17...\nBreak free.\nSoar high." },
             { title: "Song 18", artist: "Artist 18", lyrics: "Lyrics for Song 18...\nStay wild.\nLive loud." },
-            { title: "Song 19", artist: "Artist 19", lyricsigsaw: "Lyrics for Song 19...\nKeep it simple.\nFeel the love." },
+            { title: "Song 19", artist: "Artist 19", lyrics: "Lyrics for Song 19...\nKeep it simple.\nFeel the love." },
             { title: "Song 20", artist: "Artist 20", lyrics: "Lyrics for Song 20...\nEnd the show.\nShine forever." }
         ];
 
