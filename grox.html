@@ -108,7 +108,8 @@
 
         .lyrics-panel p {
             font-size: 1rem;
-            line-height: 1.6 encouragement, color: #555;
+            line-height: 1.6;
+            color: #555;
         }
 
         .dark .lyrics-panel p {
@@ -120,14 +121,12 @@
             top: 20px;
             right: 20px;
             background: #007bff;
-            color: #fff;
             border: none;
-            width: 40px;
-            height: 40px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             cursor: pointer;
             transition: background 0.2s;
-            font-size: 1.5rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -143,6 +142,12 @@
 
         .dark .toggle-mode:hover {
             background: #e55a50;
+        }
+
+        .toggle-mode svg {
+            width: 16px;
+            height: 16px;
+            fill: #fff;
         }
 
         .toggle-mode .sun {
@@ -164,8 +169,12 @@
 </head>
 <body>
     <button class="toggle-mode" onclick="toggleMode()">
-        <span class="sun">☀️</span>
-        <span class="moon">🌙</span>
+        <svg class="sun" viewBox="0 0 24 24">
+            <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M12 5a7 7 0 100 14 7 7 0 000-14z"/>
+        </svg>
+        <svg class="moon" viewBox="0 0 24 24">
+            <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+        </svg>
     </button>
     <div class="container">
         <div class="song-list" id="songList"></div>
