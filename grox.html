@@ -36,7 +36,7 @@
         }
 
         .header h1 {
-            font-size: 1.8rem; /* Reduced from 2.5rem */
+            font-size: 1.8rem;
             font-weight: 600;
             color: #333;
         }
@@ -162,6 +162,11 @@
             border: none;
             cursor: pointer;
             z-index: 999;
+            transition: transform 0.2s;
+        }
+
+        .toggle-mode:hover {
+            transform: scale(1.1);
         }
 
         .lyrics-panel.open ~ .toggle-mode {
@@ -169,8 +174,8 @@
         }
 
         .toggle-mode svg {
-            width: 24px;
-            height: 24px;
+            width: 32px;
+            height: 32px;
             fill: #333;
         }
 
@@ -198,10 +203,11 @@
 <body>
     <button class="toggle-mode" onclick="toggleMode()">
         <svg class="sun" viewBox="0 0 24 24">
-            <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M12 5a7 7 0 100 14 7 7 0 000-14z"/>
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2m0 18v2m-8.66-17.66l1.42 1.42m14.14 14.14l-1.42 1.42m-17.66 0l1.42-1.42m14.14-14.14l-1.42-1.42M1 12h2m18 0h2"/>
         </svg>
         <svg class="moon" viewBox="0 0 24 24">
-            <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+            <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
         </svg>
     </button>
     <div class="container">
