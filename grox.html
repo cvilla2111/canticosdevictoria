@@ -108,8 +108,7 @@
 
         .lyrics-panel p {
             font-size: 1rem;
-            line-height: 1.6;
-            color: #555;
+            line-height: 1.6 encouragement, color: #555;
         }
 
         .dark .lyrics-panel p {
@@ -123,10 +122,15 @@
             background: #007bff;
             color: #fff;
             border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             cursor: pointer;
             transition: background 0.2s;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .toggle-mode:hover {
@@ -140,10 +144,29 @@
         .dark .toggle-mode:hover {
             background: #e55a50;
         }
+
+        .toggle-mode .sun {
+            display: block;
+        }
+
+        .toggle-mode .moon {
+            display: none;
+        }
+
+        .dark .toggle-mode .sun {
+            display: none;
+        }
+
+        .dark .toggle-mode .moon {
+            display: block;
+        }
     </style>
 </head>
 <body>
-    <button class="toggle-mode" onclick="toggleMode()">Dark Mode</button>
+    <button class="toggle-mode" onclick="toggleMode()">
+        <span class="sun">☀️</span>
+        <span class="moon">🌙</span>
+    </button>
     <div class="container">
         <div class="song-list" id="songList"></div>
         <div class="lyrics-panel" id="lyricsPanel">
@@ -198,8 +221,6 @@
 
         function toggleMode() {
             document.body.classList.toggle('dark');
-            const button = document.querySelector('.toggle-mode');
-            button.textContent = document.body.classList.contains('dark') ? 'Light Mode' : 'Dark Mode';
         }
 
         lyricsPanel.addEventListener('click', (e) => {
