@@ -27,6 +27,7 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            min-height: 100vh;
         }
 
         .header {
@@ -60,7 +61,8 @@
             padding: 20px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             overflow-y: auto;
-            max-height: 70vh;
+            max-height: calc(100vh - 120px);
+            min-height: 300px;
         }
 
         .dark .song-list {
@@ -220,9 +222,7 @@
             { title: "Song 1", artist: "Artist 1", lyrics: "Lyrics for Song 1...\nThis is a placeholder.\nFeel the rhythm, feel the rhyme." },
             { title: "Song 2", artist: "Artist 2", lyrics: "Lyrics for Song 2...\nAnother placeholder.\nSing it loud, sing it proud." },
             { title: "Song 3", artist: "Artist 3", lyrics: "Lyrics for Song 3...\nKeep it going.\nDance all night." },
-            { title: "Song 
-
-4", artist: "Artist 4", lyrics: "Lyrics for Song 4...\nPlaceholder text.\nLove and peace." },
+            { title: "Song 4", artist: "Artist 4", lyrics: "Lyrics for Song 4...\nPlaceholder text.\nLove and peace." },
             { title: "Song 5", artist: "Artist 5", lyrics: "Lyrics for Song 5...\nJust vibes.\nFollow the beat." },
             { title: "Song 6", artist: "Artist 6", lyrics: "Lyrics for Song 6...\nSimple words.\nHeart and soul." },
             { title: "Song 7", artist: "Artist 7", lyrics: "Lyrics for Song 7...\nKeep it real.\nShine so bright." },
