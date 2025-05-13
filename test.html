@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cánticos De Victoria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                        secondary: '#9F9EFF',
+                        light: {
+                            bg: '#FFFFFF',
+                            text: '#333333',
+                            card: '#F5F5F5'
+                        },
+                        dark: {
+                            bg: '#181818',
+                            text: '#E0E0E0',
+                            card: '#262626'
+                        }
+                    },
+                    animation: {
+                        'slide-in': 'slideIn 0.3s ease-out forwards',
+                        'slide-out': 'slideOut 0.3s ease-out forwards'
+                    },
+                    keyframes: {
+                        slideIn: {
+                            '0%': { transform: 'translateX(100%)' },
+                            '100%': { transform: 'translateX(0)' }
+                        },
+                        slideOut: {
+                            '0%': { transform: 'translateX(0)' },
+                            '100%': { transform: 'translateX(100%)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Disables pull-to-refresh and overscroll behavior on touch devices */
+        html, body {
+            overscroll-behavior: none;
+            height: 100%;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+        }
+        
+        /* Main app container */
+        .app-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Scrollable content */
+        .scrollable-content {
+            height: 100%;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            position: relative;
+        }
+        
+        /* Fixes scrolling for iOS Safari */
+        @supports (-webkit-touch-callout: none) {
+            .scrollable-content {
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+        
+        /* Song list scrollable area */
+        .song-list-container {
+            height: 100%;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Song item hover effect */
+        .song-item {
+            transition: all 0.2s ease;
+        }
+
+        .song-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .song-item.active {
+            border-color: #5D5CDE;
+            background-color: rgba(93, 92, 222, 0.1);
+        }
+
+        .dark .song-item.active {
+            border-color: #9F9EFF;
+            background-color: rgba(159, 158, 255, 0.1);
+        }
+
+        /* Slide panel */
+        .lyrics-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            background: white;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+            transform: translateX(100%);
+        }
+
+        .dark .lyrics-panel {
+            background: #181818;
+        }
+
+        .lyrics-panel.open {
+            transform: translateX(0);
+        }
+        
+        /* Lyrics content area */
+        .lyrics-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 1rem;
+        }
+        
+        @media (min-width: 768px) {
+            .lyrics-panel {
+                position: relative;
+                width: 50%;
+                transform: none;
+            }
+            
+            .layout-container {
+                display: flex;
+                height: 100%;
+            }
+            
+            .song-list-wrapper {
+                width: 50%;
+                padding-right: 1rem;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .song-list-wrapper {
+                width: 33.333333%;
+            }
+            
+            .lyrics-panel {
+                width: 66.666667%;
+            }
+        }
+    </style>
+</head>
+<body class="bg-light-bg dark:bg-dark-bg text-light-text dark:text-dark-text">
+    <div class="app-container">
+        <div class="px-4 py-6">
+            <!-- Header -->
+            <header class="mb-8">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-bold text-primary">Cánticos De Victoria</h1>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Una colección de <span id="songCount">0</span> coritos</p>
+                    </div>
+                    
+                    <!-- Dark/Light Toggle Button -->
+                    <button id="themeToggleBtn" class="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200">
+                        <!-- Sun icon for dark mode (shows in dark mode to indicate switching to light) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                        <!-- Moon icon for light mode (shows in light mode to indicate switching to dark) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                        </svg>
+                    </button>
+                </div>
+            </header>
+        </div>
+
+        <div class="scrollable-content">
+            <div class="layout-container px-4 pb-6">
+                <!-- Song List -->
+                <div class="song-list-wrapper">
+                    <div class="relative mb-4">
+                        <input type="text" id="searchInput" placeholder="Search..." class="w-full px-4 py-2 rounded-lg text-base border border-gray-300 dark:border-gray-700 bg-white dark:bg-dark-card text-light-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+                        <svg class="absolute right-3 top-3 h-5 w-5 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="song-list-container">
+                        <div id="songList" class="space-y-2 pr-2">
+                            <!-- Songs will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lyrics Panel (hidden by default on mobile, will slide in) -->
+                <div id="lyricsPanel" class="lyrics-panel">
+                    <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center sticky top-0 bg-white dark:bg-dark-bg z-10">
+                        <h2 id="lyricsTitle" class="text-xl font-semibold text-primary truncate">Select a Song</h2>
+                        <button id="closeLyrics" class="md:hidden p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div id="lyricsContent" class="lyrics-content">
+                        <div class="text-center py-12 text-gray-500 dark:text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto mb-4 text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                            </svg>
+                            <p class="text-lg">Select a song to view lyrics</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Song data
+        const songs = [
+            {
+                id: 1,
+                title: "Amazing Grace",
+                artist: "John Newton",
+                year: "1779",
+                lyrics: "Amazing grace! How sweet the sound\nThat saved a wretch like me!\nI once was lost, but now am found;\nWas blind, but now I see.\n\n'Twas grace that taught my heart to fear,\nAnd grace my fears relieved;\nHow precious did that grace appear\nThe hour I first believed.\n\nThrough many dangers, toils and snares,\nI have already come;\n'Tis grace hath brought me safe thus far,\nAnd grace will lead me home.\n\nThe Lord has promised good to me,\nHis Word my hope secures;\nHe will my Shield and Portion be,\nAs long as life endures.\n\nYea, when this flesh and heart shall fail,\nAnd mortal life shall cease,\nI shall possess, within the veil,\nA life of joy and peace.\n\nThe earth shall soon dissolve like snow,\nThe sun forbear to shine;\nBut God, who called me here below,\nWill be forever mine.\n\nWhen we've been there ten thousand years,\nBright shining as the sun,\nWe've no less days to sing God's praise\nThan when we'd first begun."
+            },
+            {
+                id: 2,
+                title: "How Great Is Our God",
+                artist: "Chris Tomlin",
+                year: "2004",
+                lyrics: "The splendor of the King, clothed in majesty\nLet all the earth rejoice, all the earth rejoice\nHe wraps Himself in light, and darkness tries to hide\nAnd trembles at His voice, and trembles at His voice\n\nHow great is our God, sing with me\nHow great is our God, and all will see\nHow great, how great is our God\n\nAnd age to age He stands, and time is in His hands\nBeginning and the End, Beginning and the End\nThe Godhead, three in one: Father, Spirit, Son\nThe Lion and the Lamb, the Lion and the Lamb\n\nHow great is our God, sing with me\nHow great is our God, and all will see\nHow great, how great is our God\n\nName above all names\nWorthy of all praise\nMy heart will sing\nHow great is our God\n\nHow great is our God, sing with me\nHow great is our God, and all will see\nHow great, how great is our God"
+            },
+            {
+                id: 3,
+                title: "10,000 Reasons (Bless the Lord)",
+                artist: "Matt Redman",
+                year: "2011",
+                lyrics: "Bless the Lord, O my soul, O my soul\nWorship His holy name\nSing like never before, O my soul\nI'll worship Your holy name\n\nThe sun comes up, it's a new day dawning\nIt's time to sing Your song again\nWhatever may pass and whatever lies before me\nLet me be singing when the evening comes\n\nBless the Lord, O my soul, O my soul\nWorship His holy name\nSing like never before, O my soul\nI'll worship Your holy name\n\nYou're rich in love and You're slow to anger\nYour name is great and Your heart is kind\nFor all Your goodness, I will keep on singing\nTen thousand reasons for my heart to find\n\nBless the Lord, O my soul, O my soul\nWorship His holy name\nSing like never before, O my soul\nI'll worship Your holy name\n\nAnd on that day when my strength is failing\nThe end draws near and my time has come\nStill, my soul will sing Your praise unending\nTen thousand years and then forevermore\n\nBless the Lord, O my soul, O my soul\nWorship His holy name\nSing like never before, O my soul\nI'll worship Your holy name"
+            },
+            {
+                id: 4,
+                title: "Oceans (Where Feet May Fail)",
+                artist: "Hillsong United",
+                year: "2013",
+                lyrics: "You call me out upon the waters\nThe great unknown where feet may fail\nAnd there I find You in the mystery\nIn oceans deep, my faith will stand\n\nAnd I will call upon Your name\nAnd keep my eyes above the waves\nWhen oceans rise, my soul will rest in Your embrace\nFor I am Yours and You are mine\n\nYour grace abounds in deepest waters\nYour sovereign hand will be my guide\nWhere feet may fail and fear surrounds me\nYou've never failed and You won't start now\n\nSo I will call upon Your name\nAnd keep my eyes above the waves\nWhen oceans rise, my soul will rest in Your embrace\nFor I am Yours and You are mine\n\nSpirit lead me where my trust is without borders\nLet me walk upon the waters\nWherever You would call me\nTake me deeper than my feet could ever wander\nAnd my faith will be made stronger\nIn the presence of my Savior\n\nI will call upon Your name\nKeep my eyes above the waves\nMy soul will rest in Your embrace\nI am Yours and You are mine"
+            },
+            {
+                id: 5,
+                title: "What A Beautiful Name",
+                artist: "Hillsong Worship",
+                year: "2016",
+                lyrics: "You were the Word at the beginning\nOne with God the Lord Most High\nYour hidden glory in creation\nNow revealed in You our Christ\n\nWhat a beautiful Name it is\nWhat a beautiful Name it is\nThe Name of Jesus Christ my King\nWhat a beautiful Name it is\nNothing compares to this\nWhat a beautiful Name it is\nThe Name of Jesus\n\nYou didn't want heaven without us\nSo Jesus, You brought heaven down\nMy sin was great, Your love was greater\nWhat could separate us now\n\nWhat a wonderful Name it is\nWhat a wonderful Name it is\nThe Name of Jesus Christ my King\nWhat a wonderful Name it is\nNothing compares to this\nWhat a wonderful Name it is\nThe Name of Jesus\n\nDeath could not hold You, the veil tore before You\nYou silenced the boast of sin and grave\nThe heavens are roaring the praise of Your glory\nFor You are raised to life again\n\nYou have no rival, You have no equal\nNow and forever, God, You reign\nYours is the Kingdom, Yours is the glory\nYours is the Name above all names\n\nWhat a powerful Name it is\nWhat a powerful Name it is\nThe Name of Jesus Christ my King\nWhat a powerful Name it is\nNothing can stand against\nWhat a powerful Name it is\nThe Name of Jesus"
+            },
+            {
+                id: 6,
+                title: "Good Good Father",
+                artist: "Chris Tomlin",
+                year: "2015",
+                lyrics: "I've heard a thousand stories\nOf what they think You're like\nBut I've heard the tender whisper\nOf love in the dead of night\nYou tell me that You're pleased\nAnd that I'm never alone\n\nYou're a Good Good Father\nIt's who You are\nIt's who You are\nIt's who You are\nAnd I'm loved by You\nIt's who I am\nIt's who I am\nIt's who I am\n\nI've seen many searching for answers\nFar and wide\nBut I know we're all searching for answers\nOnly You provide\nBecause You know just what we need\nBefore we say a word\n\nYou're a Good Good Father\nIt's who You are\nIt's who You are\nIt's who You are\nAnd I'm loved by You\nIt's who I am\nIt's who I am\nIt's who I am\n\nYou are perfect in all of Your ways\nYou are perfect in all of Your ways\nYou are perfect in all of Your ways to us\n\nLove so undeniable I can hardly speak\nPeace so unexplainable I can hardly think\nAs You call me deeper still\nAs You call me deeper still\nAs You call me deeper still\nInto love love love\n\nYou're a Good Good Father\nIt's who You are\nIt's who You are\nIt's who You are\nAnd I'm loved by You\nIt's who I am\nIt's who I am\nIt's who I am"
+            },
+            {
+                id: 7,
+                title: "In Christ Alone",
+                artist: "Keith Getty & Stuart Townend",
+                year: "2001",
+                lyrics: "In Christ alone my hope is found\nHe is my light, my strength, my song\nThis Cornerstone, this solid Ground\nFirm through the fiercest drought and storm\nWhat heights of love, what depths of peace\nWhen fears are stilled, when strivings cease\nMy Comforter, my All in All\nHere in the love of Christ I stand\n\nIn Christ alone, who took on flesh\nFullness of God in helpless babe\nThis gift of love and righteousness\nScorned by the ones He came to save\nTill on that cross as Jesus died\nThe wrath of God was satisfied\nFor every sin on Him was laid\nHere in the death of Christ I live\n\nThere in the ground His body lay\nLight of the world by darkness slain\nThen bursting forth in glorious Day\nUp from the grave He rose again\nAnd as He stands in victory\nSin's curse has lost its grip on me\nFor I am His and He is mine\nBought with the precious blood of Christ\n\nNo guilt in life, no fear in death\nThis is the power of Christ in me\nFrom life's first cry to final breath\nJesus commands my destiny\nNo power of hell, no scheme of man\nCan ever pluck me from His hand\nTill He returns or calls me home\nHere in the power of Christ I'll stand"
+            },
+            {
+                id: 8,
+                title: "Great Is Thy Faithfulness",
+                artist: "Thomas Chisholm",
+                year: "1923",
+                lyrics: "Great is Thy faithfulness, O God my Father\nThere is no shadow of turning with Thee\nThou changest not, Thy compassions, they fail not\nAs Thou hast been Thou forever wilt be\n\nGreat is Thy faithfulness\nGreat is Thy faithfulness\nMorning by morning new mercies I see\nAll I have needed Thy hand hath provided\nGreat is Thy faithfulness, Lord, unto me\n\nSummer and winter, and springtime and harvest\nSun, moon and stars in their courses above\nJoin with all nature in manifold witness\nTo Thy great faithfulness, mercy and love\n\nGreat is Thy faithfulness\nGreat is Thy faithfulness\nMorning by morning new mercies I see\nAll I have needed Thy hand hath provided\nGreat is Thy faithfulness, Lord, unto me\n\nPardon for sin and a peace that endureth\nThine own dear presence to cheer and to guide\nStrength for today and bright hope for tomorrow\nBlessings all mine, with ten thousand beside\n\nGreat is Thy faithfulness\nGreat is Thy faithfulness\nMorning by morning new mercies I see\nAll I have needed Thy hand hath provided\nGreat is Thy faithfulness, Lord, unto me"
+            },
+            {
+                id: 9,
+                title: "How Great Thou Art",
+                artist: "Stuart K. Hine",
+                year: "1949",
+                lyrics: "O Lord my God, when I in awesome wonder\nConsider all the worlds Thy hands have made\nI see the stars, I hear the rolling thunder\nThy power throughout the universe displayed\n\nThen sings my soul, my Savior God, to Thee\nHow great Thou art, how great Thou art\nThen sings my soul, my Savior God, to Thee\nHow great Thou art, how great Thou art\n\nWhen through the woods, and forest glades I wander\nAnd hear the birds sing sweetly in the trees\nWhen I look down, from lofty mountain grandeur\nAnd see the brook, and feel the gentle breeze\n\nThen sings my soul, my Savior God, to Thee\nHow great Thou art, how great Thou art\nThen sings my soul, my Savior God, to Thee\nHow great Thou art, how great Thou art\n\nAnd when I think, that God, His Son not sparing\nSent Him to die, I scarce can take it in\nThat on the Cross, my burden gladly bearing\nHe bled and died to take away my sin\n\nThen sings my soul, my Savior God, to Thee\nHow great Thou art, how great Thou art\nThen sings my soul, my Savior God, to Thee\nHow great Thou art, how great Thou art\n\nWhen Christ shall come, with shout of acclamation\nAnd take me home, what joy shall fill my heart\nThen I shall bow, in humble adoration\nAnd then proclaim, my God, how great Thou art\n\nThen sings my soul, my Savior God, to Thee\nHow great Thou art, how great Thou art\nThen sings my soul, my Savior God, to Thee\nHow great Thou art, how great Thou art"
+            },
+            {
+                id: 10,
+                title: "Lord I Need You",
+                artist: "Matt Maher",
+                year: "2013",
+                lyrics: "Lord, I come, I confess\nBowing here I find my rest\nWithout You I fall apart\nYou're the One that guides my heart\n\nLord, I need You, oh, I need You\nEvery hour I need You\nMy one defense, my righteousness\nOh God, how I need You\n\nWhere sin runs deep Your grace is more\nWhere grace is found is where You are\nWhere You are, Lord, I am free\nHoliness is Christ in me\n\nLord, I need You, oh, I need You\nEvery hour I need You\nMy one defense, my righteousness\nOh God, how I need You\n\nSo teach my song to rise to You\nWhen temptation comes my way\nWhen I cannot stand I'll fall on You\nJesus, You're my hope and stay\n\nLord, I need You, oh, I need You\nEvery hour I need You\nMy one defense, my righteousness\nOh God, how I need You\n\nYou're my one defense, my righteousness\nOh God, how I need You\nMy one defense, my righteousness\nOh God, how I need You"
+            },
+            {
+                id: 11,
+                title: "Cornerstone",
+                artist: "Hillsong Worship",
+                year: "2012",
+                lyrics: "My hope is built on nothing less\nThan Jesus' blood and righteousness\nI dare not trust the sweetest frame\nBut wholly trust in Jesus' name\n\nChrist alone, Cornerstone\nWeak made strong in the Savior's love\nThrough the storm\nHe is Lord\nLord of all\n\nWhen darkness seems to hide His face\nI rest on His unchanging grace\nIn every high and stormy gale\nMy anchor holds within the veil\nMy anchor holds within the veil\n\nChrist alone, Cornerstone\nWeak made strong in the Savior's love\nThrough the storm\nHe is Lord\nLord of all\n\nWhen He shall come with trumpet sound\nOh, may I then in Him be found\nDressed in His righteousness alone\nFaultless, stand before the throne\n\nChrist alone, Cornerstone\nWeak made strong in the Savior's love\nThrough the storm\nHe is Lord\nLord of all"
+            },
+            {
+                id: 12,
+                title: "Blessed Be Your Name",
+                artist: "Matt Redman",
+                year: "2002",
+                lyrics: "Blessed be Your name\nIn the land that is plentiful\nWhere Your streams of abundance flow\nBlessed be Your name\n\nBlessed be Your name\nWhen I'm found in the desert place\nThough I walk through the wilderness\nBlessed be Your name\n\nEvery blessing You pour out\nI'll turn back to praise\nWhen the darkness closes in, Lord\nStill I will say\n\nBlessed be the name of the Lord\nBlessed be Your name\nBlessed be the name of the Lord\nBlessed be Your glorious name\n\nBlessed be Your name\nWhen the sun's shining down on me\nWhen the world's 'all as it should be'\nBlessed be Your name\n\nBlessed be Your name\nOn the road marked with suffering\nThough there's pain in the offering\nBlessed be Your name\n\nEvery blessing You pour out\nI'll turn back to praise\nWhen the darkness closes in, Lord\nStill I will say\n\nBlessed be the name of the Lord\nBlessed be Your name\nBlessed be the name of the Lord\nBlessed be Your glorious name\n\nYou give and take away\nYou give and take away\nMy heart will choose to say\nLord, blessed be Your name"
+            },
+            {
+                id: 13,
+                title: "Revelation Song",
+                artist: "Kari Jobe",
+                year: "2004",
+                lyrics: "Worthy is the Lamb who was slain\nHoly, holy is He\nSing a new song to Him who sits on\nHeaven's mercy seat\n\nWorthy is the Lamb who was slain\nHoly, holy is He\nSing a new song to Him who sits on\nHeaven's mercy seat\n\nHoly, holy, holy is the Lord God Almighty\nWho was and is and is to come\nWith all creation I sing praise to the King of kings\nYou are my everything and I will adore You\n\nClothed in rainbows of living color\nFlashes of lightning, rolls of thunder\nBlessing and honor, strength and glory and power be\nTo You, the only wise King\n\nHoly, holy, holy is the Lord God Almighty\nWho was and is and is to come\nWith all creation I sing praise to the King of kings\nYou are my everything and I will adore You\n\nFilled with wonder, awestruck wonder\nAt the mention of Your name\nJesus, Your name is power, breath and living water\nSuch a marvelous mystery\n\nHoly, holy, holy is the Lord God Almighty\nWho was and is and is to come\nWith all creation I sing praise to the King of kings\nYou are my everything and I will adore You"
+            },
+            {
+                id: 14,
+                title: "Shout To The Lord",
+                artist: "Darlene Zschech",
+                year: "1993",
+                lyrics: "My Jesus, my Savior\nLord, there is none like You\nAll of my days, I want to praise\nThe wonders of Your mighty love\n\nMy comfort, my shelter\nTower of refuge and strength\nLet every breath, all that I am\nNever cease to worship You\n\nShout to the Lord, all the earth, let us sing\nPower and majesty, praise to the King\nMountains bow down and the seas will roar\nAt the sound of Your name\n\nI sing for joy at the work of Your hands\nForever I'll love You, forever I'll stand\nNothing compares to the promise I have in You\n\nMy Jesus, my Savior\nLord, there is none like You\nAll of my days, I want to praise\nThe wonders of Your mighty love\n\nMy comfort, my shelter\nTower of refuge and strength\nLet every breath, all that I am\nNever cease to worship You\n\nShout to the Lord, all the earth, let us sing\nPower and majesty, praise to the King\nMountains bow down and the seas will roar\nAt the sound of Your name\n\nI sing for joy at the work of Your hands\nForever I'll love You, forever I'll stand\nNothing compares to the promise I have in You"
+            },
+            {
+                id: 15,
+                title: "This Is Amazing Grace",
+                artist: "Phil Wickham",
+                year: "2013",
+                lyrics: "Who breaks the power of sin and darkness\nWhose love is mighty and so much stronger\nThe King of Glory, the King above all kings\n\nWho shakes the whole earth with holy thunder\nWho leaves us breathless in awe and wonder\nThe King of Glory, the King above all kings\n\nThis is amazing grace\nThis is unfailing love\nThat You would take my place\nThat You would bear my cross\nYou would lay down Your life\nThat I would be set free\nJesus, I sing for\nAll that You've done for me\n\nWho brings our chaos back into order\nWho makes the orphan a son and daughter\nThe King of Glory, the King above all kings\n\nWho rules the nations with truth and justice\nShines like the sun in all of its brilliance\nThe King of Glory, the King above all kings\n\nThis is amazing grace\nThis is unfailing love\nThat You would take my place\nThat You would bear my cross\nYou would lay down Your life\nThat I would be set free\nJesus, I sing for\nAll that You've done for me\n\nWorthy is the Lamb who was slain\nWorthy is the King who conquered the grave\nWorthy is the Lamb who was slain\nWorthy is the King who conquered the grave\n\nThis is amazing grace\nThis is unfailing love\nThat You would take my place\nThat You would bear my cross\nYou would lay down Your life\nThat I would be set free\nJesus, I sing for\nAll that You've done for me"
+            },
+            {
+                id: 16,
+                title: "Holy Spirit",
+                artist: "Francesca Battistelli",
+                year: "2014",
+                lyrics: "There's nothing worth more, that will ever come close\nNo thing can compare, You're our living hope\nYour Presence, Lord\n\nI've tasted and seen of the sweetest of loves\nWhere my heart becomes free and my shame is undone\nYour Presence, Lord\n\nHoly Spirit, You are welcome here\nCome flood this place and fill the atmosphere\nYour glory, God, is what our hearts long for\nTo be overcome by Your Presence, Lord\nYour Presence, Lord\n\nThere's nothing worth more, that will ever come close\nNo thing can compare, You're our living hope\nYour Presence, Lord\n\nI've tasted and seen of the sweetest of loves\nWhere my heart becomes free and my shame is undone\nYour Presence, Lord\n\nHoly Spirit, You are welcome here\nCome flood this place and fill the atmosphere\nYour glory, God, is what our hearts long for\nTo be overcome by Your Presence, Lord\nYour Presence, Lord\n\nLet us become more aware of Your Presence\nLet us experience the glory of Your goodness\n\nHoly Spirit, You are welcome here\nCome flood this place and fill the atmosphere\nYour glory, God, is what our hearts long for\nTo be overcome by Your Presence, Lord"
+            },
+            {
+                id: 17,
+                title: "Forever (We Sing Hallelujah)",
+                artist: "Kari Jobe",
+                year: "2014",
+                lyrics: "The moon and stars they wept\nThe morning sun was dead\nThe Savior of the world was fallen\nHis body on the cross\nHis blood poured out for us\nThe weight of every curse upon Him\n\nOne final breath He gave\nAs Heaven looked away\nThe Son of God was laid in darkness\nA battle in the grave\nThe war on death was waged\nThe power of hell forever broken\n\nThe ground began to shake\nThe stone was rolled away\nHis perfect love could not be overcome\nNow death where is your sting?\nOur resurrected King\nHas rendered you defeated\n\nForever He is glorified\nForever He is lifted high\nForever He is risen\nHe is alive, He is alive!\n\nWe sing hallelujah\nWe sing hallelujah\nWe sing hallelujah\nThe Lamb has overcome\n\nWe sing hallelujah\nWe sing hallelujah\nWe sing hallelujah\nThe Lamb has overcome\n\nForever He is glorified\nForever He is lifted high\nForever He is risen\nHe is alive, He is alive!"
+            },
+            {
+                id: 18,
+                title: "One Thing Remains",
+                artist: "Jesus Culture",
+                year: "2010",
+                lyrics: "Higher than the mountains that I face\nStronger than the power of the grave\nConstant in the trial and the change\nOne thing remains\nOne thing remains\n\nYour love never fails\nIt never gives up\nNever runs out on me\nYour love never fails\nIt never gives up\nNever runs out on me\nYour love never fails\nIt never gives up\nNever runs out on me\nYour love\n\nOn and on and on and on it goes\nIt overwhelms and satisfies my soul\nAnd I never, ever, have to be afraid\nOne thing remains\nOne thing remains\n\nYour love never fails\nIt never gives up\nNever runs out on me\nYour love never fails\nIt never gives up\nNever runs out on me\nYour love never fails\nIt never gives up\nNever runs out on me\nYour love\n\nIn death, in life, I'm confident and\nCovered by the power of Your great love\nMy debt is paid, there's nothing that\nCan separate my heart from Your great love\n\nYour love never fails\nIt never gives up\nNever runs out on me\nYour love never fails\nIt never gives up\nNever runs out on me\nYour love never fails\nIt never gives up\nNever runs out on me\nYour love"
+            },
+            {
+                id: 19,
+                title: "The Heart of Worship",
+                artist: "Matt Redman",
+                year: "1999",
+                lyrics: "When the music fades\nAll is stripped away\nAnd I simply come\nLonging just to bring\nSomething that's of worth\nThat will bless Your heart\n\nI'll bring You more than a song\nFor a song in itself\nIs not what You have required\nYou search much deeper within\nThrough the way things appear\nYou're looking into my heart\n\nI'm coming back to the heart of worship\nAnd it's all about You, it's all about You, Jesus\nI'm sorry, Lord, for the thing I've made it\nWhen it's all about You, it's all about You, Jesus\n\nKing of endless worth\nNo one could express\nHow much You deserve\nThough I'm weak and poor\nAll I have is Yours\nEvery single breath\n\nI'll bring You more than a song\nFor a song in itself\nIs not what You have required\nYou search much deeper within\nThrough the way things appear\nYou're looking into my heart\n\nI'm coming back to the heart of worship\nAnd it's all about You, it's all about You, Jesus\nI'm sorry, Lord, for the thing I've made it\nWhen it's all about You, it's all about You, Jesus"
+            },
+            {
+                id: 20,
+                title: "Mighty to Save",
+                artist: "Hillsong Worship",
+                year: "2006",
+                lyrics: "Everyone needs compassion\nA love that's never failing\nLet mercy fall on me\nEveryone needs forgiveness\nThe kindness of a Savior\nThe hope of nations\n\nSavior, He can move the mountains\nMy God is mighty to save\nHe is mighty to save\nForever, Author of salvation\nHe rose and conquered the grave\nJesus conquered the grave\n\nSo take me as You find me\nAll my fears and failures\nFill my life again\nI give my life to follow\nEverything I believe in\nNow I surrender\n\nSavior, He can move the mountains\nMy God is mighty to save\nHe is mighty to save\nForever, Author of salvation\nHe rose and conquered the grave\nJesus conquered the grave\n\nShine your light and let the whole world see\nWe're singing for the glory of the risen King, Jesus\nShine your light and let the whole world see\nWe're singing for the glory of the risen King\n\nSavior, He can move the mountains\nMy God is mighty to save\nHe is mighty to save\nForever, Author of salvation\nHe rose and conquered the grave\nJesus conquered the grave"
+            },
+            {
+                id: 21,
+                title: "King of Kings",
+                artist: "Hillsong Worship",
+                year: "2019",
+                lyrics: "In the darkness, we were waiting\nWithout hope, without light\nTill from heaven You came running\nThere was mercy in Your eyes\n\nTo fulfill the law and prophets\nTo a virgin came the Word\nFrom a throne of endless glory\nTo a cradle in the dirt\n\nPraise the Father, praise the Son\nPraise the Spirit, three in one\nGod of glory, Majesty\nPraise forever to the King of Kings\n\nTo reveal the kingdom coming\nAnd to reconcile the lost\nTo redeem the whole creation\nYou did not despise the cross\n\nFor even in Your suffering\nYou saw to the other side\nKnowing this was our salvation\nJesus for our sake You died\n\nPraise the Father, praise the Son\nPraise the Spirit, three in one\nGod of glory, Majesty\nPraise forever to the King of Kings\n\nAnd the morning that You rose\nAll of heaven held its breath\nTill that stone was moved for good\nFor the Lamb had conquered death\n\nAnd the dead rose from their tombs\nAnd the angels stood in awe\nFor the souls of all who'd come\nTo the Father are restored\n\nAnd the Church of Christ was born\nThen the Spirit lit the flame\nNow this gospel truth of old\nShall not kneel, shall not faint\n\nBy His blood and in His name\nIn His freedom I am free\nFor the love of Jesus Christ\nWho has resurrected me\n\nPraise the Father, praise the Son\nPraise the Spirit, three in one\nGod of glory, Majesty\nPraise forever to the King of Kings"
+            },
+            {
+                id: 22,
+                title: "Our God",
+                artist: "Chris Tomlin",
+                year: "2010",
+                lyrics: "Water You turned into wine\nOpened the eyes of the blind\nThere's no one like You\nNone like You\n\nInto the darkness You shine\nOut of the ashes we rise\nThere's no one like You\nNone like You\n\nOur God is greater, our God is stronger\nGod, You are higher than any other\nOur God is healer, awesome in power\nOur God, our God\n\nInto the darkness You shine\nOut of the ashes we rise\nThere's no one like You\nNone like You\n\nOur God is greater, our God is stronger\nGod, You are higher than any other\nOur God is healer, awesome in power\nOur God, our God\n\nAnd if our God is for us\nThen who could ever stop us?\nAnd if our God is with us\nThen what could stand against?\n\nAnd if our God is for us\nThen who could ever stop us?\nAnd if our God is with us\nThen what could stand against?\nWhat could stand against?\n\nOur God is greater, our God is stronger\nGod, You are higher than any other\nOur God is healer, awesome in power\nOur God, our God"
+            },
+            {
+                id: 23,
+                title: "Raise A Hallelujah",
+                artist: "Bethel Music",
+                year: "2019",
+                lyrics: "I raise a hallelujah, in the presence of my enemies\nI raise a hallelujah, louder than the unbelief\nI raise a hallelujah, my weapon is a melody\nI raise a hallelujah, Heaven comes to fight for me\n\nI'm gonna sing, in the middle of the storm\nLouder and louder, you're gonna hear my praises roar\nUp from the ashes, hope will arise\nDeath is defeated, the King is alive!\n\nI raise a hallelujah, with everything inside of me\nI raise a hallelujah, I will watch the darkness flee\nI raise a hallelujah, in the middle of the mystery\nI raise a hallelujah, fear you lost your hold on me!\n\nI'm gonna sing, in the middle of the storm\nLouder and louder, you're gonna hear my praises roar\nUp from the ashes, hope will arise\nDeath is defeated, the King is alive!\n\nSing a little louder (In the presence of my enemies)\nSing a little louder (Louder than the unbelief)\nSing a little louder (My weapon is a melody)\nSing a little louder (Heaven comes to fight for me)\n\nI'm gonna sing, in the middle of the storm\nLouder and louder, you're gonna hear my praises roar\nUp from the ashes, hope will arise\nDeath is defeated, the King is alive!"
+            },
+            {
+                id: 24,
+                title: "Reckless Love",
+                artist: "Cory Asbury",
+                year: "2017",
+                lyrics: "Before I spoke a word, You were singing over me\nYou have been so, so good to me\nBefore I took a breath, You breathed Your life in me\nYou have been so, so kind to me\n\nO, the overwhelming, never-ending, reckless love of God\nO, it chases me down, fights 'til I'm found, leaves the ninety-nine\nI couldn't earn it, and I don't deserve it, still, You give Yourself away\nO, the overwhelming, never-ending, reckless love of God\n\nWhen I was Your foe, still Your love fought for me\nYou have been so, so good to me\nWhen I felt no worth, You paid it all for me\nYou have been so, so kind to me\n\nO, the overwhelming, never-ending, reckless love of God\nO, it chases me down, fights 'til I'm found, leaves the ninety-nine\nI couldn't earn it, and I don't deserve it, still, You give Yourself away\nO, the overwhelming, never-ending, reckless love of God\n\nThere's no shadow You won't light up\nMountain You won't climb up\nComing after me\nThere's no wall You won't kick down\nLie You won't tear down\nComing after me\n\nO, the overwhelming, never-ending, reckless love of God\nO, it chases me down, fights 'til I'm found, leaves the ninety-nine\nI couldn't earn it, and I don't deserve it, still, You give Yourself away\nO, the overwhelming, never-ending, reckless love of God"
+            },
+            {
+                id: 25,
+                title: "It Is Well With My Soul",
+                artist: "Horatio Spafford",
+                year: "1873",
+                lyrics: "When peace like a river attendeth my way\nWhen sorrows like sea billows roll\nWhatever my lot, Thou hast taught me to say\nIt is well, it is well with my soul\n\nIt is well (it is well)\nWith my soul (with my soul)\nIt is well, it is well with my soul\n\nThough Satan should buffet, though trials should come\nLet this blest assurance control\nThat Christ has regarded my helpless estate\nAnd has shed His own blood for my soul\n\nIt is well (it is well)\nWith my soul (with my soul)\nIt is well, it is well with my soul\n\nMy sin—oh, the bliss of this glorious thought!\nMy sin, not in part, but the whole\nIs nailed to the cross, and I bear it no more\nPraise the Lord, praise the Lord, O my soul!\n\nIt is well (it is well)\nWith my soul (with my soul)\nIt is well, it is well with my soul\n\nAnd Lord, haste the day when the faith shall be sight\nThe clouds be rolled back as a scroll\nThe trump shall resound, and the Lord shall descend\nEven so, it is well with my soul\n\nIt is well (it is well)\nWith my soul (with my soul)\nIt is well, it is well with my soul"
+            },
+            {
+                id: 26,
+                title: "Be Thou My Vision",
+                artist: "Eleanor Hull",
+                year: "1912",
+                lyrics: "Be Thou my Vision, O Lord of my heart\nNaught be all else to me, save that Thou art\nThou my best Thought, by day or by night\nWaking or sleeping, Thy presence my light\n\nBe Thou my Wisdom, and Thou my true Word\nI ever with Thee and Thou with me, Lord\nThou my great Father, I Thy true son\nThou in me dwelling, and I with Thee one\n\nBe Thou my battle Shield, Sword for the fight\nBe Thou my Dignity, Thou my Delight\nThou my soul's Shelter, Thou my high Tower\nRaise Thou me heavenward, O Power of my power\n\nRiches I heed not, nor man's empty praise\nThou mine Inheritance, now and always\nThou and Thou only, first in my heart\nHigh King of Heaven, my Treasure Thou art\n\nHigh King of Heaven, my victory won\nMay I reach Heaven's joys, O bright Heaven's Sun\nHeart of my own heart, whatever befall\nStill be my Vision, O Ruler of all"
+            },
+            {
+                id: 27,
+                title: "Way Maker",
+                artist: "Sinach",
+                year: "2016",
+                lyrics: "You are here, moving in our midst\nI worship You, I worship You\nYou are here, working in this place\nI worship You, I worship You\n\nYou are here, moving in our midst\nI worship You, I worship You\nYou are here, working in this place\nI worship You, I worship You\n\nWay maker, miracle worker, promise keeper\nLight in the darkness, my God\nThat is who You are\nWay maker, miracle worker, promise keeper\nLight in the darkness, my God\nThat is who You are\n\nYou are here, touching every heart\nI worship You, I worship You\nYou are here, healing every heart\nI worship You, I worship You\n\nYou are here, turning lives around\nI worship You, I worship You\nYou are here, mending every heart\nI worship You, I worship You\n\nWay maker, miracle worker, promise keeper\nLight in the darkness, my God\nThat is who You are\nWay maker, miracle worker, promise keeper\nLight in the darkness, my God\nThat is who You are\n\nEven when I don't see it, You're working\nEven when I don't feel it, You're working\nYou never stop, You never stop working\nYou never stop, You never stop working"
+            },
+            {
+                id: 28,
+                title: "Yet Not I But Through Christ In Me",
+                artist: "CityAlight",
+                year: "2018",
+                lyrics: "What gift of grace is Jesus my redeemer\nThere is no more for heaven now to give\nHe is my joy, my righteousness, and freedom\nMy steadfast love, my deep and boundless peace\n\nTo this I hold, my hope is only Jesus\nFor my life is wholly bound to His\nOh how strange and divine, I can sing: all is mine!\nYet not I, but through Christ in me\n\nThe night is dark but I am not forsaken\nFor by my side, the Saviour He will stay\nI labour on in weakness and rejoicing\nFor in my need, His power is displayed\n\nTo this I hold, my Shepherd will defend me\nThrough the deepest valley He will lead\nOh the night has been won, and I shall overcome!\nYet not I, but through Christ in me\n\nNo fate I dread, I know I am forgiven\nThe future sure, the price it has been paid\nFor Jesus bled and suffered for my pardon\nAnd He was raised to overthrow the grave\n\nTo this I hold, my sin has been defeated\nJesus now and ever is my plea\nOh the chains are released, I can sing: I am free!\nYet not I, but through Christ in me\n\nWith every breath I long to follow Jesus\nFor He has said that He will bring me home\nAnd day by day I know He will renew me\nUntil I stand with joy before the throne\n\nTo this I hold, my hope is only Jesus\nAll the glory evermore to Him\nWhen the race is complete, still my lips shall repeat\nYet not I, but through Christ in me!"
+            },
+            {
+                id: 29,
+                title: "Living Hope",
+                artist: "Phil Wickham",
+                year: "2018",
+                lyrics: "How great the chasm that lay between us\nHow high the mountain I could not climb\nIn desperation, I turned to heaven\nAnd spoke Your name into the night\nThen through the darkness, Your loving-kindness\nTore through the shadows of my soul\nThe work is finished, the end is written\nJesus Christ, my living hope\n\nWho could imagine so great a mercy?\nWhat heart could fathom such boundless grace?\nThe God of ages stepped down from glory\nTo wear my sin and bear my shame\nThe cross has spoken, I am forgiven\nThe King of kings calls me His own\nBeautiful Savior, I'm Yours forever\nJesus Christ, my living hope\n\nHallelujah, praise the One who set me free\nHallelujah, death has lost its grip on me\nYou have broken every chain\nThere's salvation in Your name\nJesus Christ, my living hope\n\nThen came the morning that sealed the promise\nYour buried body began to breathe\nOut of the silence, the Roaring Lion\nDeclared the grave has no claim on me\nJesus, Yours is the victory\n\nHallelujah, praise the One who set me free\nHallelujah, death has lost its grip on me\nYou have broken every chain\nThere's salvation in Your name\nJesus Christ, my living hope"
+            },
+            {
+                id: 30,
+                title: "Build My Life",
+                artist: "Housefires",
+                year: "2016",
+                lyrics: "Worthy of every song we could ever sing\nWorthy of all the praise we could ever bring\nWorthy of every breath we could ever breathe\nWe live for You\n\nJesus, the name above every other name\nJesus, the only one who could ever save\nWorthy of every breath we could ever breathe\nWe live for You\nWe live for You\n\nHoly, there is no one like You\nThere is none beside You\nOpen up my eyes in wonder\nShow me who You are and fill me\nWith Your heart and lead me\nIn Your love to those around me\n\nWorthy of every song we could ever sing\nWorthy of all the praise we could ever bring\nWorthy of every breath we could ever breathe\nWe live for You\n\nJesus, the name above every other name\nJesus, the only one who could ever save\nWorthy of every breath we could ever breathe\nWe live for You\nWe live for You\n\nHoly, there is no one like You\nThere is none beside You\nOpen up my eyes in wonder\nShow me who You are and fill me\nWith Your heart and lead me\nIn Your love to those around me\n\nI will build my life upon Your love\nIt is a firm foundation\nI will put my trust in You alone\nAnd I will not be shaken"
+            },
+            {
+                id: 31,
+                title: "Your Grace Is Enough",
+                artist: "Matt Maher",
+                year: "2003",
+                lyrics: "Great is Your faithfulness, oh God\nYou wrestle with the sinner's heart\nYou lead us by still waters and to mercy\nAnd nothing can keep us apart\n\nSo remember Your people\nRemember Your children\nRemember Your promise, oh God\n\nYour grace is enough\nYour grace is enough\nYour grace is enough for me\n\nGreat is Your love and justice, God\nYou use the weak to lead the strong\nYou lead us in the song of Your salvation\nAnd all Your people sing along\n\nSo remember Your people\nRemember Your children\nRemember Your promise, oh God\n\nYour grace is enough\nYour grace is enough\nYour grace is enough for me\n\nYeah, Your grace is enough\nHeaven reaching down to us\nYour grace is enough for me\nGod, I see Your grace is enough\nI'm covered in Your love\nYour grace is enough for me, for me"
+            },
+            {
+                id: 32,
+                title: "Here I Am To Worship",
+                artist: "Tim Hughes",
+                year: "2000",
+                lyrics: "Light of the world\nYou stepped down into darkness\nOpened my eyes, let me see\nBeauty that made this heart adore You\nHope of a life spent with You\n\nHere I am to worship\nHere I am to bow down\nHere I am to say that You're my God\nYou're altogether lovely\nAltogether worthy\nAltogether wonderful to me\n\nKing of all days\nOh so highly exalted\nGlorious in heaven above\nHumbly You came to the earth You created\nAll for love's sake became poor\n\nHere I am to worship\nHere I am to bow down\nHere I am to say that You're my God\nYou're altogether lovely\nAltogether worthy\nAltogether wonderful to me\n\nI'll never know how much it cost\nTo see my sin upon that cross\nI'll never know how much it cost\nTo see my sin upon that cross\n\nHere I am to worship\nHere I am to bow down\nHere I am to say that You're my God\nYou're altogether lovely\nAltogether worthy\nAltogether wonderful to me"
+            },
+            {
+                id: 33,
+                title: "Great Are You Lord",
+                artist: "All Sons & Daughters",
+                year: "2012",
+                lyrics: "You give life, You are love\nYou bring light to the darkness\nYou give hope, You restore\nEvery heart that is broken\nGreat are You, Lord\n\nIt's Your breath in our lungs\nSo we pour out our praise\nWe pour out our praise\nIt's Your breath in our lungs\nSo we pour out our praise to You only\n\nYou give life, You are love\nYou bring light to the darkness\nYou give hope, You restore\nEvery heart that is broken\nGreat are You, Lord\n\nIt's Your breath in our lungs\nSo we pour out our praise\nWe pour out our praise\nIt's Your breath in our lungs\nSo we pour out our praise to You only\n\nAnd all the earth will shout Your praise\nOur hearts will cry, these bones will sing\nGreat are You, Lord\n\nAnd all the earth will shout Your praise\nOur hearts will cry, these bones will sing\nGreat are You, Lord\n\nIt's Your breath in our lungs\nSo we pour out our praise\nWe pour out our praise\nIt's Your breath in our lungs\nSo we pour out our praise to You only"
+            },
+            {
+                id: 34,
+                title: "No Longer Slaves",
+                artist: "Bethel Music",
+                year: "2015",
+                lyrics: "You unravel me with a melody\nYou surround me with a song\nOf deliverance from my enemies\nTill all my fears are gone\n\nI'm no longer a slave to fear\nI am a child of God\nI'm no longer a slave to fear\nI am a child of God\n\nFrom my Mother's womb\nYou have chosen me\nLove has called my name\nI've been born again into Your family\nYour blood flows through my veins\n\nI'm no longer a slave to fear\nI am a child of God\nI'm no longer a slave to fear\nI am a child of God\n\nI am surrounded\nBy the arms of the Father\nI am surrounded\nBy songs of deliverance\n\nWe've been liberated\nFrom our bondage\nWe're the sons and the daughters\nLet us sing our freedom\n\nYou split the sea\nSo I could walk right through it\nMy fears were drowned in perfect love\nYou rescued me\nSo I could stand and sing\nI am a child of God"
+            },
+            {
+                id: 35,
+                title: "In The Garden",
+                artist: "C. Austin Miles",
+                year: "1913",
+                lyrics: "I come to the garden alone,\nWhile the dew is still on the roses;\nAnd the voice I hear, falling on my ear,\nThe Son of God discloses.\n\nAnd He walks with me, and He talks with me,\nAnd He tells me I am His own,\nAnd the joy we share as we tarry there,\nNone other has ever known.\n\nHe speaks, and the sound of His voice\nIs so sweet the birds hush their singing;\nAnd the melody that He gave to me\nWithin my heart is ringing.\n\nAnd He walks with me, and He talks with me,\nAnd He tells me I am His own,\nAnd the joy we share as we tarry there,\nNone other has ever known.\n\nI'd stay in the garden with Him\nThough the night around me be falling;\nBut He bids me go; through the voice of woe,\nHis voice to me is calling.\n\nAnd He walks with me, and He talks with me,\nAnd He tells me I am His own,\nAnd the joy we share as we tarry there,\nNone other has ever known."
+            },
+            {
+                id: 36,
+                title: "I Can Only Imagine",
+                artist: "MercyMe",
+                year: "1999",
+                lyrics: "I can only imagine what it will be like\nWhen I walk by Your side\nI can only imagine what my eyes will see\nWhen Your face is before me\nI can only imagine\n\nSurrounded by Your glory\nWhat will my heart feel?\nWill I dance for You Jesus\nOr in awe of You be still?\nWill I stand in Your presence\nOr to my knees will I fall?\nWill I sing hallelujah?\nWill I be able to speak at all?\nI can only imagine\n\nI can only imagine when that day comes\nWhen I find myself standing in the Son\nI can only imagine when all I will do\nIs forever, forever worship You\nI can only imagine\n\nSurrounded by Your glory\nWhat will my heart feel?\nWill I dance for You Jesus\nOr in awe of You be still?\nWill I stand in Your presence\nOr to my knees will I fall?\nWill I sing hallelujah?\nWill I be able to speak at all?\nI can only imagine\nI can only imagine"
+            }
+        ];
+
+        // DOM elements
+        const songList = document.getElementById('songList');
+        const lyricsPanel = document.getElementById('lyricsPanel');
+        const lyricsTitle = document.getElementById('lyricsTitle');
+        const lyricsContent = document.getElementById('lyricsContent');
+        const closeLyrics = document.getElementById('closeLyrics');
+        const searchInput = document.getElementById('searchInput');
+        const songCount = document.getElementById('songCount');
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+
+        // Initialize songs
+        function initializeSongs() {
+            songList.innerHTML = '';
+            
+            // Update song count
+            songCount.textContent = songs.length;
+            
+            // Render each song
+            songs.forEach(song => {
+                const songElement = document.createElement('div');
+                songElement.classList.add('song-item', 'p-3', 'border', 'border-gray-200', 'dark:border-gray-700', 'rounded-lg', 'cursor-pointer', 'bg-light-card', 'dark:bg-dark-card', 'hover:shadow-md', 'transition-all');
+                songElement.dataset.id = song.id;
+                
+                songElement.innerHTML = `
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <h3 class="font-medium">${song.title}</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">${song.artist} (${song.year})</p>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </div>
+                `;
+                
+                songElement.addEventListener('click', () => {
+                    showLyrics(song);
+                    // Add active class to selected song
+                    document.querySelectorAll('.song-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    songElement.classList.add('active');
+                });
+                
+                songList.appendChild(songElement);
+            });
+        }
+
+        // Show lyrics in the panel
+        function showLyrics(song) {
+            // Reset scroll position first
+            lyricsContent.scrollTop = 0;
+            
+            lyricsTitle.textContent = `${song.title} - ${song.artist}`;
+            
+            // Format lyrics with line breaks
+            const formattedLyrics = song.lyrics.split('\n').map(line => {
+                if (line.trim() === '') return '<br>';
+                return `<p class="mb-1">${line}</p>`;
+            }).join('');
+            
+            lyricsContent.innerHTML = `
+                <div class="mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
+                    <h3 class="text-lg font-medium">${song.title}</h3>
+                    <p class="text-gray-600 dark:text-gray-400">${song.artist} (${song.year})</p>
+                </div>
+                <div class="lyrics-text leading-relaxed">
+                    ${formattedLyrics}
+                </div>
+            `;
+            
+            // Open the panel (for mobile view)
+            lyricsPanel.classList.add('open');
+        }
+
+        // Close lyrics panel
+        closeLyrics.addEventListener('click', () => {
+            lyricsPanel.classList.remove('open');
+        });
+
+        // Search functionality
+        searchInput.addEventListener('input', () => {
+            const searchTerm = searchInput.value.toLowerCase();
+            const songElements = document.querySelectorAll('.song-item');
+            
+            songElements.forEach(songElement => {
+                const songId = parseInt(songElement.dataset.id);
+                const song = songs.find(s => s.id === songId);
+                
+                if (song.title.toLowerCase().includes(searchTerm) || 
+                    song.artist.toLowerCase().includes(searchTerm) ||
+                    song.lyrics.toLowerCase().includes(searchTerm)) {
+                    songElement.style.display = '';
+                } else {
+                    songElement.style.display = 'none';
+                }
+            });
+        });
+
+        // Theme toggle functionality
+        // Use a variable instead of localStorage (since localStorage isn't available in the iframe)
+        let userThemePreference = null;
+        
+        function initializeTheme() {
+            // Use system preference by default
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.classList.add('dark');
+            }
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            const isDarkMode = document.documentElement.classList.contains('dark');
+            userThemePreference = isDarkMode ? 'light' : 'dark';
+            
+            if (isDarkMode) {
+                document.documentElement.classList.remove('dark');
+            } else {
+                document.documentElement.classList.add('dark');
+            }
+        });
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            // Only apply if the user hasn't manually set a preference
+            if (userThemePreference === null) {
+                if (event.matches) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            }
+        });
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTheme();
+            initializeSongs();
+            console.log('App initialized with', songs.length, 'songs');
+        });
+        
+        // Ensure songs are displayed immediately
+        initializeTheme();
+        initializeSongs();
+    </script>
+</body>
+</html>
