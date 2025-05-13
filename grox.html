@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flat Design Song Webapp</title>
+    <title>Cánticos De Victoria</title>
     <style>
         * {
             margin: 0;
@@ -29,13 +29,38 @@
             padding: 20px;
         }
 
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .dark .header h1 {
+            color: #e0e0e0;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .dark .header p {
+            color: #aaa;
+        }
+
         .song-list {
             background: #fff;
             border-radius: 10px;
             padding: 20px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             overflow-y: auto;
-            max-height: 80vh;
+            max-height: 70vh;
         }
 
         .dark .song-list {
@@ -134,11 +159,11 @@
             background: none;
             border: none;
             cursor: pointer;
-            z-index: 999; /* Lower than lyrics panel */
+            z-index: 999;
         }
 
         .lyrics-panel.open ~ .toggle-mode {
-            display: none; /* Hide toggle when panel is open */
+            display: none;
         }
 
         .toggle-mode svg {
@@ -178,6 +203,10 @@
         </svg>
     </button>
     <div class="container">
+        <div class="header">
+            <h1>Cánticos De Victoria</h1>
+            <p>Una colección con <span id="songCount">20</span> coritos</p>
+        </div>
         <div class="song-list" id="songList"></div>
         <div class="lyrics-panel" id="lyricsPanel">
             <button class="close-button" onclick="closePanel()">✕</button>
@@ -191,7 +220,9 @@
             { title: "Song 1", artist: "Artist 1", lyrics: "Lyrics for Song 1...\nThis is a placeholder.\nFeel the rhythm, feel the rhyme." },
             { title: "Song 2", artist: "Artist 2", lyrics: "Lyrics for Song 2...\nAnother placeholder.\nSing it loud, sing it proud." },
             { title: "Song 3", artist: "Artist 3", lyrics: "Lyrics for Song 3...\nKeep it going.\nDance all night." },
-            { title: "Song 4", artist: "Artist 4", lyrics: "Lyrics for Song 4...\nPlaceholder text.\nLove and peace." },
+            { title: "Song 
+
+4", artist: "Artist 4", lyrics: "Lyrics for Song 4...\nPlaceholder text.\nLove and peace." },
             { title: "Song 5", artist: "Artist 5", lyrics: "Lyrics for Song 5...\nJust vibes.\nFollow the beat." },
             { title: "Song 6", artist: "Artist 6", lyrics: "Lyrics for Song 6...\nSimple words.\nHeart and soul." },
             { title: "Song 7", artist: "Artist 7", lyrics: "Lyrics for Song 7...\nKeep it real.\nShine so bright." },
@@ -214,6 +245,9 @@
         const lyricsPanel = document.getElementById('lyricsPanel');
         const lyricsTitle = document.getElementById('lyricsTitle');
         const lyricsContent = document.getElementById('lyricsContent');
+        const songCount = document.getElementById('songCount');
+
+        songCount.textContent = songs.length;
 
         songs.forEach(song => {
             const songItem = document.createElement('div');
