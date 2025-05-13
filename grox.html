@@ -27,12 +27,9 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
-            display: flex;
-            gap: 20px;
         }
 
         .song-list {
-            flex: 1;
             background: #fff;
             border-radius: 10px;
             padding: 20px;
@@ -77,20 +74,18 @@
         }
 
         .lyrics-panel {
-            flex: 1;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: #fff;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 40px;
             transform: translateX(100%);
             transition: transform 0.3s ease;
-            position: fixed;
-            right: 20px;
-            top: 20px;
-            bottom: 20px;
-            width: 40%;
-            max-height: 80vh;
             overflow-y: auto;
+            display: none;
+            z-index: 1000;
         }
 
         .dark .lyrics-panel {
@@ -99,15 +94,16 @@
 
         .lyrics-panel.open {
             transform: translateX(0);
+            display: block;
         }
 
         .lyrics-panel h2 {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
         }
 
         .lyrics-panel p {
-            font-size: 1rem;
+            font-size: 1.1rem;
             line-height: 1.6;
             color: #555;
         }
@@ -116,38 +112,39 @@
             color: #ccc;
         }
 
+        .close-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .dark .close-button {
+            color: #e0e0e0;
+        }
+
         .toggle-mode {
             position: fixed;
             top: 20px;
             right: 20px;
-            background: #007bff;
+            background: none;
             border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
             cursor: pointer;
-            transition: background 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .toggle-mode:hover {
-            background: #0056b3;
-        }
-
-        .dark .toggle-mode {
-            background: #ff6f61;
-        }
-
-        .dark .toggle-mode:hover {
-            background: #e55a50;
+            z-index: 1001;
         }
 
         .toggle-mode svg {
-            width: 16px;
-            height: 16px;
-            fill: #fff;
+            width: 24px;
+            height: 24px;
+            fill: #333;
+        }
+
+        .dark .toggle-mode svg {
+            fill: #e0e0e0;
         }
 
         .toggle-mode .sun {
@@ -179,6 +176,7 @@
     <div class="container">
         <div class="song-list" id="songList"></div>
         <div class="lyrics-panel" id="lyricsPanel">
+            <button class="close-button" onclick="closePanel()">✕</button>
             <h2 id="lyricsTitle">Select a Song</h2>
             <p id="lyricsContent">Click a song to view its lyrics.</p>
         </div>
@@ -204,7 +202,7 @@
             { title: "Song 16", artist: "Artist 16", lyrics: "Lyrics for Song 16...\nHold on tight.\nLove the night." },
             { title: "Song 17", artist: "Artist 17", lyrics: "Lyrics for Song 17...\nBreak free.\nSoar high." },
             { title: "Song 18", artist: "Artist 18", lyrics: "Lyrics for Song 18...\nStay wild.\nLive loud." },
-            { title: "Song 19", artist: "Artist 19", lyrics: "Lyrics for Song 19...\nKeep it simple.\nFeel the love." },
+            { title: "Song 19", artist: "Artist 19", lyricsigsaw: "Lyrics for Song 19...\nKeep it simple.\nFeel the love." },
             { title: "Song 20", artist: "Artist 20", lyrics: "Lyrics for Song 20...\nEnd the show.\nShine forever." }
         ];
 
@@ -232,11 +230,9 @@
             document.body.classList.toggle('dark');
         }
 
-        lyricsPanel.addEventListener('click', (e) => {
-            if (e.target === lyricsPanel) {
-                lyricsPanel.classList.remove('open');
-            }
-        });
+        function closePanel() {
+            lyricsPanel.classList.remove('open');
+        }
     </script>
 </body>
 </html>
