@@ -24,7 +24,7 @@
         }
 
         .container {
-            max-width: 1400px; /* Increased from 1200px to make song-list wider */
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
             min-height: 100vh;
@@ -64,6 +64,8 @@
             overflow-y: auto;
             max-height: calc(100vh - 120px);
             min-height: 300px;
+            width: 95%; /* Added to make song-list wider */
+            margin: 0 auto; /* Center the wider container */
         }
 
         .dark .song-list {
@@ -211,7 +213,7 @@
     </button>
     <div class="container">
         <div class="header">
-            <h1 onclick="toggleFullscreen()">Cánticos De Victoria@</h1>
+            <h1 onclick="toggleFullscreen()">Cánticos De Victoria</h1>
             <p>Una colección con <span id="songCount">20</span> coritos</p>
         </div>
         <div class="song-list" id="songList"></div>
