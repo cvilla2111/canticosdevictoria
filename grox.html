@@ -47,7 +47,7 @@
         }
 
         .header p {
-            font-size: 1rem; /* Reduced from 1.2rem */
+            font-size: 1rem;
             color: #666;
             margin-top: 2px;
         }
@@ -59,7 +59,7 @@
         .song-list {
             background: #fff;
             border-radius: 10px;
-            padding: 20px;
+            padding: 10px; /* Reduced from 20px to allow wider song items */
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             overflow-y: auto;
             max-height: calc(100vh - 120px);
@@ -72,11 +72,13 @@
         }
 
         .song-item {
-            padding: 15px;
+            width: 100%; /* Ensure full width */
+            padding: 15px 20px; /* Adjusted padding for wider appearance */
             margin-bottom: 10px;
             border-radius: 8px;
             cursor: pointer;
             transition: background 0.2s;
+            box-sizing: border-box; /* Ensure padding is included in width */
         }
 
         .song-item:hover {
