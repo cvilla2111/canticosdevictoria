@@ -67,7 +67,7 @@
 
         .dark .song-list {
             background: #2a2a2a;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 10px rgba(0, 0 revenue, 0, 0, 0.3);
         }
 
         .song-item {
@@ -161,29 +161,31 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            background: none;
+            background: #007bff;
+            color: #fff;
             border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             cursor: pointer;
+            transition: background 0.2s;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             z-index: 999;
-            transition: transform 0.2s;
         }
 
         .toggle-mode:hover {
-            transform: scale(1.1);
+            background: #0056b3;
         }
 
-        .lyrics-panel.open ~ .toggle-mode {
-            display: none;
+        .dark .toggle-mode {
+            background: #ff6f61;
         }
 
-        .toggle-mode svg {
-            width: 32px;
-            height: 32px;
-            fill: #333;
-        }
-
-        .dark .toggle-mode svg {
-            fill: #e0e0e0;
+        .dark .toggle-mode:hover {
+            background: #e55a50;
         }
 
         .toggle-mode .sun {
@@ -201,17 +203,16 @@
         .dark .toggle-mode .moon {
             display: block;
         }
+
+        .lyrics-panel.open ~ .toggle-mode {
+            display: none;
+        }
     </style>
 </head>
 <body>
     <button class="toggle-mode" onclick="toggleMode()">
-        <svg class="sun" viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="5"/>
-            <path d="M12 1v2m0 18v2m-8.66-17.66l1.42 1.42m14.14 14.14l-1.42 1.42m-17.66 0l1.42-1.42m14.14-14.14l-1.42-1.42M1 12h2m18 0h2"/>
-        </svg>
-        <svg class="moon" viewBox="0 0 24 24">
-            <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
-        </svg>
+        <span class="sun">☀️</span>
+        <span class="moon">🌙</span>
     </button>
     <div class="container">
         <div class="header">
