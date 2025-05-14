@@ -39,7 +39,7 @@
             font-size: 1.8rem;
             font-weight: 600;
             color: #333;
-            cursor: pointer; /* Indicate clickable */
+            cursor: pointer;
         }
 
         .dark .header h1 {
@@ -162,58 +162,47 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            background: #007bff;
-            color: #fff;
+            background: none;
             border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
             cursor: pointer;
-            transition: background 0.2s;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             z-index: 999;
+            transition: transform 0.2s;
         }
 
         .toggle-mode:hover {
-            background: #0056b3;
-        }
-
-        .dark .toggle-mode {
-            background: #ff6f61;
-        }
-
-        .dark .toggle-mode:hover {
-            background: #e55a50;
-        }
-
-        .toggle-mode .sun {
-            display: block;
-        }
-
-        .toggle-mode .moon {
-            display: none;
-        }
-
-        .dark .toggle-mode .sun {
-            display: none;
-        }
-
-        .dark .toggle-mode .moon {
-            display: block;
+            transform: scale(1.1);
         }
 
         .lyrics-panel.open ~ .toggle-mode {
             display: none;
         }
+
+        .toggle-mode svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        .toggle-mode path {
+            fill: #333;
+        }
+
+        .dark .toggle-mode path {
+            fill: #e0e0e0;
+        }
     </style>
 </head>
 <body>
     <button class="toggle-mode" onclick="toggleMode()">
-        <span class="sun">☀️</span>
-        <span class="moon">🌙</span>
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#a)">
+                <path d="M12 0a1 1 0 0 1 1 1v4a1 1 0 1 1-2 0V1a1 1 0 0 1 1-1ZM4.929 3.515a1 1 0 0 0-1.414 1.414l2.828 2.828a1 1 0 0 0 1.414-1.414L4.93 3.515ZM1 11a1 1 0 0 0 0 2h4a1 1 0 1 0 0-2H1ZM18 12a1 1 0 0 1 1-1h4a1 1 0 1 1 0 2h-4a1 1 0 0 1-1-1ZM17.657 16.243a1 1 0 0 0-1.414 1.414l2.828 2.828a1 1 0 1 0 1.414-1.414l-2.828-2.828ZM7.757 17.657a1 1 0 1 0-1.414-1.414L3.515 19.07a1 1 0 1 0 1.414 1.414l2.828-2.828ZM20.485 4.929a1 1 0 0 0-1.414-1.414l-2.828 2.828a1 1 0 1 0 1.414 1.414l2.828-2.828ZM13 19a1 1 0 1 0-2 0v4a1 1 0 1 0 2 0v-4ZM12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Z"/>
+            </g>
+            <defs>
+                <clipPath id="a">
+                    <path fill="#ffffff" d="M0 0h24v24H0z"/>
+                </clipPath>
+            </defs>
+        </svg>
     </button>
     <div class="container">
         <div class="header">
