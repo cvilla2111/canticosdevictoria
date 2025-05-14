@@ -24,7 +24,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px; /* Increased from 1200px to make song-list wider */
             margin: 0 auto;
             padding: 20px;
             min-height: 100vh;
@@ -59,7 +59,7 @@
         .song-list {
             background: #fff;
             border-radius: 10px;
-            padding: 10px; /* Reduced from 20px to allow wider song items */
+            padding: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             overflow-y: auto;
             max-height: calc(100vh - 120px);
@@ -72,13 +72,13 @@
         }
 
         .song-item {
-            width: 100%; /* Ensure full width */
-            padding: 15px 20px; /* Adjusted padding for wider appearance */
+            width: 100%;
+            padding: 15px 20px;
             margin-bottom: 10px;
             border-radius: 8px;
             cursor: pointer;
             transition: background 0.2s;
-            box-sizing: border-box; /* Ensure padding is included in width */
+            box-sizing: border-box;
         }
 
         .song-item:hover {
