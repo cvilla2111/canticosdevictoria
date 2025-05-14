@@ -56,13 +56,37 @@
             color: #aaa;
         }
 
+        .search-bar {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            outline: none;
+        }
+
+        .dark .search-bar {
+            border-color: #555;
+            background: #2a2a2a;
+            color: #e0e0e0;
+        }
+
+        .search-bar::placeholder {
+            color: #999;
+        }
+
+        .dark .search-bar::placeholder {
+            color: #777;
+        }
+
         .song-list {
             background: #fff;
             border-radius: 10px;
             padding: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             overflow-y: auto;
-            max-height: calc(100vh - 120px);
+            max-height: calc(100vh - 160px); /* Adjusted for search bar */
             min-height: 300px;
             width: 100%;
         }
@@ -226,6 +250,7 @@
             <h1 onclick="toggleFullscreen()">Cánticos De Victoria</h1>
             <p>Una colección con <span id="songCount">0</span> coritos</p>
         </div>
+        <input type="text" class="search-bar" placeholder="Search songs...">
         <div class="song-list" id="songList"></div>
         <div class="lyrics-panel" id="lyricsPanel">
             <button class="close-button" onclick="closePanel()">✕</button>
@@ -240,6 +265,40 @@
         const lyricsTitle = document.getElementById('lyricsTitle');
         const lyricsContent = document.getElementById('lyricsContent');
         const songCount = document.getElementById('songCount');
+        const searchBar = document.querySelector('.search-bar');
+        let allSongs = [];
+
+        function normalizeText(text) {
+            return text
+                .toLowerCase()
+                .normalize('NFKD')
+                .replace(/[\u0300-\u036f]/g, '');
+        }
+
+        function renderSongs(songs) {
+            songList.innerHTML = '';
+            songCount.textContent = songs.length;
+
+            if (songs.length === 0 && allSongs.length > 0) {
+                songList.innerHTML = '<p class="error-message">No songs match your search.</p>';
+                return;
+            }
+
+            songs.forEach(song => {
+                const songItem = document.createElement('div');
+                songItem.classList.add('song-item');
+                songItem.innerHTML = `
+                    <h3>${song.title}</h3>
+                    <p>${song.subtitle || ''}</p>
+                `;
+                songItem.addEventListener('click', () => {
+                    lyricsTitle.textContent = song.title;
+                    lyricsContent.textContent = song.lyrics;
+                    lyricsPanel.classList.add('open');
+                });
+                songList.appendChild(songItem);
+            });
+        }
 
         async function loadSongs() {
             try {
@@ -248,7 +307,7 @@
                 const text = await response.text();
                 const songBlocks = text.trim().split('\n\n').filter(block => block.trim());
 
-                const songs = songBlocks.map(block => {
+                allSongs = songBlocks.map(block => {
                     const lines = block.split('\n').filter(line => line.trim());
                     if (lines.length === 0) return null;
 
@@ -265,32 +324,33 @@
                     return { title, subtitle, lyrics };
                 }).filter(song => song && song.title);
 
-                songCount.textContent = songs.length;
-
-                songList.innerHTML = '';
-                songs.forEach(song => {
-                    const songItem = document.createElement('div');
-                    songItem.classList.add('song-item');
-                    songItem.innerHTML = `
-                        <h3>${song.title}</h3>
-                        <p>${song.subtitle || ''}</p>
-                    `;
-                    songItem.addEventListener('click', () => {
-                        lyricsTitle.textContent = song.title;
-                        lyricsContent.textContent = song.lyrics;
-                        lyricsPanel.classList.add('open');
-                    });
-                    songList.appendChild(songItem);
-                });
-
-                if (songs.length === 0) {
+                if (allSongs.length === 0) {
                     songList.innerHTML = '<p class="error-message">No songs found in canticos.txt</p>';
+                    songCount.textContent = '0';
+                    return;
                 }
+
+                renderSongs(allSongs);
             } catch (error) {
                 console.error('Error loading songs:', error);
                 songList.innerHTML = '<p class="error-message">Error loading songs. Please check canticos.txt.</p>';
+                songCount.textContent = '0';
             }
         }
+
+        searchBar.addEventListener('input', () => {
+            const query = normalizeText(searchBar.value);
+            if (!query) {
+                renderSongs(allSongs);
+                return;
+            }
+
+            const filteredSongs = allSongs.filter(song =>
+                normalizeText(song.title).includes(query) ||
+                normalizeText(song.lyrics).includes(query)
+            );
+            renderSongs(filteredSongs);
+        });
 
         function toggleMode() {
             document.body.classList.toggle('dark');
