@@ -56,13 +56,17 @@
             color: #aaa;
         }
 
+        .search-container {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
         .search-bar {
             width: 100%;
-            padding: 10px;
+            padding: 10px 30px 10px 10px; /* Space for clear button */
             border-radius: 8px;
             border: 1px solid #ccc;
             font-size: 1rem;
-            margin-bottom: 15px;
             outline: none;
         }
 
@@ -80,13 +84,38 @@
             color: #777;
         }
 
+        .clear-search {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            font-size: 1rem;
+            color: #666;
+            cursor: pointer;
+            display: none;
+        }
+
+        .dark .clear-search {
+            color: #aaa;
+        }
+
+        .clear-search:hover {
+            color: #333;
+        }
+
+        .dark .clear-search:hover {
+            color: #e0e0e0;
+        }
+
         .song-list {
             background: #fff;
             border-radius: 10px;
             padding: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             overflow-y: auto;
-            max-height: calc(100vh - 160px); /* Adjusted for search bar */
+            max-height: calc(100vh - 160px);
             min-height: 300px;
             width: 100%;
         }
@@ -250,7 +279,10 @@
             <h1 onclick="toggleFullscreen()">Cánticos De Victoria</h1>
             <p>Una colección con <span id="songCount">0</span> coritos</p>
         </div>
-        <input type="text" class="search-bar" placeholder="Search songs...">
+        <div class="search-container">
+            <input type="text" class="search-bar" placeholder="Search songs...">
+            <button class="clear-search" onclick="clearSearch()">✕</button>
+        </div>
         <div class="song-list" id="songList"></div>
         <div class="lyrics-panel" id="lyricsPanel">
             <button class="close-button" onclick="closePanel()">✕</button>
@@ -266,6 +298,7 @@
         const lyricsContent = document.getElementById('lyricsContent');
         const songCount = document.getElementById('songCount');
         const searchBar = document.querySelector('.search-bar');
+        const clearSearchButton = document.querySelector('.clear-search');
         let allSongs = [];
 
         function normalizeText(text) {
@@ -340,6 +373,8 @@
 
         searchBar.addEventListener('input', () => {
             const query = normalizeText(searchBar.value);
+            clearSearchButton.style.display = searchBar.value.length > 0 ? 'block' : 'none';
+
             if (!query) {
                 renderSongs(allSongs);
                 return;
@@ -351,6 +386,13 @@
             );
             renderSongs(filteredSongs);
         });
+
+        function clearSearch() {
+            searchBar.value = '';
+            clearSearchButton.style.display = 'none';
+            renderSongs(allSongs);
+            searchBar.focus();
+        }
 
         function toggleMode() {
             document.body.classList.toggle('dark');
