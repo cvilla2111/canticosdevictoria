@@ -24,9 +24,9 @@
         }
 
         .container {
-            max-width: 1600px; /* Increased from 1400px */
+            max-width: 1600px;
             margin: 0 auto;
-            padding: 10px; /* Reduced from 20px */
+            padding: 10px;
             min-height: 100vh;
         }
 
@@ -64,7 +64,7 @@
             overflow-y: auto;
             max-height: calc(100vh - 120px);
             min-height: 300px;
-            width: 100%; /* Full width of container */
+            width: 100%;
         }
 
         .dark .song-list {
@@ -140,6 +140,7 @@
             font-size: 1.1rem;
             line-height: 1.6;
             color: #555;
+            white-space: pre-wrap;
         }
 
         .dark .lyrics-panel p {
@@ -202,6 +203,16 @@
         .dark .toggle-mode path {
             fill: #e0e0e0;
         }
+
+        .error-message {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .dark .error-message {
+            color: #aaa;
+        }
     </style>
 </head>
 <body>
@@ -212,8 +223,8 @@
     </button>
     <div class="container">
         <div class="header">
-            <h1 onclick="toggleFullscreen()">Cánticos De Victoria@</h1>
-            <p>Una colección con <span id="songCount">20</span> coritos</p>
+            <h1 onclick="toggleFullscreen()">Cánticos De Victoria</h1>
+            <p>Una colección con <span id="songCount">0</span> coritos</p>
         </div>
         <div class="song-list" id="songList"></div>
         <div class="lyrics-panel" id="lyricsPanel">
@@ -224,51 +235,62 @@
     </div>
 
     <script>
-        const songs = [
-            { title: "Song 1", artist: "Artist 1", lyrics: "Lyrics for Song 1...\nThis is a placeholder.\nFeel the rhythm, feel the rhyme." },
-            { title: "Song 2", artist: "Artist 2", lyrics: "Lyrics for Song 2...\nAnother placeholder.\nSing it loud, sing it proud." },
-            { title: "Song 3", artist: "Artist 3", lyrics: "Lyrics for Song 3...\nKeep it going.\nDance all night." },
-            { title: "Song 4", artist: "Artist 4", lyrics: "Lyrics for Song 4...\nPlaceholder text.\nLove and peace." },
-            { title: "Song 5", artist: "Artist 5", lyrics: "Lyrics for Song 5...\nJust vibes.\nFollow the beat." },
-            { title: "Song 6", artist: "Artist 6", lyrics: "Lyrics for Song 6...\nSimple words.\nHeart and soul." },
-            { title: "Song 7", artist: "Artist 7", lyrics: "Lyrics for Song 7...\nKeep it real.\nShine so bright." },
-            { title: "Song 8", artist: "Artist 8", lyrics: "Lyrics for Song 8...\nFeel the flow.\nNever stop." },
-            { title: "Song 9", artist: "Artist 9", lyrics: "Lyrics for Song 9...\nPure emotion.\nSing along." },
-            { title: "Song 10", artist: "Artist 10", lyrics: "Lyrics for Song 10...\nGood vibes.\nStay true." },
-            { title: "Song 11", artist: "Artist 11", lyrics: "Lyrics for Song 11...\nMove your feet.\nLive the moment." },
-            { title: "Song 12", artist: "Artist 12", lyrics: "Lyrics for Song 12...\nChase dreams.\nRise above." },
-            { title: "Song 13", artist: "Artist 13", lyrics: "Lyrics for Song 13...\nFind your way.\nKeep it cool." },
-            { title: "Song 14", artist: "Artist 14", lyrics: "Lyrics for Song 14...\nStay strong.\nFeel alive." },
-            { title: "Song 15", artist: "Artist 15", lyrics: "Lyrics for Song 15...\nBe yourself.\nSing your truth." },
-            { title: "Song 16", artist: "Artist 16", lyrics: "Lyrics for Song 16...\nHold on tight.\nLove the night." },
-            { title: "Song 17", artist: "Artist 17", lyrics: "Lyrics for Song 17...\nBreak free.\nSoar high." },
-            { title: "Song 18", artist: "Artist 18", lyrics: "Lyrics for Song 18...\nStay wild.\nLive loud." },
-            { title: "Song 19", artist: "Artist 19", lyrics: "Lyrics for Song 19...\nKeep it simple.\nFeel the love." },
-            { title: "Song 20", artist: "Artist 20", lyrics: "Lyrics for Song 20...\nEnd the show.\nShine forever." }
-        ];
-
         const songList = document.getElementById('songList');
         const lyricsPanel = document.getElementById('lyricsPanel');
         const lyricsTitle = document.getElementById('lyricsTitle');
         const lyricsContent = document.getElementById('lyricsContent');
         const songCount = document.getElementById('songCount');
 
-        songCount.textContent = songs.length;
+        async function loadSongs() {
+            try {
+                const response = await fetch('canticos.txt');
+                if (!response.ok) throw new Error('Failed to load canticos.txt');
+                const text = await response.text();
+                const songBlocks = text.trim().split('\n\n').filter(block => block.trim());
 
-        songs.forEach(song => {
-            const songItem = document.createElement('div');
-            songItem.classList.add('song-item');
-            songItem.innerHTML = `
-                <h3>${song.title}</h3>
-                <p>${song.artist}</p>
-            `;
-            songItem.addEventListener('click', () => {
-                lyricsTitle.textContent = song.title;
-                lyricsContent.textContent = song.lyrics;
-                lyricsPanel.classList.add('open');
-            });
-            songList.appendChild(songItem);
-        });
+                const songs = songBlocks.map(block => {
+                    const lines = block.split('\n').filter(line => line.trim());
+                    if (lines.length === 0) return null;
+
+                    const title = lines[0].trim();
+                    let subtitle = '';
+                    let lyricsStartIndex = 1;
+
+                    if (lines[1] && lines[1].match(/^\(.*\)$/)) {
+                        subtitle = lines[1].slice(1, -1).trim();
+                        lyricsStartIndex = 2;
+                    }
+
+                    const lyrics = lines.slice(lyricsStartIndex).join('\n').trim();
+                    return { title, subtitle, lyrics };
+                }).filter(song => song && song.title);
+
+                songCount.textContent = songs.length;
+
+                songList.innerHTML = '';
+                songs.forEach(song => {
+                    const songItem = document.createElement('div');
+                    songItem.classList.add('song-item');
+                    songItem.innerHTML = `
+                        <h3>${song.title}</h3>
+                        <p>${song.subtitle || ''}</p>
+                    `;
+                    songItem.addEventListener('click', () => {
+                        lyricsTitle.textContent = song.title;
+                        lyricsContent.textContent = song.lyrics;
+                        lyricsPanel.classList.add('open');
+                    });
+                    songList.appendChild(songItem);
+                });
+
+                if (songs.length === 0) {
+                    songList.innerHTML = '<p class="error-message">No songs found in canticos.txt</p>';
+                }
+            } catch (error) {
+                console.error('Error loading songs:', error);
+                songList.innerHTML = '<p class="error-message">Error loading songs. Please check canticos.txt.</p>';
+            }
+        }
 
         function toggleMode() {
             document.body.classList.toggle('dark');
@@ -298,6 +320,8 @@
                 }
             }
         }
+
+        loadSongs();
     </script>
 </body>
 </html>
