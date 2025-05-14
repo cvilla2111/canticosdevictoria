@@ -182,6 +182,14 @@
             height: 24px;
         }
 
+        .toggle-mode rect {
+            fill: #e0e0e0;
+        }
+
+        .dark .toggle-mode rect {
+            fill: #333;
+        }
+
         .toggle-mode path {
             fill: #333;
         }
@@ -194,6 +202,7 @@
 <body>
     <button class="toggle-mode" onclick="toggleMode()">
         <svg width="24" height="24" viewBox="-2.4 -2.4 28.80 28.80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="-2.4" y="-2.4" width="28.80" height="28.80" rx="14.4" fill="#e0e0e0"/>
             <g clip-path="url(#a)">
                 <path d="M5 12H1M23 12h-4M7.05 7.05 4.222 4.222M19.778 19.778 16.95 16.95M7.05 16.95l-2.828 2.828M19.778 4.222 16.95 7.05" fill="#333"/>
                 <path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" fill="#333"/>
