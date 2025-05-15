@@ -7,7 +7,7 @@
     <script>
         // Apply saved theme before page renders to avoid flash
         if (localStorage.getItem('theme') === 'dark') {
-            document.documentElement.classList.add('dark');
+            document.body.classList.add('dark');
         }
     </script>
     <style>
@@ -56,7 +56,7 @@
             -ms-user-select: none;
         }
 
-        .dark .header h1 {
+        body.dark .header h1 {
             color: #e0e0e0;
         }
 
@@ -66,7 +66,7 @@
             margin-top: 2px;
         }
 
-        .dark .header p {
+        body.dark .header p {
             color: #aaa;
         }
 
@@ -82,9 +82,10 @@
             border: 1px solid #ccc;
             font-size: 1rem;
             outline: none;
+            background: #fff;
         }
 
-        .dark .search-bar {
+        body.dark .search-bar {
             border-color: #555;
             background: #2a2a2a;
             color: #e0e0e0;
@@ -94,7 +95,7 @@
             color: #999;
         }
 
-        .dark .search-bar::placeholder {
+        body.dark .search-bar::placeholder {
             color: #777;
         }
 
@@ -111,7 +112,7 @@
             display: none;
         }
 
-        .dark .clear-search {
+        body.dark .clear-search {
             color: #aaa;
         }
 
@@ -119,7 +120,7 @@
             color: #333;
         }
 
-        .dark .clear-search:hover {
+        body.dark .clear-search:hover {
             color: #e0e0e0;
         }
 
@@ -134,7 +135,7 @@
             width: 100%;
         }
 
-        .dark .song-list {
+        body.dark .song-list {
             background: #2a2a2a;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
@@ -147,19 +148,29 @@
             cursor: pointer;
             transition: background 0.2s;
             box-sizing: border-box;
+            border: 1px solid #e0e0e0;
+        }
+
+        body.dark .song-item {
+            border-color: #555;
         }
 
         .song-item:hover {
             background: #e0e0e0;
         }
 
-        .dark .song-item:hover {
+        body.dark .song-item:hover {
             background: #3a3a3a;
         }
 
         .song-item h3 {
             font-size: 1.2rem;
             margin-bottom: 5px;
+            color: #333;
+        }
+
+        body.dark .song-item h3 {
+            color: #e0e0e0;
         }
 
         .song-item p {
@@ -167,7 +178,7 @@
             color: #666;
         }
 
-        .dark .song-item p {
+        body.dark .song-item p {
             color: #aaa;
         }
 
@@ -189,7 +200,7 @@
             z-index: 1000;
         }
 
-        .dark .lyrics-panel {
+        body.dark .lyrics-panel {
             background: #2a2a2a;
         }
 
@@ -201,6 +212,11 @@
         .lyrics-panel h2 {
             font-size: 1.8rem;
             margin-bottom: 20px;
+            color: #333;
+        }
+
+        body.dark .lyrics-panel h2 {
+            color: #e0e0e0;
         }
 
         .lyrics-panel p {
@@ -210,7 +226,7 @@
             white-space: pre-wrap;
         }
 
-        .dark .lyrics-panel p {
+        body.dark .lyrics-panel p {
             color: #ccc;
         }
 
@@ -225,7 +241,7 @@
             color: #333;
         }
 
-        .dark .close-button {
+        body.dark .close-button {
             color: #e0e0e0;
         }
 
@@ -247,7 +263,7 @@
             justify-content: center;
         }
 
-        .dark .toggle-mode {
+        body.dark .toggle-mode {
             background: #333;
         }
 
@@ -268,7 +284,7 @@
             fill: #333;
         }
 
-        .dark .toggle-mode path {
+        body.dark .toggle-mode path {
             fill: #e0e0e0;
         }
 
@@ -278,7 +294,7 @@
             color: #666;
         }
 
-        .dark .error-message {
+        body.dark .error-message {
             color: #aaa;
         }
     </style>
