@@ -1,1 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Christian Songs App</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #F5F7FA;
+            color: #000;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            background-color: #6A0DAD;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1;
+        }
+        header h1 {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0;
+        }
+        .menu-icon, .search-icon {
+            font-size: 24px;
+            cursor: pointer;
+        }
+        main {
+            margin-top: 60px;
+            margin-bottom: 60px;
+            overflow-y: auto;
+            flex: 1;
+        }
+        .song-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .song-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            border-bottom: 1px solid #ddd;
+            background-color: white;
+        }
+        .song-item img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .song-details {
+            flex: 1;
+        }
+        .song-title {
+            font-weight: bold;
+            font-size: 16px;
+            color: #000;
+            margin: 0;
+        }
+        .song-artist {
+            font-size: 14px;
+            color: #666;
+            margin: 0;
+        }
+        .play-button {
+            background-color: #00C4B4;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        footer {
+            background-color: #6A0DAD;
+            color: white;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        footer i {
+            font-size: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <span class="menu-icon">☰</span>
+        <h1>Christian Songs</h1>
+        <span class="search-icon">🔍</span>
+    </header>
 
+    <main>
+        <ul class="song-list">
+            <li class="song-item">
+                <img src="https://via.placeholder.com/40" alt="Album Art">
+                <div class="song-details">
+                    <p class="song-title">Amazing Grace</p>
+                    <p class="song-artist">John Newton</p>
+                </div>
+                <button class="play-button">▶</button>
+            </li>
+            <li class="song-item">
+                <img src="https://via.placeholder.com/40" alt="Album Art">
+                <div class="song-details">
+                    <p class="song-title">How Great Thou Art</p>
+                    <p class="song-artist">Carl Boberg</p>
+                </div>
+                <button class="play-button">▶</button>
+            </li>
+            <li class="song-item">
+                <img src="https://via.placeholder.com/40" alt="Album Art">
+                <div class="song-details">
+                    <p class="song-title">In Christ Alone</p>
+                    <p class="song-artist">Keith Getty & Stuart Townend</p>
+                </div>
+                <button class="play-button">▶</button>
+            </li>
+            <li class="song-item">
+                <img src="https://via.placeholder.com/40" alt="Album Art">
+                <div class="song-details">
+                    <p class="song-title">10,000 Reasons</p>
+                    <p class="song-artist">Matt Redman</p>
+                </div>
+                <button class="play-button">▶</button>
+            </li>
+            <li class="song-item">
+                <img src="https://via.placeholder.com/40" alt="Album Art">
+                <div class="song-details">
+                    <p class="song-title">Oceans</p>
+                    <p class="song-artist">Hillsong United</p>
+                </div>
+                <button class="play-button">▶</button>
+            </li>
+            <li class="song-item">
+                <img src="https://via.placeholder.com/40" alt="Album Art">
+                <div class="song-details">
+                    <p class="song-title">Reckless Love</p>
+                    <p class="song-artist">Cory Asbury</p>
+                </div>
+                <button class="play-button">▶</button>
+            </li>
+            <li class="song-item">
+                <img src="https://via.placeholder.com/40" alt="Album Art">
+                <div class="song-details">
+                    <p class="song-title">Good Good Father</p>
+                    <p class="song-artist">Chris Tomlin</p>
+                </div>
+                <button class="play-button">▶</button>
+            </li>
+            <li class="song-item">
+                <img src="https://via.placeholder.com/40" alt="Album Art">
+                <div class="song-details">
+                    <p class="song-title">Holy Spirit</p>
+                    <p class="song-artist">Francesca Battistelli</p>
+                </div>
+                <button class="play-button">▶</button>
+            </li>
+            <li class="song-item">
+                <img src="https://via.placeholder.com/40" alt="Album Art">
+                <div class="song-details">
+                    <p class="song-title">What a Beautiful Name</p>
+                    <p class="song-artist">Hillsong Worship</p>
+                </div>
+                <button class="play-button">▶</button>
+            </li>
+            <li class="song-item">
+                <img src="https://via.placeholder.com/40" alt="Album Art">
+                <div class="song-details">
+                    <p class="song-title">The Stand</p>
+                    <p class="song-artist">Hillsong United</p>
+                </div>
+                <button class="play-button">▶</button>
+            </li>
+            <li class="song-item">
+                <img src="https://via.placeholder.com/40" alt="Album Art">
+                <div class="song-details">
+                    <p class="song-title">Cornerstone</p>
+                    <p class="song-artist">Hillsong Worship</p>
+                </div>
+                <button class="play-button">▶</button>
+            </li>
+            <li class="song-item">
+                <img src="https://via.placeholder.com/40" alt="Album Art">
+                <div class="song-details">
+                    <p class="song-title">Mighty to Save</p>
+                    <p class="song-artist">Hillsong Worship</p>
+                </div>
+                <button class="play-button">▶</button>
+            </li>
+            <li class="song-item">
+                <img src="https://via.placeholder.com/40" alt="Album Art">
+                <div class="song-details">
+                    <p class="song-title">Blessed Be Your Name</p>
+                    <p class="song-artist">Matt Redman</p>
+                </div>
+                <button class="play-button">▶</button>
+            </li>
+            <li class="song-item">
+                <img src="https://via.placeholder.com/40" alt="Album Art">
+                <div class="song-details">
+                    <p class="song-title">Revelation Song</p>
+                    <p class="song-artist">Kari Jobe</p>
+                </div>
+                <button class="play-button">▶</button>
+            </li>
+            <li class="song-item">
+                <img src="https://via.placeholder.com/40" alt="Album Art">
+                <div class="song-details">
+                    <p class="song-title">Lord, I Lift Your Name on High</p>
+                    <p class="song-artist">Rick Founds</p>
+                </div>
+                <button class="play-button">▶</button>
+            </li>
+            <li class="song-item">
+                <img src="https://via.placeholder.com/40" alt="Album Art">
+                <div class="song-details">
+                    <p class="song-title">Shout to the Lord</p>
+                    <p class="song-artist">Darlene Zschech</p>
+                </div>
+                <button class="play-button">▶</button>
+            </li>
+            <li class="song-item">
+                <img src="https://via.placeholder.com/40" alt="Album Art">
+                <div class="song-details">
+                    <p class="song-title">Forever</p>
+                    <p class="song-artist">Chris Tomlin</p>
+                </div>
+                <button class="play-button">▶</button>
+            </li>
+            <li class="song-item">
+                <img src="https://via.placeholder.com/40" alt="Album Art">
+                <div class="song-details">
+                    <p class="song-title">Great Are You Lord</p>
+                    <p class="song-artist">All Sons & Daughters</p>
+                </div>
+                <button class="play-button">▶</button>
+            </li>
+            <li class="song-item">
+                <img src="https://via.placeholder.com/40" alt="Album Art">
+                <div class="song-details">
+                    <p class="song-title">Build My Life</p>
+                    <p class="song-artist">Pat Barrett</p>
+                </div>
+                <button class="play-button">▶</button>
+            </li>
+            <li class="song-item">
+                <img src="https://via.placeholder.com/40" alt="Album Art">
+                <div class="song-details">
+                    <p class="song-title">Way Maker</p>
+                    <p class="song-artist">Sinach</p>
+                </div>
+                <button class="play-button">▶</button>
+            </li>
+            <li class="song-item">
+                <img src="https://via.placeholder.com/40" alt="Album Art">
+                <div class="song-details">
+                    <p class="song-title">This I Believe (The Creed)</p>
+                    <p class="song-artist">Hillsong Worship</p>
+                </div>
+                <button class="play-button">▶</button>
+            </li>
+            <li class="song-item">
+                <img src="https://via.placeholder.com/40" alt="Album Art">
+                <div class="song-details">
+                    <p class="song-title">How He Loves</p>
+                    <p class="song-artist">David Crowder Band</p>
+                </div>
+                <button class="play-button">▶</button>
+            </li>
+            <li class="song-item">
+                <img src="https://via.placeholder.com/40" alt="Album Art">
+                <div class="song-details">
+                    <p class="song-title">Your Grace Is Enough</p>
+                    <p class="song-artist">Matt Maher</p>
+                </div>
+                <button class="play-button">▶</button>
+            </li>
+            <li class="song-item">
+                <img src="https://via.placeholder.com/40" alt="Album Art">
+                <div class="song-details">
+                    <p class="song-title">Chain Breaker</p>
+                    <p class="song-artist">Zach Williams</p>
+                </div>
+                <button class="play-button">▶</button>
+            </li>
+            <li class="song-item">
+                <img src="https://via.placeholder.com/40" alt="Album Art">
+                <div class="song-details">
+                    <p class="song-title">No Longer Slaves</p>
+                    <p class="song-artist">Bethel Music</p>
+                </div>
+                <button class="play-button">▶</button>
+            </li>
+        </ul>
+    </main>
+
+    <footer>
+        <i>🏠</i>
+        <i>🎵</i>
+        <i>🔍</i>
+        <i>👤</i>
+    </footer>
+</body>
+</html>
