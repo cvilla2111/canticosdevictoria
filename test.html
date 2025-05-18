@@ -40,6 +40,41 @@
             white-space: nowrap;
         }
 
+        .top-bar .search-container {
+            display: flex;
+            align-items: center;
+            position: relative;
+            width: 100%;
+            max-width: 800px; /* Match song-list max-width */
+            padding: 0 10px;
+        }
+
+        .top-bar .magnifier {
+            position: absolute;
+            right: 10px;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            fill: #333;
+        }
+
+        .top-bar .search-input {
+            display: none; /* Hidden initially */
+            width: 100%;
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .top-bar .search-input.active {
+            display: block;
+        }
+
+        .top-bar h1.hidden {
+            display: none;
+        }
+
         .bottom-bar {
             position: fixed;
             bottom: 0;
@@ -162,6 +197,14 @@
             .top-bar h1 {
                 font-size: 20px;
             }
+            .top-bar .magnifier {
+                width: 20px;
+                height: 20px;
+            }
+            .top-bar .search-input {
+                font-size: 14px;
+                padding: 6px;
+            }
             .slide-panel h2 {
                 font-size: 20px;
             }
@@ -173,7 +216,13 @@
 </head>
 <body>
     <div class="top-bar">
-        <h1>Cánticos De Victoria</h1>
+        <div class="search-container">
+            <h1 id="top-title">Cánticos De Victoria</h1>
+            <input type="text" class="search-input" id="search-input" placeholder="Search songs...">
+            <svg class="magnifier" id="magnifier" viewBox="0 0 24 24">
+                <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+            </svg>
+        </div>
     </div>
     <div class="song-list" id="song-list">
         <!-- Song titles will be populated here -->
@@ -195,7 +244,11 @@
         const closeButton = document.getElementById('close-button');
         const songTitle = document.getElementById('song-title');
         const songLyrics = document.getElementById('song-lyrics');
+        const magnifier = document.getElementById('magnifier');
+        const searchInput = document.getElementById('search-input');
+        const topTitle = document.getElementById('top-title');
         let songs = [];
+        let isSearchActive = false;
 
         // Fetch canticos.txt
         fetch('canticos.txt')
@@ -261,15 +314,51 @@
             songLyrics.textContent = lyrics;
             slidePanel.classList.add('open');
             overlay.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Disable background scroll
+            document.body.style.overflow = 'hidden';
         }
 
         function closeSlidePanel() {
             slidePanel.classList.remove('open');
             overlay.classList.remove('active');
-            document.body.style.overflow = ''; // Restore background scroll
+            document.body.style.overflow = '';
         }
 
+        function toggleSearch() {
+            isSearchActive = !isSearchActive;
+            if (isSearchActive) {
+                topTitle.classList.add('hidden');
+                searchInput.classList.add('active');
+                searchInput.focus();
+            } else {
+                topTitle.classList.remove('hidden');
+                searchInput.classList.remove('active');
+                searchInput.value = '';
+                filterSongs('');
+            }
+        }
+
+        function filterSongs(query) {
+            songList.innerHTML = '';
+            const filteredSongs = songs.filter(song => 
+                song.title.toLowerCase().includes(query.toLowerCase())
+            );
+
+            if (filteredSongs.length === 0) {
+                songList.innerHTML = '<p class="error-message">No songs found.</p>';
+                return;
+            }
+
+            filteredSongs.forEach(song => {
+                const songItem = document.createElement('div');
+                songItem.className = 'song-item';
+                songItem.textContent = song.title;
+                songItem.addEventListener('click', () => openSlidePanel(song.title, song.lyrics));
+                songList.appendChild(songItem);
+            });
+        }
+
+        magnifier.addEventListener('click', toggleSearch);
+        searchInput.addEventListener('input', (e) => filterSongs(e.target.value));
         closeButton.addEventListener('click', closeSlidePanel);
         overlay.addEventListener('click', closeSlidePanel);
     </script>
