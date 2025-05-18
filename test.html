@@ -40,14 +40,14 @@
             justify-content: center;
             width: 100%;
             max-width: 800px;
-            padding: 0 5px; /* Minimized padding for wider search bar */
+            padding: 0 5px; /* Minimal padding for wide search bar */
         }
 
         .top-bar .title-container {
             display: flex;
             justify-content: center;
             width: 100%;
-            position: absolute; /* Ensure h1 centers independently */
+            position: absolute; /* Center h1 independently */
         }
 
         .top-bar h1 {
@@ -61,20 +61,41 @@
 
         .top-bar .magnifier {
             position: absolute;
-            right: 5px; /* Closer to edge for wider search bar */
+            right: 5px;
             width: 24px;
             height: 24px;
             cursor: pointer;
             fill: #333;
-            z-index: 1; /* Ensure magnifier is above search bar */
+            z-index: 1;
+            display: block; /* Show by default */
+        }
+
+        .top-bar .close-icon {
+            position: absolute;
+            right: 5px;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            fill: #333;
+            z-index: 1;
+            display: none; /* Hidden by default */
+        }
+
+        .top-bar .search-input.active ~ .magnifier {
+            display: none; /* Hide magnifier when search is active */
+        }
+
+        .top-bar .search-input.active ~ .close-icon {
+            display: block; /* Show close icon when search is active */
         }
 
         .top-bar .search-input {
             width: 100%;
-            padding: 8px;
-            font-size: 16px;
+            padding: 12px; /* Increased for taller height */
+            font-size: 18px; /* Slightly larger for readability */
+            line-height: 1.5; /* Adjust for height */
             border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 8px; /* More rounded corners */
             opacity: 0;
             transform: translateX(20px); /* Start off to the right */
             visibility: hidden; /* Hide when not active */
@@ -150,7 +171,7 @@
             height: 100%;
             background-color: #ffffff;
             box-shadow: -2px 0 5px rgba(0,0,0,0.2);
-            transform: translateX(100%);
+            transform: spanlateX(100%);
             transition: transform 0.3s ease-in-out;
             z-index: 2000;
             padding: 20px;
@@ -214,17 +235,19 @@
             .top-bar h1 {
                 font-size: 20px;
             }
-            .top-bar .magnifier {
+            .top-bar .magnifier,
+            .top-bar .close-icon {
                 width: 20px;
                 height: 20px;
-                right: 5px; /* Consistent with landscape */
+                right: 5px;
             }
             .top-bar .search-input {
-                font-size: 14px;
-                padding: 6px;
+                font-size: 16px; /* Slightly smaller for portrait */
+                padding: 10px; /* Increased for height */
+                line-height: 1.5;
             }
             .top-bar .search-container {
-                padding: 0 5px; /* Minimized padding for wider search bar */
+                padding: 0 5px;
             }
             .slide-panel h2 {
                 font-size: 20px;
@@ -244,6 +267,9 @@
             <input type="text" class="search-input" id="search-input" placeholder="Search songs...">
             <svg class="magnifier" id="magnifier" viewBox="0 0 24 24">
                 <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+            </svg>
+            <svg class="close-icon" id="close-icon" viewBox="0 0 24 24">
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
             </svg>
         </div>
     </div>
@@ -268,6 +294,7 @@
         const songTitle = document.getElementById('song-title');
         const songLyrics = document.getElementById('song-lyrics');
         const magnifier = document.getElementById('magnifier');
+        const closeIcon = document.getElementById('close-icon');
         const searchInput = document.getElementById('search-input');
         const topTitle = document.getElementById('top-title');
         let songs = [];
@@ -381,6 +408,7 @@
         }
 
         magnifier.addEventListener('click', toggleSearch);
+        closeIcon.addEventListener('click', toggleSearch);
         searchInput.addEventListener('input', (e) => filterSongs(e.target.value));
         closeButton.addEventListener('click', closeSlidePanel);
         overlay.addEventListener('click', closeSlidePanel);
