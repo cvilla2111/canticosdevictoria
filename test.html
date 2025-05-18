@@ -35,43 +35,48 @@
 
         .top-bar .search-container {
             position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center; /* Center all children */
-            width: 100%;
-            max-width: 800px;
-            padding: 0 5px; /* Minimal padding for max width */
+            width: calc(100% - 10px); /* Max width minus padding */
+            padding: 0 5px;
+        }
+
+        .top-bar .title-wrapper {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2; /* Above search input */
+            width: auto;
         }
 
         .top-bar h1 {
             font-size: 24px;
-            margin: 0 auto;
             text-align: center;
             white-space: nowrap;
-            flex-grow: 0;
-            order: 0; /* Ensure h1 appears centered */
             transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out;
         }
 
         .top-bar .magnifier {
             position: absolute;
-            right: 5px;
+            right: 10px; /* Inside search input padding */
+            top: 50%;
+            transform: translateY(-50%);
             width: 24px;
             height: 24px;
             cursor: pointer;
             fill: #333;
-            z-index: 1;
+            z-index: 3;
             display: block;
         }
 
         .top-bar .close-icon {
             position: absolute;
-            right: 5px;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
             width: 24px;
             height: 24px;
             cursor: pointer;
             fill: #333;
-            z-index: 1;
+            z-index: 3;
             display: none;
         }
 
@@ -85,16 +90,15 @@
 
         .top-bar .search-input {
             width: 100%;
-            padding: 12px;
+            padding: 12px 40px 12px 12px; /* Extra right padding for icons */
             font-size: 18px;
             line-height: 1.5;
             border: 1px solid #ddd;
-            border-radius: 16px; /* More rounded corners */
+            border-radius: 24px; /* Very rounded corners */
             opacity: 0;
             transform: translateX(20px);
             visibility: hidden;
             transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out, visibility 0.6s ease-in-out;
-            order: 1; /* Place after h1 */
         }
 
         .top-bar .search-input.active {
@@ -125,7 +129,7 @@
 
         .song-list {
             width: 99%;
-            max-width: 800px;
+            max-width: 900px; /* Increased for landscape */
             margin: 0 auto;
             min-height: 100px;
         }
@@ -233,16 +237,20 @@
             .top-bar .close-icon {
                 width: 20px;
                 height: 20px;
-                right: 5px;
+                right: 10px;
             }
             .top-bar .search-input {
                 font-size: 16px;
-                padding: 10px;
+                padding: 10px 36px 10px 10px; /* Adjusted for icon */
                 line-height: 1.5;
-                border-radius: 16px; /* Consistent rounded corners */
+                border-radius: 24px;
             }
             .top-bar .search-container {
                 padding: 0 5px;
+                width: calc(100% - 10px);
+            }
+            .song-list {
+                max-width: 100%;
             }
             .slide-panel h2 {
                 font-size: 20px;
@@ -256,7 +264,9 @@
 <body>
     <div class="top-bar">
         <div class="search-container">
-            <h1 id="top-title">Cánticos De Victoria</h1>
+            <div class="title-wrapper">
+                <h1 id="top-title">Cánticos De Victoria</h1>
+            </div>
             <input type="text" class="search-input" id="search-input" placeholder="Search songs...">
             <svg class="magnifier" id="magnifier" viewBox="0 0 24 24">
                 <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
