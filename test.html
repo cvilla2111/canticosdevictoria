@@ -75,6 +75,7 @@
             transform: translate(-50%, -50%);
             z-index: 2;
             width: auto;
+            cursor: pointer; /* Indicate tappable */
         }
 
         .top-bar h1 {
@@ -232,8 +233,8 @@
             font-size: 24px;
             margin-bottom: 20px;
             text-align: center;
-            max-width: calc(100% - 80px); /* Reserve space for close button */
-            overflow-wrap: break-word; /* Wrap long words */
+            max-width: calc(100% - 80px);
+            overflow-wrap: break-word;
             margin-left: auto;
             margin-right: auto;
         }
@@ -255,7 +256,7 @@
             padding: 10px;
             cursor: pointer;
             color: var(--text-color);
-            z-index: 1; /* Ensure above h2 */
+            z-index: 1;
         }
 
         .overlay {
@@ -329,7 +330,7 @@
 <body>
     <div class="top-bar">
         <div class="search-container">
-            <div class="title-wrapper">
+            <div class="title-wrapper" id="title-wrapper" aria-label="Enter full-screen">
                 <h1 id="top-title">Cánticos De Victoria</h1>
             </div>
             <input type="text" class="search-input" id="search-input" placeholder="Search songs...">
@@ -377,9 +378,30 @@
         const closeIcon = document.getElementById('close-icon');
         const searchInput = document.getElementById('search-input');
         const topTitle = document.getElementById('top-title');
+        const titleWrapper = document.getElementById('title-wrapper');
         const bottomIcon = document.getElementById('bottom-icon');
         let songs = [];
         let isSearchActive = false;
+
+        // Full-screen toggle functionality
+        function toggleFullScreen() {
+            if (isSearchActive) return; // Prevent when search is active
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().then(() => {
+                    console.log('Entered full-screen');
+                    titleWrapper.setAttribute('aria-label', 'Exit full-screen');
+                }).catch(err => {
+                    console.error('Full-screen error:', err);
+                });
+            } else {
+                document.exitFullscreen().then(() => {
+                    console.log('Exited full-screen');
+                    titleWrapper.setAttribute('aria-label', 'Enter full-screen');
+                }).catch(err => {
+                    console.error('Exit full-screen error:', err);
+                });
+            }
+        }
 
         // Theme toggle functionality
         function toggleTheme() {
@@ -518,12 +540,26 @@
             });
         }
 
+        // Event listeners
+        titleWrapper.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Prevent default touch behavior
+            toggleFullScreen();
+        });
         magnifier.addEventListener('click', toggleSearch);
         closeIcon.addEventListener('click', toggleSearch);
         searchInput.addEventListener('input', (e) => filterSongs(e.target.value));
         closeButton.addEventListener('click', closeSlidePanel);
         overlay.addEventListener('click', closeSlidePanel);
         bottomIcon.addEventListener('click', toggleTheme);
+
+        // Update aria-label on fullscreen change
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement) {
+                titleWrapper.setAttribute('aria-label', 'Enter full-screen');
+            } else {
+                titleWrapper.setAttribute('aria-label', 'Exit full-screen');
+            }
+        });
     </script>
 </body>
 </html>
