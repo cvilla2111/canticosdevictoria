@@ -28,16 +28,16 @@
             border-bottom: 1px solid #ddd;
             display: flex;
             align-items: center;
-            justify-content: center; /* Changed to center the h1 */
+            justify-content: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             z-index: 1000;
         }
 
         .top-bar h1 {
-            font-size: 24px; /* Fits well in 60px height */
+            font-size: 24px;
             margin: 0;
             text-align: center;
-            white-space: nowrap; /* Prevent wrapping */
+            white-space: nowrap;
         }
 
         .bottom-bar {
@@ -52,6 +52,7 @@
             align-items: center;
             justify-content: space-around;
             box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+            z-index: 1000;
         }
 
         .song-list {
@@ -86,7 +87,68 @@
             margin-top: 20px;
         }
 
-        /* Media query for portrait on smaller screens */
+        /* Slide panel styles */
+        .slide-panel {
+            position: fixed;
+            top: 60px; /* Below top bar */
+            bottom: 60px; /* Above bottom bar */
+            right: 0;
+            width: 80%; /* 80% width for portrait */
+            max-width: 400px; /* Cap for larger screens */
+            background-color: #ffffff;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+            transform: translateX(100%); /* Hidden off-screen */
+            transition: transform 0.3s ease-in-out;
+            z-index: 2000;
+            padding: 20px;
+            overflow-y: auto; /* Scroll for long lyrics */
+        }
+
+        .slide-panel.open {
+            transform: translateX(0); /* Slide in */
+        }
+
+        .slide-panel h2 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .slide-panel p {
+            font-size: 16px;
+            line-height: 1.5;
+            white-space: pre-wrap; /* Preserve line breaks */
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out;
+            z-index: 1500;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Media queries */
         @media screen and (max-width: 500px) and (orientation: portrait) {
             body {
                 padding: 80px 5px;
@@ -96,7 +158,13 @@
                 min-height: 54px;
             }
             .top-bar h1 {
-                font-size: 20px; /* Smaller for portrait */
+                font-size: 20px;
+            }
+        }
+
+        @media screen and (min-width: 600px) {
+            .slide-panel {
+                width: 50%; /* Narrower for larger screens */
             }
         }
     </style>
@@ -111,12 +179,23 @@
     <div class="bottom-bar">
         <!-- Icons will be added here later -->
     </div>
+    <div class="overlay" id="overlay"></div>
+    <div class="slide-panel" id="slide-panel">
+        <button class="close-button" id="close-button">&times;</button>
+        <h2 id="song-title"></h2>
+        <p id="song-lyrics"></p>
+    </div>
 
     <script>
         const songList = document.getElementById('song-list');
+        const slidePanel = document.getElementById('slide-panel');
+        const overlay = document.getElementById('overlay');
+        const closeButton = document.getElementById('close-button');
+        const songTitle = document.getElementById('song-title');
+        const songLyrics = document.getElementById('song-lyrics');
         let songs = [];
 
-        // Fetch canticos.txt from the same directory
+        // Fetch canticos.txt
         fetch('canticos.txt')
             .then(response => {
                 console.log('Fetch Response:', response);
@@ -170,9 +249,25 @@
                 const songItem = document.createElement('div');
                 songItem.className = 'song-item';
                 songItem.textContent = title;
+                songItem.addEventListener('click', () => openSlidePanel(title, lyrics));
                 songList.appendChild(songItem);
             }
         }
+
+        function openSlidePanel(title, lyrics) {
+            songTitle.textContent = title;
+            songLyrics.textContent = lyrics;
+            slidePanel.classList.add('open');
+            overlay.classList.add('active');
+        }
+
+        function closeSlidePanel() {
+            slidePanel.classList.remove('open');
+            overlay.classList.remove('active');
+        }
+
+        closeButton.addEventListener('click', closeSlidePanel);
+        overlay.addEventListener('click', closeSlidePanel);
     </script>
 </body>
 </html>
