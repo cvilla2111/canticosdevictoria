@@ -87,7 +87,7 @@
         const songList = document.getElementById('song-list');
         let songs = [];
 
-        // Fetch canticos.txt
+        // Fetch canticos.txt from the same directory
         fetch('canticos.txt')
             .then(response => {
                 console.log('Fetch Response:', response); // Debug: Log response
@@ -101,11 +101,11 @@
                 processSongs(text);
             })
             .catch(error => {
-                console.error('Fetch Error:', error); // Debug: Log error
+                console.error('Fetch Error:', error);
                 songList.innerHTML = `
                     <p class="error-message">
                         Error loading canticos.txt: ${error.message}<br>
-                        1. Ensure canticos.txt is in the server root directory.<br>
+                        1. Ensure canticos.txt is in the same directory as index.html.<br>
                         2. Verify the file name (case-sensitive, no extra extensions).<br>
                         3. Run the app through a local server (e.g., http-server, Live Server).<br>
                         4. Check browser console for details.
