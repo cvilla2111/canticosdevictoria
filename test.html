@@ -33,20 +33,22 @@
             z-index: 1000;
         }
 
-        .top-bar h1 {
-            font-size: 24px;
-            margin: 0;
-            text-align: center;
-            white-space: nowrap;
-        }
-
         .top-bar .search-container {
+            position: relative;
             display: flex;
             align-items: center;
-            position: relative;
+            justify-content: center; /* Center h1 */
             width: 100%;
-            max-width: 800px; /* Match song-list max-width */
-            padding: 0 10px;
+            max-width: 800px;
+            padding: 0 40px; /* Space for magnifier */
+        }
+
+        .top-bar h1 {
+            font-size: 24px;
+            margin: 0 auto;
+            text-align: center;
+            white-space: nowrap;
+            flex-grow: 0; /* Prevent stretching */
         }
 
         .top-bar .magnifier {
@@ -59,7 +61,7 @@
         }
 
         .top-bar .search-input {
-            display: none; /* Hidden initially */
+            display: none;
             width: 100%;
             padding: 8px;
             font-size: 16px;
@@ -204,6 +206,9 @@
             .top-bar .search-input {
                 font-size: 14px;
                 padding: 6px;
+            }
+            .top-bar .search-container {
+                padding: 0 30px; /* Adjust for smaller magnifier */
             }
             .slide-panel h2 {
                 font-size: 20px;
