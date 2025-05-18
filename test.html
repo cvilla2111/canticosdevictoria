@@ -37,16 +37,10 @@
             position: relative;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: center; /* Center all children */
             width: 100%;
             max-width: 800px;
-            padding: 0 5px;
-        }
-
-        .top-bar .title-container {
-            display: flex;
-            justify-content: center;
-            flex-grow: 1; /* Center h1 without absolute positioning */
+            padding: 0 5px; /* Minimal padding for max width */
         }
 
         .top-bar h1 {
@@ -54,6 +48,8 @@
             margin: 0 auto;
             text-align: center;
             white-space: nowrap;
+            flex-grow: 0;
+            order: 0; /* Ensure h1 appears centered */
             transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out;
         }
 
@@ -93,11 +89,12 @@
             font-size: 18px;
             line-height: 1.5;
             border: 1px solid #ddd;
-            border-radius: 8px;
+            border-radius: 16px; /* More rounded corners */
             opacity: 0;
             transform: translateX(20px);
             visibility: hidden;
             transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out, visibility 0.6s ease-in-out;
+            order: 1; /* Place after h1 */
         }
 
         .top-bar .search-input.active {
@@ -130,7 +127,7 @@
             width: 99%;
             max-width: 800px;
             margin: 0 auto;
-            min-height: 100px; /* Ensure visibility even if empty */
+            min-height: 100px;
         }
 
         .song-item {
@@ -242,6 +239,7 @@
                 font-size: 16px;
                 padding: 10px;
                 line-height: 1.5;
+                border-radius: 16px; /* Consistent rounded corners */
             }
             .top-bar .search-container {
                 padding: 0 5px;
@@ -258,9 +256,7 @@
 <body>
     <div class="top-bar">
         <div class="search-container">
-            <div class="title-container">
-                <h1 id="top-title">Cánticos De Victoria</h1>
-            </div>
+            <h1 id="top-title">Cánticos De Victoria</h1>
             <input type="text" class="search-input" id="search-input" placeholder="Search songs...">
             <svg class="magnifier" id="magnifier" viewBox="0 0 24 24">
                 <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
