@@ -150,7 +150,7 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 80px; /* Increased for larger icon */
+            height: 60px; /* Reverted to original */
             background-color: var(--bar-bg);
             border-top: 1px solid var(--bar-border);
             display: flex;
@@ -165,10 +165,10 @@
             right: 10px;
             top: 50%;
             transform: translateY(-50%);
-            width: 72px; /* Doubled from 36px */
-            height: 72px;
+            width: 56px; /* Reduced from 72px */
+            height: 56px;
             cursor: pointer;
-            padding: 8px; /* ~88px × ~88px tap target */
+            padding: 8px; /* ~72px × ~72px tap target */
             display: block;
             overflow: visible;
         }
@@ -313,10 +313,10 @@
                 font-size: 16px;
             }
             .bottom-icon {
-                width: 64px; /* Doubled from 32px */
-                height: 64px;
+                width: 48px; /* Reduced from 64px */
+                height: 48px;
                 right: 10px;
-                padding: 8px; /* ~80px × ~80px tap target */
+                padding: 8px; /* ~64px × ~64px tap target */
             }
         }
     </style>
@@ -342,15 +342,15 @@
     <div class="bottom-bar">
         <svg class="bottom-icon" id="bottom-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 125" aria-label="Switch to dark mode">
             <g>
-                <path d="M50,25c-13.8,0-25,11.2-25,25c0,13.8,11.2,25,25,25s25-11.2,25-25C75,36.2,63.8,25,50,25z M30,50c0-11,9-20,20-20v40 C39,70,30,61,30,50z" fill="none" stroke="#333" stroke-width="4" stroke-miterlimit="10"/>
-                <rect x="48" y="5" width="4" height="15" fill="none" stroke="#333" stroke-width="4" stroke-miterlimit="10"/>
-                <rect x="80" y="48" width="15" height="4" fill="none" stroke="#333" stroke-width="4" stroke-miterlimit="10"/>
-                <rect x="5" y="48" width="15" height="4" fill="none" stroke="#333" stroke-width="4" stroke-miterlimit="10"/>
-                <rect x="48" y="80" width="4" height="15" fill="none" stroke="#333" stroke-width="4" stroke-miterlimit="10"/>
-                <rect x="16" y="21.5" transform="matrix(0.7071 0.7071 -0.7071 0.7071 23.4835 -9.7272)" width="15" height="4" fill="none" stroke="#333" stroke-width="4" stroke-miterlimit="10"/>
-                <rect x="74.5" y="16" transform="matrix(0.7071 0.7071 -0.7071 0.7071 39.0157 -47.2268)" width="4" height="15" fill="none" stroke="#333" stroke-width="4" stroke-miterlimit="10"/>
-                <rect x="21.5" y="69" transform="matrix(-0.7071 -0.7071 0.7071 -0.7071 -14.0165 147.2271)" width="4" height="15" fill="none" stroke="#333" stroke-width="4" stroke-miterlimit="10"/>
-                <rect x="69" y="74.5" transform="matrix(-0.7071 -0.7071 0.7071 -0.7071 76.5156 184.7272)" width="15" height="4" fill="none" stroke="#333" stroke-width="4" stroke-miterlimit="10"/>
+                <path d="M50,25c-13.8,0-25,11.2-25,25c0,13.8,11.2,25,25,25s25-11.2,25-25C75,36.2,63.8,25,50,25z M30,50c0-11,9-20,20-20v40 C39,70,30,61,30,50z" fill="none" stroke="#333" stroke-width="3" stroke-miterlimit="10"/>
+                <rect x="48" y="5" width="4" height="15" fill="none" stroke="#333" stroke-width="3" stroke-miterlimit="10"/>
+                <rect x="80" y="48" width="15" height="4" fill="none" stroke="#333" stroke-width="3" stroke-miterlimit="10"/>
+                <rect x="5" y="48" width="15" height="4" fill="none" stroke="#333" stroke-width="3" stroke-miterlimit="10"/>
+                <rect x="48" y="80" width="4" height="15" fill="none" stroke="#333" stroke-width="3" stroke-miterlimit="10"/>
+                <rect x="16" y="21.5" transform="matrix(0.7071 0.7071 -0.7071 0.7071 23.4835 -9.7272)" width="15" height="4" fill="none" stroke="#333" stroke-width="3" stroke-miterlimit="10"/>
+                <rect x="74.5" y="16" transform="matrix(0.7071 0.7071 -0.7071 0.7071 39.0157 -47.2268)" width="4" height="15" fill="none" stroke="#333" stroke-width="3" stroke-miterlimit="10"/>
+                <rect x="21.5" y="69" transform="matrix(-0.7071 -0.7071 0.7071 -0.7071 -14.0165 147.2271)" width="4" height="15" fill="none" stroke="#333" stroke-width="3" stroke-miterlimit="10"/>
+                <rect x="69" y="74.5" transform="matrix(-0.7071 -0.7071 0.7071 -0.7071 76.5156 184.7272)" width="15" height="4" fill="none" stroke="#333" stroke-width="3" stroke-miterlimit="10"/>
             </g>
         </svg>
     </div>
@@ -475,7 +475,7 @@
 
         function closeSlidePanel() {
             slidePanel.classList.remove('open');
-            overlay.classList.add('active');
+            overlay.classList.remove('active');
             document.body.style.overflow = '';
         }
 
