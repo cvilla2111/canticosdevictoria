@@ -90,36 +90,36 @@
         /* Slide panel styles */
         .slide-panel {
             position: fixed;
-            top: 0; /* Full screen */
+            top: 0;
             bottom: 0;
             left: 0;
             right: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
+            width: 100%;
+            height: 100%;
             background-color: #ffffff;
             box-shadow: -2px 0 5px rgba(0,0,0,0.2);
-            transform: translateX(100%); /* Hidden off-screen */
+            transform: translateX(100%);
             transition: transform 0.3s ease-in-out;
             z-index: 2000;
             padding: 20px;
-            overflow-y: auto; /* Scroll for long lyrics */
+            overflow-y: auto;
         }
 
         .slide-panel.open {
-            transform: translateX(0); /* Slide in */
+            transform: translateX(0);
         }
 
         .slide-panel h2 {
-            font-size: 24px; /* Larger for full-screen */
+            font-size: 24px;
             margin-bottom: 20px;
             text-align: center;
         }
 
         .slide-panel p {
-            font-size: 18px; /* Slightly larger for readability */
+            font-size: 18px;
             line-height: 1.6;
-            white-space: pre-wrap; /* Preserve line breaks */
-            margin: 0 10px; /* Small margin for readability */
+            white-space: pre-wrap;
+            margin: 0 10px;
         }
 
         .close-button {
@@ -128,7 +128,7 @@
             right: 10px;
             background: none;
             border: none;
-            font-size: 24px; /* Slightly larger */
+            font-size: 24px;
             cursor: pointer;
         }
 
@@ -163,10 +163,10 @@
                 font-size: 20px;
             }
             .slide-panel h2 {
-                font-size: 20px; /* Slightly smaller for portrait */
+                font-size: 20px;
             }
             .slide-panel p {
-                font-size: 16px; /* Adjusted for portrait */
+                font-size: 16px;
             }
         }
     </style>
@@ -261,11 +261,13 @@
             songLyrics.textContent = lyrics;
             slidePanel.classList.add('open');
             overlay.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Disable background scroll
         }
 
         function closeSlidePanel() {
             slidePanel.classList.remove('open');
             overlay.classList.remove('active');
+            document.body.style.overflow = ''; // Restore background scroll
         }
 
         closeButton.addEventListener('click', closeSlidePanel);
