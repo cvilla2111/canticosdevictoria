@@ -35,8 +35,8 @@
 
         .top-bar .search-container {
             position: relative;
-            display: flex; /* Fallback for alignment */
-            align-items: center; /* Vertically center children */
+            display: flex;
+            align-items: center;
             width: calc(100% - 10px);
             padding: 0 5px;
         }
@@ -44,8 +44,8 @@
         .top-bar .title-wrapper {
             position: absolute;
             left: 50%;
-            top: 50%; /* Center vertically */
-            transform: translate(-50%, -50%); /* Center both axes */
+            top: 50%;
+            transform: translate(-50%, -50%);
             z-index: 2;
             width: auto;
         }
@@ -54,7 +54,7 @@
             font-size: 24px;
             text-align: center;
             white-space: nowrap;
-            line-height: 1; /* Match font size for vertical centering */
+            line-height: 1;
             transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out;
         }
 
@@ -63,8 +63,8 @@
             right: 10px;
             top: 50%;
             transform: translateY(-50%);
-            width: 24px;
-            height: 24px;
+            width: 28px; /* Slightly bigger */
+            height: 28px;
             cursor: pointer;
             fill: #333;
             z-index: 3;
@@ -76,8 +76,8 @@
             right: 10px;
             top: 50%;
             transform: translateY(-50%);
-            width: 24px;
-            height: 24px;
+            width: 28px; /* Match magnifier */
+            height: 28px;
             cursor: pointer;
             fill: #333;
             z-index: 3;
@@ -94,7 +94,7 @@
 
         .top-bar .search-input {
             width: 100%;
-            padding: 12px 40px 12px 12px;
+            padding: 12px 44px 12px 12px; /* Increased right padding for larger icons */
             font-size: 18px;
             line-height: 1.5;
             border: 1px solid #ddd;
@@ -240,13 +240,13 @@
             }
             .top-bar .magnifier,
             .top-bar .close-icon {
-                width: 20px;
-                height: 20px;
+                width: 24px; /* Slightly bigger */
+                height: 24px;
                 right: 10px;
             }
             .top-bar .search-input {
                 font-size: 16px;
-                padding: 10px 36px 10px 10px;
+                padding: 10px 40px 10px 10px; /* Increased right padding */
                 line-height: 1.5;
                 border-radius: 24px;
             }
