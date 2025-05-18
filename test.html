@@ -131,6 +131,19 @@
             z-index: 1000;
         }
 
+        .bottom-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 28px;
+            height: 28px;
+            fill: #333;
+            stroke: #333;
+            cursor: pointer;
+            padding: 10px; /* ~48px × ~48px tap target */
+        }
+
         .song-list {
             width: 99%;
             max-width: 900px;
@@ -204,8 +217,8 @@
             right: 10px;
             background: none;
             border: none;
-            font-size: 32px; /* Bigger X */
-            padding: 10px; /* Larger tap target */
+            font-size: 32px;
+            padding: 10px;
             cursor: pointer;
         }
 
@@ -268,6 +281,11 @@
             .slide-panel p {
                 font-size: 16px;
             }
+            .bottom-icon {
+                width: 24px;
+                height: 24px;
+                right: 10px;
+            }
         }
     </style>
 </head>
@@ -290,7 +308,23 @@
         <!-- Song titles will be populated here -->
     </div>
     <div class="bottom-bar">
-        <!-- Icons will be added here later -->
+        <svg class="bottom-icon" id="bottom-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+            <style type="text/css">
+                .st0{fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:10;}
+                .st1{fill:none;stroke:#000000;stroke-miterlimit:10;}
+            </style>
+            <g>
+                <path d="M50,25c-13.8,0-25,11.2-25,25c0,13.8,11.2,25,25,25s25-11.2,25-25C75,36.2,63.8,25,50,25z M30,50c0-11,9-20,20-20v40 C39,70,30,61,30,50z"/>
+                <rect x="48" y="5" width="4" height="15"/>
+                <rect x="80" y="48" width="15" height="4"/>
+                <rect x="5" y="48" width="15" height="4"/>
+                <rect x="48" y="80" width="4" height="15"/>
+                <rect x="16" y="21.5" transform="matrix(0.7071 0.7071 -0.7071 0.7071 23.4835 -9.7272)" width="15" height="4"/>
+                <rect x="74.5" y="16" transform="matrix(0.7071 0.7071 -0.7071 0.7071 39.0157 -47.2268)" width="4" height="15"/>
+                <rect x="21.5" y="69" transform="matrix(-0.7071 -0.7071 0.7071 -0.7071 -14.0165 147.2271)" width="4" height="15"/>
+                <rect x="69" y="74.5" transform="matrix(-0.7071 -0.7071 0.7071 -0.7071 76.5156 184.7272)" width="15" height="4"/>
+            </g>
+        </svg>
     </div>
     <div class="overlay" id="overlay"></div>
     <div class="slide-panel" id="slide-panel">
@@ -310,6 +344,7 @@
         const closeIcon = document.getElementById('close-icon');
         const searchInput = document.getElementById('search-input');
         const topTitle = document.getElementById('top-title');
+        const bottomIcon = document.getElementById('bottom-icon');
         let songs = [];
         let isSearchActive = false;
 
@@ -436,6 +471,9 @@
         searchInput.addEventListener('input', (e) => filterSongs(e.target.value));
         closeButton.addEventListener('click', closeSlidePanel);
         overlay.addEventListener('click', closeSlidePanel);
+        bottomIcon.addEventListener('click', () => {
+            console.log('Bottom icon clicked');
+        });
     </script>
 </body>
 </html>
