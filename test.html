@@ -150,7 +150,7 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 60px; /* Reverted to original */
+            height: 60px;
             background-color: var(--bar-bg);
             border-top: 1px solid var(--bar-border);
             display: flex;
@@ -165,10 +165,10 @@
             right: 10px;
             top: 50%;
             transform: translateY(-50%);
-            width: 56px; /* Reduced from 72px */
+            width: 56px;
             height: 56px;
             cursor: pointer;
-            padding: 8px; /* ~72px × ~72px tap target */
+            padding: 8px;
             display: block;
             overflow: visible;
         }
@@ -232,6 +232,10 @@
             font-size: 24px;
             margin-bottom: 20px;
             text-align: center;
+            max-width: calc(100% - 80px); /* Reserve space for close button */
+            overflow-wrap: break-word; /* Wrap long words */
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .slide-panel p {
@@ -251,6 +255,7 @@
             padding: 10px;
             cursor: pointer;
             color: var(--text-color);
+            z-index: 1; /* Ensure above h2 */
         }
 
         .overlay {
@@ -313,10 +318,10 @@
                 font-size: 16px;
             }
             .bottom-icon {
-                width: 48px; /* Reduced from 64px */
+                width: 48px;
                 height: 48px;
                 right: 10px;
-                padding: 8px; /* ~64px × ~64px tap target */
+                padding: 8px;
             }
         }
     </style>
