@@ -56,10 +56,14 @@
         .song-item {
             padding: 15px;
             background-color: #ffffff;
-            margin-bottom: 10px;
+            border-bottom: 1px solid #ddd; /* Horizontal line separator */
             border-radius: 5px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             cursor: pointer;
+        }
+
+        .song-item:last-child {
+            border-bottom: none; /* Remove border for last item */
         }
 
         .song-item:hover {
