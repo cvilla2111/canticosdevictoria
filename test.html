@@ -24,14 +24,15 @@
             left: 0;
             right: 0;
             height: 60px;
-            background-color: #ffffff;
+            background-color: rgba(0, 0, 255, 0.2); /* Blue background for padding */
             border-bottom: 1px solid #ddd;
             display: flex;
             align-items: center;
             justify-content: space-around;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             z-index: 1000;
-            border: 1px solid blue; /* Blue border for top bar */
+            outline: 2px dashed orange; /* Orange outline for margin */
+            outline-offset: 2px; /* Offset to show margin area */
         }
 
         .bottom-bar {
@@ -40,34 +41,38 @@
             left: 0;
             right: 0;
             height: 60px;
-            background-color: #ffffff;
+            background-color: rgba(0, 255, 0, 0.2); /* Green background for padding */
             border-top: 1px solid #ddd;
             display: flex;
             align-items: center;
             justify-content: space-around;
             box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
-            border: 1px solid green; /* Green border for bottom bar */
+            outline: 2px dashed yellow; /* Yellow outline for margin */
+            outline-offset: 2px;
         }
 
         .song-list {
             width: 99%;
             max-width: 800px;
             margin: 0 auto;
-            border: 1px solid red; /* Red border for song list */
+            background-color: rgba(255, 0, 0, 0.2); /* Red background for padding */
+            outline: 2px dashed purple; /* Purple outline for margin */
+            outline-offset: 2px;
         }
 
         .song-item {
             padding: 15px;
-            background-color: #ffffff;
+            background-color: rgba(128, 0, 128, 0.2); /* Purple background for padding */
             margin-bottom: 10px;
             border-radius: 5px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             cursor: pointer;
-            border: 1px solid purple; /* Purple border for song items */
+            outline: 2px dashed cyan; /* Cyan outline for margin */
+            outline-offset: 2px;
         }
 
         .song-item:hover {
-            background-color: #f8f8f8;
+            background-color: rgba(128, 0, 128, 0.3); /* Slightly darker on hover */
         }
 
         .error-message {
