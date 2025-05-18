@@ -37,10 +37,10 @@
             position: relative;
             display: flex;
             align-items: center;
-            justify-content: center; /* Center h1 */
+            justify-content: center;
             width: 100%;
             max-width: 800px;
-            padding: 0 40px; /* Space for magnifier */
+            padding: 0 40px;
         }
 
         .top-bar h1 {
@@ -48,7 +48,8 @@
             margin: 0 auto;
             text-align: center;
             white-space: nowrap;
-            flex-grow: 0; /* Prevent stretching */
+            flex-grow: 0;
+            transition: opacity 0.2s ease-in-out; /* Fade animation for h1 */
         }
 
         .top-bar .magnifier {
@@ -67,14 +68,20 @@
             font-size: 16px;
             border: 1px solid #ddd;
             border-radius: 4px;
+            opacity: 0;
+            transform: translateX(20px); /* Start off to the right */
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; /* Animation */
         }
 
         .top-bar .search-input.active {
             display: block;
+            opacity: 1;
+            transform: translateX(0); /* Slide to position */
         }
 
         .top-bar h1.hidden {
             display: none;
+            opacity: 0;
         }
 
         .bottom-bar {
@@ -208,7 +215,7 @@
                 padding: 6px;
             }
             .top-bar .search-container {
-                padding: 0 30px; /* Adjust for smaller magnifier */
+                padding: 0 30px;
             }
             .slide-panel h2 {
                 font-size: 20px;
