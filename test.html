@@ -136,11 +136,12 @@
             right: 10px;
             top: 50%;
             transform: translateY(-50%);
-            width: 28px;
-            height: 28px;
+            width: 36px; /* Larger for clarity */
+            height: 36px;
             cursor: pointer;
-            padding: 10px; /* ~48px × ~48px tap target */
-            display: block; /* Prevent inline text artifacts */
+            padding: 8px; /* ~52px × ~52px tap target */
+            display: block;
+            overflow: visible; /* Prevent clipping */
         }
 
         .song-list {
@@ -281,9 +282,10 @@
                 font-size: 16px;
             }
             .bottom-icon {
-                width: 24px;
-                height: 24px;
+                width: 32px; /* Larger for clarity */
+                height: 32px;
                 right: 10px;
+                padding: 8px; /* ~48px × ~48px tap target */
             }
         }
     </style>
@@ -292,7 +294,7 @@
     <div class="top-bar">
         <div class="search-container">
             <div class="title-wrapper">
-                <h1 id="top-title">Cánticos De Victoria@</h1>
+                <h1 id="top-title">Cánticos De Victoria</h1>
             </div>
             <input type="text" class="search-input" id="search-input" placeholder="Search songs...">
             <svg class="magnifier" id="magnifier" viewBox="0 0 24 24">
@@ -307,21 +309,17 @@
         <!-- Song titles will be populated here -->
     </div>
     <div class="bottom-bar">
-        <svg class="bottom-icon" id="bottom-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 125">
-            <style type="text/css">
-                .st0{fill:none;stroke:#333;stroke-width:2;stroke-miterlimit:10;}
-                .st1{fill:none;stroke:#333;stroke-miterlimit:10;}
-            </style>
+        <svg class="bottom-icon" id="bottom-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 125" aria-label="Clock icon">
             <g>
-                <path d="M50,25c-13.8,0-25,11.2-25,25c0,13.8,11.2,25,25,25s25-11.2,25-25C75,36.2,63.8,25,50,25z M30,50c0-11,9-20,20-20v40 C39,70,30,61,30,50z" fill="none" stroke="#333" stroke-width="2" stroke-miterlimit="10"/>
-                <rect x="48" y="5" width="4" height="15" fill="none" stroke="#333" stroke-width="2" stroke-miterlimit="10"/>
-                <rect x="80" y="48" width="15" height="4" fill="none" stroke="#333" stroke-width="2" stroke-miterlimit="10"/>
-                <rect x="5" y="48" width="15" height="4" fill="none" stroke="#333" stroke-width="2" stroke-miterlimit="10"/>
-                <rect x="48" y="80" width="4" height="15" fill="none" stroke="#333" stroke-width="2" stroke-miterlimit="10"/>
-                <rect x="16" y="21.5" transform="matrix(0.7071 0.7071 -0.7071 0.7071 23.4835 -9.7272)" width="15" height="4" fill="none" stroke="#333" stroke-width="2" stroke-miterlimit="10"/>
-                <rect x="74.5" y="16" transform="matrix(0.7071 0.7071 -0.7071 0.7071 39.0157 -47.2268)" width="4" height="15" fill="none" stroke="#333" stroke-width="2" stroke-miterlimit="10"/>
-                <rect x="21.5" y="69" transform="matrix(-0.7071 -0.7071 0.7071 -0.7071 -14.0165 147.2271)" width="4" height="15" fill="none" stroke="#333" stroke-width="2" stroke-miterlimit="10"/>
-                <rect x="69" y="74.5" transform="matrix(-0.7071 -0.7071 0.7071 -0.7071 76.5156 184.7272)" width="15" height="4" fill="none" stroke="#333" stroke-width="2" stroke-miterlimit="10"/>
+                <path d="M50,25c-13.8,0-25,11.2-25,25c0,13.8,11.2,25,25,25s25-11.2,25-25C75,36.2,63.8,25,50,25z M30,50c0-11,9-20,20-20v40 C39,70,30,61,30,50z" fill="none" stroke="#333" stroke-width="3" stroke-miterlimit="10"/>
+                <rect x="48" y="5" width="4" height="15" fill="none" stroke="#333" stroke-width="3" stroke-miterlimit="10"/>
+                <rect x="80" y="48" width="15" height="4" fill="none" stroke="#333" stroke-width="3" stroke-miterlimit="10"/>
+                <rect x="5" y="48" width="15" height="4" fill="none" stroke="#333" stroke-width="3" stroke-miterlimit="10"/>
+                <rect x="48" y="80" width="4" height="15" fill="none" stroke="#333" stroke-width="3" stroke-miterlimit="10"/>
+                <rect x="16" y="21.5" transform="matrix(0.7071 0.7071 -0.7071 0.7071 23.4835 -9.7272)" width="15" height="4" fill="none" stroke="#333" stroke-width="3" stroke-miterlimit="10"/>
+                <rect x="74.5" y="16" transform="matrix(0.7071 0.7071 -0.7071 0.7071 39.0157 -47.2268)" width="4" height="15" fill="none" stroke="#333" stroke-width="3" stroke-miterlimit="10"/>
+                <rect x="21.5" y="69" transform="matrix(-0.7071 -0.7071 0.7071 -0.7071 -14.0165 147.2271)" width="4" height="15" fill="none" stroke="#333" stroke-width="3" stroke-miterlimit="10"/>
+                <rect x="69" y="74.5" transform="matrix(-0.7071 -0.7071 0.7071 -0.7071 76.5156 184.7272)" width="15" height="4" fill="none" stroke="#333" stroke-width="3" stroke-miterlimit="10"/>
             </g>
         </svg>
     </div>
@@ -346,6 +344,9 @@
         const bottomIcon = document.getElementById('bottom-icon');
         let songs = [];
         let isSearchActive = false;
+
+        // Log SVG load
+        console.log('Bottom icon SVG loaded:', bottomIcon);
 
         // Reset search state on load
         searchInput.classList.remove('active');
