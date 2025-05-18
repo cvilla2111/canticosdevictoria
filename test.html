@@ -40,14 +40,13 @@
             justify-content: center;
             width: 100%;
             max-width: 800px;
-            padding: 0 5px; /* Minimal padding for wide search bar */
+            padding: 0 5px;
         }
 
         .top-bar .title-container {
             display: flex;
             justify-content: center;
-            width: 100%;
-            position: absolute; /* Center h1 independently */
+            flex-grow: 1; /* Center h1 without absolute positioning */
         }
 
         .top-bar h1 {
@@ -55,8 +54,7 @@
             margin: 0 auto;
             text-align: center;
             white-space: nowrap;
-            flex-grow: 0;
-            transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out; /* Fade for h1 */
+            transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out;
         }
 
         .top-bar .magnifier {
@@ -67,7 +65,7 @@
             cursor: pointer;
             fill: #333;
             z-index: 1;
-            display: block; /* Show by default */
+            display: block;
         }
 
         .top-bar .close-icon {
@@ -78,34 +76,34 @@
             cursor: pointer;
             fill: #333;
             z-index: 1;
-            display: none; /* Hidden by default */
+            display: none;
         }
 
         .top-bar .search-input.active ~ .magnifier {
-            display: none; /* Hide magnifier when search is active */
+            display: none;
         }
 
         .top-bar .search-input.active ~ .close-icon {
-            display: block; /* Show close icon when search is active */
+            display: block;
         }
 
         .top-bar .search-input {
             width: 100%;
-            padding: 12px; /* Increased for taller height */
-            font-size: 18px; /* Slightly larger for readability */
-            line-height: 1.5; /* Adjust for height */
+            padding: 12px;
+            font-size: 18px;
+            line-height: 1.5;
             border: 1px solid #ddd;
-            border-radius: 8px; /* More rounded corners */
+            border-radius: 8px;
             opacity: 0;
-            transform: translateX(20px); /* Start off to the right */
-            visibility: hidden; /* Hide when not active */
-            transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out, visibility 0.6s ease-in-out; /* Animation */
+            transform: translateX(20px);
+            visibility: hidden;
+            transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out, visibility 0.6s ease-in-out;
         }
 
         .top-bar .search-input.active {
             opacity: 1;
-            transform: translateX(0); /* Slide to position */
-            visibility: visible; /* Show when active */
+            transform: translateX(0);
+            visibility: visible;
         }
 
         .top-bar h1.hidden {
@@ -132,6 +130,7 @@
             width: 99%;
             max-width: 800px;
             margin: 0 auto;
+            min-height: 100px; /* Ensure visibility even if empty */
         }
 
         .song-item {
@@ -160,7 +159,6 @@
             margin-top: 20px;
         }
 
-        /* Slide panel styles */
         .slide-panel {
             position: fixed;
             top: 0;
@@ -171,7 +169,7 @@
             height: 100%;
             background-color: #ffffff;
             box-shadow: -2px 0 5px rgba(0,0,0,0.2);
-            transform: spanlateX(100%);
+            transform: translateX(100%);
             transition: transform 0.3s ease-in-out;
             z-index: 2000;
             padding: 20px;
@@ -223,7 +221,6 @@
             visibility: visible;
         }
 
-        /* Media query for portrait on smaller screens */
         @media screen and (max-width: 500px) and (orientation: portrait) {
             body {
                 padding: 80px 5px;
@@ -242,8 +239,8 @@
                 right: 5px;
             }
             .top-bar .search-input {
-                font-size: 16px; /* Slightly smaller for portrait */
-                padding: 10px; /* Increased for height */
+                font-size: 16px;
+                padding: 10px;
                 line-height: 1.5;
             }
             .top-bar .search-container {
@@ -300,6 +297,10 @@
         let songs = [];
         let isSearchActive = false;
 
+        // Reset search state on load
+        searchInput.classList.remove('active');
+        topTitle.classList.remove('hidden');
+
         // Fetch canticos.txt
         fetch('canticos.txt')
             .then(response => {
@@ -311,13 +312,16 @@
             })
             .then(text => {
                 console.log('File Content:', text);
+                if (!text.trim()) {
+                    throw new Error('canticos.txt is empty');
+                }
                 processSongs(text);
             })
             .catch(error => {
                 console.error('Fetch Error:', error);
                 songList.innerHTML = `
                     <p class="error-message">
-                        Error loading canticos.txt: ${error.message}<br>
+                        Error loading songs: ${error.message}<br>
                         1. Ensure canticos.txt is in the same directory as index.html.<br>
                         2. Verify the file name (case-sensitive, no extra extensions).<br>
                         3. Run the app through a local server (e.g., http-server, Live Server).<br>
@@ -356,6 +360,10 @@
                 songItem.textContent = title;
                 songItem.addEventListener('click', () => openSlidePanel(title, lyrics));
                 songList.appendChild(songItem);
+            }
+
+            if (songs.length === 0) {
+                songList.innerHTML = '<p class="error-message">No songs found in canticos.txt.</p>';
             }
         }
 
