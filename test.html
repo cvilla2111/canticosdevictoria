@@ -35,15 +35,18 @@
 
         .top-bar .search-container {
             position: relative;
-            width: calc(100% - 10px); /* Max width minus padding */
+            display: flex; /* Fallback for alignment */
+            align-items: center; /* Vertically center children */
+            width: calc(100% - 10px);
             padding: 0 5px;
         }
 
         .top-bar .title-wrapper {
             position: absolute;
             left: 50%;
-            transform: translateX(-50%);
-            z-index: 2; /* Above search input */
+            top: 50%; /* Center vertically */
+            transform: translate(-50%, -50%); /* Center both axes */
+            z-index: 2;
             width: auto;
         }
 
@@ -51,12 +54,13 @@
             font-size: 24px;
             text-align: center;
             white-space: nowrap;
+            line-height: 1; /* Match font size for vertical centering */
             transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out;
         }
 
         .top-bar .magnifier {
             position: absolute;
-            right: 10px; /* Inside search input padding */
+            right: 10px;
             top: 50%;
             transform: translateY(-50%);
             width: 24px;
@@ -90,11 +94,11 @@
 
         .top-bar .search-input {
             width: 100%;
-            padding: 12px 40px 12px 12px; /* Extra right padding for icons */
+            padding: 12px 40px 12px 12px;
             font-size: 18px;
             line-height: 1.5;
             border: 1px solid #ddd;
-            border-radius: 24px; /* Very rounded corners */
+            border-radius: 24px;
             opacity: 0;
             transform: translateX(20px);
             visibility: hidden;
@@ -129,7 +133,7 @@
 
         .song-list {
             width: 99%;
-            max-width: 900px; /* Increased for landscape */
+            max-width: 900px;
             margin: 0 auto;
             min-height: 100px;
         }
@@ -232,6 +236,7 @@
             }
             .top-bar h1 {
                 font-size: 20px;
+                line-height: 1;
             }
             .top-bar .magnifier,
             .top-bar .close-icon {
@@ -241,7 +246,7 @@
             }
             .top-bar .search-input {
                 font-size: 16px;
-                padding: 10px 36px 10px 10px; /* Adjusted for icon */
+                padding: 10px 36px 10px 10px;
                 line-height: 1.5;
                 border-radius: 24px;
             }
