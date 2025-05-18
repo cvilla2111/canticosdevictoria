@@ -90,11 +90,12 @@
         /* Slide panel styles */
         .slide-panel {
             position: fixed;
-            top: 60px; /* Below top bar */
-            bottom: 60px; /* Above bottom bar */
+            top: 0; /* Full screen */
+            bottom: 0;
+            left: 0;
             right: 0;
-            width: 80%; /* 80% width for portrait */
-            max-width: 400px; /* Cap for larger screens */
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
             background-color: #ffffff;
             box-shadow: -2px 0 5px rgba(0,0,0,0.2);
             transform: translateX(100%); /* Hidden off-screen */
@@ -109,15 +110,16 @@
         }
 
         .slide-panel h2 {
-            font-size: 20px;
-            margin-bottom: 15px;
+            font-size: 24px; /* Larger for full-screen */
+            margin-bottom: 20px;
             text-align: center;
         }
 
         .slide-panel p {
-            font-size: 16px;
-            line-height: 1.5;
+            font-size: 18px; /* Slightly larger for readability */
+            line-height: 1.6;
             white-space: pre-wrap; /* Preserve line breaks */
+            margin: 0 10px; /* Small margin for readability */
         }
 
         .close-button {
@@ -126,7 +128,7 @@
             right: 10px;
             background: none;
             border: none;
-            font-size: 20px;
+            font-size: 24px; /* Slightly larger */
             cursor: pointer;
         }
 
@@ -148,7 +150,7 @@
             visibility: visible;
         }
 
-        /* Media queries */
+        /* Media query for portrait on smaller screens */
         @media screen and (max-width: 500px) and (orientation: portrait) {
             body {
                 padding: 80px 5px;
@@ -160,11 +162,11 @@
             .top-bar h1 {
                 font-size: 20px;
             }
-        }
-
-        @media screen and (min-width: 600px) {
-            .slide-panel {
-                width: 50%; /* Narrower for larger screens */
+            .slide-panel h2 {
+                font-size: 20px; /* Slightly smaller for portrait */
+            }
+            .slide-panel p {
+                font-size: 16px; /* Adjusted for portrait */
             }
         }
     </style>
@@ -181,7 +183,7 @@
     </div>
     <div class="overlay" id="overlay"></div>
     <div class="slide-panel" id="slide-panel">
-        <button class="close-button" id="close-button">&times;</button>
+        <button class="close-button" id="close-button">×</button>
         <h2 id="song-title"></h2>
         <p id="song-lyrics"></p>
     </div>
