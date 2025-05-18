@@ -13,8 +13,9 @@
 
         body {
             min-height: 100vh;
-            background-color: #f0f0f0; /* Light gray background */
+            background-color: #f0f0f0;
             font-family: Arial, sans-serif;
+            padding: 80px 20px; /* Padding to avoid overlap with bars */
         }
 
         .top-bar {
@@ -45,18 +46,76 @@
             justify-content: space-around;
             box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
         }
+
+        .song-list {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .song-item {
+            padding: 15px;
+            background-color: #ffffff;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            cursor: pointer;
+        }
+
+        .song-item:hover {
+            background-color: #f8f8f8;
+        }
     </style>
 </head>
 <body>
     <div class="top-bar">
         <!-- Icons will be added here later -->
     </div>
+    <div class="song-list" id="song-list">
+        <!-- Song titles will be populated here -->
+    </div>
     <div class="bottom-bar">
         <!-- Icons will be added here later -->
     </div>
 
     <script>
-        // JavaScript can be added here later
+        const songList = document.getElementById('song-list');
+        let songs = []; // Store songs for later use
+
+        // Fetch canticos.txt from the root directory
+        fetch('/canticos.txt')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to load canticos.txt');
+                }
+                return response.text();
+            })
+            .then(text => {
+                processSongs(text);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                songList.innerHTML = '<p>Error loading songs. Please ensure canticos.txt is in the root directory.</p>';
+            });
+
+        function processSongs(text) {
+            const lines = text.split('\n').map(line => line.trim());
+            songs = [];
+            songList.innerHTML = ''; // Clear existing list
+
+            for (let i = 0; i < lines.length; i += 2) {
+                const title = lines[i];
+                const lyrics = lines[i + 1] || '';
+                // Extract subtitles (text in parentheses)
+                const subtitles = (lyrics.match(/\([^()]*\)/g) || []).map(sub => sub.slice(1, -1));
+                songs.push({ title, lyrics, subtitles });
+
+                // Create list item for title
+                const songItem = document.createElement('div');
+                songItem.className = 'song-item';
+                songItem.textContent = title;
+                songList.appendChild(songItem);
+            }
+        }
     </script>
 </body>
 </html>
