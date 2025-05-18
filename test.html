@@ -90,14 +90,14 @@
         // Fetch canticos.txt from the same directory
         fetch('canticos.txt')
             .then(response => {
-                console.log('Fetch Response:', response); // Debug: Log response
+                console.log('Fetch Response:', response);
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
                 return response.text();
             })
             .then(text => {
-                console.log('File Content:', text); // Debug: Log file content
+                console.log('File Content:', text);
                 processSongs(text);
             })
             .catch(error => {
@@ -117,12 +117,33 @@
             songs = [];
             songList.innerHTML = '';
 
-            for (let i = 0; i < lines.length; i += 2) {
+            let i = 0;
+            while (i < lines.length) {
+                // Skip empty lines
+                if (lines[i] === '') {
+                    i++;
+                    continue;
+                }
+
+                // First non-empty line is the title
                 const title = lines[i];
-                const lyrics = lines[i + 1] || '';
+                i++;
+
+                // Collect lyrics until a blank line or end of file
+                const lyricsLines = [];
+                while (i < lines.length && lines[i] !== '') {
+                    lyricsLines.push(lines[i]);
+                    i++;
+                }
+
+                // Join lyrics lines and extract subtitles
+                const lyrics = lyricsLines.join('\n');
                 const subtitles = (lyrics.match(/\([^()]*\)/g) || []).map(sub => sub.slice(1, -1));
+
+                // Store song data
                 songs.push({ title, lyrics, subtitles });
 
+                // Create list item for title
                 const songItem = document.createElement('div');
                 songItem.className = 'song-item';
                 songItem.textContent = title;
