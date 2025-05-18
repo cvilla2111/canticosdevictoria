@@ -49,7 +49,7 @@
             text-align: center;
             white-space: nowrap;
             flex-grow: 0;
-            transition: opacity 0.4s ease-in-out; /* Slower fade for h1 */
+            transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out; /* Fade for h1 */
         }
 
         .top-bar .magnifier {
@@ -70,23 +70,18 @@
             opacity: 0;
             transform: translateX(20px); /* Start off to the right */
             visibility: hidden; /* Hide when not active */
-            transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out, visibility 0.6s ease-in-out; /* Slower animation */
-            position: absolute; /* Prevent layout shift */
-            top: 50%;
-            transform: translateY(-50%) translateX(20px); /* Center vertically and offset horizontally */
+            transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out, visibility 0.6s ease-in-out; /* Animation */
         }
 
         .top-bar .search-input.active {
             opacity: 1;
-            transform: translateY(-50%) translateX(0); /* Slide to position, keep centered */
+            transform: translateX(0); /* Slide to position */
             visibility: visible; /* Show when active */
-            position: relative; /* Restore normal flow when visible */
         }
 
         .top-bar h1.hidden {
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out;
         }
 
         .bottom-bar {
