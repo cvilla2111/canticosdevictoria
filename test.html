@@ -75,7 +75,7 @@
             transform: translate(-50%, -50%);
             z-index: 2;
             width: auto;
-            cursor: pointer; /* Indicate tappable */
+            cursor: pointer;
         }
 
         .top-bar h1 {
@@ -385,7 +385,7 @@
 
         // Full-screen toggle functionality
         function toggleFullScreen() {
-            if (isSearchActive) return; // Prevent when search is active
+            if (isSearchActive) return;
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen().then(() => {
                     console.log('Entered full-screen');
@@ -408,6 +408,9 @@
             const isDark = document.body.classList.toggle('dark');
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
             const strokeColor = isDark ? '#e0e0e0' : '#333';
+            // Update CSS variable for magnifier
+            document.documentElement.style.setProperty('--icon-stroke', strokeColor);
+            // Update sun icon stroke
             bottomIcon.querySelectorAll('path, rect').forEach(el => {
                 el.setAttribute('stroke', strokeColor);
             });
@@ -418,10 +421,13 @@
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme === 'dark') {
             document.body.classList.add('dark');
+            document.documentElement.style.setProperty('--icon-stroke', '#e0e0e0');
             bottomIcon.querySelectorAll('path, rect').forEach(el => {
                 el.setAttribute('stroke', '#e0e0e0');
             });
             bottomIcon.setAttribute('aria-label', 'Switch to light mode');
+        } else {
+            document.documentElement.style.setProperty('--icon-stroke', '#333');
         }
 
         // Reset search state on load
@@ -542,7 +548,7 @@
 
         // Event listeners
         titleWrapper.addEventListener('touchstart', (e) => {
-            e.preventDefault(); // Prevent default touch behavior
+            e.preventDefault();
             toggleFullScreen();
         });
         magnifier.addEventListener('click', toggleSearch);
