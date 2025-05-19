@@ -205,6 +205,7 @@
             text-align: center;
             color: var(--error-color);
             margin-top: 20px;
+            font-size: 16px;
         }
 
         .slide-panel {
@@ -355,7 +356,7 @@
         </div>
     </div>
     <div class="song-list" id="song-list">
-        <!-- Song titles will be populated here -->
+        <p class="error-message">Loading songs, please wait...</p>
     </div>
     <div class="bottom-bar">
         <svg class="bottom-icon" id="bottom-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 125" aria-label="Switch to dark mode">
@@ -451,32 +452,37 @@
         searchInput.classList.remove('active');
         topTitle.classList.remove('hidden');
 
+        console.log('Starting fetch for canticos.txt');
         fetch('canticos.txt')
             .then(response => {
+                console.log('Fetch response received:', response.status, response.statusText);
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
                 return response.text();
             })
             .then(text => {
+                console.log('canticos.txt content received, length:', text.length);
                 if (!text.trim()) {
                     throw new Error('canticos.txt is empty');
                 }
                 processSongs(text);
             })
             .catch(error => {
-                console.error('Fetch Error:', error);
+                console.error('Fetch Error:', error.message);
                 songList.innerHTML = `
                     <p class="error-message">
                         Error loading songs: ${error.message}<br>
-                        1. Ensure canticos.txt is in the same directory as index.html.<br>
-                        2. Verify the file name (case-sensitive, no extra extensions).<br>
-                        3. Run the app through a local server (e.g., http-server, Live Server).<br>
-                        4. Check browser console for details.
+                        1. Ensure 'canticos.txt' is in the same directory as 'index.html'.<br>
+                        2. Verify the file name is exactly 'canticos.txt' (case-sensitive, no extra spaces or extensions).<br>
+                        3. Run the app through a local server (e.g., 'npx http-server', VS Code Live Server, or 'python -m http.server 8000').<br>
+                        4. Check browser console (Developer Tools > Console) for details.<br>
+                        5. Clear browser cache and try again.
                     </p>`;
             });
 
         function processSongs(text) {
+            console.log('Processing songs...');
             const lines = text.split('\n').map(line => line.trim());
             songs = [];
             songList.innerHTML = '';
@@ -485,7 +491,7 @@
             while (i < lines.length) {
                 if (lines[i] === '') {
                     i++;
-                   42                    continue;
+                    continue;
                 }
 
                 const title = lines[i];
@@ -509,12 +515,14 @@
                 songList.appendChild(songItem);
             }
 
+            console.log('Songs processed:', songs.length);
             if (songs.length === 0) {
-                songList.innerHTML = '<p class="error-message">No songs found in canticos.txt.</p>';
+                songList.innerHTML = '<p class="error-message">No songs found in canticos.txt. Ensure the file has valid song data (title, blank line, lyrics, blank line).</p>';
             }
         }
 
         function openSlidePanel(title, lyrics) {
+            console.log('Opening slide panel for:', title);
             songTitle.textContent = title;
             songLyrics.textContent = lyrics;
             slidePanel.classList.add('open');
@@ -523,6 +531,7 @@
         }
 
         function closeSlidePanel() {
+            console.log('Closing slide panel');
             slidePanel.classList.remove('open');
             overlay.classList.remove('active');
             document.body.style.overflow = '';
@@ -530,6 +539,7 @@
 
         function toggleSearch() {
             isSearchActive = !isSearchActive;
+            console.log('Toggling search:', isSearchActive);
             if (isSearchActive) {
                 topTitle.classList.add('hidden');
                 searchInput.classList.add('active');
@@ -543,6 +553,7 @@
         }
 
         function filterSongs(query) {
+            console.log('Filtering songs with query:', query);
             songList.innerHTML = '';
             const normalizedQuery = normalizeString(query);
             const filteredSongs = songs.filter(song => 
@@ -575,6 +586,7 @@
         bottomIcon.addEventListener('click', toggleTheme);
 
         document.addEventListener('fullscreenchange', () => {
+            console.log('Fullscreen changed:', !!document.fullscreenElement);
             if (!document.fullscreenElement) {
                 titleWrapper.setAttribute('aria-label', 'Enter full-screen');
             } else {
