@@ -376,7 +376,7 @@
     <div class="slide-panel" id="slide-panel">
         <button class="close-button" id="close-button">
             <svg viewBox="0 0 24 24">
-                <path d="M6 6 L18 18 M6 18 L18 6" fill="none" stroke="var(--text-color)" stroke-width="1"/>
+                <path d="M6 6 L18 18 M6 18 L18 6" fill="none" stroke="var(--text-color)" stroke-width="0.8"/>
             </svg>
         </button>
         <h2 id="song-title"></h2>
@@ -399,7 +399,6 @@
         let songs = [];
         let isSearchActive = false;
 
-        // Normalize string for search (remove diacritics)
         function normalizeString(str) {
             return str
                 .toLowerCase()
@@ -407,7 +406,6 @@
                 .replace(/[\u0300-\u036f]/g, '');
         }
 
-        // Full-screen toggle functionality
         function toggleFullScreen() {
             if (isSearchActive) return;
             if (!document.fullscreenElement) {
@@ -427,7 +425,6 @@
             }
         }
 
-        // Theme toggle functionality
         function toggleTheme() {
             const isDark = document.body.classList.toggle('dark');
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
@@ -439,7 +436,6 @@
             bottomIcon.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
         }
 
-        // Load saved theme
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme === 'dark') {
             document.body.classList.add('dark');
@@ -452,11 +448,9 @@
             document.documentElement.style.setProperty('--icon-stroke', '#333');
         }
 
-        // Reset search state on load
         searchInput.classList.remove('active');
         topTitle.classList.remove('hidden');
 
-        // Fetch canticos.txt
         fetch('canticos.txt')
             .then(response => {
                 if (!response.ok) {
@@ -569,7 +563,6 @@
             });
         }
 
-        // Event listeners
         titleWrapper.addEventListener('touchstart', (e) => {
             e.preventDefault();
             toggleFullScreen();
@@ -581,8 +574,7 @@
         overlay.addEventListener('click', closeSlidePanel);
         bottomIcon.addEventListener('click', toggleTheme);
 
-        // Update aria-label on fullscreen change
-        document.addEventListener('fullscreenchange', () => {
+        document.addEventListener('fullscreen professionalism', () => {
             if (!document.fullscreenElement) {
                 titleWrapper.setAttribute('aria-label', 'Enter full-screen');
             } else {
