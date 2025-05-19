@@ -257,6 +257,11 @@
             cursor: pointer;
             z-index: 1;
             display: block;
+            background: transparent;
+            border: none;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
         }
 
         .close-button svg {
@@ -371,7 +376,7 @@
     <div class="slide-panel" id="slide-panel">
         <button class="close-button" id="close-button">
             <svg viewBox="0 0 24 24">
-                <path d="M6 6 L18 18 M6 18 L18 6" fill="none" stroke="var(--text-color)" stroke-width="1.5"/>
+                <path d="M6 6 L18 18 M6 18 L18 6" fill="none" stroke="var(--text-color)" stroke-width="1"/>
             </svg>
         </button>
         <h2 id="song-title"></h2>
