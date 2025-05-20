@@ -16,12 +16,26 @@
             font-size: 3em;
             text-align: center;
             color: #333;
-            margin-top: 2rem; /* Adds top margin */
+            margin-top: 2rem;
             margin-bottom: 0;
+            cursor: pointer; /* Indicates the title is clickable/touchable */
         }
     </style>
 </head>
 <body>
-    <h1>Cánticos de Victoria</h1>
+    <h1 id="title">Cánticos de Victoria</h1>
+
+    <script>
+        const title = document.getElementById('title');
+        title.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.error(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        });
+    </script>
 </body>
 </html>
