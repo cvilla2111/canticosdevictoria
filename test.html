@@ -10,7 +10,7 @@
         body {
             margin: 0;
             padding: 0;
-            background-color: #f0f0f0; /* Light gray background */
+            background-color: #f0f0f0;
         }
         h1 {
             font-family: 'Chewy', cursive;
@@ -30,8 +30,8 @@
         const title = document.getElementById('title');
         title.addEventListener('click', () => {
             if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    console.error(`Error attempting to enable fullscreen: ${err.message}`);
+                document.documentElement.requestFullscreen({ navigationUI: "hide" }).catch(err => {
+                    console.error(`Error attempting to enable immersive mode: ${err.message}`);
                 });
             } else {
                 document.exitFullscreen();
