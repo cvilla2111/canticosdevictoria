@@ -65,14 +65,14 @@
             align-items: center;
             margin-left: 1rem;
             margin-top: 0;
-            background-color: #e0e0emdash;
+            background-color: #d8d8d8; /* Slightly darker for visibility */
             height: 46px;
             border-radius: 20px;
             padding: 0;
             width: calc(100% - 2rem);
             box-sizing: border-box;
             position: fixed;
-            top: 100px; /* Moved down to avoid h1 overlap */
+            top: 100px;
             z-index: 2;
         }
         .pill-container::before {
@@ -121,10 +121,10 @@
             color: #fff;
         }
         .song-list {
-            margin-top: 158px; /* Below fixed h1 (≈72px) + pill (46px) + spacing */
+            margin-top: 158px;
             margin-left: 1rem;
             margin-right: 1rem;
-            height: calc(100vh - 188px); /* Adjusted for new pill position */
+            height: calc(100vh - 188px);
             overflow-y: auto;
             font-family: 'Poppins', sans-serif;
             font-size: 14px;
