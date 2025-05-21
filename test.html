@@ -57,13 +57,12 @@
         .pill-container {
             display: flex;
             align-items: center;
-            gap: 1rem;
             margin-left: 1rem;
             margin-top: 1.5rem;
             background-color: #d3d3d3;
             height: 46px;
             border-radius: 20px;
-            padding: 0 1rem 0 0;
+            padding: 0; /* No padding to allow buttons to cover full width */
             width: calc(100% - 2rem);
             box-sizing: border-box;
             position: relative;
@@ -73,7 +72,7 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 120px; /* Matches button min-width */
+            width: calc(100% / 3); /* Matches button width */
             height: 46px;
             background-color: #584CD7;
             border-radius: 20px;
@@ -84,10 +83,10 @@
             transform: translateX(0); /* Button 1 position */
         }
         .pill-container.tab2-selected::before {
-            transform: translateX(136px); /* Button 2 (120px + 1rem gap) */
+            transform: translateX(100%); /* Button 2 (1/3 width) */
         }
         .pill-container.tab3-selected::before {
-            transform: translateX(272px); /* Button 3 (120px + 1rem + 120px + 1rem) */
+            transform: translateX(200%); /* Button 3 (2/3 width) */
         }
         .pill {
             background-color: transparent;
@@ -101,7 +100,7 @@
             color: #333;
             cursor: pointer;
             text-align: center;
-            min-width: 120px;
+            width: calc(100% / 3); /* Each button takes 1/3 of container */
             box-sizing: border-box;
             position: relative;
             z-index: 1;
