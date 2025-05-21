@@ -130,7 +130,10 @@
             color: #333;
         }
         .tab-content {
-            font-size: 16px;
+            font-size: 16px !important;
+        }
+        #tab1-content, #tab2-content, #tab3-content {
+            font-size: 16px !important;
         }
         .song-list .tab-content {
             display: none;
@@ -140,13 +143,14 @@
         }
         .song-list p {
             margin: 0;
-            padding: 8px 0;
+            padding: 6px 0;
             line-height: 24px;
+            box-sizing: content-box;
         }
         .song-icon {
             width: 40px;
             height: 40px;
-            vertical-align: middle;
+            vertical-align: text-bottom;
             margin-right: 12px;
         }
     </style>
