@@ -56,16 +56,19 @@
         }
         .pill-container {
             display: flex;
+            align-items: center; /* Vertically centers pills */
             gap: 0.5rem;
             margin-left: 1rem;
             margin-top: 0;
-            background-color: #d3d3d3; /* Matches pill background */
-            padding: 8px 1rem; /* Matches pill padding vertically, extends horizontally */
+            background-color: #d3d3d3;
+            height: 30px; /* Matches pill height (14px font + 8px top + 8px bottom ≈ 30px) */
+            border-radius: 20px; /* Matches pill border-radius */
+            padding: 0 1rem; /* Horizontal padding only */
             width: calc(100% - 2rem); /* Full viewport width minus left/right padding */
             box-sizing: border-box;
         }
         .pill {
-            background-color: #d3d3d3; /* Same as container for seamless look */
+            background-color: #d3d3d3;
             border: none;
             border-radius: 20px;
             padding: 8px 16px;
