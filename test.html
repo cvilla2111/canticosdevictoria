@@ -57,23 +57,23 @@
         .pill-container {
             display: flex;
             align-items: center; /* Vertically centers pills */
-            gap: 0.5rem;
+            gap: 1rem; /* Increased to move second button right */
             margin-left: 1rem;
-            margin-top: 0.5rem; /* Moved down slightly */
+            margin-top: 0.5rem;
             background-color: #d3d3d3;
-            height: 46px; /* Increased by 15% from 40px */
-            border-radius: 20px; /* Matches pill border-radius */
-            padding: 0 1rem; /* Horizontal padding only */
-            width: calc(100% - 2rem); /* Full viewport width minus left/right padding */
+            height: 46px;
+            border-radius: 20px;
+            padding: 0 1rem 0 0; /* Removed left padding for first button */
+            width: calc(100% - 2rem);
             box-sizing: border-box;
         }
         .pill {
             background-color: #d3d3d3;
             border: none;
             border-radius: 20px;
-            height: 46px; /* Increased by 15% from 40px */
-            padding: 0 16px; /* Horizontal padding only */
-            line-height: 46px; /* Centers text vertically */
+            height: 46px;
+            padding: 0 16px;
+            line-height: 46px;
             font-family: 'Poppins', sans-serif;
             font-size: 14px;
             color: #333;
@@ -82,8 +82,13 @@
             min-width: 80px;
             box-sizing: border-box;
         }
+        .pill:first-child {
+            min-width: 120px; /* Wider first button */
+            margin-left: 0; /* Aligns with container's left corner */
+        }
         .pill.selected {
-            background-color: #584CD7; /* Selected tab color */
+            background-color: #584CD7;
+            color: #fff; /* White font for selected tab */
         }
     </style>
 </head>
