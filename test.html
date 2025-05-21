@@ -21,6 +21,10 @@
             margin-bottom: 0;
             cursor: pointer;
             line-height: 1.2;
+            user-select: none; /* Prevents text selection */
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* IE/Edge */
         }
         h1 .first-line {
             font-size: 14px;
@@ -36,7 +40,7 @@
         }
         .icon {
             position: absolute;
-            top: 0rem; /* Moved to top edge for highest position */
+            top: 0rem;
             right: 1rem;
             width: 24px;
             height: 24px;
