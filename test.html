@@ -121,14 +121,20 @@
             color: #fff;
         }
         .song-list {
-            margin-top: 200px; /* Increased for more separation */
+            margin-top: 200px;
             margin-left: 1rem;
             margin-right: 1rem;
-            height: calc(100vh - 230px); /* Adjusted for new margin-top */
+            height: calc(100vh - 230px);
             overflow-y: auto;
             font-family: 'Poppins', sans-serif;
             font-size: 14px;
             color: #333;
+        }
+        .song-list .tab-content {
+            display: none;
+        }
+        .song-list .tab-content.active {
+            display: block;
         }
         .song-list p {
             margin: 0;
@@ -148,32 +154,40 @@
     <svg class="icon menu-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#1f1f1f">
         <path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"/>
     </svg>
-    <div class="pill-container tab1-selected">
-        <button class="pill selected" id="tab1">Todos</button>
-        <button class="pill" id="tab2">Mayores</button>
+    <div class="pill-container tab2-selected">
+        <button class="pill" id="tab1">Todos</button>
+        <button class="pill selected" id="tab2">Mayores</button>
         <button class="pill" id="tab3">Menores</button>
     </div>
     <div class="song-list">
-        <p>Praise - Elevation Worship</p>
-        <p>Faithfully - TobyMac</p>
-        <p>Nothin' Sweeter - TobyMac</p>
-        <p>Made For More - Josh Baldwin feat. Jenn Johnson</p>
-        <p>Counting My Blessings - Seph Schlueter</p>
-        <p>That's Who I Praise - Brandon Lake</p>
-        <p>Take It All Back - Tauren Wells, We The Kingdom & Davies</p>
-        <p>I Thank God - Housefires feat. JWLKRS Worship</p>
-        <p>Grave Robber - Crowder</p>
-        <p>Firm Foundation (He Won't) - Cody Carnes</p>
-        <p>Worship Through It - Tasha Layton feat. Chris Brown</p>
-        <p>Somebody Like Me - Caleb & John feat. CAIN</p>
-        <p>Don't Stop Praying - Matthew West</p>
-        <p>I Believe - Phil Wickham</p>
-        <p>God Be The Glory - We Are Messengers</p>
-        <p>These Days - Jeremy Camp</p>
-        <p>My God Can - Katy Nichole feat. Naomi Raine</p>
-        <p>Lead On Good Shepherd - Patrick Mayberry</p>
-        <p>Good Day - Forrest Frank</p>
-        <p>Strong - Anne Wilson</p>
+        <div id="tab1-content" class="tab-content">
+            <!-- Blank for Todos -->
+        </div>
+        <div id="tab2-content" class="tab-content active">
+            <p>Praise - Elevation Worship</p>
+            <p>Faithfully - TobyMac</p>
+            <p>Nothin' Sweeter - TobyMac</p>
+            <p>Made For More - Josh Baldwin feat. Jenn Johnson</p>
+            <p>Counting My Blessings - Seph Schlueter</p>
+            <p>That's Who I Praise - Brandon Lake</p>
+            <p>Take It All Back - Tauren Wells, We The Kingdom & Davies</p>
+            <p>I Thank God - Housefires feat. JWLKRS Worship</p>
+            <p>Grave Robber - Crowder</p>
+            <p>Firm Foundation (He Won't) - Cody Carnes</p>
+            <p>Worship Through It - Tasha Layton feat. Chris Brown</p>
+            <p>Somebody Like Me - Caleb & John feat. CAIN</p>
+            <p>Don't Stop Praying - Matthew West</p>
+            <p>I Believe - Phil Wickham</p>
+            <p>God Be The Glory - We Are Messengers</p>
+            <p>These Days - Jeremy Camp</p>
+            <p>My God Can - Katy Nichole feat. Naomi Raine</p>
+            <p>Lead On Good Shepherd - Patrick Mayberry</p>
+            <p>Good Day - Forrest Frank</p>
+            <p>Strong - Anne Wilson</p>
+        </div>
+        <div id="tab3-content" class="tab-content">
+            <!-- Blank for Menores -->
+        </div>
     </div>
 
     <script>
@@ -189,13 +203,18 @@
             }
         });
 
-        // Tab selection with sliding animation
+        // Tab selection with sliding animation and content switching
         const pillContainer = document.querySelector('.pill-container');
         const tabs = document.querySelectorAll('.pill');
+        const tabContents = document.querySelectorAll('.tab-content');
+
         tabs.forEach(tab => {
             tab.addEventListener('click', () => {
+                // Update button selection
                 tabs.forEach(t => t.classList.remove('selected'));
                 tab.classList.add('selected');
+
+                // Update pill container class for sliding animation
                 pillContainer.classList.remove('tab1-selected', 'tab2-selected', 'tab3-selected');
                 if (tab.id === 'tab1') {
                     pillContainer.classList.add('tab1-selected');
@@ -204,6 +223,10 @@
                 } else if (tab.id === 'tab3') {
                     pillContainer.classList.add('tab3-selected');
                 }
+
+                // Switch tab content
+                tabContents.forEach(content => content.classList.remove('active'));
+                document.getElementById(`${tab.id}-content`).classList.add('active');
             });
         });
     </script>
