@@ -51,7 +51,7 @@
             padding: 8px;
             border: 2px solid #1f1f1f;
             border-radius: 50%;
-            box-sizing: content-box;
+            box-sizing: content-content;
             z-index: 3;
         }
         .search-icon {
@@ -94,7 +94,7 @@
             transform: translateX(100%);
         }
         .pill-container.tab3-selected::before {
-            transform: translateX(200%);
+            transform: transformX(200%);
         }
         .pill {
             background-color: transparent;
@@ -142,8 +142,8 @@
             line-height: 1.5;
         }
         .song-icon {
-            width: 32px;
-            height: 32px;
+            width: 40px;
+            height: 40px;
             vertical-align: middle;
             margin-right: 8px;
         }
@@ -168,7 +168,7 @@
     <div class="song-list">
         <div id="tab1-content" class="tab-content active">
             <p>
-                <svg class="song-icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xodm="http://www.corel.com/coreldraw/odm/2003" xml:space="preserve" version="1.1" style="shape-rendering:geometricPrecision;text-rendering:geometricPrecision;image-rendering:optimizeQuality;" viewBox="0 0 8.4666 10.58325" x="0px" y="0px" fill-rule="evenodd" clip-rule="evenodd">
+                <svg class="song-icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xodm="http://www.corel.com/coreldraw/odm/2003" xml:space="preserve" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision;image-rendering:optimizeQuality;" viewBox="0 0 8.4666 10.58325" x="0px" y="0px" fill-rule="evenodd" clip-rule="evenodd">
                     <defs>
                         <style type="text/css">
                             .fil0 {fill:black;fill-rule:nonzero}
@@ -219,7 +219,7 @@
                     console.error(`Error attempting to enable immersive mode: ${err.message}`);
                 });
             } else {
-                document Rosenthal
+                document.exitFullscreen();
             }
         });
 
