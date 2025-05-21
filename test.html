@@ -59,9 +59,9 @@
             align-items: center; /* Vertically centers pills */
             gap: 0.5rem;
             margin-left: 1rem;
-            margin-top: 0;
+            margin-top: 0.5rem; /* Moved down slightly */
             background-color: #d3d3d3;
-            height: 40px; /* Increased by 25% from 32px */
+            height: 46px; /* Increased by 15% from 40px */
             border-radius: 20px; /* Matches pill border-radius */
             padding: 0 1rem; /* Horizontal padding only */
             width: calc(100% - 2rem); /* Full viewport width minus left/right padding */
@@ -71,9 +71,9 @@
             background-color: #d3d3d3;
             border: none;
             border-radius: 20px;
-            height: 40px; /* Increased by 25% from 32px */
+            height: 46px; /* Increased by 15% from 40px */
             padding: 0 16px; /* Horizontal padding only */
-            line-height: 40px; /* Centers text vertically */
+            line-height: 46px; /* Centers text vertically */
             font-family: 'Poppins', sans-serif;
             font-size: 14px;
             color: #333;
@@ -81,6 +81,9 @@
             text-align: center;
             min-width: 80px;
             box-sizing: border-box;
+        }
+        .pill.selected {
+            background-color: #584CD7; /* Selected tab color */
         }
     </style>
 </head>
@@ -96,11 +99,12 @@
         <path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"/>
     </svg>
     <div class="pill-container">
-        <button class="pill">Button 1</button>
-        <button class="pill">Button 2</button>
+        <button class="pill selected" id="tab1">Button 1</button>
+        <button class="pill" id="tab2">Button 2</button>
     </div>
 
     <script>
+        // Immersive mode for title click
         const title = document.getElementById('title');
         title.addEventListener('click', () => {
             if (!document.fullscreenElement) {
@@ -110,6 +114,15 @@
             } else {
                 document.exitFullscreen();
             }
+        });
+
+        // Tab selection logic
+        const tabs = document.querySelectorAll('.pill');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('selected')); // Remove selected from all
+                tab.classList.add('selected'); // Add selected to clicked tab
+            });
         });
     </script>
 </body>
