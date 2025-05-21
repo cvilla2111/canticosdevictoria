@@ -18,7 +18,7 @@
             text-align: left;
             margin-top: 2rem;
             margin-left: 1rem;
-            margin-bottom: 0;
+            margin-bottom: 1rem; /* Space for pills below */
             cursor: pointer;
             line-height: 1.2;
             user-select: none;
@@ -49,10 +49,28 @@
             box-sizing: content-box;
         }
         .search-icon {
-            right: 4.3rem; /* Moved 0.1rem to the right from 4.4rem */
+            right: 4.3rem;
         }
         .menu-icon {
             right: 1rem;
+        }
+        .pill-container {
+            display: flex;
+            gap: 0.5rem; /* Space between pills */
+            margin-left: 1rem; /* Aligns with h1 left margin */
+            margin-top: 0; /* Directly below h1 */
+        }
+        .pill {
+            background-color: #d3d3d3; /* Light gray for pill shape */
+            border: none;
+            border-radius: 20px; /* Pill shape */
+            padding: 8px 16px; /* Comfortable size */
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            color: #333;
+            cursor: pointer;
+            text-align: center;
+            min-width: 80px; /* Ensures consistent size */
         }
     </style>
 </head>
@@ -67,6 +85,10 @@
     <svg class="icon menu-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#1f1f1f">
         <path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"/>
     </svg>
+    <div class="pill-container">
+        <button class="pill">Button 1</button>
+        <button class="pill">Button 2</button>
+    </div>
 
     <script>
         const title = document.getElementById('title');
