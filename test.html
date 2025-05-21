@@ -11,7 +11,7 @@
             margin: 0;
             padding: 0;
             background-color: #f0f0f0;
-            position: relative; /* Allows absolute positioning of icon */
+            position: relative;
         }
         h1 {
             font-family: 'Poppins', sans-serif;
@@ -36,10 +36,14 @@
         }
         .icon {
             position: absolute;
-            top: 2rem; /* Matches h1 top margin for alignment */
-            right: 1rem; /* Margin from right edge */
+            top: 2.25rem; /* Aligns with top of h1, adjusted for circle centering */
+            right: 1rem;
             width: 24px;
             height: 24px;
+            padding: 8px; /* Space for circle border */
+            border: 2px solid #1f1f1f; /* Circle border, matches icon fill */
+            border-radius: 50%; /* Creates circular shape */
+            box-sizing: content-box; /* Ensures padding doesn’t affect icon size */
         }
     </style>
 </head>
