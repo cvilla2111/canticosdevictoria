@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#f0f0f0"> <!-- Matches body background color -->
+    <meta name="theme-color" content="#f0f0f0">
     <title>Cánticos de Victoria</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -16,15 +16,20 @@
         h1 {
             font-family: 'Poppins', sans-serif;
             text-align: left;
-            margin-top: 2rem;
-            margin-left: 1rem;
-            margin-bottom: 1rem;
+            margin: 0;
+            padding: 2rem 0 1rem 1rem;
             cursor: pointer;
             line-height: 1.2;
             user-select: none;
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #f0f0f0;
+            z-index: 3;
         }
         h1 .first-line {
             font-size: 14px;
@@ -39,14 +44,15 @@
             font-weight: 700;
         }
         .icon {
-            position: absolute;
-            top: 0rem;
+            position: fixed;
+            top: 1rem;
             width: 24px;
             height: 24px;
             padding: 8px;
             border: 2px solid #1f1f1f;
             border-radius: 50%;
             box-sizing: content-box;
+            z-index: 3;
         }
         .search-icon {
             right: 4.3rem;
@@ -58,14 +64,16 @@
             display: flex;
             align-items: center;
             margin-left: 1rem;
-            margin-top: 1.5rem;
-            background-color: #e0e0e0; /* Lighter pill background */
+            margin-top: 0;
+            background-color: #e0e0e0;
             height: 46px;
             border-radius: 20px;
             padding: 0;
             width: calc(100% - 2rem);
             box-sizing: border-box;
-            position: relative;
+            position: fixed;
+            top: 72px; /* Below h1 (approx. 2rem + 28px + 1rem) */
+            z-index: 2;
         }
         .pill-container::before {
             content: '';
@@ -89,7 +97,7 @@
             transform: translateX(200%);
         }
         .pill {
-            background-color: transparent; /* Shows pill-container's background */
+            background-color: transparent;
             border: none;
             border-radius: 20px;
             height: 46px;
@@ -97,7 +105,7 @@
             line-height: 46px;
             font-family: 'Poppins', sans-serif;
             font-size: 14px;
-            color: #666; /* Lighter font for unselected tabs */
+            color: #666;
             cursor: pointer;
             text-align: center;
             width: calc(100% / 3);
@@ -110,7 +118,22 @@
             margin-left: 0;
         }
         .pill.selected {
-            color: #fff; /* White font for selected tab */
+            color: #fff;
+        }
+        .song-list {
+            margin-top: 130px; /* Below fixed h1 (72px) + pill (46px) + extra spacing */
+            margin-left: 1rem;
+            margin-right: 1rem;
+            height: calc(100vh - 160px); /* Fits below fixed elements */
+            overflow-y: auto;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            color: #333;
+        }
+        .song-list p {
+            margin: 0;
+            padding: 8px 0;
+            line-height: 1.5;
         }
     </style>
 </head>
@@ -129,6 +152,28 @@
         <button class="pill selected" id="tab1">Todos</button>
         <button class="pill" id="tab2">Mayores</button>
         <button class="pill" id="tab3">Menores</button>
+    </div>
+    <div class="song-list">
+        <p>Praise - Elevation Worship</p>
+        <p>Faithfully - TobyMac</p>
+        <p>Nothin' Sweeter - TobyMac</p>
+        <p>Made For More - Josh Baldwin feat. Jenn Johnson</p>
+        <p>Counting My Blessings - Seph Schlueter</p>
+        <p>That's Who I Praise - Brandon Lake</p>
+        <p>Take It All Back - Tauren Wells, We The Kingdom & Davies</p>
+        <p>I Thank God - Housefires feat. JWLKRS Worship</p>
+        <p>Grave Robber - Crowder</p>
+        <p>Firm Foundation (He Won't) - Cody Carnes</p>
+        <p>Worship Through It - Tasha Layton feat. Chris Brown</p>
+        <p>Somebody Like Me - Caleb & John feat. CAIN</p>
+        <p>Don't Stop Praying - Matthew West</p>
+        <p>I Believe - Phil Wickham</p>
+        <p>God Be The Glory - We Are Messengers</p>
+        <p>These Days - Jeremy Camp</p>
+        <p>My God Can - Katy Nichole feat. Naomi Raine</p>
+        <p>Lead On Good Shepherd - Patrick Mayberry</p>
+        <p>Good Day - Forrest Frank</p>
+        <p>Strong - Anne Wilson</p>
     </div>
 
     <script>
@@ -149,8 +194,8 @@
         const tabs = document.querySelectorAll('.pill');
         tabs.forEach(tab => {
             tab.addEventListener('click', () => {
-                tabs.forEach(t => t.classList.remove('selected')); // Remove selected from all
-                tab.classList.add('selected'); // Add selected to clicked tab
+                tabs.forEach(t => t.classList.remove('selected'));
+                tab.classList.add('selected');
                 pillContainer.classList.remove('tab1-selected', 'tab2-selected', 'tab3-selected');
                 if (tab.id === 'tab1') {
                     pillContainer.classList.add('tab1-selected');
