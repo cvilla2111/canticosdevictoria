@@ -57,13 +57,13 @@
         .pill-container {
             display: flex;
             align-items: center; /* Vertically centers pills */
-            gap: 1rem; /* Increased to move second button right */
+            gap: 1rem; /* Prevents overlap */
             margin-left: 1rem;
             margin-top: 0.5rem;
             background-color: #d3d3d3;
             height: 46px;
             border-radius: 20px;
-            padding: 0 1rem 0 0; /* Removed left padding for first button */
+            padding: 0 1rem 0 0; /* No left padding for first button */
             width: calc(100% - 2rem);
             box-sizing: border-box;
         }
@@ -79,11 +79,10 @@
             color: #333;
             cursor: pointer;
             text-align: center;
-            min-width: 80px;
+            min-width: 120px; /* Both buttons now 120px */
             box-sizing: border-box;
         }
         .pill:first-child {
-            min-width: 120px; /* Wider first button */
             margin-left: 0; /* Aligns with container's left corner */
         }
         .pill.selected {
