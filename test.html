@@ -56,19 +56,35 @@
         }
         .pill-container {
             display: flex;
-            align-items: center; /* Vertically centers pills */
-            gap: 1rem; /* Prevents overlap */
+            align-items: center;
+            gap: 1rem;
             margin-left: 1rem;
-            margin-top: 1.5rem; /* Moved down further from 1rem */
+            margin-top: 1.5rem;
             background-color: #d3d3d3;
             height: 46px;
             border-radius: 20px;
-            padding: 0 1rem 0 0; /* No left padding for first button */
+            padding: 0 1rem 0 0;
             width: calc(100% - 2rem);
             box-sizing: border-box;
+            position: relative;
+        }
+        .pill-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 120px; /* Matches button min-width */
+            height: 46px;
+            background-color: #584CD7;
+            border-radius: 20px;
+            transition: transform 0.3s ease-in-out; /* Smooth slide animation */
+            z-index: 0;
+        }
+        .pill-container.tab2-selected::before {
+            transform: translateX(136px); /* Slides to Button 2 (120px + 1rem gap = 136px) */
         }
         .pill {
-            background-color: #d3d3d3;
+            background-color: transparent; /* Buttons transparent to show sliding highlight */
             border: none;
             border-radius: 20px;
             height: 46px;
@@ -79,14 +95,15 @@
             color: #333;
             cursor: pointer;
             text-align: center;
-            min-width: 120px; /* Both buttons 120px */
+            min-width: 120px;
             box-sizing: border-box;
+            position: relative;
+            z-index: 1; /* Above sliding highlight */
         }
         .pill:first-child {
             margin-left: 0; /* Aligns with container's left corner */
         }
         .pill.selected {
-            background-color: #584CD7;
             color: #fff; /* White font for selected tab */
         }
     </style>
@@ -102,7 +119,7 @@
     <svg class="icon menu-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#1f1f1f">
         <path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"/>
     </svg>
-    <div class="pill-container">
+    <div class="pill-container tab1-selected">
         <button class="pill selected" id="tab1">Button 1</button>
         <button class="pill" id="tab2">Button 2</button>
     </div>
@@ -120,12 +137,19 @@
             }
         });
 
-        // Tab selection logic
+        // Tab selection with sliding animation
+        const pillContainer = document.querySelector('.pill-container');
         const tabs = document.querySelectorAll('.pill');
         tabs.forEach(tab => {
             tab.addEventListener('click', () => {
                 tabs.forEach(t => t.classList.remove('selected')); // Remove selected from all
                 tab.classList.add('selected'); // Add selected to clicked tab
+                pillContainer.classList.remove('tab1-selected', 'tab2-selected');
+                if (tab.id === 'tab1') {
+                    pillContainer.classList.add('tab1-selected');
+                } else if (tab.id === 'tab2') {
+                    pillContainer.classList.add('tab2-selected');
+                }
             });
         });
     </script>
