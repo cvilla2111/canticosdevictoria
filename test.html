@@ -59,7 +59,7 @@
             align-items: center;
             margin-left: 1rem;
             margin-top: 1.5rem;
-            background-color: #d3d3d3;
+            background-color: #e0e0e0; /* Lighter pill background */
             height: 46px;
             border-radius: 20px;
             padding: 0;
@@ -89,7 +89,7 @@
             transform: translateX(200%);
         }
         .pill {
-            background-color: transparent;
+            background-color: transparent; /* Shows pill-container's background */
             border: none;
             border-radius: 20px;
             height: 46px;
@@ -97,20 +97,20 @@
             line-height: 46px;
             font-family: 'Poppins', sans-serif;
             font-size: 14px;
-            color: #333;
+            color: #666; /* Lighter font for unselected tabs */
             cursor: pointer;
             text-align: center;
             width: calc(100% / 3);
             box-sizing: border-box;
             position: relative;
             z-index: 1;
-            -webkit-tap-highlight-color: transparent; /* Disables blue touch highlight */
+            -webkit-tap-highlight-color: transparent;
         }
         .pill:first-child {
             margin-left: 0;
         }
         .pill.selected {
-            color: #fff;
+            color: #fff; /* White font for selected tab */
         }
     </style>
 </head>
