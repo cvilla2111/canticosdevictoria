@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#f0f0f0"> <!-- Matches body background color -->
     <title>Cánticos de Victoria</title>
-    <link href="https://fonts.googleapis.com/css2?family=Chewy&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
@@ -13,18 +13,31 @@
             background-color: #f0f0f0;
         }
         h1 {
-            font-family: 'Chewy', cursive;
-            font-size: 2em;
-            text-align: center;
-            color: #333;
+            font-family: 'Poppins', sans-serif;
+            text-align: left;
             margin-top: 2rem;
+            margin-left: 1rem; /* Adds left margin for left alignment */
             margin-bottom: 0;
             cursor: pointer;
+            line-height: 1.2; /* Tightens line spacing for better appearance */
+        }
+        h1 .first-line {
+            font-size: 14px;
+            color: gray;
+            display: block; /* Ensures first line is on its own line */
+        }
+        h1 .second-line {
+            font-size: 28px;
+            color: black;
+            display: block; /* Ensures second line is on its own line */
         }
     </style>
 </head>
 <body>
-    <h1 id="title">Cánticos de Victoria@</h1>
+    <h1 id="title">
+        <span class="first-line">Cánticos de</span>
+        <span class="second-line">Victoria</span>
+    </h1>
 
     <script>
         const title = document.getElementById('title');
