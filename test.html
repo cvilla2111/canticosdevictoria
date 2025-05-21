@@ -80,11 +80,17 @@
             transition: transform 0.3s ease-in-out; /* Smooth slide animation */
             z-index: 0;
         }
+        .pill-container.tab1-selected::before {
+            transform: translateX(0); /* Button 1 position */
+        }
         .pill-container.tab2-selected::before {
-            transform: translateX(136px); /* Slides to Button 2 (120px + 1rem gap = 136px) */
+            transform: translateX(136px); /* Button 2 (120px + 1rem gap) */
+        }
+        .pill-container.tab3-selected::before {
+            transform: translateX(272px); /* Button 3 (120px + 1rem + 120px + 1rem) */
         }
         .pill {
-            background-color: transparent; /* Buttons transparent to show sliding highlight */
+            background-color: transparent;
             border: none;
             border-radius: 20px;
             height: 46px;
@@ -98,7 +104,7 @@
             min-width: 120px;
             box-sizing: border-box;
             position: relative;
-            z-index: 1; /* Above sliding highlight */
+            z-index: 1;
         }
         .pill:first-child {
             margin-left: 0; /* Aligns with container's left corner */
@@ -120,8 +126,9 @@
         <path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"/>
     </svg>
     <div class="pill-container tab1-selected">
-        <button class="pill selected" id="tab1">Button 1</button>
-        <button class="pill" id="tab2">Button 2</button>
+        <button class="pill selected" id="tab1">Todos</button>
+        <button class="pill" id="tab2">Mayores</button>
+        <button class="pill" id="tab3">Menores</button>
     </div>
 
     <script>
@@ -144,11 +151,13 @@
             tab.addEventListener('click', () => {
                 tabs.forEach(t => t.classList.remove('selected')); // Remove selected from all
                 tab.classList.add('selected'); // Add selected to clicked tab
-                pillContainer.classList.remove('tab1-selected', 'tab2-selected');
+                pillContainer.classList.remove('tab1-selected', 'tab2-selected', 'tab3-selected');
                 if (tab.id === 'tab1') {
                     pillContainer.classList.add('tab1-selected');
                 } else if (tab.id === 'tab2') {
                     pillContainer.classList.add('tab2-selected');
+                } else if (tab.id === 'tab3') {
+                    pillContainer.classList.add('tab3-selected');
                 }
             });
         });
