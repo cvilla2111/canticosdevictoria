@@ -62,7 +62,7 @@
             background-color: #d3d3d3;
             height: 46px;
             border-radius: 20px;
-            padding: 0; /* No padding to allow buttons to cover full width */
+            padding: 0;
             width: calc(100% - 2rem);
             box-sizing: border-box;
             position: relative;
@@ -72,21 +72,21 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: calc(100% / 3); /* Matches button width */
+            width: calc(100% / 3);
             height: 46px;
             background-color: #584CD7;
             border-radius: 20px;
-            transition: transform 0.3s ease-in-out; /* Smooth slide animation */
+            transition: transform 0.3s ease-in-out;
             z-index: 0;
         }
         .pill-container.tab1-selected::before {
-            transform: translateX(0); /* Button 1 position */
+            transform: translateX(0);
         }
         .pill-container.tab2-selected::before {
-            transform: translateX(100%); /* Button 2 (1/3 width) */
+            transform: translateX(100%);
         }
         .pill-container.tab3-selected::before {
-            transform: translateX(200%); /* Button 3 (2/3 width) */
+            transform: translateX(200%);
         }
         .pill {
             background-color: transparent;
@@ -100,16 +100,17 @@
             color: #333;
             cursor: pointer;
             text-align: center;
-            width: calc(100% / 3); /* Each button takes 1/3 of container */
+            width: calc(100% / 3);
             box-sizing: border-box;
             position: relative;
             z-index: 1;
+            -webkit-tap-highlight-color: transparent; /* Disables blue touch highlight */
         }
         .pill:first-child {
-            margin-left: 0; /* Aligns with container's left corner */
+            margin-left: 0;
         }
         .pill.selected {
-            color: #fff; /* White font for selected tab */
+            color: #fff;
         }
     </style>
 </head>
