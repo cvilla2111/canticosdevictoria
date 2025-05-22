@@ -34,7 +34,7 @@
         }
         h1 .first-line {
             font-size: 14px;
-.monaco-editor { font-size: 16px !important; }            color: gray;
+            color: gray;
             display: block;
             font-weight: 400;
         }
@@ -253,16 +253,30 @@
 
             const title = document.getElementById('title');
             title.addEventListener('click', () => {
-                console.log('Attempting to enter fullscreen');
-                const elem = document.documentElement;
-                if (elem.requestFullscreen) {
-                    elem.requestFullscreen().catch(err => console.error('Fullscreen error:', err));
-                } else if (elem.webkitRequestFullscreen) {
-                    elem.webkitRequestFullscreen().catch(err => console.error('Webkit fullscreen error:', err));
-                } else if (elem.msRequestFullscreen) {
-                    elem.msRequestFullscreen().catch(err => console.error('MS fullscreen error:', err));
+                console.log('Title clicked, toggling fullscreen');
+                if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
+                    console.log('Attempting to enter fullscreen');
+                    const elem = document.documentElement;
+                    if (elem.requestFullscreen) {
+                        elem.requestFullscreen().catch(err => console.error('Fullscreen error:', err));
+                    } else if (elem.webkitRequestFullscreen) {
+                        elem.webkitRequestFullscreen().catch(err => console.error('Webkit fullscreen error:', err));
+                    } else if (elem.msRequestFullscreen) {
+                        elem.msRequestFullscreen().catch(err => console.error('MS fullscreen error:', err));
+                    } else {
+                        console.warn('Fullscreen API not supported');
+                    }
                 } else {
-                    console.warn('Fullscreen API not supported');
+                    console.log('Attempting to exit fullscreen');
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen().catch(err => console.error('Exit fullscreen error:', err));
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen().catch(err => console.error('Webkit exit fullscreen error:', err));
+                    } else if (document.msExitFullscreen) {
+                        document.msExitFullscreen().catch(err => console.error('MS exit fullscreen error:', err));
+                    } else {
+                        console.warn('Exit fullscreen API not supported');
+                    }
                 }
             });
         });
