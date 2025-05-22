@@ -5,8 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#f0f0f0">
   <title>Cánticos de Victoria</title>
-  <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <!-- Inline manifest for PWA -->
+  <script type="application/json" id="manifest">
+    {
+      "name": "Cánticos de Victoria",
+      "short_name": "Cánticos",
+      "description": "A Progressive Web App for browsing worship songs",
+      "start_url": "/",
+      "display": "standalone",
+      "theme_color": "#f0f0f0",
+      "background_color": "#f0f0f0",
+      "icons": [
+        {
+          "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiI+PHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIGZpbGw9IiNmMGYwZjAiLz48cGF0aCBkPSJNMjU2IDY0Yy04OCAwLTE2MCA3Mi0xNjAgMTYwbDc0IDE2MCAxNjAtNzIgMTYwLTE2MFMzNDQgNjQgMjU2IDY0em0wIDI4OGMtNzAgMC0xMjgtNTgtMTI4LTEyOHM1OC0xMjggMTI4LTEyOCAxMjggNTggMTI4IDEyOC01OCAxMjgtMTI4IDEyOHoiIGZpbGw9IiMxZjFmMWYiLz48cGF0aCBkPSJNMjU2IDEyOHYxOTJtNjQtNjRIMTkyIiBzdHJva2U9IiMxZjFmMWYiIHN0cm9rZS13aWR0aD0iMzIiLz48L3N2Zz4=",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        },
+        {
+          "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiI+PHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIGZpbGw9IiNmMGYwZjAiLz48cGF0aCBkPSJNMjU2IDY0Yy04OCAwLTE2MCA3Mi0xNjAgMTYwbDc0IDE2MCAxNjAtNzIgMTYwLTE2MFMzNDQgNjQgMjU2IDY0em0wIDI4OGMtNzAgMC0xMjgtNTgtMTI4LTEyOHM1OC0xMjggMTI4LTEyOCAxMjggNTggMTI4IDEyOC01OCAxMjgtMTI4IDEyOHoiIGZpbGw9IiMxZjFmMWYiLz48cGF0aCBkPSJNMjU2IDEyOHYxOTJtNjQtNjRIMTkyIiBzdHJva2U9IiMxZjFmMWYiIHN0cm9rZS13aWR0aD0iMzIiLz48L3N2Zz4=",
+          "sizes": "512x512",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  </script>
+  <!-- Apple touch icon for iOS -->
+  <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiI+PHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIGZpbGw9IiNmMGYwZjAiLz48cGF0aCBkPSJNMjU2IDY0Yy04OCAwLTE2MCA3Mi0xNjAgMTYwbDc0IDE2MCAxNjAtNzIgMTYwLTE2MFMzNDQgNjQgMjU2IDY0em0wIDI4OGMtNzAgMC0xMjgtNTgtMTI4LTEyOHM1OC0xMjggMTI4LTEyOCAxMjggNTggMTI4IDEyOC01OCAxMjgtMTI4IDEyOHoiIGZpbGw9IiMxZjFmMWYiLz48cGF0aCBkPSJNMjU2IDEyOHYxOTJtNjQtNjRIMTkyIiBzdHJva2U9IiMxZjFmMWYiIHN0cm9rZS13aWR0aD0iMzIiLz48L3N2Zz4=">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
   <style>
     * {
@@ -357,11 +381,67 @@
     </div>
   </div>
 
+  <!-- Inline service worker for PWA -->
+  <script id="service-worker">
+    // Service Worker for Cánticos de Victoria PWA
+    const CACHE_NAME = 'canticos-victoria-v1';
+    const ASSETS_TO_CACHE = [
+      '/',
+      'https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap'
+    ];
+
+    // Install event: Cache essential assets
+    self.addEventListener('install', event => {
+      event.waitUntil(
+        caches.open(CACHE_NAME).then(cache => {
+          console.log('Caching assets');
+          return cache.addAll(ASSETS_TO_CACHE);
+        })
+      );
+    });
+
+    // Activate event: Clean up old caches
+    self.addEventListener('activate', event => {
+      event.waitUntil(
+        caches.keys().then(cacheNames => {
+          return Promise.all(
+            cacheNames
+              .filter(name => name !== CACHE_NAME)
+              .map(name => caches.delete(name))
+          );
+        })
+      );
+    });
+
+    // Fetch event: Serve cached assets or fetch from network
+    self.addEventListener('fetch', event => {
+      event.respondWith(
+        caches.match(event.request).then(response => {
+          return response || fetch(event.request).then(fetchResponse => {
+            if (event.request.method === 'GET') {
+              return caches.open(CACHE_NAME).then(cache => {
+                cache.put(event.request, fetchResponse.clone());
+                return fetchResponse;
+              });
+            }
+            return fetchResponse;
+          });
+        }).catch(() => {
+          // Fallback to cached root for offline
+          return caches.match('/');
+        })
+      );
+    });
+  </script>
+
   <script>
-    // Register service worker for PWA
+    // Register inline service worker using Blob
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
+        const swCode = document.getElementById('service-worker').textContent;
+        const blob = new Blob([swCode], { type: 'application/javascript' });
+        const swUrl = URL.createObjectURL(blob);
+        navigator.serviceWorker.register(swUrl)
           .then(registration => {
             console.log('Service Worker registered with scope:', registration.scope);
           })
