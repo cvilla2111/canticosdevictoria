@@ -49,14 +49,17 @@
 
     /* Icons */
     .icon {
+      background-color: #fff; /* Temporary for debugging */
       border: 2px solid #1f1f1f;
       border-radius: 50%;
+      box-sizing: content-box;
+      display: block;
       height: 24px;
       padding: 8px;
       position: fixed;
       top: 1rem;
       width: 24px;
-      z-index: 3;
+      z-index: 4; /* Above h1 (z-index: 3) */
     }
 
     .search-icon {
@@ -174,7 +177,7 @@
 <body>
   <h1 id="title">
     <span class="first-line">Cánticos de</span>
-    <span class="second-line">Victoria.</span>
+    <span class="second-line">Victoria</span>
   </h1>
 
   <svg class="icon search-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#1f1f1f">
