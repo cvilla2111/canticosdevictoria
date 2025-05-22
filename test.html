@@ -133,27 +133,30 @@
         .tab-content.active {
             display: block;
         }
-        .song-list p {
-            margin: 0;
+        .song-item {
+            display: flex;
+            align-items: center;
             padding: 8px 0;
-            font-size: 13px !important;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 400;
             line-height: 1.5;
             box-sizing: border-box;
-            letter-spacing: normal;
         }
         .song-icon {
             font-size: 40px;
             line-height: 40px;
             width: 40px;
             height: 40px;
-            vertical-align: middle;
             margin-right: 10px;
             display: inline-block;
             color: black;
             text-align: center;
             font-variation-settings: 'wght' 200;
+        }
+        .song-text {
+            font-size: 13px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+            color: #333;
+            flex: 1;
         }
     </style>
 </head>
@@ -175,48 +178,48 @@
     </div>
     <div class="song-list">
         <div id="tab1-content" class="tab-content active">
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>Praise - Elevation Worship</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>Faithfully - TobyMac</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>Nothin' Sweeter - TobyMac</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>Made For More - Josh Baldwin feat. Jenn Johnson</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>Counting My Blessings - Seph Schlueter</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>That's Who I Praise - Brandon Lake</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>Take It All Back - Tauren Wells, We The Kingdom & Davies</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>I Thank God - Housefires feat. JWLKRS Worship</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>Holy Forever - Chris Tomlin</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>Jesus Does - We The Kingdom</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>Jesus Paid It All - Passion feat. Fernando Ortega</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>Goodness of God - Bethel Music feat. Jenn Johnson</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>Build My Life - Housefires</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>Graves Into Gardens - Elevation Worship feat. Brandon Lake</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>What A Beautiful Name - Hillsong Worship</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>Way Maker - Leeland</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>Living Hope - Phil Wickham</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>Reckless Love - Cory Asbury</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>Great Are You Lord - All Sons & Daughters</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>King of Kings - Hillsong Worship</p>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Praise - Elevation Worship</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Faithfully - TobyMac</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Nothin' Sweeter - TobyMac</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Made For More - Josh Baldwin feat. Jenn Johnson</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Counting My Blessings - Seph Schlueter</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">That's Who I Praise - Brandon Lake</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Take It All Back - Tauren Wells, We The Kingdom & Davies</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">I Thank God - Housefires feat. JWLKRS Worship</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Holy Forever - Chris Tomlin</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Jesus Does - We The Kingdom</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Jesus Paid It All - Passion feat. Fernando Ortega</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Goodness of God - Bethel Music feat. Jenn Johnson</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Build My Life - Housefires</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Graves Into Gardens - Elevation Worship feat. Brandon Lake</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">What A Beautiful Name - Hillsong Worship</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Way Maker - Leeland</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Living Hope - Phil Wickham</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Reckless Love - Cory Asbury</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Great Are You Lord - All Sons & Daughters</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">King of Kings - Hillsong Worship</span></div>
         </div>
         <div id="tab2-content" class="tab-content">
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>Praise - Elevation Worship</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>Faithfully - TobyMac</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>Nothin' Sweeter - TobyMac</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>Made For More - Josh Baldwin feat. Jenn Johnson</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>Counting My Blessings - Seph Schlueter</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>That's Who I Praise - Brandon Lake</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>Take It All Back - Tauren Wells, We The Kingdom & Davies</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>I Thank God - Housefires feat. JWLKRS Worship</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>Holy Forever - Chris Tomlin</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>Jesus Does - We The Kingdom</p>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Praise - Elevation Worship</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Faithfully - TobyMac</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Nothin' Sweeter - TobyMac</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Made For More - Josh Baldwin feat. Jenn Johnson</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Counting My Blessings - Seph Schlueter</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">That's Who I Praise - Brandon Lake</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Take It All Back - Tauren Wells, We The Kingdom & Davies</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">I Thank God - Housefires feat. JWLKRS Worship</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Holy Forever - Chris Tomlin</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Jesus Does - We The Kingdom</span></div>
         </div>
         <div id="tab3-content" class="tab-content">
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>Jesus Paid It All - Passion feat. Fernando Ortega</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>Goodness of God - Bethel Music feat. Jenn Johnson</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>Build My Life - Housefires</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>Graves Into Gardens - Elevation Worship feat. Brandon Lake</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>What A Beautiful Name - Hillsong Worship</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>Way Maker - Leeland</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>Living Hope - Phil Wickham</p>
-            <p><span class="song-icon material-symbols-outlined">play_circle</span>Reckless Love - Cory Asbury</p>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Jesus Paid It All - Passion feat. Fernando Ortega</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Goodness of God - Bethel Music feat. Jenn Johnson</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Build My Life - Housefires</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Graves Into Gardens - Elevation Worship feat. Brandon Lake</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">What A Beautiful Name - Hillsong Worship</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Way Maker - Leeland</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Living Hope - Phil Wickham</span></div>
+            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Reckless Love - Cory Asbury</span></div>
         </div>
     </div>
     <script>
