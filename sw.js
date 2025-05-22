@@ -2,7 +2,7 @@
 const CACHE_NAME = 'canticos-victoria-v1';
 const ASSETS_TO_CACHE = [
   '/',
-  '/test.html',
+  'test.html',
   'https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap',
   '/icons/icon-192.png',
   '/icons/icon-512.png'
