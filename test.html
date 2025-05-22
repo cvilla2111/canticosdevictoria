@@ -1,285 +1,426 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#f0f0f0">
-    <title>Cánticos de Victoria</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=play_circle" />
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
-            position: relative;
-        }
-        h1 {
-            font-family: 'Poppins', sans-serif;
-            text-align: left;
-            margin: 0;
-            padding: 2rem 0 1rem 1rem;
-            cursor: pointer;
-            line-height: 1.2;
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background-color: #f0f0f0;
-            z-index: 3;
-        }
-        h1 .first-line {
-            font-size: 14px;
-            color: gray;
-            display: block;
-            font-weight: 400;
-        }
-        h1 .second-line {
-            font-size: 28px;
-            color: black;
-            display: block;
-            font-weight: 700;
-        }
-        .icon {
-            position: fixed;
-            top: 1rem;
-            width: 24px;
-            height: 24px;
-            padding: 8px;
-            border: 2px solid #1f1f1f;
-            border-radius: 50%;
-            box-sizing: content-box;
-            z-index: 3;
-        }
-        .search-icon {
-            right: 4.3rem;
-        }
-        .menu-icon {
-            right: 1rem;
-        }
-        .pill-container {
-            display: flex;
-            align-items: center;
-            margin-left: 1rem;
-            margin-top: 0;
-            background-color: #e0e0e0;
-            height: 46px;
-            border-radius: 20px;
-            padding: 0;
-            width: calc(100% - 2rem);
-            box-sizing: border-box;
-            position: fixed;
-            top: 100px;
-            z-index: 2;
-        }
-        .pill-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: calc(100% / 3);
-            height: 46px;
-            background-color: #584CD7;
-            border-radius: 20px;
-            transition: transform 0.3s ease-in-out;
-            z-index: 0;
-        }
-        .pill-container.tab1-selected::before {
-            transform: translateX(0);
-        }
-        .pill-container.tab2-selected::before {
-            transform: translateX(100%);
-        }
-        .pill-container.tab3-selected::before {
-            transform: translateX(200%);
-        }
-        .pill {
-            background-color: transparent;
-            border: none;
-            border-radius: 20px;
-            height: 46px;
-            padding: 0 16px;
-            line-height: 46px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 14px;
-            color: #666;
-            cursor: pointer;
-            text-align: center;
-            width: calc(100% / 3);
-            box-sizing: border-box;
-            position: relative;
-            z-index: 1;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .pill.selected {
-            color: #fff;
-        }
-        .song-list {
-            margin-top: 200px;
-            margin-left: 1rem;
-            margin-right: 1rem;
-            height: calc(100vh - 230px);
-            overflow-y: auto;
-            font-family: 'Poppins', sans-serif;
-            color: #333;
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        .song-item {
-            display: flex;
-            align-items: center;
-            padding: 8px 0;
-            line-height: 1.5;
-            box-sizing: border-box;
-        }
-        .song-icon {
-            font-size: 44px;
-            line-height: 44px;
-            width: 44px;
-            height: 44px;
-            margin-right: 10px;
-            display: inline-block;
-            color: black;
-            text-align: center;
-            font-variation-settings: 'wght' 200;
-        }
-        .song-text {
-            font-size: 16px;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 400;
-            color: #333;
-            flex: 1;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f0f0f0">
+  <title>Cánticos de Victoria</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #f0f0f0;
+      font-family: 'Poppins', sans-serif;
+      position: relative;
+    }
+
+    /* Header */
+    h1 {
+      background-color: #f0f0f0;
+      cursor: pointer;
+      left: 0;
+      line-height: 1.2;
+      padding: 2rem 0 1rem 1rem;
+      position: fixed;
+      top: 0;
+      user-select: none;
+      width: 100%;
+      z-index: 3;
+    }
+
+    h1 .first-line {
+      color: gray;
+      display: block;
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    h1 .second-line {
+      color: black;
+      display: block;
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    /* Icons */
+    .icon {
+      border: 2px solid #1f1f1f;
+      border-radius: 50%;
+      height: 24px;
+      padding: 8px;
+      position: fixed;
+      top: 1rem;
+      width: 24px;
+      z-index: 3;
+    }
+
+    .search-icon {
+      right: 4.3rem;
+    }
+
+    .menu-icon {
+      right: 1rem;
+    }
+
+    /* Tabs */
+    .pill-container {
+      background-color: #e0e0e0;
+      border-radius: 20px;
+      display: flex;
+      height: 46px;
+      left: 1rem;
+      position: fixed;
+      top: 100px;
+      width: calc(100% - 2rem);
+      z-index: 2;
+    }
+
+    .pill-container::before {
+      background-color: #584cd7;
+      border-radius: 20px;
+      content: '';
+      height: 46px;
+      left: 0;
+      position: absolute;
+      top: 0;
+      transition: transform 0.3s ease-in-out;
+      width: calc(100% / 3);
+      z-index: 0;
+    }
+
+    .pill-container.tab1-selected::before {
+      transform: translateX(0);
+    }
+
+    .pill-container.tab2-selected::before {
+      transform: translateX(100%);
+    }
+
+    .pill-container.tab3-selected::before {
+      transform: translateX(200%);
+    }
+
+    .pill {
+      background-color: transparent;
+      border: none;
+      border-radius: 20px;
+      color: #666;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      height: 46px;
+      line-height: 46px;
+      padding: 0 16px;
+      position: relative;
+      text-align: center;
+      width: calc(100% / 3);
+      z-index: 1;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .pill.selected {
+      color: #fff;
+    }
+
+    /* Song List */
+    .song-list {
+      color: #333;
+      height: calc(100vh - 230px);
+      margin: 200px 1rem 0;
+      overflow-y: auto;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .song-item {
+      align-items: center;
+      display: flex;
+      line-height: 1.5;
+      padding: 8px 0;
+    }
+
+    .song-icon {
+      color: black;
+      display: inline-block;
+      font-size: 44px;
+      font-variation-settings: 'wght' 200;
+      height: 44px;
+      line-height: 44px;
+      margin-right: 10px;
+      text-align: center;
+      width: 44px;
+    }
+
+    .song-text {
+      color: #333;
+      flex: 1;
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      font-weight: 400;
+    }
+  </style>
 </head>
 <body>
-    <h1 id="title">
-        <span class="first-line">Cánticos de</span>
-        <span class="second-line">Victoria</span>
-    </h1>
-    <svg class="icon search-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#1f1f1f">
-        <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/>
-    </svg>
-    <svg class="icon menu-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#1f1f1f">
-        <path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"/>
-    </svg>
-    <div class="pill-container tab1-selected">
-        <button class="pill selected" id="tab1">Todos</button>
-        <button class="pill" id="tab2">Mayores</button>
-        <button class="pill" id="tab3">Menores</button>
+  <h1 id="title">
+    <span class="first-line">Cánticos de</span>
+    <span class="second-line">Victoria.</span>
+  </h1>
+
+  <svg class="icon search-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#1f1f1f">
+    <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/>
+  </svg>
+  <svg class="icon menu-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#1f1f1f">
+    <path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"/>
+  </svg>
+
+  <div class="pill-container tab1-selected">
+    <button class="pill selected" id="tab1">Todos</button>
+    <button class="pill" id="tab2">Mayores</button>
+    <button class="pill" id="tab3">Menores</button>
+  </div>
+
+  <div class="song-list">
+    <div id="tab1-content" class="tab-content active">
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Praise - Elevation Worship</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Faithfully - TobyMac</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Nothin' Sweeter - TobyMac</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Made For More - Josh Baldwin feat. Jenn Johnson</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Counting My Blessings - Seph Schlueter</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">That's Who I Praise - Brandon Lake</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Take It All Back - Tauren Wells, We The Kingdom & Davies</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">I Thank God - Housefires feat. JWLKRS Worship</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Holy Forever - Chris Tomlin</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Jesus Does - We The Kingdom</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Jesus Paid It All - Passion feat. Fernando Ortega</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Goodness of God - Bethel Music feat. Jenn Johnson</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Build My Life - Housefires</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Graves Into Gardens - Elevation Worship feat. Brandon Lake</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">What A Beautiful Name - Hillsong Worship</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Way Maker - Leeland</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Living Hope - Phil Wickham</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Reckless Love - Cory Asbury</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Great Are You Lord - All Sons & Daughters</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">King of Kings - Hillsong Worship</span>
+      </div>
     </div>
-    <div class="song-list">
-        <div id="tab1-content" class="tab-content active">
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Praise - Elevation Worship</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Faithfully - TobyMac</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Nothin' Sweeter - TobyMac</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Made For More - Josh Baldwin feat. Jenn Johnson</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Counting My Blessings - Seph Schlueter</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">That's Who I Praise - Brandon Lake</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Take It All Back - Tauren Wells, We The Kingdom & Davies</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">I Thank God - Housefires feat. JWLKRS Worship</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Holy Forever - Chris Tomlin</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Jesus Does - We The Kingdom</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Jesus Paid It All - Passion feat. Fernando Ortega</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Goodness of God - Bethel Music feat. Jenn Johnson</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Build My Life - Housefires</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Graves Into Gardens - Elevation Worship feat. Brandon Lake</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">What A Beautiful Name - Hillsong Worship</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Way Maker - Leeland</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Living Hope - Phil Wickham</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Reckless Love - Cory Asbury</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Great Are You Lord - All Sons & Daughters</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">King of Kings - Hillsong Worship</span></div>
-        </div>
-        <div id="tab2-content" class="tab-content">
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Praise - Elevation Worship</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Faithfully - TobyMac</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Nothin' Sweeter - TobyMac</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Made For More - Josh Baldwin feat. Jenn Johnson</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Counting My Blessings - Seph Schlueter</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">That's Who I Praise - Brandon Lake</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Take It All Back - Tauren Wells, We The Kingdom & Davies</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">I Thank God - Housefires feat. JWLKRS Worship</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Holy Forever - Chris Tomlin</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Jesus Does - We The Kingdom</span></div>
-        </div>
-        <div id="tab3-content" class="tab-content">
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Jesus Paid It All - Passion feat. Fernando Ortega</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Goodness of God - Bethel Music feat. Jenn Johnson</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Build My Life - Housefires</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Graves Into Gardens - Elevation Worship feat. Brandon Lake</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">What A Beautiful Name - Hillsong Worship</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Way Maker - Leeland</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Living Hope - Phil Wickham</span></div>
-            <div class="song-item"><span class="song-icon material-symbols-outlined">play_circle</span><span class="song-text">Reckless Love - Cory Asbury</span></div>
-        </div>
+
+    <div id="tab2-content" class="tab-content">
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Praise - Elevation Worship</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Faithfully - TobyMac</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Nothin' Sweeter - TobyMac</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Made For More - Josh Baldwin feat. Jenn Johnson</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Counting My Blessings - Seph Schlueter</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">That's Who I Praise - Brandon Lake</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Take It All Back - Tauren Wells, We The Kingdom & Davies</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">I Thank God - Housefires feat. JWLKRS Worship</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Holy Forever - Chris Tomlin</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Jesus Does - We The Kingdom</span>
+      </div>
     </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const tabs = [
-                { button: document.getElementById('tab1'), content: document.getElementById('tab1-content'), class: 'tab1-selected' },
-                { button: document.getElementById('tab2'), content: document.getElementById('tab2-content'), class: 'tab2-selected' },
-                { button: document.getElementById('tab3'), content: document.getElementById('tab3-content'), class: 'tab3-selected' }
-            ];
-            const pillContainer = document.querySelector('.pill-container');
 
-            tabs.forEach((tab, index) => {
-                const switchTab = () => {
-                    console.log(`Switching to tab ${index + 1}`);
-                    tabs.forEach(t => {
-                        t.button.classList.remove('selected');
-                        t.content.classList.remove('active');
-                        pillContainer.classList.remove(t.class);
-                    });
-                    tab.button.classList.add('selected');
-                    tab.content.classList.add('active');
-                    pillContainer.classList.add(tab.class);
-                };
+    <div id="tab3-content" class="tab-content">
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Jesus Paid It All - Passion feat. Fernando Ortega</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Goodness of God - Bethel Music feat. Jenn Johnson</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Build My Life - Housefires</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Graves Into Gardens - Elevation Worship feat. Brandon Lake</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">What A Beautiful Name - Hillsong Worship</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Way Maker - Leeland</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Living Hope - Phil Wickham</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Reckless Love - Cory Asbury</span>
+      </div>
+    </div>
+  </div>
 
-                tab.button.addEventListener('click', switchTab);
-                tab.button.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                    switchTab();
-                });
-            });
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Tab switching
+      const tabs = [
+        { id: 'tab1', content: 'tab1-content', class: 'tab1-selected' },
+        { id: 'tab2', content: 'tab2-content', class: 'tab2-selected' },
+        { id: 'tab3', content: 'tab3-content', class: 'tab3-selected' }
+      ];
 
-            const title = document.getElementById('title');
-            title.addEventListener('click', () => {
-                console.log('Title clicked, toggling fullscreen');
-                if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
-                    console.log('Attempting to enter fullscreen');
-                    const elem = document.documentElement;
-                    if (elem.requestFullscreen) {
-                        elem.requestFullscreen().catch(err => console.error('Fullscreen error:', err));
-                    } else if (elem.webkitRequestFullscreen) {
-                        elem.webkitRequestFullscreen().catch(err => console.error('Webkit fullscreen error:', err));
-                    } else if (elem.msRequestFullscreen) {
-                        elem.msRequestFullscreen().catch(err => console.error('MS fullscreen error:', err));
-                    } else {
-                        console.warn('Fullscreen API not supported');
-                    }
-                } else {
-                    console.log('Attempting to exit fullscreen');
-                    if (document.exitFullscreen) {
-                        document.exitFullscreen().catch(err => console.error('Exit fullscreen error:', err));
-                    } else if (document.webkitExitFullscreen) {
-                        document.webkitExitFullscreen().catch(err => console.error('Webkit exit fullscreen error:', err));
-                    } else if (document.msExitFullscreen) {
-                        document.msExitFullscreen().catch(err => console.error('MS exit fullscreen error:', err));
-                    } else {
-                        console.warn('Exit fullscreen API not supported');
-                    }
-                }
-            });
+      const pillContainer = document.querySelector('.pill-container');
+
+      tabs.forEach((tab, index) => {
+        const button = document.getElementById(tab.id);
+        const content = document.getElementById(tab.content);
+
+        const switchTab = () => {
+          console.log(`Switching to tab ${index + 1}`);
+          tabs.forEach(t => {
+            document.getElementById(t.id).classList.remove('selected');
+            document.getElementById(t.content).classList.remove('active');
+            pillContainer.classList.remove(t.class);
+          });
+          button.classList.add('selected');
+          content.classList.add('active');
+          pillContainer.classList.add(tab.class);
+        };
+
+        button.addEventListener('click', switchTab);
+        button.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          switchTab();
         });
-    </script>
+      });
+
+      // Fullscreen toggle
+      const enterFullscreen = (elem) => {
+        console.log('Attempting to enter fullscreen');
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen().catch(err => console.error('Fullscreen error:', err));
+        } else if (elem.webkitRequestFullscreen) {
+          elem.webkitRequestFullscreen().catch(err => console.error('Webkit fullscreen error:', err));
+        } else if (elem.msRequestFullscreen) {
+          elem.msRequestFullscreen().catch(err => console.error('MS fullscreen error:', err));
+        } else {
+          console.warn('Fullscreen API not supported');
+        }
+      };
+
+      const exitFullscreen = () => {
+        console.log('Attempting to exit fullscreen');
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(err => console.error('Exit fullscreen error:', err));
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen().catch(err => console.error('Webkit exit fullscreen error:', err));
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen().catch(err => console.error('MS exit fullscreen error:', err));
+        } else {
+          console.warn('Exit fullscreen API not supported');
+        }
+      };
+
+      const title = document.getElementById('title');
+      title.addEventListener('click', () => {
+        console.log('Title clicked, toggling fullscreen');
+        const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+        isFullscreen ? exitFullscreen() : enterFullscreen(document.documentElement);
+      });
+    });
+  </script>
 </body>
 </html>
