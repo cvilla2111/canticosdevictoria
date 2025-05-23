@@ -28,7 +28,6 @@
     /* Header */
     h1 {
       background-color: #f0f0f0;
-      cursor: pointer;
       left: 0;
       line-height: 1.2;
       padding: 2rem 0 1rem 1rem;
@@ -47,6 +46,11 @@
 
     body.dark-mode h1 {
       background-color: #1f1f1f;
+    }
+
+    h1 .title-text {
+      cursor: pointer;
+      display: inline-block;
     }
 
     h1 .first-line {
@@ -292,6 +296,10 @@
       padding: 8px 0;
     }
 
+    .song-item:first-child {
+      margin-top: -10px; /* Reduce top margin for first song item */
+    }
+
     .song-icon {
       color: black;
       display: inline-block;
@@ -325,8 +333,10 @@
 </head>
 <body>
   <h1 id="title" onselectstart="return false" draggable="false">
-    <span class="first-line">Cánticos de</span>
-    <span class="second-line">Victoria</span>
+    <span class="title-text">
+      <span class="first-line">Cánticos de</span>
+      <span class="second-line">Victoria</span>
+    </span>
   </h1>
 
   <span class="icon search-icon">
@@ -514,7 +524,7 @@
       });
 
       // Fullscreen toggle
-      const title = document.getElementById('title');
+      const titleText = document.querySelector('.title-text');
 
       const enterFullscreen = (elem) => {
         console.log('Attempting to enter fullscreen');
@@ -542,14 +552,15 @@
         }
       };
 
-      const toggleFullscreen = () => {
+      const toggleFullscreen = (e) => {
+        e.stopPropagation();
         console.log('Toggling fullscreen');
         const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
         isFullscreen ? exitFullscreen() : enterFullscreen(document.documentElement);
       };
 
-      title.addEventListener('click', toggleFullscreen);
-      title.addEventListener('touchend', toggleFullscreen);
+      titleText.addEventListener('click', toggleFullscreen);
+      titleText.addEventListener('touchend', toggleFullscreen);
 
       // Dark mode toggle
       settingsIcon.addEventListener('click', () => {
