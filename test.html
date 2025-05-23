@@ -37,12 +37,10 @@
       width: 100%;
       z-index: 3;
       transition: background-color 0.3s ease;
-      /* Make text unselectable */
       user-select: none;
       -webkit-user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
-      /* Tap highlight transparent */
       -webkit-tap-highlight-color: rgba(0, 0, 255, 0);
       outline: none;
     }
@@ -170,7 +168,7 @@
       cursor: pointer;
       font-family: 'Poppins', sans-serif;
       font-size: 14px;
-      height: 46px;
+      height: 44px;
       line-height: 46px;
       padding: 0 16px;
       position: relative;
@@ -192,16 +190,21 @@
     /* Search Bar */
     .search-container {
       position: fixed;
-      top: 150px; /* 100px (pill top) + 46px (pill height) + 4px (gap) */
+      top: 150px;
       left: 1rem;
       width: calc(100% - 2rem);
       z-index: 2;
+      display: none;
+    }
+
+    .search-container.visible {
+      display: block;
     }
 
     .search-input {
       width: 100%;
       height: 40px;
-      padding: 0 40px 0 16px;
+      padding: 0 40px 0 36px;
       border: 1px solid #ccc;
       border-radius: 20px;
       font-family: 'Poppins', sans-serif;
@@ -225,9 +228,9 @@
       color: #a0a0a0;
     }
 
-    .search-container .material-symbols-outlined {
+    .search-container .search-icon-input {
       position: absolute;
-      right: 12px;
+      left: 12px;
       top: 50%;
       transform: translateY(-50%);
       font-size: 20px;
@@ -235,17 +238,34 @@
       transition: color 0.3s ease;
     }
 
-    body.dark-mode .search-container .material-symbols-outlined {
+    .search-container .close-icon {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 20px;
+      color: #666;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    body.dark-mode .search-container .search-icon-input,
+    body.dark-mode .search-container .close-icon {
       color: #a0a0a0;
     }
 
     /* Song List */
     .song-list {
       color: #333;
-      height: calc(100`100vh - 250px);
-      margin: 250px 1rem 0; /* Adjusted for search bar */
+      height: calc(100vh - 200px);
+      margin: 200px 1rem 0;
       overflow-y: auto;
       transition: color 0.3s ease;
+    }
+
+    .song-list.search-active {
+      margin-top: 250px;
+      height: calc(100vh - 250px);
     }
 
     body.dark-mode .song-list {
@@ -320,9 +340,10 @@
     <button class="pill" id="tab3">Menores</button>
   </div>
 
-  <div class="search-container">
+  <div class="search-container hidden">
     <input type="text" class="search-input" placeholder="Buscar cánticos...">
-    <span class="material-symbols-outlined">search</span>
+    <span class="material-symbols-outlined search-icon-input">search</span>
+    <span class="material-symbols-outlined close-icon">close</span>
   </div>
 
   <div class="song-list">
@@ -349,7 +370,7 @@
       let mayoresSongs = [];
       let menoresSongs = [];
 
-      // Normalization function for accented characters
+      // Normalization function
       const normalizeText = (text) => {
         return text
           .toLowerCase()
@@ -393,16 +414,14 @@
                 <span class="song-icon material-symbols-outlined">play_circle</span>
                 <span class="song-text">${title}</span>
               `;
-              songItem.dataset.title = title; // Store original title
-              songItem.dataset.normalizedTitle = normalizeText(title); // Store normalized title
+              songItem.dataset.title = title;
+              songItem.dataset.normalizedTitle = normalizeText(title);
               
-              // Store song data
               const songData = songItem.cloneNode(true);
               allSongs.push(songData);
               if (isMayores) mayoresSongs.push(songData);
               if (isMenores) menoresSongs.push(songData);
               
-              // Add to DOM
               todosContent.appendChild(songItem.cloneNode(true));
               if (isMayores) mayoresContent.appendChild(songItem.cloneNode(true));
               if (isMenores) menoresContent.appendChild(songItem.cloneNode(true));
@@ -414,22 +433,43 @@
           document.getElementById('tab1-content').innerHTML = '<div class="song-item">Error loading songs</div>';
         });
 
-      // Search functionality
+      // Search bar toggle
+      const searchIcon = document.querySelector('.search-icon');
+      const searchContainer = document.querySelector('.search-container');
       const searchInput = document.querySelector('.search-input');
+      const closeIcon = document.querySelector('.close-icon');
+      const songList = document.querySelector('.song-list');
+
+      searchIcon.addEventListener('click', () => {
+        searchContainer.classList.toggle('visible');
+        songList.classList.toggle('search-active');
+        if (searchContainer.classList.contains('visible')) {
+          searchInput.focus();
+        } else {
+          searchInput.value = '';
+          searchInput.dispatchEvent(new Event('input'));
+        }
+      });
+
+      closeIcon.addEventListener('click', () => {
+        searchContainer.classList.remove('visible');
+        songList.classList.remove('search-active');
+        searchInput.value = '';
+        searchInput.dispatchEvent(new Event('input'));
+      });
+
+      // Search functionality
       searchInput.addEventListener('input', () => {
         const query = normalizeText(searchInput.value);
         const activeTab = document.querySelector('.tab-content.active');
         const tabId = activeTab.id;
         
-        // Select song list based on active tab
         const songsToFilter = tabId === 'tab1-content' ? allSongs :
                              tabId === 'tab2-content' ? mayoresSongs :
                              menoresSongs;
         
-        // Clear current content
         activeTab.innerHTML = '';
         
-        // Filter and display matching songs
         songsToFilter.forEach(song => {
           if (!query || song.dataset.normalizedTitle.includes(query)) {
             activeTab.appendChild(song.cloneNode(true));
@@ -461,7 +501,6 @@
           content.classList.add('active');
           pillContainer.classList.add(tab.class);
           
-          // Refresh search results for new tab
           searchInput.dispatchEvent(new Event('input'));
         };
 
@@ -501,11 +540,14 @@
         }
       };
 
-      title.addEventListener('click', () => {
-        console.log('Title clicked, toggling fullscreen');
+      const toggleFullscreen = () => {
+        console.log('Toggling fullscreen');
         const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
         isFullscreen ? exitFullscreen() : enterFullscreen(document.documentElement);
-      });
+      };
+
+      title.addEventListener('click', toggleFullscreen);
+      title.addEventListener('touchend', toggleFullscreen);
 
       // Dark mode toggle
       settingsIcon.addEventListener('click', () => {
