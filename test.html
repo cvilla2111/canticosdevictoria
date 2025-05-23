@@ -76,11 +76,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 24px; /* Reverted to original */
-      padding: 8px; /* Reverted to original */
+      height: 24px;
+      padding: 8px;
       position: fixed;
-      top: 2rem; /* Reverted to align with h1 */
-      width: 24px; /* Reverted to original */
+      top: 2rem;
+      width: 24px;
       z-index: 4;
       transition: border-color 0.3s ease;
     }
@@ -94,11 +94,11 @@
     }
 
     .menu-icon {
-      right: 1rem; /* Swapped with settings-icon */
+      right: 1rem;
     }
 
     .settings-icon {
-      right: 4.3rem; /* Swapped with menu-icon */
+      right: 4.3rem;
     }
 
     .icon .material-symbols-outlined {
@@ -265,10 +265,7 @@
 
   <div class="song-list">
     <div id="tab1-content" class="tab-content active">
-      <div class="song-item">
-        <span class="song-icon material-symbols-outlined">play_circle</span>
-        <span class="song-text">Praise - Elevation Worship</span>
-      </div>
+      <!-- Songs will be populated dynamically -->
     </div>
     <div id="tab2-content" class="tab-content">
       <!-- No songs -->
@@ -280,6 +277,45 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      // Fetch and populate songs from canticos.txt
+      fetch('canticos.txt')
+        .then(response => {
+          if (!response.ok) throw new Error('Failed to load canticos.txt');
+          return response.text();
+        })
+        .then(data => {
+          const todosContent = document.getElementById('tab1-content');
+          // Split songs by double newlines
+          const songs = data.trim().split(/\n\s*\n/);
+          
+          todosContent.innerHTML = ''; // Clear existing content
+          
+          songs.forEach(song => {
+            // Get the first line as the title
+            const lines = song.split('\n');
+            if (lines.length === 0 || !lines[0].trim()) return; // Skip empty songs
+            
+            let title = lines[0].trim();
+            // Remove content in parentheses
+            title = title.replace(/\(.*?\)/g, '').trim();
+            
+            if (title) {
+              const songItem = document.createElement('div');
+              songItem.className = 'song-item';
+              songItem.innerHTML = `
+                <span class="song-icon material-symbols-outlined">play_circle</span>
+                <span class="song-text">${title}</span>
+              `;
+              todosContent.appendChild(songItem);
+            }
+          });
+        })
+        .catch(error => {
+          console.error('Error loading canticos.txt:', error);
+          const todosContent = document.getElementById('tab1-content');
+          todosContent.innerHTML = '<div class="song-item">Error loading songs</div>';
+        });
+
       // Tab switching
       const tabs = [
         { id: 'tab1', content: 'tab1-content', class: 'tab1-selected' },
