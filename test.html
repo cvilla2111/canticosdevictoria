@@ -42,7 +42,7 @@
       -webkit-user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
-      /* Restore tap highlight but make transparent */
+      /* Tap highlight transparent */
       -webkit-tap-highlight-color: rgba(0, 0, 255, 0);
       outline: none;
     }
@@ -189,11 +189,61 @@
       color: #fff;
     }
 
+    /* Search Bar */
+    .search-container {
+      position: fixed;
+      top: 150px; /* 100px (pill top) + 46px (pill height) + 4px (gap) */
+      left: 1rem;
+      width: calc(100% - 2rem);
+      z-index: 2;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 40px;
+      padding: 0 40px 0 16px;
+      border: 1px solid #ccc;
+      border-radius: 20px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      background-color: #ffffff;
+      color: #333;
+      transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+    }
+
+    body.dark-mode .search-input {
+      background-color: #333333;
+      border-color: #666;
+      color: #e0e0e0;
+    }
+
+    .search-input::placeholder {
+      color: #999;
+    }
+
+    body.dark-mode .search-input::placeholder {
+      color: #a0a0a0;
+    }
+
+    .search-container .material-symbols-outlined {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 20px;
+      color: #666;
+      transition: color 0.3s ease;
+    }
+
+    body.dark-mode .search-container .material-symbols-outlined {
+      color: #a0a0a0;
+    }
+
     /* Song List */
     .song-list {
       color: #333;
-      height: calc(100vh - 230px);
-      margin: 200px 1rem 0;
+      height: calc(100`100vh - 250px);
+      margin: 250px 1rem 0; /* Adjusted for search bar */
       overflow-y: auto;
       transition: color 0.3s ease;
     }
@@ -270,21 +320,20 @@
     <button class="pill" id="tab3">Menores</button>
   </div>
 
+  <div class="search-container">
+    <input type="text" class="search-input" placeholder="Buscar cánticos...">
+    <span class="material-symbols-outlined">search</span>
+  </div>
+
   <div class="song-list">
-    <div id="tab1-content" class="tab-content active">
-      <!-- Songs will be populated dynamically -->
-    </div>
-    <div id="tab2-content" class="tab-content">
-      <!-- Songs will be populated dynamically -->
-    </div>
-    <div id="tab3-content" class="tab-content">
-      <!-- Songs will be populated dynamically -->
-    </div>
+    <div id="tab1-content" class="tab-content active"></div>
+    <div id="tab2-content" class="tab-content"></div>
+    <div id="tab3-content" class="tab-content"></div>
   </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Apply saved theme from localStorage
+      // Apply saved theme
       const savedTheme = localStorage.getItem('theme');
       const settingsIcon = document.querySelector('.settings-icon');
       if (savedTheme === 'dark') {
@@ -295,7 +344,22 @@
         settingsIcon.querySelector('.material-symbols-outlined').textContent = 'light_mode';
       }
 
-      // Fetch and populate songs from canticos.txt
+      // Song data storage
+      let allSongs = [];
+      let mayoresSongs = [];
+      let menoresSongs = [];
+
+      // Normalization function for accented characters
+      const normalizeText = (text) => {
+        return text
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/ñ/g, 'n')
+          .replace(/Ñ/g, 'N');
+      };
+
+      // Fetch and populate songs
       fetch('canticos.txt')
         .then(response => {
           if (!response.ok) throw new Error('Failed to load canticos.txt');
@@ -306,25 +370,20 @@
           const mayoresContent = document.getElementById('tab2-content');
           const menoresContent = document.getElementById('tab3-content');
           
-          // Split songs by double newlines
           const songs = data.trim().split(/\n\s*\n/);
           
-          // Clear existing content
           todosContent.innerHTML = '';
           mayoresContent.innerHTML = '';
           menoresContent.innerHTML = '';
           
           songs.forEach(song => {
-            // Get the first line as the title
             const lines = song.split('\n');
-            if (lines.length === 0 || !lines[0].trim()) return; // Skip empty songs
+            if (lines.length === 0 || !lines[0].trim()) return;
             
             let title = lines[0].trim();
-            // Determine tab assignment based on [+] or [-]
             const isMayores = title.includes('[+]');
             const isMenores = title.includes('[-]');
             
-            // Clean title: remove [+], [-], and parentheses (e.g., (C))
             title = title.replace(/\[.\]/, '').replace(/\(.*?\)/g, '').trim();
             
             if (title) {
@@ -334,27 +393,49 @@
                 <span class="song-icon material-symbols-outlined">play_circle</span>
                 <span class="song-text">${title}</span>
               `;
+              songItem.dataset.title = title; // Store original title
+              songItem.dataset.normalizedTitle = normalizeText(title); // Store normalized title
               
-              // Add to Todos tab (all songs)
+              // Store song data
+              const songData = songItem.cloneNode(true);
+              allSongs.push(songData);
+              if (isMayores) mayoresSongs.push(songData);
+              if (isMenores) menoresSongs.push(songData);
+              
+              // Add to DOM
               todosContent.appendChild(songItem.cloneNode(true));
-              
-              // Add to Mayores tab if [+]
-              if (isMayores) {
-                mayoresContent.appendChild(songItem.cloneNode(true));
-              }
-              
-              // Add to Menores tab if [-]
-              if (isMenores) {
-                menoresContent.appendChild(songItem.cloneNode(true));
-              }
+              if (isMayores) mayoresContent.appendChild(songItem.cloneNode(true));
+              if (isMenores) menoresContent.appendChild(songItem.cloneNode(true));
             }
           });
         })
         .catch(error => {
           console.error('Error loading canticos.txt:', error);
-          const todosContent = document.getElementById('tab1-content');
-          todosContent.innerHTML = '<div class="song-item">Error loading songs</div>';
+          document.getElementById('tab1-content').innerHTML = '<div class="song-item">Error loading songs</div>';
         });
+
+      // Search functionality
+      const searchInput = document.querySelector('.search-input');
+      searchInput.addEventListener('input', () => {
+        const query = normalizeText(searchInput.value);
+        const activeTab = document.querySelector('.tab-content.active');
+        const tabId = activeTab.id;
+        
+        // Select song list based on active tab
+        const songsToFilter = tabId === 'tab1-content' ? allSongs :
+                             tabId === 'tab2-content' ? mayoresSongs :
+                             menoresSongs;
+        
+        // Clear current content
+        activeTab.innerHTML = '';
+        
+        // Filter and display matching songs
+        songsToFilter.forEach(song => {
+          if (!query || song.dataset.normalizedTitle.includes(query)) {
+            activeTab.appendChild(song.cloneNode(true));
+          }
+        });
+      });
 
       // Tab switching
       const tabs = [
@@ -379,6 +460,9 @@
           button.classList.add('selected');
           content.classList.add('active');
           pillContainer.classList.add(tab.class);
+          
+          // Refresh search results for new tab
+          searchInput.dispatchEvent(new Event('input'));
         };
 
         button.addEventListener('click', switchTab);
@@ -388,7 +472,7 @@
         });
       });
 
-      // Fullscreen toggle with single touch/click
+      // Fullscreen toggle
       const title = document.getElementById('title');
 
       const enterFullscreen = (elem) => {
@@ -423,7 +507,7 @@
         isFullscreen ? exitFullscreen() : enterFullscreen(document.documentElement);
       });
 
-      // Dark mode toggle with localStorage
+      // Dark mode toggle
       settingsIcon.addEventListener('click', () => {
         console.log('Toggling dark mode');
         document.body.classList.toggle('dark-mode');
