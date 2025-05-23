@@ -275,7 +275,9 @@
       margin: 200px 1rem 0;
       overflow-y: auto;
       transition: color 0.3s ease;
-      padding-top: 44px; /* Prevent overlap with search bar */
+      padding-top: 44px;
+      visibility: visible; /* Ensure visibility */
+      opacity: 1;
     }
 
     body.dark-mode .song-list {
@@ -288,13 +290,17 @@
 
     .tab-content.active {
       display: block;
+      visibility: visible; /* Ensure visibility */
+      opacity: 1;
     }
 
     .song-item {
       align-items: center;
       display: flex;
       line-height: 1.5;
-      padding: 4px 0 8px 0; /* Reduced top padding for tighter spacing */
+      padding: 4px 0 8px 0;
+      visibility: visible; /* Ensure visibility */
+      opacity: 1;
     }
 
     .song-icon {
@@ -329,10 +335,11 @@
   </style>
 </head>
 <body>
+  <input type="file" id="canticos-upload" accept=".txt" style="position: fixed; top: 10px; left: 10px;">
   <h1 id="title" onselectstart="return false" draggable="false">
     <span class="title-text">
       <span class="first-line">Cánticos de</span>
-      <span class="second-line">Victoria.</span>
+      <span class="second-line">Victoria</span>
     </span>
   </h1>
 
@@ -392,6 +399,60 @@
           .replace(/Ñ/g, 'N');
       };
 
+      // File upload handler
+      const uploadInput = document.getElementById('canticos-upload');
+      uploadInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const data = event.target.result;
+            const todosContent = document.getElementById('tab1-content');
+            const mayoresContent = document.getElementById('tab2-content');
+            const menoresContent = document.getElementById('tab3-content');
+            const songs = data.trim().split(/\n\s*\n/);
+            todosContent.innerHTML = '';
+            mayoresContent.innerHTML = '';
+            menoresContent.innerHTML = '';
+            allSongs = [];
+            mayoresSongs = [];
+            menoresSongs = [];
+            songs.forEach(song => {
+              console.log('Processing song:', song); // Debug
+              const lines = song.split('\n');
+              if (lines.length === 0 || !lines[0].trim()) {
+                console.warn('Skipping empty song:', song);
+                return;
+              }
+              let title = lines[0].trim();
+              console.log('Title:', title); // Debug
+              const isMayores = title.includes('[+]');
+              const isMenores = title.includes('[-]');
+              title = title.replace(/\[.\]/, '').replace(/\(.*?\)/g, '').trim();
+              if (title) {
+                const songItem = document.createElement('div');
+                songItem.className = 'song-item';
+                songItem.innerHTML = `
+                  <span class="song-icon material-symbols-outlined">play_circle</span>
+                  <span class="song-text">${title}</span>
+                `;
+                songItem.dataset.title = title;
+                songItem.dataset.normalizedTitle = normalizeText(title);
+                const songData = songItem.cloneNode(true);
+                allSongs.push(songData);
+                if (isMayores) mayoresSongs.push(songData);
+                if (isMenores) menoresSongs.push(songData);
+                todosContent.appendChild(songItem.cloneNode(true));
+                if (isMayores) mayoresContent.appendChild(songItem.cloneNode(true));
+                if (isMenores) menoresContent.appendChild(songItem.cloneNode(true));
+              }
+            });
+            document.querySelector('.search-input').dispatchEvent(new Event('input')); // Refresh search
+          };
+          reader.readAsText(file);
+        }
+      });
+
       // Fetch and populate songs
       fetch('canticos.txt')
         .then(response => {
@@ -402,23 +463,22 @@
           const todosContent = document.getElementById('tab1-content');
           const mayoresContent = document.getElementById('tab2-content');
           const menoresContent = document.getElementById('tab3-content');
-          
           const songs = data.trim().split(/\n\s*\n/);
-          
           todosContent.innerHTML = '';
           mayoresContent.innerHTML = '';
           menoresContent.innerHTML = '';
-          
-          songs snuff {
+          songs.forEach(song => {
+            console.log('Processing song:', song); // Debug
             const lines = song.split('\n');
-            if (lines.length === 0 || !lines[0].trim()) return;
-            
+            if (lines.length === 0 || !lines[0].trim()) {
+              console.warn('Skipping empty song:', song);
+              return;
+            }
             let title = lines[0].trim();
+            console.log('Title:', title); // Debug
             const isMayores = title.includes('[+]');
             const isMenores = title.includes('[-]');
-            
             title = title.replace(/\[.\]/, '').replace(/\(.*?\)/g, '').trim();
-            
             if (title) {
               const songItem = document.createElement('div');
               songItem.className = 'song-item';
@@ -428,12 +488,10 @@
               `;
               songItem.dataset.title = title;
               songItem.dataset.normalizedTitle = normalizeText(title);
-              
               const songData = songItem.cloneNode(true);
               allSongs.push(songData);
               if (isMayores) mayoresSongs.push(songData);
               if (isMenores) menoresSongs.push(songData);
-              
               todosContent.appendChild(songItem.cloneNode(true));
               if (isMayores) mayoresContent.appendChild(songItem.cloneNode(true));
               if (isMenores) menoresContent.appendChild(songItem.cloneNode(true));
@@ -472,13 +530,11 @@
         const query = normalizeText(searchInput.value);
         const activeTab = document.querySelector('.tab-content.active');
         const tabId = activeTab.id;
-        
+        console.log('Active tab:', tabId); // Debug
         const songsToFilter = tabId === 'tab1-content' ? allSongs :
                              tabId === 'tab2-content' ? mayoresSongs :
                              menoresSongs;
-        
         activeTab.innerHTML = '';
-        
         songsToFilter.forEach(song => {
           if (!query || song.dataset.normalizedTitle.includes(query)) {
             activeTab.appendChild(song.cloneNode(true));
@@ -509,7 +565,6 @@
           button.classList.add('selected');
           content.classList.add('active');
           pillContainer.classList.add(tab.class);
-          
           searchInput.dispatchEvent(new Event('input'));
         };
 
@@ -519,6 +574,11 @@
           switchTab();
         });
       });
+
+      // Force initial tab state
+      document.getElementById('tab1-content').classList.add('active');
+      document.getElementById('tab1').classList.add('selected');
+      pillContainer.classList.add('tab1-selected');
 
       // Fullscreen toggle
       const titleText = document.querySelector('.title-text');
