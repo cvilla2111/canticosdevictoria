@@ -1,490 +1,533 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cánticos De Victoria</title>
-    <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Quicksand:wght@400;500;700&family=Montserrat:wght@400;500;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Quicksand', 'Montserrat', 'Inter', sans-serif;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f0f0f0">
+  <title>Cánticos de Victoria</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <!-- Link to the Web App Manifest -->
+  <link rel="manifest" href="#manifest">
+  <!-- Apple Touch Icon for iOS -->
+  <link rel="apple-touch-icon" href="icon-192x192.png">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-        body {
-            background: #f0f0f0;
-            color: #333;
-            transition: all 0.3s ease;
-            overflow: auto;
-        }
+    body {
+      background-color: #f0f0f0;
+      font-family: 'Poppins', sans-serif;
+      position: relative;
+    }
 
-        body.dark {
-            background: #1a1a1a;
-            color: #e0e0e0;
-        }
+    /* Header */
+    h1 {
+      background-color: #f0f0f0;
+      cursor: pointer;
+      left: 0;
+      line-height: 1.2;
+      padding: 2rem 0 1rem 1rem;
+      position: fixed;
+      top: 0;
+      user-select: none;
+      width: 100%;
+      z-index: 3;
+    }
 
-        .container {
-            max-width: 1600px;
-            margin: 0 auto;
-            padding: 10px;
-            min-height: 100vh;
-        }
+    h1 .first-line {
+      color: gray;
+      display: block;
+      font-size: 14px;
+      font-weight: 400;
+    }
 
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-            position: relative;
-            padding-right: 40px;
-        }
+    h1 .second-line {
+      color: black;
+      display: block;
+      font-size: 28px;
+      font-weight: 700;
+    }
 
-        .header h1 {
-            font-family: 'Chewy', 'Montserrat', 'Inter', sans-serif;
-            font-size: 1.875rem;
-            font-weight: 700;
-            color: #333;
-            cursor: pointer;
-            display: inline-block;
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            letter-spacing: 0.02em;
-        }
+    /* Icons */
+    .icon {
+      border: 2px solid #1f1f1f;
+      border-radius: 50%;
+      box-sizing: content-box;
+      display: block;
+      height: 24px;
+      padding: 8px;
+      position: fixed;
+      top: 1rem;
+      width: 24px;
+      z-index: 4;
+    }
 
-        body.dark .header h1 {
-            color: #e0e0e0;
-        }
+    .search-icon {
+      right: 4.3rem;
+    }
 
-        .header p {
-            font-size: 0.75rem;
-            font-weight: 400;
-            color: #666;
-            margin-top: 2px;
-        }
+    .menu-icon {
+      right: 1rem;
+    }
 
-        body.dark .header p {
-            color: #aaa;
-        }
+    /* Tabs */
+    .pill-container {
+      background-color: #e0e0e0;
+      border-radius: 20px;
+      display: flex;
+      height: 46px;
+      left: 1rem;
+      position: fixed;
+      top: 100px;
+      width: calc(100% - 2rem);
+      z-index: 2;
+    }
 
-        .search-container {
-            position: relative;
-            margin-bottom: 15px;
-        }
+    .pill-container::before {
+      background-color: #584cd7;
+      border-radius: 20px;
+      content: '';
+      height: 46px;
+      left: 0;
+      position: absolute;
+      top: 0;
+      transition: transform 0.3s ease-in-out;
+      width: calc(100% / 3);
+      z-index: 0;
+    }
 
-        .search-bar {
-            width: 100%;
-            padding: 10px 30px 10px 10px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            font-size: 1rem;
-            font-weight: 400;
-            outline: none;
-            background: #fff;
-        }
+    .pill-container.tab1-selected::before {
+      transform: translateX(0);
+    }
 
-        body.dark .search-bar {
-            border-color: #555;
-            background: #2a2a2a;
-            color: #e0e0e0;
-        }
+    .pill-container.tab2-selected::before {
+      transform: translateX(100%);
+    }
 
-        .search-bar::placeholder {
-            color: #999;
-            font-weight: 400;
-        }
+    .pill-container.tab3-selected::before {
+      transform: translateX(200%);
+    }
 
-        body.dark .search-bar::placeholder {
-            color: #777;
-        }
+    .pill {
+      background-color: transparent;
+      border: none;
+      border-radius: 20px;
+      color: #666;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      height: 46px;
+      line-height: 46px;
+      padding: 0 16px;
+      position: relative;
+      text-align: center;
+      width: calc(100% / 3);
+      z-index: 1;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-        .clear-search {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            font-size: 1rem;
-            font-weight: 500;
-            color: #666;
-            cursor: pointer;
-            display: none;
-        }
+    .pill.selected {
+      color: #fff;
+    }
 
-        body.dark .clear-search {
-            color: #aaa;
-        }
+    /* Song List */
+    .song-list {
+      color: #333;
+      height: calc(100vh - 230px);
+      margin: 200px 1rem 0;
+      overflow-y: auto;
+    }
 
-        .clear-search:hover {
-            color: #333;
-        }
+    .tab-content {
+      display: none;
+    }
 
-        body.dark .clear-search:hover {
-            color: #e0e0e0;
-        }
+    .tab-content.active {
+      display: block;
+    }
 
-        .song-list {
-            background: #fff;
-            border-radius: 10px;
-            padding: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            overflow-y: auto;
-            max-height: calc(100vh - 160px);
-            min-height: 300px;
-            width: 100%;
-        }
+    .song-item {
+      align-items: center;
+      display: flex;
+      line-height: 1.5;
+      padding: 8px 0;
+    }
 
-        body.dark .song-list {
-            background: #2a2a2a;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        }
+    .song-icon {
+      color: black;
+      display: inline-block;
+      font-size: 44px;
+      font-variation-settings: 'wght' 200;
+      height: 44px;
+      line-height: 44px;
+      margin-right: 10px;
+      text-align: center;
+      width: 44px;
+    }
 
-        .song-item {
-            width: 100%;
-            padding: 15px 20px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.2s;
-            box-sizing: border-box;
-            border: 1px solid #e0e0e0;
+    .song-text {
+      color: #333;
+      flex: 1;
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      font-weight: 400;
+    }
+  </style>
+  <!-- Embedded Web App Manifest -->
+  <script type="application/json" id="manifest">
+    {
+      "name": "Cánticos de Victoria",
+      "short_name": "Cánticos",
+      "description": "A music app for worship songs",
+      "start_url": ".",
+      "display": "standalone",
+      "background_color": "#f0f0f0",
+      "theme_color": "#f0f0f0",
+      "icons": [
+        {
+          "src": "icon-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
         }
-
-        body.dark .song-item {
-            border-color: #555;
-        }
-
-        .song-item:hover {
-            background: #e0e0e0;
-        }
-
-        body.dark .song-item:hover {
-            background: #3a3a3a;
-        }
-
-        .song-item h3 {
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 5px;
-            color: #333;
-        }
-
-        body.dark .song-item h3 {
-            color: #e0e0e0;
-        }
-
-        .song-item p {
-            font-size: 0.75rem;
-            font-weight: 400;
-            color: #666;
-        }
-
-        body.dark .song-item p {
-            color: #aaa;
-        }
-
-        .lyrics-panel {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #fff;
-            padding: 40px;
-            transform: translateX(100%) scale(0.95);
-            opacity: 0;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                        opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                        scale 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow-y: auto;
-            display: block;
-            z-index: 1000;
-        }
-
-        body.dark .lyrics-panel {
-            background: #2a2a2a;
-        }
-
-        .lyrics-panel.open {
-            transform: translateX(0) scale(1);
-            opacity: 1;
-        }
-
-        .lyrics-panel h2 {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: #333;
-            letter-spacing: 0.02em;
-        }
-
-        body.dark .lyrics-panel h2 {
-            color: #e0e0e0;
-        }
-
-        .lyrics-panel p {
-            font-size: 1.1rem;
-            font-weight: 400;
-            line-height: 1.6;
-            color: #555;
-            white-space: pre-wrap;
-        }
-
-        body.dark .lyrics-panel p {
-            color: #ccc;
-        }
-
-        .close-button {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            font-weight: 500;
-            cursor: pointer;
-            color: #333;
-        }
-
-        body.dark .close-button {
-            color: #e0e0e0;
-        }
-
-        .toggle-mode {
-            position: absolute;
-            top: 50%;
-            right: 10px;
-            transform: translateY(-50%);
-            background: #e0e0e0;
-            border: none;
-            cursor: pointer;
-            z-index: 1001;
-            transition: transform 0.2s, background 0.3s;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        body.dark .toggle-mode {
-            background: #333;
-        }
-
-        .toggle-mode:hover {
-            transform: translateY(-50%) scale(1.1);
-        }
-
-        .container:has(.lyrics-panel.open) .toggle-mode {
-            display: none;
-        }
-
-        .toggle-mode svg {
-            width: 24px;
-            height: 24px;
-        }
-
-        .toggle-mode path {
-            fill: #333;
-        }
-
-        body.dark .toggle-mode path {
-            fill: #e0e0e0;
-        }
-
-        .error-message {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-            font-weight: 400;
-        }
-
-        body.dark .error-message {
-            color: #aaa;
-        }
-    </style>
+      ]
+    }
+  </script>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1 onclick="toggleFullscreen()">Cánticos De Victoria</h1>
-            <button class="toggle-mode" onclick="toggleMode()" aria-label="Switch to dark mode">
-                <svg width="24" height="24" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <path d="m50 27.707c-5.9141 0-11.582 2.3516-15.762 6.5312-4.1797 4.1797-6.5312 9.8477-6.5312 15.762s2.3516 11.582 6.5312 15.762c4.1797 4.1797 9.8477 6.5312 15.762 6.5312s11.582-2.3516 15.762-6.5312c4.1797-4.1797 6.5312-9.8477 6.5312-15.762-0.011719-5.9102-2.3633-11.574-6.543-15.75-4.1758-4.1797-9.8398-6.5312-15.75-6.543zm0 38.961c-4.3398-0.054688-8.4844-1.8242-11.527-4.918-3.043-3.0977-4.7383-7.2695-4.7227-11.609 0.019531-4.3398 1.7539-8.5 4.8203-11.57 3.0703-3.0664 7.2305-4.8008 11.57-4.8203 4.3398-0.015625 8.5117 1.6797 11.609 4.7227 3.0938 3.043 4.8633 7.1875 4.918 11.527 0 4.4219-1.7578 8.6602-4.8828 11.785s-7.3633 4.8828-11.785 4.8828zm2.918 13.707v8.375c0 1.6094-1.3086 2.918-2.918 2.918s-2.918-1.3086-2.918-2.918v-8.582c0-1.6133 1.3086-2.918 2.918-2.918s2.918 1.3047 2.918 2.918zm-22.168-11.125c1.1445 1.1523 1.1445 3.0117 0 4.168l-6.082 6.0391c-0.55078 0.5625-1.3008 0.875-2.0859 0.875-0.76953 0-1.5078-0.31641-2.0391-0.875-0.57031-0.54297-0.89453-1.293-0.89453-2.082s0.32422-1.5391 0.89453-2.082l6.082-6.125c1.1719-1.0938 3-1.0586 4.125 0.082031zm-10.918-16.332h-8.582c-1.6094 0-2.918-1.3086-2.918-2.918s1.3086-2.918 2.918-2.918h8.582c1.6133 0 2.918 1.3086 2.918 2.918s-1.3047 2.918-2.918 2.918zm0.70703-28.25h0.003907c-1.1523-1.1523-1.1523-3.0156 0-4.168 1.1484-1.1523 3.0156-1.1523 4.1641 0l6.043 6.125c1.1445 1.1523 1.1445 3.0117 0 4.168-0.56641 0.52734-1.3086 0.82422-2.082 0.83203-0.76562-0.003906-1.4961-0.30469-2.043-0.83203zm26.543-4.8359v-8.582c0-1.6094 1.3086-2.918 2.918-2.918s2.918 1.3086 2.918 2.918v8.582c0 1.6133-1.3086 2.918-2.918 2.918s-2.918-1.3047-2.918-2.918zm22.168 10.918c-1.1445-1.1523-1.1445-3.0117 0-4.168l6.082-6.082c1.1523-1.1523 3.0156-1.1523 4.168 0s1.1523 3.0156 0 4.168l-6.125 6.082c-0.54688 0.53125-1.2773 0.82812-2.043 0.83203-0.77344-0.003906-1.5156-0.30078-2.082-0.83203zm22.418 19.25c0 1.6094-1.3086 2.918-2.918 2.918h-8.582c-1.6133 0-2.918-1.3086-2.918-2.918s1.3047-2.918 2.918-2.918h8.582c0.77344 0 1.5156 0.30859 2.0625 0.85547s0.85547 1.2891 0.85547 2.0625zm-12.207 25.332h-0.003907c1.1445 1.1562 1.1445 3.0156 0 4.168-0.52734 0.5625-1.2695 0.87891-2.0391 0.875-0.78516 0-1.5352-0.31641-2.0859-0.875l-6.082-6.082c-1.1523-1.1523-1.1523-3.0156 0-4.168s3.0156-1.1523 4.168 0z" fill="#333"/>
-                </svg>
-            </button>
-            <p>Una colección con <span id="songCount">0</span> coritos</p>
-        </div>
-        <div class="search-container">
-            <input type="text" class="search-bar" placeholder="Search songs...">
-            <button class="clear-search" onclick="clearSearch()">✕</button>
-        </div>
-        <div class="song-list" id="songList"></div>
-        <div class="lyrics-panel" id="lyricsPanel">
-            <button class="close-button" onclick="closePanel()">✕</button>
-            <h2 id="lyricsTitle">Select a Song</h2>
-            <p id="lyricsContent">Click a song to view its lyrics.</p>
-        </div>
+  <h1 id="title">
+    <span class="first-line">Cánticos de</span>
+    <span class="second-line">Victoria</span>
+  </h1>
+
+  <svg class="icon search-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#1f1f1f">
+    <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/>
+  </svg>
+  <svg class="icon menu-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#1f1f1f">
+    <path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"/>
+  </svg>
+
+  <div class="pill-container tab1-selected">
+    <button class="pill selected" id="tab1">Todos</button>
+    <button class="pill" id="tab2">Mayores</button>
+    <button class="pill" id="tab3">Menores</button>
+  </div>
+
+  <div class="song-list">
+    <div id="tab1-content" class="tab-content active">
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Praise - Elevation Worship</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Faithfully - TobyMac</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Nothin' Sweeter - TobyMac</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Made For More - Josh Baldwin feat. Jenn Johnson</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Counting My Blessings - Seph Schlueter</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">That's Who I Praise - Brandon Lake</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Take It All Back - Tauren Wells, We The Kingdom & Davies</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">I Thank God - Housefires feat. JWLKRS Worship</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Holy Forever - Chris Tomlin</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Jesus Does - We The Kingdom</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Jesus Paid It All - Passion feat. Fernando Ortega</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Goodness of God - Bethel Music feat. Jenn Johnson</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Build My Life - Housefires</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Graves Into Gardens - Elevation Worship feat. Brandon Lake</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">What A Beautiful Name - Hillsong Worship</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Way Maker - Leeland</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Living Hope - Phil Wickham</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Reckless Love - Cory Asbury</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Great Are You Lord - All Sons & Daughters</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">King of Kings - Hillsong Worship</span>
+      </div>
     </div>
 
-    <script>
-        const songList = document.getElementById('songList');
-        const lyricsPanel = document.getElementById('lyricsPanel');
-        const lyricsTitle = document.getElementById('lyricsTitle');
-        const lyricsContent = document.getElementById('lyricsContent');
-        const songCount = document.getElementById('songCount');
-        const searchBar = document.querySelector('.search-bar');
-        const clearSearchButton = document.querySelector('.clear-search');
-        const toggleModeButton = document.querySelector('.toggle-mode');
-        let allSongs = [];
+    <div id="tab2-content" class="tab-content">
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Praise - Elevation Worship</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Faithfully - TobyMac</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Nothin' Sweeter - TobyMac</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Made For More - Josh Baldwin feat. Jenn Johnson</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Counting My Blessings - Seph Schlueter</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">That's Who I Praise - Brandon Lake</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Take It All Back - Tauren Wells, We The Kingdom & Davies</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">I Thank God - Housefires feat. JWLKRS Worship</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Holy Forever - Chris Tomlin</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Jesus Does - We The Kingdom</span>
+      </div>
+    </div>
 
-        // Initialize theme from localStorage
-        const savedTheme = localStorage.getItem('theme');
-        console.log('Saved theme from localStorage:', savedTheme);
-        if (savedTheme === 'dark') {
-            document.body.classList.add('dark');
-            console.log('Applied dark mode on page load');
-        } else {
-            console.log('Applied light mode on page load');
-        }
+    <div id="tab3-content" class="tab-content">
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Jesus Paid It All - Passion feat. Fernando Ortega</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Goodness of God - Bethel Music feat. Jenn Johnson</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Build My Life - Housefires</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Graves Into Gardens - Elevation Worship feat. Brandon Lake</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">What A Beautiful Name - Hillsong Worship</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Way Maker - Leeland</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Living Hope - Phil Wickham</span>
+      </div>
+      <div class="song-item">
+        <span class="song-icon material-symbols-outlined">play_circle</span>
+        <span class="song-text">Reckless Love - Cory Asbury</span>
+      </div>
+    </div>
+  </div>
 
-        function normalizeText(text) {
-            return text
-                .toLowerCase()
-                .normalize('NFKD')
-                .replace(/[\u0300-\u036f]/g, '');
-        }
+  <script>
+    // Tab switching
+    document.addEventListener('DOMContentLoaded', () => {
+      const tabs = [
+        { id: 'tab1', content: 'tab1-content', class: 'tab1-selected' },
+        { id: 'tab2', content: 'tab2-content', class: 'tab2-selected' },
+        { id: 'tab3', content: 'tab3-content', class: 'tab3-selected' }
+      ];
 
-        function renderSongs(songs) {
-            songList.innerHTML = '';
-            songCount.textContent = songs.length;
+      const pillContainer = document.querySelector('.pill-container');
 
-            if (songs.length === 0 && allSongs.length > 0) {
-                songList.innerHTML = '<p class="error-message">No songs match your search.</p>';
-                return;
-            }
+      tabs.forEach((tab, index) => {
+        const button = document.getElementById(tab.id);
+        const content = document.getElementById(tab.content);
 
-            songs.forEach(song => {
-                const songItem = document.createElement('div');
-                songItem.classList.add('song-item');
-                songItem.innerHTML = `
-                    <h3>${song.title}</h3>
-                    <p>${song.subtitle || ''}</p>
-                `;
-                songItem.addEventListener('click', () => {
-                    lyricsTitle.textContent = song.title;
-                    lyricsContent.textContent = song.lyrics;
-                    lyricsPanel.classList.add('open');
-                    toggleModeButton.style.display = 'none';
-                    console.log('Lyrics panel opened, toggle-mode hidden');
-                });
-                songList.appendChild(songItem);
-            });
-        }
+        const switchTab = () => {
+          console.log(`Switching to tab ${index + 1}`);
+          tabs.forEach(t => {
+            document.getElementById(t.id).classList.remove('selected');
+            document.getElementById(t.content).classList.remove('active');
+            pillContainer.classList.remove(t.class);
+          });
+          button.classList.add('selected');
+          content.classList.add('active');
+          pillContainer.classList.add(tab.class);
+        };
 
-        async function loadSongs() {
-            try {
-                const response = await fetch('canticos.txt');
-                if (!response.ok) throw new Error('Failed to load canticos.txt');
-                const text = await response.text();
-                const songBlocks = text.trim().split('\n\n').filter(block => block.trim());
-
-                allSongs = songBlocks.map(block => {
-                    const lines = block.split('\n').filter(line => line.trim());
-                    if (lines.length === 0) return null;
-
-                    const title = lines[0].trim();
-                    let subtitle = '';
-                    let lyricsStartIndex = 1;
-
-                    if (lines[1] && lines[1].match(/^\(.*\)$/)) {
-                        subtitle = lines[1].slice(1, -1).trim();
-                        lyricsStartIndex = 2;
-                    }
-
-                    const lyrics = lines.slice(lyricsStartIndex).join('\n').trim();
-                    return { title, subtitle, lyrics };
-                }).filter(song => song && song.title);
-
-                if (allSongs.length === 0) {
-                    songList.innerHTML = '<p class="error-message">No songs found in canticos.txt</p>';
-                    songCount.textContent = '0';
-                    return;
-                }
-
-                renderSongs(allSongs);
-            } catch (error) {
-                console.error('Error loading songs:', error);
-                songList.innerHTML = '<p class="error-message">Error loading songs. Please check canticos.txt.</p>';
-                songCount.textContent = '0';
-            }
-        }
-
-        searchBar.addEventListener('input', () => {
-            const query = normalizeText(searchBar.value);
-            clearSearchButton.style.display = searchBar.value.length > 0 ? 'block' : 'none';
-
-            if (!query) {
-                renderSongs(allSongs);
-                return;
-            }
-
-            const filteredSongs = allSongs.filter(song =>
-                normalizeText(song.title).includes(query) ||
-                normalizeText(song.lyrics).includes(query)
-            );
-            renderSongs(filteredSongs);
+        button.addEventListener('click', switchTab);
+        button.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          switchTab();
         });
+      });
 
-        function clearSearch() {
-            searchBar.value = '';
-            clearSearchButton.style.display = 'none';
-            renderSongs(allSongs);
-            searchBar.focus();
+      // Fullscreen toggle
+      const enterFullscreen = (elem) => {
+        console.log('Attempting to enter fullscreen');
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen().catch(err => console.error('Fullscreen error:', err));
+        } else if (elem.webkitRequestFullscreen) {
+          elem.webkitRequestFullscreen().catch(err => console.error('Webkit fullscreen error:', err));
+        } else if (elem.msRequestFullscreen) {
+          elem.msRequestFullscreen().catch(err => console.error('MS fullscreen error:', err));
+        } else {
+          console.warn('Fullscreen API not supported');
         }
+      };
 
-        function toggleMode() {
-            document.body.classList.toggle('dark');
-            const isDark = document.body.classList.contains('dark');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            console.log('Toggled to', isDark ? 'dark' : 'light', 'mode; saved to localStorage');
-            toggleModeButton.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+      const exitFullscreen = () => {
+        console.log('Attempting to exit fullscreen');
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(err => console.error('Exit fullscreen error:', err));
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen().catch(err => console.error('Webkit exit fullscreen error:', err));
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen().catch(err => console.error('MS exit fullscreen error:', err));
+        } else {
+          console.warn('Exit fullscreen API not supported');
         }
+      };
 
-        function closePanel() {
-            lyricsPanel.classList.remove('open');
-            toggleModeButton.style.display = 'flex';
-            console.log('Lyrics panel closed, toggle-mode shown');
-        }
+      const title = document.getElementById('title');
+      title.addEventListener('click', () => {
+        console.log('Title clicked, toggling fullscreen');
+        const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+        isFullscreen ? exitFullscreen() : enterFullscreen(document.documentElement);
+      });
 
-        function toggleFullscreen() {
-            if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement) {
-                const elem = document.documentElement;
-                if (elem.requestFullscreen) {
-                    elem.requestFullscreen();
-                } else if (elem.webkitRequestFullscreen) {
-                    elem.webkitRequestFullscreen();
-                } else if (elem.mozRequestFullScreen) {
-                    elem.mozRequestFullScreen();
-                }
+      // Service Worker Registration
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('#sw', { scope: '.' })
+            .then(registration => {
+              console.log('Service Worker registered with scope:', registration.scope);
+            })
+            .catch(err => {
+              console.error('Service Worker registration failed:', err);
+            });
+        });
+      }
+
+      // Handle Install Prompt
+      let deferredPrompt;
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        console.log('Install prompt captured');
+        // You can add a button or UI to trigger the install prompt
+        // For simplicity, we'll log it; you can add a button to call deferredPrompt.prompt()
+      });
+
+      // Optional: Add a button to trigger install (uncomment to use)
+      /*
+      const installButton = document.createElement('button');
+      installButton.textContent = 'Install App';
+      installButton.style.position = 'fixed';
+      installButton.style.bottom = '10px';
+      installButton.style.right = '10px';
+      installButton.style.padding = '10px';
+      installButton.style.zIndex = '5';
+      document.body.appendChild(installButton);
+      installButton.addEventListener('click', () => {
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then(choiceResult => {
+            if (choiceResult.outcome === 'accepted') {
+              console.log('User accepted the install prompt');
             } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.webkitExitFullscreen) {
-                    document.webkitExitFullscreen();
-                } else if (document.mozCancelFullScreen) {
-                    document.mozCancelFullScreen();
-                }
+              console.log('User dismissed the install prompt');
             }
+            deferredPrompt = null;
+          });
         }
+      });
+      */
+    });
 
-        // Initialize aria-label based on saved theme
-        toggleModeButton.setAttribute('aria-label', document.body.classList.contains('dark') ? 'Switch to light mode' : 'Switch to dark mode');
+    // Embedded Service Worker
+    if (window.location.hash === '#sw') {
+      self.addEventListener('install', (event) => {
+        console.log('Service Worker installing');
+        event.waitUntil(
+          caches.open('canticos-v1').then((cache) => {
+            return cache.addAll([
+              '.',
+              'icon-192x192.png'
+            ]);
+          })
+        );
+      });
 
-        loadSongs();
-    </script>
+      self.addEventListener('fetch', (event) => {
+        event.respondWith(
+          caches.match(event.request).then((response) => {
+            return response || fetch(event.request);
+          })
+        );
+      });
+
+      self.addEventListener('activate', (event) => {
+        console.log('Service Worker activating');
+        event.waitUntil(
+          caches.keys().then((cacheNames) => {
+            return Promise.all(
+              cacheNames.filter((name) => name !== 'canticos-v1').map((name) => caches.delete(name))
+            );
+          })
+        );
+      });
+    }
+  </script>
 </body>
 </html>
