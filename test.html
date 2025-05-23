@@ -389,10 +389,8 @@
         });
       });
 
-      // Fullscreen toggle with long press
+      // Fullscreen toggle with single touch/click
       const title = document.getElementById('title');
-      let longPressTimer = null;
-      const longPressDuration = 500; // 500ms for long press
 
       const enterFullscreen = (elem) => {
         console.log('Attempting to enter fullscreen');
@@ -420,37 +418,15 @@
         }
       };
 
-      const toggleFullscreen = () => {
-        console.log('Long press detected, toggling fullscreen');
+      title.addEventListener('click', () => {
+        console.log('Title clicked, toggling fullscreen');
         const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
         isFullscreen ? exitFullscreen() : enterFullscreen(document.documentElement);
-      };
-
-      // Long press detection
-      const startLongPress = () => {
-        longPressTimer = setTimeout(toggleFullscreen, longPressDuration);
-      };
-
-      const cancelLongPress = () => {
-        if (longPressTimer) {
-          clearTimeout(longPressTimer);
-          longPressTimer = null;
-        }
-      };
-
-      // Touch events for mobile
-      title.addEventListener('touchstart', (e) => {
-        e.preventDefault(); // Prevent text selection or other default behaviors
-        startLongPress();
       });
 
-      title.addEventListener('touchend', cancelLongPress);
-      title.addEventListener('touchmove', cancelLongPress);
-
-      // Mouse events for desktop
-      title.addEventListener('mousedown', startLongPress);
-      title.addEventListener('mouseup', cancelLongPress);
-      title.addEventListener('mousemove', cancelLongPress);
+      title.addEventListener('touchstart', (e) => {
+        e.preventDefault(); // Prevent text selection or other default behaviors
+      });
 
       // Dark mode toggle with localStorage
       settingsIcon.addEventListener('click', () => {
