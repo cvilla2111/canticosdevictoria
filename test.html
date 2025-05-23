@@ -198,16 +198,11 @@
       left: 1rem;
       width: calc(100% - 2rem);
       z-index: 2;
-      opacity: 0;
-      transform: translateY(-10px);
-      visibility: hidden;
-      transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+      display: none;
     }
 
     .search-container.visible {
-      opacity: 1;
-      transform: translateY(0);
-      visibility: visible;
+      display: block;
     }
 
     .search-input {
@@ -294,10 +289,6 @@
       display: flex;
       line-height: 1.5;
       padding: 8px 0;
-    }
-
-    .song-item:first-child {
-      margin-top: -10px; /* Reduce top margin for first song item */
     }
 
     .song-icon {
