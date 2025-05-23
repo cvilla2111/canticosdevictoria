@@ -168,7 +168,7 @@
       cursor: pointer;
       font-family: 'Poppins', sans-serif;
       font-size: 14px;
-      height: 44px;
+      height: 46px;
       line-height: 46px;
       padding: 0 16px;
       position: relative;
@@ -209,13 +209,13 @@
       border-radius: 20px;
       font-family: 'Poppins', sans-serif;
       font-size: 14px;
-      background-color: #ffffff;
+      background-color: rgba(255, 255, 255, 0.9);
       color: #333;
       transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
     }
 
     body.dark-mode .search-input {
-      background-color: #333333;
+      background-color: rgba(51, 51, 51, 0.9);
       border-color: #666;
       color: #e0e0e0;
     }
@@ -261,11 +261,7 @@
       margin: 200px 1rem 0;
       overflow-y: auto;
       transition: color 0.3s ease;
-    }
-
-    .song-list.search-active {
-      margin-top: 250px;
-      height: calc(100vh - 250px);
+      padding-top: 44px; /* Prevent overlap with search bar */
     }
 
     body.dark-mode .song-list {
@@ -438,11 +434,9 @@
       const searchContainer = document.querySelector('.search-container');
       const searchInput = document.querySelector('.search-input');
       const closeIcon = document.querySelector('.close-icon');
-      const songList = document.querySelector('.song-list');
 
       searchIcon.addEventListener('click', () => {
         searchContainer.classList.toggle('visible');
-        songList.classList.toggle('search-active');
         if (searchContainer.classList.contains('visible')) {
           searchInput.focus();
         } else {
@@ -453,7 +447,6 @@
 
       closeIcon.addEventListener('click', () => {
         searchContainer.classList.remove('visible');
-        songList.classList.remove('search-active');
         searchInput.value = '';
         searchInput.dispatchEvent(new Event('input'));
       });
