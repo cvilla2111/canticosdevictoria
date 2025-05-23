@@ -194,11 +194,16 @@
       left: 1rem;
       width: calc(100% - 2rem);
       z-index: 2;
-      display: none;
+      opacity: 0;
+      transform: translateY(-10px);
+      visibility: hidden;
+      transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
     }
 
     .search-container.visible {
-      display: block;
+      opacity: 1;
+      transform: translateY(0);
+      visibility: visible;
     }
 
     .search-input {
@@ -212,6 +217,10 @@
       background-color: rgba(255, 255, 255, 0.9);
       color: #333;
       transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .search-input:focus {
+      outline: none;
     }
 
     body.dark-mode .search-input {
@@ -343,7 +352,7 @@
   </div>
 
   <div class="song-list">
-    <div id="tab1-content" class=" Aplicación de escritoriotab-content active"></div>
+    <div id="tab1-content" class="tab-content active"></div>
     <div id="tab2-content" class="tab-content"></div>
     <div id="tab3-content" class="tab-content"></div>
   </div>
