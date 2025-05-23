@@ -213,13 +213,13 @@
     .song-icon {
       color: black;
       display: inline-block;
-      font-size: 50px; /* Increased 3% from 49px */
+      font-size: 50px;
       font-variation-settings: 'wght' 200;
-      height: 50px; /* Increased 3% from 49px */
-      line-height: 50px; /* Increased 3% from 49px */
+      height: 50px;
+      line-height: 50px;
       margin-right: 10px;
       text-align: center;
-      width: 50px; /* Increased 3% from 49px */
+      width: 50px;
       transition: color 0.3s ease;
     }
 
@@ -268,10 +268,10 @@
       <!-- Songs will be populated dynamically -->
     </div>
     <div id="tab2-content" class="tab-content">
-      <!-- No songs -->
+      <!-- Songs will be populated dynamically -->
     </div>
     <div id="tab3-content" class="tab-content">
-      <!-- No songs -->
+      <!-- Songs will be populated dynamically -->
     </div>
   </div>
 
@@ -285,10 +285,16 @@
         })
         .then(data => {
           const todosContent = document.getElementById('tab1-content');
+          const mayoresContent = document.getElementById('tab2-content');
+          const menoresContent = document.getElementById('tab3-content');
+          
           // Split songs by double newlines
           const songs = data.trim().split(/\n\s*\n/);
           
-          todosContent.innerHTML = ''; // Clear existing content
+          // Clear existing content
+          todosContent.innerHTML = '';
+          mayoresContent.innerHTML = '';
+          menoresContent.innerHTML = '';
           
           songs.forEach(song => {
             // Get the first line as the title
@@ -296,8 +302,12 @@
             if (lines.length === 0 || !lines[0].trim()) return; // Skip empty songs
             
             let title = lines[0].trim();
-            // Remove content in parentheses
-            title = title.replace(/\(.*?\)/g, '').trim();
+            // Determine tab assignment based on [+] or [-]
+            const isMayores = title.includes('[+]');
+            const isMenores = title.includes('[-]');
+            
+            // Clean title: remove [+], [-], and parentheses (e.g., (C))
+            title = title.replace(/\[.\]/, '').replace(/\(.*?\)/g, '').trim();
             
             if (title) {
               const songItem = document.createElement('div');
@@ -306,7 +316,19 @@
                 <span class="song-icon material-symbols-outlined">play_circle</span>
                 <span class="song-text">${title}</span>
               `;
-              todosContent.appendChild(songItem);
+              
+              // Add to Todos tab (all songs)
+              todosContent.appendChild(songItem.cloneNode(true));
+              
+              // Add to Mayores tab if [+]
+              if (isMayores) {
+                mayoresContent.appendChild(songItem.cloneNode(true));
+              }
+              
+              // Add to Menores tab if [-]
+              if (isMenores) {
+                menoresContent.appendChild(songItem.cloneNode(true));
+              }
             }
           });
         })
