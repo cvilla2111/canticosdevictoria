@@ -1027,6 +1027,11 @@
             return grouped;
         }
         
+        // Function to clean up title for display by removing [+] and [-]
+        function cleanTitleForDisplay(title) {
+            return title.replace(/\[\+\]/g, '').replace(/\[-\]/g, '').trim();
+        }
+        
         function generateContent(groupedItems) {
             const itemList = document.getElementById('itemList');
             
@@ -1055,9 +1060,12 @@
                         listItem.className = 'py-3 px-2 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors';
                     }
                     
+                    // Clean title for display by removing [+] and [-]
+                    const displayTitle = cleanTitleForDisplay(item.title);
+                    
                     listItem.onclick = function() {
                         if (!alphaScrollActive) { // Only open modal if not in alpha scroll mode
-                            openModal(item.title, item.content, itemId);
+                            openModal(displayTitle, item.content, itemId);
                         }
                     };
                     
@@ -1087,7 +1095,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <span class="font-bold md:text-lg lg:text-xl xl:text-2xl">${item.title}</span>
+                            <span class="font-bold md:text-lg lg:text-xl xl:text-2xl">${displayTitle}</span>
                         </div>
                         <audio id="${itemId}" preload="none">
                             <source src="${audioPath}" type="audio/mpeg">
@@ -1242,7 +1250,10 @@
         }
         
         function generateAudioFilename(title) {
-            return title
+            // First remove the [+] and [-] characters for audio filename matching
+            const cleanedTitle = title.replace(/\[\+\]/g, '').replace(/\[-\]/g, '').trim();
+            
+            return cleanedTitle
                 .toLowerCase()                      // Convert to lowercase
                 .replace(/ñ/g, "n")                 // Replace ñ with n explicitly
                 .normalize("NFD")                   // Normalize accented characters
