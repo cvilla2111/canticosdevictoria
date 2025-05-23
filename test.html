@@ -42,10 +42,9 @@
       -webkit-user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
-      /* Remove tap highlight and focus outline */
-      -webkit-tap-highlight-color: transparent;
+      /* Restore tap highlight but make transparent */
+      -webkit-tap-highlight-color: rgba(0, 0, 255, 0);
       outline: none;
-      touch-action: manipulation;
     }
 
     body.dark-mode h1 {
@@ -422,10 +421,6 @@
         console.log('Title clicked, toggling fullscreen');
         const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
         isFullscreen ? exitFullscreen() : enterFullscreen(document.documentElement);
-      });
-
-      title.addEventListener('touchstart', (e) => {
-        e.preventDefault(); // Prevent text selection or other default behaviors
       });
 
       // Dark mode toggle with localStorage
