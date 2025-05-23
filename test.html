@@ -34,10 +34,18 @@
       padding: 2rem 0 1rem 1rem;
       position: fixed;
       top: 0;
-      user-select: none;
       width: 100%;
       z-index: 3;
       transition: background-color 0.3s ease;
+      /* Make text unselectable */
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      /* Remove tap highlight and focus outline */
+      -webkit-tap-highlight-color: transparent;
+      outline: none;
+      touch-action: manipulation;
     }
 
     body.dark-mode h1 {
@@ -242,7 +250,7 @@
   </style>
 </head>
 <body>
-  <h1 id="title">
+  <h1 id="title" onselectstart="return false" draggable="false">
     <span class="first-line">Cánticos de</span>
     <span class="second-line">Victoria</span>
   </h1>
@@ -381,7 +389,11 @@
         });
       });
 
-      // Fullscreen toggle
+      // Fullscreen toggle with long press
+      const title = document.getElementById('title');
+      let longPressTimer = null;
+      const longPressDuration = 500; // 500ms for long press
+
       const enterFullscreen = (elem) => {
         console.log('Attempting to enter fullscreen');
         if (elem.requestFullscreen) {
@@ -408,12 +420,37 @@
         }
       };
 
-      const title = document.getElementById('title');
-      title.addEventListener('click', () => {
-        console.log('Title clicked, toggling fullscreen');
+      const toggleFullscreen = () => {
+        console.log('Long press detected, toggling fullscreen');
         const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
         isFullscreen ? exitFullscreen() : enterFullscreen(document.documentElement);
+      };
+
+      // Long press detection
+      const startLongPress = () => {
+        longPressTimer = setTimeout(toggleFullscreen, longPressDuration);
+      };
+
+      const cancelLongPress = () => {
+        if (longPressTimer) {
+          clearTimeout(longPressTimer);
+          longPressTimer = null;
+        }
+      };
+
+      // Touch events for mobile
+      title.addEventListener('touchstart', (e) => {
+        e.preventDefault(); // Prevent text selection or other default behaviors
+        startLongPress();
       });
+
+      title.addEventListener('touchend', cancelLongPress);
+      title.addEventListener('touchmove', cancelLongPress);
+
+      // Mouse events for desktop
+      title.addEventListener('mousedown', startLongPress);
+      title.addEventListener('mouseup', cancelLongPress);
+      title.addEventListener('mousemove', cancelLongPress);
 
       // Dark mode toggle with localStorage
       settingsIcon.addEventListener('click', () => {
