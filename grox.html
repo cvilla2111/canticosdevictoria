@@ -3,13 +3,36 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#f0f0f0">
+  <meta name="theme-color" content="#584cd7">
   <title>Cánticos de Victoria</title>
+  <!-- PWA Meta Tags -->
+  <meta name="description" content="Colección de cánticos de victoria">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  
+  <!-- App Icons - Simple "CV" icon with data URI -->
+  <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAE9mlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNy4xLWMwMDAgNzkuOWNjYzRkZSwgMjAyMi8wMy8xNC0xNDowNzoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDIzLjMgKFdpbmRvd3MpIiB4bXA6Q3JlYXRlRGF0ZT0iMjAyMi0wNS0wM1QxNDo0NDo1OCswMjowMCIgeG1wOk1vZGlmeURhdGU9IjIwMjItMDUtMDNUMTQ6NDU6MzErMDI6MDAiIHhtcDpNZXRhZGF0YURhdGU9IjIwMjItMDUtMDNUMTQ6NDU6MzErMDI6MDAiIGRjOmZvcm1hdD0iaW1hZ2UvcG5nIiBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOmM2MTZjN2YyLTE5ZTYtOTk0Ny1iZDdiLWI4ZGRlYThlNDg3ZiIgeG1wTU06RG9jdW1lbnRJRD0i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">
+  <link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAE9mlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNy4xLWMwMDAgNzkuOWNjYzRkZSwgMjAyMi8wMy8xNC0xNDowNzoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDIzLjMgKFdpbmRvd3MpIiB4bXA6Q3JlYXRlRGF0ZT0iMjAyMi0wNS0wM1QxNDo0NDo1OCswMjowMCIgeG1wOk1vZGlmeURhdGU9IjIwMjItMDUtMDNUMTQ6NDU6MzErMDI6MDAiIHhtcDpNZXRhZGF0YURhdGU9IjIwMjItMDUtMDNUMTQ6NDU6MzErMDI6MDAiIGRjOmZvcm1hdD0iaW1hZ2UvcG5nIiBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOmM2MTZjN2YyLTE5ZTYtOTk0Ny1iZDdiLWI4ZGRlYThlNDg3ZiIgeG1wTU06RG9jdW1lbnRJRD0i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">
+  
+  <!-- Web App Manifest (inline) -->
+  <link rel="manifest" href="data:application/manifest+json,{
+    &quot;name&quot;: &quot;Cánticos de Victoria&quot;,
+    &quot;short_name&quot;: &quot;Cánticos&quot;,
+    &quot;description&quot;: &quot;Colección de cánticos de victoria&quot;,
+    &quot;start_url&quot;: &quot;./&quot;,
+    &quot;display&quot;: &quot;standalone&quot;,
+    &quot;background_color&quot;: &quot;#f0f0f0&quot;,
+    &quot;theme_color&quot;: &quot;#584cd7&quot;,
+    &quot;icons&quot;: [
+      {
+        &quot;src&quot;: &quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAE9mlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNy4xLWMwMDAgNzkuOWNjYzRkZSwgMjAyMi8wMy8xNC0xNDowNzoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDIzLjMgKFdpbmRvd3MpIiB4bXA6Q3JlYXRlRGF0ZT0iMjAyMi0wNS0wM1QxNDo0NDo1OCswMjowMCIgeG1wOk1vZGlmeURhdGU9IjIwMjItMDUtMDNUMTQ6NDU6MzErMDI6MDAiIHhtcDpNZXRhZGF0YURhdGU9IjIwMjItMDUtMDNUMTQ6NDU6MzErMDI6MDAiIGRjOmZvcm1hdD0iaW1hZ2UvcG5nIiBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOmM2MTZjN2YyLTE5ZTYtOTk0Ny1iZDdiLWI4ZGRlYThlNDg3ZiIgeG1wTU06RG9jdW1lbnRJRD0i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&quot;,
+        &quot;sizes&quot;: &quot;192x192&quot;,
+        &quot;type&quot;: &quot;image/png&quot;
+      }
+    ]
+  }">
+
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
-  <!-- Link to the Web App Manifest -->
-  <link rel="manifest" href="#manifest">
-  <!-- Apple Touch Icon for iOS -->
-  <link rel="apple-touch-icon" href="icon-192x192.png">
   <style>
     * {
       box-sizing: border-box;
@@ -17,15 +40,30 @@
       padding: 0;
     }
 
+    :root {
+      --primary-color: #584cd7;
+      --light-bg: #f0f0f0;
+      --dark-bg: #181818;
+      --light-text: #333;
+      --dark-text: #f0f0f0;
+      --light-tab-bg: #e0e0e0;
+      --dark-tab-bg: #333;
+    }
+
     body {
-      background-color: #f0f0f0;
+      background-color: var(--light-bg);
       font-family: 'Poppins', sans-serif;
       position: relative;
     }
 
+    body.dark {
+      background-color: var(--dark-bg);
+      color: var(--dark-text);
+    }
+
     /* Header */
     h1 {
-      background-color: #f0f0f0;
+      background-color: var(--light-bg);
       cursor: pointer;
       left: 0;
       line-height: 1.2;
@@ -37,6 +75,10 @@
       z-index: 3;
     }
 
+    body.dark h1 {
+      background-color: var(--dark-bg);
+    }
+
     h1 .first-line {
       color: gray;
       display: block;
@@ -45,10 +87,14 @@
     }
 
     h1 .second-line {
-      color: black;
+      color: var(--light-text);
       display: block;
       font-size: 28px;
       font-weight: 700;
+    }
+
+    body.dark h1 .second-line {
+      color: var(--dark-text);
     }
 
     /* Icons */
@@ -62,7 +108,12 @@
       position: fixed;
       top: 1rem;
       width: 24px;
-      z-index: 4;
+      z-index: 4; /* Above h1 (z-index: 3) */
+    }
+
+    body.dark .icon {
+      border: 2px solid #e0e0e0;
+      fill: #e0e0e0;
     }
 
     .search-icon {
@@ -75,7 +126,7 @@
 
     /* Tabs */
     .pill-container {
-      background-color: #e0e0e0;
+      background-color: var(--light-tab-bg);
       border-radius: 20px;
       display: flex;
       height: 46px;
@@ -86,8 +137,12 @@
       z-index: 2;
     }
 
+    body.dark .pill-container {
+      background-color: var(--dark-tab-bg);
+    }
+
     .pill-container::before {
-      background-color: #584cd7;
+      background-color: var(--primary-color);
       border-radius: 20px;
       content: '';
       height: 46px;
@@ -129,16 +184,24 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    body.dark .pill {
+      color: #aaa;
+    }
+
     .pill.selected {
       color: #fff;
     }
 
     /* Song List */
     .song-list {
-      color: #333;
+      color: var(--light-text);
       height: calc(100vh - 230px);
       margin: 200px 1rem 0;
       overflow-y: auto;
+    }
+
+    body.dark .song-list {
+      color: var(--dark-text);
     }
 
     .tab-content {
@@ -157,7 +220,7 @@
     }
 
     .song-icon {
-      color: black;
+      color: var(--light-text);
       display: inline-block;
       font-size: 44px;
       font-variation-settings: 'wght' 200;
@@ -168,33 +231,65 @@
       width: 44px;
     }
 
+    body.dark .song-icon {
+      color: var(--dark-text);
+    }
+
     .song-text {
-      color: #333;
+      color: var(--light-text);
       flex: 1;
       font-family: 'Poppins', sans-serif;
       font-size: 16px;
       font-weight: 400;
     }
-  </style>
-  <!-- Embedded Web App Manifest -->
-  <script type="application/json" id="manifest">
-    {
-      "name": "Cánticos de Victoria",
-      "short_name": "Cánticos",
-      "description": "A music app for worship songs",
-      "start_url": ".",
-      "display": "standalone",
-      "background_color": "#f0f0f0",
-      "theme_color": "#f0f0f0",
-      "icons": [
-        {
-          "src": "icon-192x192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        }
-      ]
+
+    body.dark .song-text {
+      color: var(--dark-text);
     }
-  </script>
+
+    /* Install prompt */
+    #install-container {
+      display: none;
+      background-color: var(--primary-color);
+      border-radius: 8px;
+      bottom: 20px;
+      color: white;
+      left: 50%;
+      padding: 12px 16px;
+      position: fixed;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 400px;
+      z-index: 10;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    #install-btn {
+      background-color: white;
+      border: none;
+      border-radius: 4px;
+      color: var(--primary-color);
+      cursor: pointer;
+      display: block;
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      margin: 8px auto 0;
+      padding: 8px 16px;
+      width: 100%;
+    }
+
+    #install-close {
+      background-color: transparent;
+      border: none;
+      color: white;
+      cursor: pointer;
+      font-size: 18px;
+      position: absolute;
+      right: 8px;
+      top: 8px;
+    }
+  </style>
 </head>
 <body>
   <h1 id="title">
@@ -378,9 +473,101 @@
     </div>
   </div>
 
+  <!-- Install Prompt -->
+  <div id="install-container">
+    <button id="install-close">×</button>
+    <p>Instala esta app en tu dispositivo para acceso rápido</p>
+    <button id="install-btn">Instalar App</button>
+  </div>
+
   <script>
-    // Tab switching
     document.addEventListener('DOMContentLoaded', () => {
+      // Dark mode detection
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+      }
+      
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+        if (event.matches) {
+            document.body.classList.add('dark');
+        } else {
+            document.body.classList.remove('dark');
+        }
+      });
+
+      // Service Worker Registration
+      if ('serviceWorker' in navigator) {
+        // Create a simple service worker as blob
+        const swContent = `
+          const CACHE_NAME = 'canticos-de-victoria-v1';
+          const urlsToCache = [
+            './',
+            './index.html'
+          ];
+          
+          self.addEventListener('install', event => {
+            event.waitUntil(
+              caches.open(CACHE_NAME)
+                .then(cache => cache.addAll(urlsToCache))
+            );
+          });
+          
+          self.addEventListener('fetch', event => {
+            event.respondWith(
+              caches.match(event.request)
+                .then(response => response || fetch(event.request))
+            );
+          });
+        `;
+        
+        const swBlob = new Blob([swContent], {type: 'text/javascript'});
+        const swUrl = URL.createObjectURL(swBlob);
+        
+        navigator.serviceWorker.register(swUrl)
+          .then(reg => {
+            console.log('Service worker registered:', reg);
+          })
+          .catch(err => {
+            console.error('Service worker registration failed:', err);
+          });
+      }
+
+      // Install prompt
+      let deferredPrompt;
+      const installContainer = document.getElementById('install-container');
+      const installBtn = document.getElementById('install-btn');
+      const installClose = document.getElementById('install-close');
+
+      window.addEventListener('beforeinstallprompt', (e) => {
+        // Prevent Chrome 76+ from automatically showing the prompt
+        e.preventDefault();
+        // Stash the event so it can be triggered later
+        deferredPrompt = e;
+        // Show the install button
+        installContainer.style.display = 'block';
+      });
+
+      installBtn.addEventListener('click', () => {
+        // Hide the app provided install promotion
+        installContainer.style.display = 'none';
+        // Show the install prompt
+        deferredPrompt.prompt();
+        // Wait for the user to respond to the prompt
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('User accepted the install prompt');
+          } else {
+            console.log('User dismissed the install prompt');
+          }
+          deferredPrompt = null;
+        });
+      });
+
+      installClose.addEventListener('click', () => {
+        installContainer.style.display = 'none';
+      });
+
+      // Tab switching
       const tabs = [
         { id: 'tab1', content: 'tab1-content', class: 'tab1-selected' },
         { id: 'tab2', content: 'tab2-content', class: 'tab2-selected' },
@@ -445,89 +632,7 @@
         const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
         isFullscreen ? exitFullscreen() : enterFullscreen(document.documentElement);
       });
-
-      // Service Worker Registration
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('#sw', { scope: '.' })
-            .then(registration => {
-              console.log('Service Worker registered with scope:', registration.scope);
-            })
-            .catch(err => {
-              console.error('Service Worker registration failed:', err);
-            });
-        });
-      }
-
-      // Handle Install Prompt
-      let deferredPrompt;
-      window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        console.log('Install prompt captured');
-        // You can add a button or UI to trigger the install prompt
-        // For simplicity, we'll log it; you can add a button to call deferredPrompt.prompt()
-      });
-
-      // Optional: Add a button to trigger install (uncomment to use)
-      /*
-      const installButton = document.createElement('button');
-      installButton.textContent = 'Install App';
-      installButton.style.position = 'fixed';
-      installButton.style.bottom = '10px';
-      installButton.style.right = '10px';
-      installButton.style.padding = '10px';
-      installButton.style.zIndex = '5';
-      document.body.appendChild(installButton);
-      installButton.addEventListener('click', () => {
-        if (deferredPrompt) {
-          deferredPrompt.prompt();
-          deferredPrompt.userChoice.then(choiceResult => {
-            if (choiceResult.outcome === 'accepted') {
-              console.log('User accepted the install prompt');
-            } else {
-              console.log('User dismissed the install prompt');
-            }
-            deferredPrompt = null;
-          });
-        }
-      });
-      */
     });
-
-    // Embedded Service Worker
-    if (window.location.hash === '#sw') {
-      self.addEventListener('install', (event) => {
-        console.log('Service Worker installing');
-        event.waitUntil(
-          caches.open('canticos-v1').then((cache) => {
-            return cache.addAll([
-              '.',
-              'icon-192x192.png'
-            ]);
-          })
-        );
-      });
-
-      self.addEventListener('fetch', (event) => {
-        event.respondWith(
-          caches.match(event.request).then((response) => {
-            return response || fetch(event.request);
-          })
-        );
-      });
-
-      self.addEventListener('activate', (event) => {
-        console.log('Service Worker activating');
-        event.waitUntil(
-          caches.keys().then((cacheNames) => {
-            return Promise.all(
-              cacheNames.filter((name) => name !== 'canticos-v1').map((name) => caches.delete(name))
-            );
-          })
-        );
-      });
-    }
   </script>
 </body>
 </html>
