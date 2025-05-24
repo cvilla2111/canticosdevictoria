@@ -45,26 +45,7 @@
     .fixed-header .pill-container,
     .fixed-header .search-container {
       width: 95%;
-      padding: 0 1rem;
       margin: 0 auto;
-    }
-
-    @media (min-width: 601px) and (max-width: 1024px) {
-      .fixed-header .header,
-      .fixed-header .pill-container,
-      .fixed-header .search-container {
-        max-width: 720px;
-        padding: 0 1.5rem;
-      }
-    }
-
-    @media (min-width: 1025px) {
-      .fixed-header .header,
-      .fixed-header .pill-container,
-      .fixed-header .search-container {
-        max-width: 840px;
-        padding: 0;
-      }
     }
 
     /* Container */
@@ -218,21 +199,21 @@
       position: absolute;
       top: 0;
       left: 0;
-      transition: transform 0.3s ease-in-out;
+      transition: left 0.3s ease-in-out;
       width: calc(100% / 3);
       z-index: 0;
     }
 
     .pill-container.tab1-selected::before {
-      transform: translateX(0);
+      left: 0;
     }
 
     .pill-container.tab2-selected::before {
-      transform: translateX(calc(100% + 2px));
+      left: calc(100% / 3);
     }
 
     .pill-container.tab3-selected::before {
-      transform: translateX(calc(200% + 4px));
+      left: calc(200% / 3);
     }
 
     .pill {
@@ -244,10 +225,10 @@
       font-family: 'Poppins', sans-serif;
       font-size: clamp(12px, 2.5vw, 14px);
       height: 46px;
-      line-height: 46px;
-      padding: 0 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       position: relative;
-      text-align: center;
       width: calc(100% / 3);
       z-index: 1;
       -webkit-tap-highlight-color: transparent;
@@ -261,27 +242,6 @@
 
     .pill.selected {
       color: #fff;
-    }
-
-    @media (max-width: 600px) {
-      .pill-container {
-        margin: 0 -0.5rem;
-        width: calc(100% + 1rem);
-      }
-    }
-
-    @media (min-width: 601px) and (max-width: 1024px) {
-      .pill-container {
-        margin: 0 -0.75rem;
-        width: calc(100% + 1.5rem);
-      }
-    }
-
-    @media (min-width: 1025px) {
-      .pill-container {
-        margin: 0;
-        width: 100%;
-      }
     }
 
     /* Search Bar */
@@ -449,7 +409,7 @@
       <h1 id="title" onselectstart="return false" draggable="false">
         <span class="title-text">
           <span class="first-line">Cánticos de</span>
-          <span class="second-line">Victoria</span>
+          <span class="second-line">Victoria.</span>
         </span>
       </h1>
       <div class="icons">
