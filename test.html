@@ -196,7 +196,7 @@
     /* Tabs */
     .pill-container {
       position: sticky;
-      top: 76px; /* Below header (~76px) */
+      top: 76px;
       height: 46px;
       background-color: #e0e0e0;
       border-radius: 20px;
@@ -287,7 +287,7 @@
     /* Search Bar */
     .search-container {
       position: sticky;
-      top: 122px; /* Below tabs (76px + 46px) */
+      top: 122px;
       z-index: 2;
       opacity: 0;
       transform: translateY(-10px);
@@ -363,7 +363,7 @@
     /* Song List */
     .song-list {
       color: #333;
-      margin-top: 162px; /* header (~76px) + tabs (46px) + gaps (2x1rem) */
+      margin-top: 162px;
       min-height: calc(100vh - 162px);
       overflow-y: auto;
       padding-top: 0;
@@ -375,7 +375,7 @@
     }
 
     .song-list.search-visible {
-      margin-top: 202px; /* + search (40px) */
+      margin-top: 202px;
       min-height: calc(100vh - 202px);
     }
 
@@ -444,7 +444,6 @@
   </style>
 </head>
 <body>
-  <input type="file" id="canticos-upload" accept=".txt" style="position: fixed; top: 10px; left: 10px; z-index: 4;">
   <div class="fixed-header">
     <div class="header">
       <h1 id="title" onselectstart="return false" draggable="false">
@@ -511,60 +510,6 @@
           .replace(/ñ/g, 'n')
           .replace(/Ñ/g, 'N');
       };
-
-      // File upload handler
-      const uploadInput = document.getElementById('canticos-upload');
-      uploadInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = (event) => {
-            const data = event.target.result;
-            const todosContent = document.getElementById('tab1-content');
-            const mayoresContent = document.getElementById('tab2-content');
-            const menoresContent = document.getElementById('tab3-content');
-            const songs = data.trim().split(/\n\s*\n/);
-            todosContent.innerHTML = '';
-            mayoresContent.innerHTML = '';
-            menoresContent.innerHTML = '';
-            allSongs = [];
-            mayoresSongs = [];
-            menoresSongs = [];
-            songs.forEach(song => {
-              console.log('Processing song:', song);
-              const lines = song.split('\n');
-              if (lines.length === 0 || !lines[0].trim()) {
-                console.warn('Skipping empty song:', song);
-                return;
-              }
-              let title = lines[0].trim();
-              console.log('Title:', title);
-              const isMayores = title.includes('[+]');
-              const isMenores = title.includes('[-]');
-              title = title.replace(/\[.\]/, '').replace(/\(.*?\)/g, '').trim();
-              if (title) {
-                const songItem = document.createElement('div');
-                songItem.className = 'song-item';
-                songItem.innerHTML = `
-                  <span class="song-icon material-symbols-outlined">play_circle</span>
-                  <span class="song-text">${title}</span>
-                `;
-                songItem.dataset.title = title;
-                songItem.dataset.normalizedTitle = normalizeText(title);
-                const songData = songItem.cloneNode(true);
-                allSongs.push(songData);
-                if (isMayores) mayoresSongs.push(songData);
-                if (isMenores) menoresSongs.push(songData);
-                todosContent.appendChild(songItem.cloneNode(true));
-                if (isMayores) mayoresContent.appendChild(songItem.cloneNode(true));
-                if (isMenores) menoresContent.appendChild(songItem.cloneNode(true));
-              }
-            });
-            document.querySelector('.search-input').dispatchEvent(new Event('input'));
-          };
-          reader.readAsText(file);
-        }
-      });
 
       // Fetch and populate songs
       fetch('canticos.txt')
