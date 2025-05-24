@@ -83,7 +83,7 @@
 
     /* Header */
     .header {
-      padding: 1.25rem 0;
+      padding: 1rem 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -107,7 +107,7 @@
     h1 .first-line {
       color: gray;
       display: block;
-      font-size: clamp(17.5px, 4.375vw, 20px);
+      font-size: clamp(14px, 3.5vw, 16px);
       font-weight: 400;
       transition: color 0.3s ease;
     }
@@ -119,7 +119,7 @@
     h1 .second-line {
       color: black;
       display: block;
-      font-size: clamp(35px, 6.875vw, 40px);
+      font-size: clamp(28px, 5.5vw, 32px);
       font-weight: 700;
       transition: color 0.3s ease;
     }
@@ -130,13 +130,13 @@
 
     .icons {
       display: flex;
-      gap: 1.375rem; /* 1.1rem * 1.25 */
+      gap: 1.1rem;
       align-items: center;
     }
 
     @media (max-width: 600px) {
       .icons {
-        gap: 0.75rem; /* 0.6rem * 1.25 */
+        gap: 0.6rem;
       }
     }
 
@@ -147,17 +147,17 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 32px;
-      padding: 11px;
-      width: 32px;
+      height: 26px;
+      padding: 9px;
+      width: 26px;
       transition: border-color 0.3s ease;
     }
 
     @media (max-width: 600px) {
       .icon {
-        height: 27px;
-        width: 27px;
-        padding: 9px;
+        height: 22px;
+        width: 22px;
+        padding: 7px;
       }
     }
 
@@ -166,7 +166,7 @@
     }
 
     .icon .material-symbols-outlined {
-      font-size: 22.5px; /* 18px * 1.25 */
+      font-size: 18px;
       color: #1f1f1f;
       transform: scale(1.4);
       transition: color 0.3s ease;
@@ -174,7 +174,7 @@
 
     @media (max-width: 600px) {
       .icon .material-symbols-outlined {
-        font-size: 20px; /* 16px * 1.25 */
+        font-size: 16px;
         transform: scale(1.2);
       }
     }
@@ -186,8 +186,8 @@
     /* Tabs */
     .pill-container {
       position: sticky;
-      top: 95px;
-      height: 58px;
+      top: 76px;
+      height: 46px;
       background-color: #e0e0e0;
       border-radius: 20px;
       display: flex;
@@ -204,7 +204,7 @@
       background-color: #584cd7;
       border-radius: 20px;
       content: '';
-      height: 58px;
+      height: 46px;
       position: absolute;
       top: 0;
       left: 0;
@@ -232,8 +232,8 @@
       color: #666;
       cursor: pointer;
       font-family: 'Poppins', sans-serif;
-      font-size: clamp(15px, 3.125vw, 17.5px);
-      height: 58px;
+      font-size: clamp(12px, 2.5vw, 14px);
+      height: 46px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -256,7 +256,7 @@
     /* Search Bar */
     .search-container {
       position: sticky;
-      top: 153px;
+      top: 122px;
       z-index: 2;
       opacity: 0;
       transform: translateY(-10px);
@@ -273,12 +273,12 @@
 
     .search-input {
       width: 100%;
-      height: 50px;
-      padding: 0 55px 0 45px; /* 44px/36px * 1.25 */
+      height: 40px;
+      padding: 0 44px 0 36px;
       border: 1px solid #ccc;
       border-radius: 20px;
       font-family: 'Poppins', sans-serif;
-      font-size: clamp(15px, 3.125vw, 17.5px);
+      font-size: clamp(12px, 2.5vw, 14px);
       background-color: rgba(255, 255, 255, 0.9);
       color: #333;
       transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
@@ -305,20 +305,20 @@
 
     .search-container .search-icon-input {
       position: absolute;
-      left: 15px; /* 12px * 1.25 */
+      left: 12px;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 25px; /* 20px * 1.25 */
+      font-size: 20px;
       color: #666;
       transition: color 0.3s ease;
     }
 
     .search-container .close-icon {
       position: absolute;
-      right: 12.5px; /* 10px * 1.25 */
+      right: 10px;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 30px; /* 24px * 1.25 */
+      font-size: 24px;
       color: #666;
       cursor: pointer;
       transition: color 0.3s ease;
@@ -332,8 +332,8 @@
     /* Song List */
     .song-list {
       color: #333;
-      margin-top: 225px;
-      min-height: calc(100vh - 225px);
+      margin-top: 194px;
+      min-height: calc(100vh - 194px);
       overflow-y: auto;
       padding-top: 0;
       transition: color 0.3s ease, margin-top 0.3s ease;
@@ -344,8 +344,8 @@
     }
 
     .song-list.search-visible {
-      margin-top: 275px;
-      min-height: calc(100vh - 275px);
+      margin-top: 234px;
+      min-height: calc(100vh - 234px);
     }
 
     body.dark-mode .song-list {
@@ -418,7 +418,7 @@
       <h1 id="title" onselectstart="return false" draggable="false">
         <span class="title-text">
           <span class="first-line">Cánticos de</span>
-          <span class="second-line">Victoria.</span>
+          <span class="second-line">Victoria</span>
         </span>
       </h1>
       <div class="icons">
