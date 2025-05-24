@@ -197,7 +197,7 @@
       top: 150px;
       left: 1rem;
       width: calc(100% - 2rem);
-      z-index: 2;
+      z-index: 1; /* Lowered to prevent overlap */
       opacity: 0;
       transform: translateY(-10px);
       visibility: hidden;
@@ -271,10 +271,10 @@
     /* Song List */
     .song-list {
       color: #333;
-      height: calc(100vh - 240px); /* Adjusted for margin-top */
-      margin: 240px 1rem 0; /* Increased to prevent overlap */
+      height: calc(100vh - 200px); /* Adjusted for margin-top */
+      margin: 200px 1rem 0; /* Changed to 200px */
       overflow-y: auto;
-      padding-top: 0; /* Changed to 0 */
+      padding-top: 0;
       transition: color 0.3s ease;
       visibility: visible;
       opacity: 1;
