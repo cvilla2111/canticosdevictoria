@@ -16,7 +16,6 @@
     body {
       background-color: #f0f0f0;
       font-family: 'Poppins', sans-serif;
-      position: relative;
       transition: background-color 0.3s ease, color 0.3s ease;
     }
 
@@ -25,15 +24,35 @@
       color: #e0e0e0;
     }
 
+    /* Container */
+    .container {
+      width: 100%;
+      padding: 0 1rem;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      min-height: 100vh;
+    }
+
+    @media (min-width: 601px) and (max-width: 1024px) {
+      .container {
+        max-width: 720px;
+        padding: 0 1.5rem;
+      }
+    }
+
+    @media (min-width: 1025px) {
+      .container {
+        max-width: 840px;
+        padding: 0;
+      }
+    }
+
     /* Header */
     .header {
       background-color: #f0f0f0;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 3;
-      padding: 1rem;
+      padding: 1rem 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -89,6 +108,12 @@
       align-items: center;
     }
 
+    @media (max-width: 600px) {
+      .icons {
+        gap: 0.5rem;
+      }
+    }
+
     .icon {
       border: 2px solid #1f1f1f;
       border-radius: 50%;
@@ -132,35 +157,12 @@
       color: #e0e0e0;
     }
 
-    /* Container */
-    .container {
-      width: 100%;
-      padding: 0 1rem;
-      margin: 0 auto;
-    }
-
-    @media (min-width: 601px) and (max-width: 1024px) {
-      .container {
-        max-width: 720px;
-        padding: 0 1.5rem;
-      }
-    }
-
-    @media (min-width: 1025px) {
-      .container {
-        max-width: 840px;
-        padding: 0;
-      }
-    }
-
     /* Tabs */
     .pill-container {
       background-color: #e0e0e0;
       border-radius: 20px;
       display: flex;
       height: 46px;
-      position: sticky;
-      top: 76px; /* Below header */
       width: 100%;
       z-index: 2;
       transition: background-color 0.3s ease;
@@ -224,8 +226,6 @@
 
     /* Search Bar */
     .search-container {
-      position: sticky;
-      top: 122px; /* Below tabs (76px + 46px) */
       width: 100%;
       z-index: 2;
       opacity: 0;
@@ -302,14 +302,14 @@
     /* Song List */
     .song-list {
       color: #333;
-      min-height: calc(100vh - 210px);
-      margin: 210px 0 0; /* Adjusted to clear search bar */
+      min-height: calc(100vh - 162px); /* header (~76px) + tabs (46px) + search (40px) */
       overflow-y: auto;
       padding-top: 0;
       transition: color 0.3s ease;
       visibility: visible;
       opacity: 1;
       width: 100%;
+      flex: 1; /* Grow to fill remaining space */
     }
 
     body.dark-mode .song-list {
@@ -378,27 +378,27 @@
 </head>
 <body>
   <input type="file" id="canticos-upload" accept=".txt" style="position: fixed; top: 10px; left: 10px; z-index: 4;">
-  <div class="header">
-    <h1 id="title" onselectstart="return false" draggable="false">
-      <span class="title-text">
-        <span class="first-line">Cánticos de</span>
-        <span class="second-line">Victoria</span>
-      </span>
-    </h1>
-    <div class="icons">
-      <span class="icon search-icon">
-        <span class="material-symbols-outlined">search</span>
-      </span>
-      <span class="icon settings-icon">
-        <span class="material-symbols-outlined">light_mode</span>
-      </span>
-      <span class="icon menu-icon">
-        <span class="material-symbols-outlined">more_vert</span>
-      </span>
-    </div>
-  </div>
-
   <div class="container">
+    <div class="header">
+      <h1 id="title" onselectstart="return false" draggable="false">
+        <span class="title-text">
+          <span class="first-line">Cánticos de</span>
+          <span class="second-line">Victoria</span>
+        </span>
+      </h1>
+      <div class="icons">
+        <span class="icon search-icon">
+          <span class="material-symbols-outlined">search</span>
+        </span>
+        <span class="icon settings-icon">
+          <span class="material-symbols-outlined">light_mode</span>
+        </span>
+        <span class="icon menu-icon">
+          <span class="material-symbols-outlined">more_vert</span>
+        </span>
+      </div>
+    </div>
+
     <div class="pill-container tab1-selected">
       <button class="pill selected" id="tab1">Todos</button>
       <button class="pill" id="tab2">Mayores</button>
