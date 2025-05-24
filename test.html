@@ -271,12 +271,12 @@
     /* Song List */
     .song-list {
       color: #333;
-      height: calc(100vh - 200px);
-      margin: 200px 1rem 0;
+      height: calc(100vh - 240px); /* Adjusted for margin-top */
+      margin: 240px 1rem 0; /* Increased to prevent overlap */
       overflow-y: auto;
+      padding-top: 0; /* Changed to 0 */
       transition: color 0.3s ease;
-      padding-top: 44px;
-      visibility: visible; /* Ensure visibility */
+      visibility: visible;
       opacity: 1;
     }
 
@@ -290,7 +290,7 @@
 
     .tab-content.active {
       display: block;
-      visibility: visible; /* Ensure visibility */
+      visibility: visible;
       opacity: 1;
     }
 
@@ -299,7 +299,7 @@
       display: flex;
       line-height: 1.5;
       padding: 4px 0 8px 0;
-      visibility: visible; /* Ensure visibility */
+      visibility: visible;
       opacity: 1;
     }
 
@@ -418,14 +418,14 @@
             mayoresSongs = [];
             menoresSongs = [];
             songs.forEach(song => {
-              console.log('Processing song:', song); // Debug
+              console.log('Processing song:', song);
               const lines = song.split('\n');
               if (lines.length === 0 || !lines[0].trim()) {
                 console.warn('Skipping empty song:', song);
                 return;
               }
               let title = lines[0].trim();
-              console.log('Title:', title); // Debug
+              console.log('Title:', title);
               const isMayores = title.includes('[+]');
               const isMenores = title.includes('[-]');
               title = title.replace(/\[.\]/, '').replace(/\(.*?\)/g, '').trim();
@@ -447,7 +447,7 @@
                 if (isMenores) menoresContent.appendChild(songItem.cloneNode(true));
               }
             });
-            document.querySelector('.search-input').dispatchEvent(new Event('input')); // Refresh search
+            document.querySelector('.search-input').dispatchEvent(new Event('input'));
           };
           reader.readAsText(file);
         }
@@ -468,14 +468,14 @@
           mayoresContent.innerHTML = '';
           menoresContent.innerHTML = '';
           songs.forEach(song => {
-            console.log('Processing song:', song); // Debug
+            console.log('Processing song:', song);
             const lines = song.split('\n');
             if (lines.length === 0 || !lines[0].trim()) {
               console.warn('Skipping empty song:', song);
               return;
             }
             let title = lines[0].trim();
-            console.log('Title:', title); // Debug
+            console.log('Title:', title);
             const isMayores = title.includes('[+]');
             const isMenores = title.includes('[-]');
             title = title.replace(/\[.\]/, '').replace(/\(.*?\)/g, '').trim();
@@ -530,7 +530,7 @@
         const query = normalizeText(searchInput.value);
         const activeTab = document.querySelector('.tab-content.active');
         const tabId = activeTab.id;
-        console.log('Active tab:', tabId); // Debug
+        console.log('Active tab:', tabId);
         const songsToFilter = tabId === 'tab1-content' ? allSongs :
                              tabId === 'tab2-content' ? mayoresSongs :
                              menoresSongs;
