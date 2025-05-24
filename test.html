@@ -24,6 +24,49 @@
       color: #e0e0e0;
     }
 
+    /* Fixed Header Container */
+    .fixed-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      background-color: #f0f0f0;
+      transition: background-color 0.3s ease;
+    }
+
+    body.dark-mode .fixed-header {
+      background-color: #1f1f1f;
+    }
+
+    .fixed-header .header,
+    .fixed-header .pill-container,
+    .fixed-header .search-container {
+      width: 100%;
+      padding: 0 1rem;
+      margin: 0 auto;
+    }
+
+    @media (min-width: 601px) and (max-width: 1024px) {
+      .fixed-header .header,
+      .fixed-header .pill-container,
+      .fixed-header .search-container {
+        max-width: 720px;
+        padding: 0 1.5rem;
+      }
+    }
+
+    @media (min-width: 1025px) {
+      .fixed-header .header,
+      .fixed-header .pill-container,
+      .fixed-header .search-container {
+        max-width: 840px;
+        padding: 0;
+      }
+    }
+
     /* Container */
     .container {
       width: 100%;
@@ -31,7 +74,6 @@
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
       min-height: 100vh;
     }
 
@@ -51,16 +93,10 @@
 
     /* Header */
     .header {
-      background-color: #f0f0f0;
       padding: 1rem 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      transition: background-color 0.3s ease;
-    }
-
-    body.dark-mode .header {
-      background-color: #1f1f1f;
     }
 
     h1 {
@@ -159,12 +195,12 @@
 
     /* Tabs */
     .pill-container {
+      position: sticky;
+      top: 76px; /* Below header (~76px) */
+      height: 46px;
       background-color: #e0e0e0;
       border-radius: 20px;
       display: flex;
-      height: 46px;
-      width: 100%;
-      position: relative;
       z-index: 2;
       transition: background-color 0.3s ease;
       box-sizing: border-box;
@@ -250,7 +286,8 @@
 
     /* Search Bar */
     .search-container {
-      width: 100%;
+      position: sticky;
+      top: 122px; /* Below tabs (76px + 46px) */
       z-index: 2;
       opacity: 0;
       transform: translateY(-10px);
@@ -326,14 +363,20 @@
     /* Song List */
     .song-list {
       color: #333;
+      margin-top: 162px; /* header (~76px) + tabs (46px) + gaps (2x1rem) */
       min-height: calc(100vh - 162px);
       overflow-y: auto;
       padding-top: 0;
-      transition: color 0.3s ease;
+      transition: color 0.3s ease, margin-top 0.3s ease;
       visibility: visible;
       opacity: 1;
       width: 100%;
       flex: 1;
+    }
+
+    .song-list.search-visible {
+      margin-top: 202px; /* + search (40px) */
+      min-height: calc(100vh - 202px);
     }
 
     body.dark-mode .song-list {
@@ -402,7 +445,7 @@
 </head>
 <body>
   <input type="file" id="canticos-upload" accept=".txt" style="position: fixed; top: 10px; left: 10px; z-index: 4;">
-  <div class="container">
+  <div class="fixed-header">
     <div class="header">
       <h1 id="title" onselectstart="return false" draggable="false">
         <span class="title-text">
@@ -422,19 +465,18 @@
         </span>
       </div>
     </div>
-
     <div class="pill-container tab1-selected">
       <button class="pill selected" id="tab1">Todos</button>
       <button class="pill" id="tab2">Mayores</button>
       <button class="pill" id="tab3">Menores</button>
     </div>
-
     <div class="search-container hidden">
       <input type="text" class="search-input" placeholder="Buscar cánticos...">
       <span class="material-symbols-outlined search-icon-input">search</span>
       <span class="material-symbols-outlined close-icon">close</span>
     </div>
-
+  </div>
+  <div class="container">
     <div class="song-list">
       <div id="tab1-content" class="tab-content active"></div>
       <div id="tab2-content" class="tab-content"></div>
@@ -579,9 +621,19 @@
       const searchContainer = document.querySelector('.search-container');
       const searchInput = document.querySelector('.search-input');
       const closeIcon = document.querySelector('.close-icon');
+      const songList = document.querySelector('.song-list');
+
+      const updateSongListMargin = () => {
+        if (searchContainer.classList.contains('visible')) {
+          songList.classList.add('search-visible');
+        } else {
+          songList.classList.remove('search-visible');
+        }
+      };
 
       searchIcon.addEventListener('click', () => {
         searchContainer.classList.toggle('visible');
+        updateSongListMargin();
         if (searchContainer.classList.contains('visible')) {
           searchInput.focus();
         } else {
@@ -592,6 +644,7 @@
 
       closeIcon.addEventListener('click', () => {
         searchContainer.classList.remove('visible');
+        updateSongListMargin();
         searchInput.value = '';
         searchInput.dispatchEvent(new Event('input'));
       });
