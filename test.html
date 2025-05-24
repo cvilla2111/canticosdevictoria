@@ -164,8 +164,10 @@
       display: flex;
       height: 46px;
       width: 100%;
+      position: relative;
       z-index: 2;
       transition: background-color 0.3s ease;
+      box-sizing: border-box;
     }
 
     body.dark-mode .pill-container {
@@ -177,9 +179,9 @@
       border-radius: 20px;
       content: '';
       height: 46px;
-      left: 0;
       position: absolute;
       top: 0;
+      left: 0;
       transition: transform 0.3s ease-in-out;
       width: calc(100% / 3);
       z-index: 0;
@@ -190,11 +192,11 @@
     }
 
     .pill-container.tab2-selected::before {
-      transform: translateX(100%);
+      transform: translateX(calc(100% + 2px));
     }
 
     .pill-container.tab3-selected::before {
-      transform: translateX(200%);
+      transform: translateX(calc(200% + 4px));
     }
 
     .pill {
@@ -214,6 +216,7 @@
       z-index: 1;
       -webkit-tap-highlight-color: transparent;
       transition: color 0.3s ease;
+      box-sizing: border-box;
     }
 
     body.dark-mode .pill {
@@ -222,6 +225,27 @@
 
     .pill.selected {
       color: #fff;
+    }
+
+    @media (max-width: 600px) {
+      .pill-container {
+        margin: 0 -0.5rem;
+        width: calc(100% + 1rem);
+      }
+    }
+
+    @media (min-width: 601px) and (max-width: 1024px) {
+      .pill-container {
+        margin: 0 -0.75rem;
+        width: calc(100% + 1.5rem);
+      }
+    }
+
+    @media (min-width: 1025px) {
+      .pill-container {
+        margin: 0;
+        width: 100%;
+      }
     }
 
     /* Search Bar */
@@ -302,14 +326,14 @@
     /* Song List */
     .song-list {
       color: #333;
-      min-height: calc(100vh - 162px); /* header (~76px) + tabs (46px) + search (40px) */
+      min-height: calc(100vh - 162px);
       overflow-y: auto;
       padding-top: 0;
       transition: color 0.3s ease;
       visibility: visible;
       opacity: 1;
       width: 100%;
-      flex: 1; /* Grow to fill remaining space */
+      flex: 1;
     }
 
     body.dark-mode .song-list {
