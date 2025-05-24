@@ -48,6 +48,14 @@
       margin: 0 auto;
     }
 
+    @media (min-width: 1025px) {
+      .fixed-header .header,
+      .fixed-header .pill-container,
+      .fixed-header .search-container {
+        width: 60%;
+      }
+    }
+
     /* Container */
     .container {
       width: 100%;
@@ -67,8 +75,9 @@
 
     @media (min-width: 1025px) {
       .container {
-        max-width: 840px;
+        width: 60%;
         padding: 0;
+        margin: 0 auto;
       }
     }
 
@@ -409,7 +418,7 @@
       <h1 id="title" onselectstart="return false" draggable="false">
         <span class="title-text">
           <span class="first-line">Cánticos de</span>
-          <span class="second-line">Victoria.</span>
+          <span class="second-line">Victoria</span>
         </span>
       </h1>
       <div class="icons">
