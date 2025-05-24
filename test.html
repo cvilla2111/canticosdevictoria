@@ -25,6 +25,20 @@
       color: #e0e0e0;
     }
 
+    /* Container */
+    .container {
+      width: 100%;
+      padding: 0 1rem;
+    }
+
+    @media (min-width: 840px) {
+      .container {
+        max-width: 840px;
+        margin: 0 auto;
+        padding: 0;
+      }
+    }
+
     /* Header */
     h1 {
       background-color: #f0f0f0;
@@ -110,6 +124,18 @@
       right: 4.3rem;
     }
 
+    @media (min-width: 840px) {
+      .search-icon {
+        right: calc((100% - 840px) / 2 + 7.6rem);
+      }
+      .menu-icon {
+        right: calc((100% - 840px) / 2 + 1rem);
+      }
+      .settings-icon {
+        right: calc((100% - 840px) / 2 + 4.3rem);
+      }
+    }
+
     .icon .material-symbols-outlined {
       font-size: 16px;
       color: #1f1f1f;
@@ -133,6 +159,13 @@
       width: calc(100% - 2rem);
       z-index: 2;
       transition: background-color 0.3s ease;
+    }
+
+    @media (min-width: 840px) {
+      .pill-container {
+        left: 0;
+        width: 100%;
+      }
     }
 
     body.dark-mode .pill-container {
@@ -197,12 +230,19 @@
       top: 150px;
       left: 1rem;
       width: calc(100% - 2rem);
-      z-index: 1; /* Lowered to prevent overlap */
+      z-index: 2; /* Restored to fix overlap */
       opacity: 0;
       transform: translateY(-10px);
       visibility: hidden;
       display: block;
       transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    }
+
+    @media (min-width: 840px) {
+      .search-container {
+        left: 0;
+        width: 100%;
+      }
     }
 
     .search-container.visible {
@@ -271,13 +311,14 @@
     /* Song List */
     .song-list {
       color: #333;
-      height: calc(100vh - 200px); /* Adjusted for margin-top */
-      margin: 200px 1rem 0; /* Changed to 200px */
+      height: calc(100vh - 200px);
+      margin: 200px 1rem 0;
       overflow-y: auto;
       padding-top: 0;
       transition: color 0.3s ease;
       visibility: visible;
       opacity: 1;
+      width: 100%; /* Ensure full width within container */
     }
 
     body.dark-mode .song-list {
@@ -353,22 +394,24 @@
     <span class="material-symbols-outlined">light_mode</span>
   </span>
 
-  <div class="pill-container tab1-selected">
-    <button class="pill selected" id="tab1">Todos</button>
-    <button class="pill" id="tab2">Mayores</button>
-    <button class="pill" id="tab3">Menores</button>
-  </div>
+  <div class="container">
+    <div class="pill-container tab1-selected">
+      <button class="pill selected" id="tab1">Todos</button>
+      <button class="pill" id="tab2">Mayores</button>
+      <button class="pill" id="tab3">Menores</button>
+    </div>
 
-  <div class="search-container hidden">
-    <input type="text" class="search-input" placeholder="Buscar cánticos...">
-    <span class="material-symbols-outlined search-icon-input">search</span>
-    <span class="material-symbols-outlined close-icon">close</span>
-  </div>
+    <div class="search-container hidden">
+      <input type="text" class="search-input" placeholder="Buscar cánticos...">
+      <span class="material-symbols-outlined search-icon-input">search</span>
+      <span class="material-symbols-outlined close-icon">close</span>
+    </div>
 
-  <div class="song-list">
-    <div id="tab1-content" class="tab-content active"></div>
-    <div id="tab2-content" class="tab-content"></div>
-    <div id="tab3-content" class="tab-content"></div>
+    <div class="song-list">
+      <div id="tab1-content" class="tab-content active"></div>
+      <div id="tab2-content" class="tab-content"></div>
+      <div id="tab3-content" class="tab-content"></div>
+    </div>
   </div>
 
   <script>
