@@ -1,697 +1,682 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#f0f0f0">
-  <title>Cánticos de Victoria</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f0f0f0">
+    <title>Cánticos de Victoria</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    body {
-      background-color: #f0f0f0;
-      font-family: 'Poppins', sans-serif;
-      transition: background-color 0.3s ease, color 0.3s ease;
-    }
+        body {
+            background-color: #f0f0f0;
+            font-family: 'Poppins', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
 
-    body.dark-mode {
-      background-color: #1f1f1f;
-      color: #e0e0e0;
-    }
+        body.dark-mode {
+            background-color: #1f1f1f;
+            color: #e0e0e0;
+        }
 
-    .fixed-header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 3;
-      display: flex;
-      flex-direction: column;
-      background-color: #f0f0f0;
-      transition: background-color 0.3s ease;
-    }
+        .fixed-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            background-color: #f0f0f0;
+            transition: background-color 0.3s ease;
+        }
 
-    body.dark-mode .fixed-header {
-      background-color: #1f1f1f;
-    }
+        body.dark-mode .fixed-header {
+            background-color: #1f1f1f;
+        }
 
-    .fixed-header .header,
-    .fixed-header .pill-container,
-    .fixed-header .search-container {
-      width: 95%;
-      margin: 0 auto;
-    }
+        .fixed-header .header,
+        .fixed-header .pill-container,
+        .fixed-header .search-container {
+            width: 95%;
+            margin: 0 auto;
+        }
 
-    @media (min-width: 1025px) {
-      .fixed-header .header,
-      .fixed-header .pill-container,
-      .fixed-header .search-container {
-        width: 60%;
-      }
-    }
+        @media (min-width: 1025px) {
+            .fixed-header .header,
+            .fixed-header .pill-container,
+            .fixed-header .search-container {
+                width: 60%;
+            }
+        }
 
-    .container {
-      width: 100%;
-      padding: 0 1rem;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
+        .container {
+            width: 100%;
+            padding: 0 1rem;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
 
-    @media (min-width: 601px) and (max-width: 1024px) {
-      .container {
-        max-width: 720px;
-        padding: 0 1.5rem;
-      }
-    }
+        @media (min-width: 601px) and (max-width: 1024px) {
+            .container {
+                max-width: 720px;
+                padding: 0 1.5rem;
+            }
+        }
 
-    @media (min-width: 1025px) {
-      .container {
-        width: 60%;
-        padding: 0;
-        margin: 0 auto;
-      }
-    }
+        @media (min-width: 1025px) {
+            .container {
+                width: 60%;
+                padding: 0;
+                margin: 0 auto;
+            }
+        }
 
-    .header {
-      padding: 1rem 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+        .header {
+            padding: 1rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-    h1 {
-      line-height: 1.2;
-      user-select: none;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      -webkit-tap-highlight-color: rgba(0, 0, 255, 0);
-      outline: none;
-    }
+        h1 {
+            line-height: 1.2;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            -webkit-tap-highlight-color: rgba(0, 0, 255, 0);
+            outline: none;
+        }
 
-    h1 .title-text {
-      cursor: pointer;
-      display: inline-block;
-    }
+        h1 .title-text {
+            cursor: pointer;
+            display: inline-block;
+        }
 
-    h1 .first-line {
-      color: gray;
-      display: block;
-      font-size: clamp(14px, 3.5vw, 16px);
-      font-weight: 400;
-      transition: color 0.3s ease;
-    }
+        h1 .first-line {
+            color: gray;
+            display: block;
+            font-size: clamp(14px, 3.5vw, 16px);
+            font-weight: 400;
+            transition: color 0.3s ease;
+        }
 
-    body.dark-mode h1 .first-line {
-      color: #a0a0a0;
-    }
+        body.dark-mode h1 .first-line {
+            color: #a0a0a0;
+        }
 
-    h1 .second-line {
-      color: black;
-      display: block;
-      font-size: clamp(28px, 5.5vw, 32px);
-      font-weight: 700;
-      transition: color 0.3s ease;
-    }
+        h1 .second-line {
+            color: black;
+            display: block;
+            font-size: clamp(28px, 5.5vw, 32px);
+            font-weight: 700;
+            transition: color 0.3s ease;
+        }
 
-    body.dark-mode h1 .second-line {
-      color: #ffffff;
-    }
+        body.dark-mode h1 .second-line {
+            color: #ffffff;
+        }
 
-    .icons {
-      display: flex;
-      gap: 1.1rem;
-      align-items: center;
-    }
+        .icons {
+            display: flex;
+            gap: 1.1rem;
+            align-items: center;
+        }
 
-    @media (max-width: 600px) {
-      .icons {
-        gap: 0.6rem;
-      }
-    }
+        @media (max-width: 600px) {
+            .icons {
+                gap: 0.6rem;
+            }
+        }
 
-    .icon {
-      border: 1.5px solid #1f1f1f;
-      border-radius: 50%;
-      box-sizing: content-box;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 26px;
-      padding: 9px;
-      width: 26px;
-      transition: border-color 0.3s ease;
-    }
+        .icon {
+            border: 1.5px solid #1f1f1f;
+            border-radius: 50%;
+            box-sizing: content-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 26px;
+            padding: 9px;
+            width: 26px;
+            transition: border-color 0.3s ease;
+        }
 
-    @media (max-width: 600px) {
-      .icon {
-        height: 22px;
-        width: 22px;
-        padding: 7px;
-      }
-    }
+        @media (max-width: 600px) {
+            .icon {
+                height: 22px;
+                width: 22px;
+                padding: 7px;
+            }
+        }
 
-    body.dark-mode .icon {
-      border-color: #e0e0e0;
-    }
+        body.dark-mode .icon {
+            border-color: #e0e0e0;
+        }
 
-    .icon .material-symbols-outlined {
-      font-size: 18px;
-      color: #1f1f1f;
-      transform: scale(1.4);
-      transition: color 0.3s ease;
-    }
+        .icon .material-symbols-outlined {
+            font-size: 18px;
+            color: #1f1f1f;
+            transform: scale(1.4);
+            transition: color 0.3s ease;
+        }
 
-    @media (max-width: 600px) {
-      .icon .material-symbols-outlined {
-        font-size: 16px;
-        transform: scale(1.2);
-      }
-    }
+        @media (max-width: 600px) {
+            .icon .material-symbols-outlined {
+                font-size: 16px;
+                transform: scale(1.2);
+            }
+        }
 
-    body.dark-mode .icon .material-symbols-outlined {
-      color: #e0e0e0;
-    }
+        body.dark-mode .icon .material-symbols-outlined {
+            color: #e0e0e0;
+        }
 
-    .pill-container {
-      position: sticky;
-      top: 76px;
-      height: 46px;
-      background-color: #e0e0e0;
-      border-radius: 20px;
-      display: flex;
-      z-index: 2;
-      transition: background-color 0.3s ease;
-      box-sizing: border-box;
-    }
+        .pill-container {
+            position: sticky;
+            top: 76px;
+            height: 46px;
+            background-color: #e0e0e0;
+            border-radius: 20px;
+            display: flex;
+            z-index: 2;
+            transition: background-color 0.3s ease;
+            box-sizing: border-box;
+        }
 
-    body.dark-mode .pill-container {
-      background-color: #333333;
-    }
+        body.dark-mode .pill-container {
+            background-color: #333333;
+        }
 
-    .pill-container::before {
-      background-color: #584cd7;
-      border-radius: 20px;
-      content: '';
-      height: 46px;
-      position: absolute;
-      top: 0;
-      left: 0;
-      transition: left 0.3s ease-in-out;
-      width: calc(100% / 3);
-      z-index: 0;
-    }
+        .pill-container::before {
+            background-color: #584cd7;
+            border-radius: 20px;
+            content: '';
+            height: 46px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: left 0.3s ease-in-out;
+            width: calc(100% / 3);
+            z-index: 0;
+        }
 
-    .pill-container.tab1-selected::before {
-      left: 0;
-    }
+        .pill-container.tab1-selected::before {
+            left: 0;
+        }
 
-    .pill-container.tab2-selected::before {
-      left: calc(100% / 3);
-    }
+        .pill-container.tab2-selected::before {
+            left: calc(100% / 3);
+        }
 
-    .pill-container.tab3-selected::before {
-      left: calc(200% / 3);
-    }
+        .pill-container.tab3-selected::before {
+            left: calc(200% / 3);
+        }
 
-    .pill {
-      background-color: transparent;
-      border: none;
-      border-radius: 20px;
-      color: #666;
-      cursor: pointer;
-      font-family: 'Poppins', sans-serif;
-      font-size: clamp(12px, 2.5vw, 14px);
-      height: 46px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative;
-      width: calc(100% / 3);
-      z-index: 1;
-      -webkit-tap-highlight-color: transparent;
-      transition: color 0.3s ease;
-      box-sizing: border-box;
-    }
+        .pill {
+            background-color: transparent;
+            border: none;
+            border-radius: 20px;
+            color: #666;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(12px, 2.5vw, 14px);
+            height: 46px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            width: calc(100% / 3);
+            z-index: 1;
+            -webkit-tap-highlight-color: transparent;
+            transition: color 0.3s ease;
+            box-sizing: border-box;
+        }
 
-    body.dark-mode .pill {
-      color: #a0a0a0;
-    }
+        body.dark-mode .pill {
+            color: #a0a0a0;
+        }
 
-    .pill.selected {
-      color: #fff;
-    }
+        .pill.selected {
+            color: #fff;
+        }
 
-    .search-container {
-      position: sticky;
-      top: 122px;
-      z-index: 2;
-      opacity: 0;
-      transform: translateY(-10px);
-      visibility: hidden;
-      display: block;
-      transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-    }
+        .search-container {
+            position: sticky;
+            top: 122px;
+            z-index: 2;
+            opacity: 0;
+            transform: translateY(-10px);
+            visibility: hidden;
+            display: block;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
 
-    .search-container.visible {
-      opacity: 1;
-      transform: translateY(0);
-      visibility: visible;
-    }
+        .search-container.visible {
+            opacity: 1;
+            transform: translateY(0);
+            visibility: visible;
+        }
 
-    .search-input {
-      width: 100%;
-      height: 40px;
-      padding: 0 44px 0 36px;
-      border: 1px solid #ccc;
-      border-radius: 20px;
-      font-family: 'Poppins', sans-serif;
-      font-size: clamp(12px, 2.5vw, 14px);
-      background-color: rgba(255, 255, 255, 0.9);
-      color: #333;
-      transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
-    }
+        .search-input {
+            width: 100%;
+            height: 40px;
+            padding: 0 44px 0 36px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(12px, 2.5vw, 14px);
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #333;
+            transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+        }
 
-    .search-input:focus {
-      outline: none;
-      border-color: #584cd7;
-    }
+        .search-input:focus {
+            outline: none;
+            border-color: #584cd7;
+        }
 
-    body.dark-mode .search-input {
-      background-color: rgba(51, 51, 51, 0.9);
-      border-color: #666;
-      color: #e0e0e0;
-    }
+        body.dark-mode .search-input {
+            background-color: rgba(51, 51, 51, 0.9);
+            border-color: #666;
+            color: #e0e0e0;
+        }
 
-    .search-input::placeholder {
-      color: #999;
-    }
+        .search-input::placeholder {
+            color: #999;
+        }
 
-    body.dark-mode .search-input::placeholder {
-      color: #a0a0a0;
-    }
+        body.dark-mode .search-input::placeholder {
+            color: #a0a0a0;
+        }
 
-    .search-container .search-icon-input {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 20px;
-      color: #666;
-      transition: color 0.3s ease;
-    }
+        .search-container .search-icon-input {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: #666;
+            transition: color 0.3s ease;
+        }
 
-    .search-container .close-icon {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 24px;
-      color: #666;
-      cursor: pointer;
-      transition: color 0.3s ease;
-    }
+        .search-container .close-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+            color: #666;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
 
-    body.dark-mode .search-container .search-icon-input,
-    body.dark-mode .search-container .close-icon {
-      color: #a0a0a0;
-    }
+        body.dark-mode .search-container .search-icon-input,
+        body.dark-mode .search-container .close-icon {
+            color: #a0a0a0;
+        }
 
-    .song-list {
-      color: #333;
-      margin-top: 194px;
-      min-height: calc(100vh - 194px);
-      overflow-y: auto;
-      padding-top: 0;
-      transition: color 0.3s ease, margin-top 0.3s ease;
-      visibility: visible;
-      opacity: 1;
-      width: 100%;
-      flex: 1;
-      position: relative;
-      z-index: 1;
-    }
+        .song-list {
+            color: #333;
+            margin-top: 194px;
+            min-height: calc(100vh - 194px);
+            overflow-y: auto;
+            padding-top: 0;
+            transition: color 0.3s ease, margin-top 0.3s ease;
+            visibility: visible;
+            opacity: 1;
+            width: 100%;
+            flex: 1;
+            position: relative;
+            z-index: 1;
+        }
 
-    .song-list.search-visible {
-      margin-top: 234px;
-      min-height: calc(100vh - 234px);
-    }
+        .song-list.search-visible {
+            margin-top: 234px;
+            min-height: calc(100vh - 234px);
+        }
 
-    .song-list.scrolled {
-      box-shadow: 0 -6px 12px rgba(0, 0, 0, 0.15);
-    }
+        .song-list.scrolled {
+            box-shadow: 0 -8px 16px rgba(0, 0, 0, 0.2);
+        }
 
-    body.dark-mode .song-list {
-      color: #e0e0e0;
-    }
+        body.dark-mode .song-list {
+            color: #e0e0e0;
+        }
 
-    body.dark-mode .song-list.scrolled {
-      box-shadow: 0 -6px 12px rgba(0, 0, 0, 0.4);
-    }
+        body.dark-mode .song-list.scrolled {
+            box-shadow: 0 -8px 16px rgba(0, 0, 0, 0.5);
+        }
 
-    .tab-content {
-      display: none;
-    }
+        .tab-content {
+            display: none;
+        }
 
-    .tab-content.active {
-      display: block;
-      visibility: visible;
-      opacity: 1;
-      height: 100%;
-    }
+        .tab-content.active {
+            display: block;
+            visibility: visible;
+            opacity: 1;
+            height: 100%;
+        }
 
-    .song-item {
-      align-items: center;
-      display: flex;
-      line-height: 1.5;
-      padding: 4px 0 8px 0;
-      visibility: visible;
-      opacity: 1;
-    }
+        .song-item {
+            align-items: center;
+            display: flex;
+            line-height: 1.5;
+            padding: 4px 0 8px 0;
+            visibility: visible;
+            opacity: 1;
+        }
 
-    .song-icon {
-      color: black;
-      display: inline-block;
-      font-size: 50px;
-      font-variation-settings: 'wght' 200;
-      height: 50px;
-      line-height: 50px;
-      margin-right: 10px;
-      text-align: center;
-      width: 50px;
-      transition: color 0.3s ease;
-    }
+        .song-icon {
+            color: black;
+            display: inline-block;
+            font-size: 50px;
+            font-variation-settings: 'wght' 200;
+            height: 50px;
+            line-height: 50px;
+            margin-right: 10px;
+            text-align: center;
+            width: 50px;
+            transition: color 0.3s ease;
+        }
 
-    @media (max-width: 600px) {
-      .song-icon {
-        font-size: 40px;
-        height: 40px;
-        line-height: 40px;
-        width: 40px;
-        margin-right: 8px;
-      }
-    }
+        @media (max-width: 600px) {
+            .song-icon {
+                font-size: 40px;
+                height: 40px;
+                line-height: 40px;
+                width: 40px;
+                margin-right: 8px;
+            }
+        }
 
-    body.dark-mode .song-icon {
-      color: #ffffff;
-    }
+        body.dark-mode .song-icon {
+            color: #ffffff;
+        }
 
-    .song-text {
-      color: #333;
-      flex: 1;
-      font-family: 'Poppins', sans-serif;
-      font-size: clamp(14px, 3vw, 16px);
-      font-weight: 400;
-      transition: color 0.3s ease;
-    }
+        .song-text {
+            color: #333;
+            flex: 1;
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(14px, 3vw, 16px);
+            font-weight: 400;
+            transition: color 0.3s ease;
+        }
 
-    body.dark-mode .song-text {
-      color: #e0e0e0;
-    }
-  </style>
+        body.dark-mode .song-text {
+            color: #e0e0e0;
+        }
+    </style>
 </head>
 <body>
-  <div class="fixed-header">
-    <div class="header">
-      <h1 id="title" onselectstart="return false" draggable="false">
-        <span class="title-text">
-          <span class="first-line">Cánticos de</span>
-          <span class="second-line">Victoria.</span>
-        </span>
-      </h1>
-      <div class="icons">
-        <span class="icon search-icon">
-          <span class="material-symbols-outlined">search</span>
-        </span>
-        <span class="icon settings-icon">
-          <span class="material-symbols-outlined">light_mode</span>
-        </span>
-        <span class="icon menu-icon">
-          <span class="material-symbols-outlined">more_vert</span>
-        </span>
-      </div>
+    <div class="fixed-header">
+        <div class="header">
+            <h1 id="title" onselectstart="return false" draggable="false">
+                <span class="title-text">
+                    <span class="first-line">Cánticos de</span>
+                    <span class="second-line">Victoria.</span>
+                </span>
+            </h1>
+            <div class="icons">
+                <span class="icon search-icon">
+                    <span class="material-symbols-outlined">search</span>
+                </span>
+                <span class="icon settings-icon">
+                    <span class="material-symbols-outlined">light_mode</span>
+                </span>
+                <span class="icon menu-icon">
+                    <span class="material-symbols-outlined">more_vert</span>
+                </span>
+            </div>
+        </div>
+        <div class="pill-container tab1-selected">
+            <button class="pill selected" id="tab1">Todos</button>
+            <button class="pill" id="tab2">Mayores</button>
+            <button class="pill" id="tab3">Menores</button>
+        </div>
+        <div class="search-container hidden">
+            <input type="text" class="search-input" placeholder="Buscar cánticos...">
+            <span class="material-symbols-outlined search-icon-input">search</span>
+            <span class="material-symbols-outlined close-icon">close</span>
+        </div>
     </div>
-    <div class="pill-container tab1-selected">
-      <button class="pill selected" id="tab1">Todos</button>
-      <button class="pill" id="tab2">Mayores</button>
-      <button class="pill" id="tab3">Menores</button>
+    <div class="container">
+        <div class="song-list">
+            <div id="tab1-content" class="tab-content active"></div>
+            <div id="tab2-content" class="tab-content"></div>
+            <div id="tab3-content" class="tab-content"></div>
+        </div>
     </div>
-    <div class="search-container hidden">
-      <input type="text" class="search-input" placeholder="Buscar cánticos...">
-      <span class="material-symbols-outlined search-icon-input">search</span>
-      <span class="material-symbols-outlined close-icon">close</span>
-    </div>
-  </div>
-  <div class="container">
-    <div class="song-list">
-      <div id="tab1-content" class="tab-content active"></div>
-      <div id="tab2-content" class="tab-content"></div>
-      <div id="tab3-content" class="tab-content"></div>
-    </div>
-  </div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Apply saved theme
-      const savedTheme = localStorage.getItem('theme');
-      const settingsIcon = document.querySelector('.settings-icon');
-      if (savedTheme === 'dark') {
-        document.body.classList.add('dark-mode');
-        settingsIcon.querySelector('.material-symbols-outlined').textContent = 'dark_mode';
-      } else {
-        document.body.classList.remove('dark-mode');
-        settingsIcon.querySelector('.material-symbols-outlined').textContent = 'light_mode';
-      }
-
-      // Song data storage
-      let allSongs = [];
-      let mayoresSongs = [];
-      let menoresSongs = [];
-
-      // Normalization function
-      const normalizeText = (text) => {
-        return text
-          .toLowerCase()
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '')
-          .replace(/ñ/g, 'n')
-          .replace(/Ñ/g, 'N');
-      };
-
-      // Fetch and populate songs
-      fetch('canticos.txt')
-        .then(response => {
-          if (!response.ok) throw new Error('Failed to load canticos.txt');
-          return response.text();
-        })
-        .then(data => {
-          const todosContent = document.getElementById('tab1-content');
-          const mayoresContent = document.getElementById('tab2-content');
-          const menoresContent = document.getElementById('tab3-content');
-          const songs = data.trim().split(/\n\s*\n/);
-          todosContent.innerHTML = '';
-          mayoresContent.innerHTML = '';
-          menoresContent.innerHTML = '';
-          songs.forEach(song => {
-            console.log('Processing song:', song);
-            const lines = song.split('\n');
-            if (lines.length === 0 || !lines[0].trim()) {
-              console.warn('Skipping empty song:', song);
-              return;
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Apply saved theme
+            const savedTheme = localStorage.getItem('theme');
+            const settingsIcon = document.querySelector('.settings-icon');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                settingsIcon.querySelector('.material-symbols-outlined').textContent = 'dark_mode';
+            } else {
+                document.body.classList.remove('dark-mode');
+                settingsIcon.querySelector('.material-symbols-outlined').textContent = 'light_mode';
             }
-            let title = lines[0].trim();
-            console.log('Title:', title);
-            const isMayores = title.includes('[+]');
-            const isMenores = title.includes('[-]');
-            title = title.replace(/\[.\]/, '').replace(/\(.*?\)/g, '').trim();
-            if (title) {
-              const songItem = document.createElement('div');
-              songItem.className = 'song-item';
-              songItem.innerHTML = `
-                <span class="song-icon material-symbols-outlined">play_circle</span>
-                <span class="song-text">${title}</span>
-              `;
-              songItem.dataset.title = title;
-              songItem.dataset.normalizedTitle = normalizeText(title);
-              const songData = songItem.cloneNode(true);
-              allSongs.push(songData);
-              if (isMayores) mayoresSongs.push(songData);
-              if (isMenores) menoresSongs.push(songData);
-              todosContent.appendChild(songItem.cloneNode(true));
-              if (isMayores) mayoresContent.appendChild(songItem.cloneNode(true));
-              if (isMenores) menoresContent.appendChild(songItem.cloneNode(true));
-            }
-          });
-          // Initialize scroll listener after content is loaded
-          updateScrollListener();
-        })
-        .catch(error => {
-          console.error('Error loading canticos.txt:', error);
-          document.getElementById('tab1-content').innerHTML = '<div class="song-item">Error loading songs</div>';
-          updateScrollListener();
+
+            // Song data storage
+            let allSongs = [];
+            let mayoresSongs = [];
+            let menoresSongs = [];
+
+            // Normalization function
+            const normalizeText = (text) => {
+                return text
+                    .toLowerCase()
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                    .replace(/ñ/g, 'n')
+                    .replace(/Ñ/g, 'N');
+            };
+
+            // Fetch and populate songs
+            fetch('canticos.txt')
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to load canticos.txt');
+                    return response.text();
+                })
+                .then(data => {
+                    const todosContent = document.getElementById('tab1-content');
+                    const mayoresContent = document.getElementById('tab2-content');
+                    const menoresContent = document.getElementById('tab3-content');
+                    const songs = data.trim().split(/\n\s*\n/);
+                    todosContent.innerHTML = '';
+                    mayoresContent.innerHTML = '';
+                    menoresContent.innerHTML = '';
+                    songs.forEach(song => {
+                        console.log('Processing song:', song);
+                        const lines = song.split('\n');
+                        if (lines.length === 0 || !lines[0].trim()) {
+                            console.warn('Skipping empty song:', song);
+                            return;
+                        }
+                        let title = lines[0].trim();
+                        console.log('Title:', title);
+                        const isMayores = title.includes('[+]');
+                        const isMenores = title.includes('[-]');
+                        title = title.replace(/\[.\]/, '').replace(/\(.*?\)/g, '').trim();
+                        if (title) {
+                            const songItem = document.createElement('div');
+                            songItem.className = 'song-item';
+                            songItem.innerHTML = `
+                                <span class="song-icon material-symbols-outlined">play_circle</span>
+                                <span class="song-text">${title}</span>
+                            `;
+                            songItem.dataset.title = title;
+                            songItem.dataset.normalizedTitle = normalizeText(title);
+                            const songData = songItem.cloneNode(true);
+                            allSongs.push(songData);
+                            if (isMayores) mayoresSongs.push(songData);
+                            if (isMenores) menoresSongs.push(songData);
+                            todosContent.appendChild(songItem.cloneNode(true));
+                            if (isMayores) mayoresContent.appendChild(songItem.cloneNode(true));
+                            if (isMenores) menoresContent.appendChild(songItem.cloneNode(true));
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading canticos.txt:', error);
+                    document.getElementById('tab1-content').innerHTML = '<div class="song-item">Error loading songs</div>';
+                });
+
+            // Search bar toggle
+            const searchIcon = document.querySelector('.search-icon');
+            const searchContainer = document.querySelector('.search-container');
+            const searchInput = document.querySelector('.search-input');
+            const closeIcon = document.querySelector('.close-icon');
+            const songList = document.querySelector('.song-list');
+
+            const updateSongListMargin = () => {
+                if (searchContainer.classList.contains('visible')) {
+                    songList.classList.add('search-visible');
+                } else {
+                    songList.classList.remove('search-visible');
+                }
+            };
+
+            searchIcon.addEventListener('click', () => {
+                searchContainer.classList.toggle('visible');
+                updateSongListMargin();
+                if (searchContainer.classList.contains('visible')) {
+                    searchInput.focus();
+                } else {
+                    searchInput.value = '';
+                    searchInput.dispatchEvent(new Event('input'));
+                }
+            });
+
+            closeIcon.addEventListener('click', () => {
+                searchContainer.classList.remove('visible');
+                updateSongListMargin();
+                searchInput.value = '';
+                searchInput.dispatchEvent(new Event('input'));
+            });
+
+            // Search functionality
+            searchInput.addEventListener('input', () => {
+                const query = normalizeText(searchInput.value);
+                const activeTab = document.querySelector('.tab-content.active');
+                const tabId = activeTab.id;
+                console.log('Active tab:', tabId);
+                const songsToFilter = tabId === 'tab1-content' ? allSongs :
+                                      tabId === 'tab2-content' ? mayoresSongs :
+                                      menoresSongs;
+                activeTab.innerHTML = '';
+                songsToFilter.forEach(song => {
+                    if (!query || song.dataset.normalizedTitle.includes(query)) {
+                        activeTab.appendChild(song.cloneNode(true));
+                    }
+                });
+            });
+
+            // Scroll shadow listener
+            songList.addEventListener('scroll', () => {
+                console.log('SongList ScrollTop:', songList.scrollTop);
+                songList.classList.toggle('scrolled', songList.scrollTop > 0);
+            });
+
+            // Tab switching
+            const tabs = [
+                { id: 'tab1', content: 'tab1-content', class: 'tab1-selected' },
+                { id: 'tab2', content: 'tab2-content', class: 'tab2-selected' },
+                { id: 'tab3', content: 'tab3-content', class: 'tab3-selected' }
+            ];
+
+            const pillContainer = document.querySelector('.pill-container');
+
+            tabs.forEach((tab, index) => {
+                const button = document.getElementById(tab.id);
+                const content = document.getElementById(tab.content);
+
+                const switchTab = () => {
+                    console.log(`Switching to tab ${index + 1}`);
+                    tabs.forEach(t => {
+                        document.getElementById(t.id).classList.remove('selected');
+                        document.getElementById(t.content).classList.remove('active');
+                        pillContainer.classList.remove(t.class);
+                    });
+                    button.classList.add('selected');
+                    content.classList.add('active');
+                    pillContainer.classList.add(tab.class);
+                    searchInput.dispatchEvent(new Event('input'));
+                };
+
+                button.addEventListener('click', switchTab);
+                button.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    switchTab();
+                });
+            });
+
+            // Force initial tab state
+            document.getElementById('tab1-content').classList.add('active');
+            document.getElementById('tab1').classList.add('selected');
+            pillContainer.classList.add('tab1-selected');
+
+            // Fullscreen toggle
+            const titleText = document.querySelector('.title-text');
+
+            const enterFullscreen = (elem) => {
+                console.log('Attempting to enter fullscreen');
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen().catch(err => console.error('Fullscreen error:', err));
+                } else if (elem.webkitRequestFullscreen) {
+                    elem.webkitRequestFullscreen().catch(err => console.error('Webkit fullscreen error:', err));
+                } else if (elem.msRequestFullscreen) {
+                    elem.msRequestFullscreen().catch(err => console.error('MS fullscreen error:', err));
+                } else {
+                    console.warn('Fullscreen API not supported');
+                }
+            };
+
+            const exitFullscreen = () => {
+                console.log('Attempting to exit fullscreen');
+                if (document.exitFullscreen) {
+                    document.exitFullscreen().catch(err => console.error('Exit fullscreen error:', err));
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen().catch(err => console.error('Webkit exit fullscreen error:', err));
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen().catch(err => console.error('MS exit fullscreen error:', err));
+                } else {
+                    console.warn('Exit fullscreen API not supported');
+                }
+            };
+
+            const toggleFullscreen = (e) => {
+                e.stopPropagation();
+                console.log('Toggling fullscreen');
+                const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+                isFullscreen ? exitFullscreen() : enterFullscreen(document.documentElement);
+            };
+
+            titleText.addEventListener('click', toggleFullscreen);
+            titleText.addEventListener('touchend', toggleFullscreen);
+
+            // Dark mode toggle
+            settingsIcon.addEventListener('click', () => {
+                console.log('Toggling dark mode');
+                document.body.classList.toggle('dark-mode');
+                const isDarkMode = document.body.classList.contains('dark-mode');
+                localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+                settingsIcon.querySelector('.material-symbols-outlined').textContent = isDarkMode ? 'dark_mode' : 'light_mode';
+            });
         });
-
-      // Search bar toggle
-      const searchIcon = document.querySelector('.search-icon');
-      const searchContainer = document.querySelector('.search-container');
-      const searchInput = document.querySelector('.search-input');
-      const closeIcon = document.querySelector('.close-icon');
-      const songList = document.querySelector('.song-list');
-
-      const updateSongListMargin = () => {
-        if (searchContainer.classList.contains('visible')) {
-          songList.classList.add('search-visible');
-        } else {
-          songList.classList.remove('search-visible');
-        }
-      };
-
-      searchIcon.addEventListener('click', () => {
-        searchContainer.classList.toggle('visible');
-        updateSongListMargin();
-        if (searchContainer.classList.contains('visible')) {
-          searchInput.focus();
-        } else {
-          searchInput.value = '';
-          searchInput.dispatchEvent(new Event('input'));
-        }
-      });
-
-      closeIcon.addEventListener('click', () => {
-        searchContainer.classList.remove('visible');
-        updateSongListMargin();
-        searchInput.value = '';
-        searchInput.dispatchEvent(new Event('input'));
-      });
-
-      // Search functionality
-      searchInput.addEventListener('input', () => {
-        const query = normalizeText(searchInput.value);
-        const activeTab = document.querySelector('.tab-content.active');
-        const tabId = activeTab.id;
-        console.log('Active tab:', tabId);
-        const songsToFilter = tabId === 'tab1-content' ? allSongs :
-                              tabId === 'tab2-content' ? mayoresSongs :
-                              menoresSongs;
-        activeTab.innerHTML = '';
-        songsToFilter.forEach(song => {
-          if (!query || song.dataset.normalizedTitle.includes(query)) {
-            activeTab.appendChild(song.cloneNode(true));
-          }
-        });
-      });
-
-      // Scroll shadow listener
-      let activeTab = document.querySelector('.tab-content.active');
-      const updateScrollListener = () => {
-        if (activeTab) {
-          activeTab.removeEventListener('scroll', scrollListener);
-        }
-        activeTab = document.querySelector('.tab-content.active');
-        if (activeTab) {
-          activeTab.addEventListener('scroll', scrollListener);
-        }
-      };
-
-      const scrollListener = () => {
-        console.log('ScrollTop:', activeTab.scrollTop);
-        songList.classList.toggle('scrolled', activeTab.scrollTop > 0);
-      };
-
-      // Tab switching
-      const tabs = [
-        { id: 'tab1', content: 'tab1-content', class: 'tab1-selected' },
-        { id: 'tab2', content: 'tab2-content', class: 'tab2-selected' },
-        { id: 'tab3', content: 'tab3-content', class: 'tab3-selected' }
-      ];
-
-      const pillContainer = document.querySelector('.pill-container');
-
-      tabs.forEach((tab, index) => {
-        const button = document.getElementById(tab.id);
-        const content = document.getElementById(tab.content);
-
-        const switchTab = () => {
-          console.log(`Switching to tab ${index + 1}`);
-          tabs.forEach(t => {
-            document.getElementById(t.id).classList.remove('selected');
-            document.getElementById(t.content).classList.remove('active');
-            pillContainer.classList.remove(t.class);
-          });
-          button.classList.add('selected');
-          content.classList.add('active');
-          pillContainer.classList.add(tab.class);
-          searchInput.dispatchEvent(new Event('input'));
-          updateScrollListener();
-        };
-
-        button.addEventListener('click', switchTab);
-        button.addEventListener('touchstart', (e) => {
-          e.preventDefault();
-          switchTab();
-        });
-      });
-
-      // Force initial tab state
-      document.getElementById('tab1-content').classList.add('active');
-      document.getElementById('tab1').classList.add('selected');
-      pillContainer.classList.add('tab1-selected');
-
-      // Fullscreen toggle
-      const titleText = document.querySelector('.title-text');
-
-      const enterFullscreen = (elem) => {
-        console.log('Attempting to enter fullscreen');
-        if (elem.requestFullscreen) {
-          elem.requestFullscreen().catch(err => console.error('Fullscreen error:', err));
-        } else if (elem.webkitRequestFullscreen) {
-          elem.webkitRequestFullscreen().catch(err => console.error('Webkit fullscreen error:', err));
-        } else if (elem.msRequestFullscreen) {
-          elem.msRequestFullscreen().catch(err => console.error('MS fullscreen error:', err));
-        } else {
-          console.warn('Fullscreen API not supported');
-        }
-      };
-
-      const exitFullscreen = () => {
-        console.log('Attempting to exit fullscreen');
-        if (document.exitFullscreen) {
-          document.exitFullscreen().catch(err => console.error('Exit fullscreen error:', err));
-        } else if (document.webkitExitFullscreen) {
-          document.webkitExitFullscreen().catch(err => console.error('Webkit exit fullscreen error:', err));
-        } else if (document.msExitFullscreen) {
-          document.msExitFullscreen().catch(err => console.error('MS exit fullscreen error:', err));
-        } else {
-          console.warn('Exit fullscreen API not supported');
-        }
-      };
-
-      const toggleFullscreen = (e) => {
-        e.stopPropagation();
-        console.log('Toggling fullscreen');
-        const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
-        isFullscreen ? exitFullscreen() : enterFullscreen(document.documentElement);
-      };
-
-      titleText.addEventListener('click', toggleFullscreen);
-      titleText.addEventListener('touchend', toggleFullscreen);
-
-      // Dark mode toggle
-      settingsIcon.addEventListener('click', () => {
-        console.log('Toggling dark mode');
-        document.body.classList.toggle('dark-mode');
-        const isDarkMode = document.body.classList.contains('dark-mode');
-        localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-        settingsIcon.querySelector('.material-symbols-outlined').textContent = isDarkMode ? 'dark_mode' : 'light_mode';
-      });
-    });
-  </script>
+    </script>
 </body>
 </html>
