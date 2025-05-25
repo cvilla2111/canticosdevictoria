@@ -336,7 +336,7 @@
             width: 100%;
             flex: 1;
             position: relative;
-            z-index: 1;
+            z-index: 3;
         }
 
         .song-list.search-visible {
@@ -344,16 +344,32 @@
             min-height: calc(100vh - 234px);
         }
 
+        .song-list.scrolled::before {
+            content: '';
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 12px;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), transparent);
+            z-index: 2;
+            pointer-events: none;
+        }
+
         .song-list.scrolled {
-            box-shadow: 0 -8px 16px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 -10px 20px rgba(0, 0, 0, 0.3);
         }
 
         body.dark-mode .song-list {
             color: #e0e0e0;
         }
 
+        body.dark-mode .song-list.scrolled::before {
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), transparent);
+        }
+
         body.dark-mode .song-list.scrolled {
-            box-shadow: 0 -8px 16px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 -10px 20px rgba(0, 0, 0, 0.6);
         }
 
         .tab-content {
@@ -423,7 +439,7 @@
             <h1 id="title" onselectstart="return false" draggable="false">
                 <span class="title-text">
                     <span class="first-line">Cánticos de</span>
-                    <span class="second-line">Victoria.</span>
+                    <span class="second-line">Victoria</span>
                 </span>
             </h1>
             <div class="icons">
@@ -486,6 +502,7 @@
             };
 
             // Fetch and populate songs
+            const songList = document.querySelector('.song-list');
             fetch('canticos.txt')
                 .then(response => {
                     if (!response.ok) throw new Error('Failed to load canticos.txt');
@@ -529,10 +546,18 @@
                             if (isMenores) menoresContent.appendChild(songItem.cloneNode(true));
                         }
                     });
+                    // Log scrollability
+                    setTimeout(() => {
+                        console.log('SongList ScrollHeight:', songList.scrollHeight, 'ClientHeight:', songList.clientHeight);
+                    }, 100);
                 })
                 .catch(error => {
                     console.error('Error loading canticos.txt:', error);
                     document.getElementById('tab1-content').innerHTML = '<div class="song-item">Error loading songs</div>';
+                    // Log scrollability on error
+                    setTimeout(() => {
+                        console.log('SongList ScrollHeight:', songList.scrollHeight, 'ClientHeight:', songList.clientHeight);
+                    }, 100);
                 });
 
             // Search bar toggle
@@ -540,7 +565,6 @@
             const searchContainer = document.querySelector('.search-container');
             const searchInput = document.querySelector('.search-input');
             const closeIcon = document.querySelector('.close-icon');
-            const songList = document.querySelector('.song-list');
 
             const updateSongListMargin = () => {
                 if (searchContainer.classList.contains('visible')) {
@@ -583,12 +607,20 @@
                         activeTab.appendChild(song.cloneNode(true));
                     }
                 });
+                // Log scrollability after search
+                setTimeout(() => {
+                    console.log('SongList ScrollHeight:', songList.scrollHeight, 'ClientHeight:', songList.clientHeight);
+                }, 100);
             });
 
-            // Scroll shadow listener
+            // Scroll shadow listener with debouncing
+            let isScrolling;
             songList.addEventListener('scroll', () => {
-                console.log('SongList ScrollTop:', songList.scrollTop);
-                songList.classList.toggle('scrolled', songList.scrollTop > 0);
+                clearTimeout(isScrolling);
+                isScrolling = setTimeout(() => {
+                    console.log('SongList ScrollTop:', songList.scrollTop);
+                    songList.classList.toggle('scrolled', songList.scrollTop > 0);
+                }, 50);
             });
 
             // Tab switching
@@ -615,6 +647,10 @@
                     content.classList.add('active');
                     pillContainer.classList.add(tab.class);
                     searchInput.dispatchEvent(new Event('input'));
+                    // Log scrollability after tab switch
+                    setTimeout(() => {
+                        console.log('SongList ScrollHeight:', songList.scrollHeight, 'ClientHeight:', songList.clientHeight);
+                    }, 100);
                 };
 
                 button.addEventListener('click', switchTab);
