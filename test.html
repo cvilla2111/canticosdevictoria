@@ -24,7 +24,6 @@
       color: #e0e0e0;
     }
 
-    /* Fixed Header Container */
     .fixed-header {
       position: fixed;
       top: 0;
@@ -56,7 +55,6 @@
       }
     }
 
-    /* Container */
     .container {
       width: 100%;
       padding: 0 1rem;
@@ -81,7 +79,6 @@
       }
     }
 
-    /* Header */
     .header {
       padding: 1rem 0;
       display: flex;
@@ -183,7 +180,6 @@
       color: #e0e0e0;
     }
 
-    /* Tabs */
     .pill-container {
       position: sticky;
       top: 76px;
@@ -253,7 +249,6 @@
       color: #fff;
     }
 
-    /* Search Bar */
     .search-container {
       position: sticky;
       top: 122px;
@@ -329,7 +324,6 @@
       color: #a0a0a0;
     }
 
-    /* Song List */
     .song-list {
       color: #333;
       margin-top: 194px;
@@ -429,7 +423,7 @@
       <h1 id="title" onselectstart="return false" draggable="false">
         <span class="title-text">
           <span class="first-line">Cánticos de</span>
-          <span class="second-line">Victoria</span>
+          <span class="second-line">Victoria.</span>
         </span>
       </h1>
       <div class="icons">
@@ -541,8 +535,6 @@
         .catch(error => {
           console.error('Error loading canticos.txt:', error);
           document.getElementById('tab1-content').innerHTML = '<div class="song-item">Error loading songs</div>';
-          // Initialize scroll listener even if error
-          updateScrollListener();
           updateScrollListener();
         });
 
@@ -561,142 +553,145 @@
         }
       };
 
-        searchIcon.addEventListener('click', () => {
-          searchContainer.classList.toggle('visible');
-          updateSongListMargin();
-          if (searchContainer.classList.contains('visible')) {
-            searchInput.focus();
-          } else {
-            searchInput.value = '';
-            searchInput.dispatchEvent(new Event('input'));
-          }
-        });
-
-        closeIcon.addEventListener('click', () => {
-          searchContainer.classList.remove('visible');
-          updateSongListMargin();
+      searchIcon.addEventListener('click', () => {
+        searchContainer.classList.toggle('visible');
+        updateSongListMargin();
+        if (searchContainer.classList.contains('visible')) {
+          searchInput.focus();
+        } else {
           searchInput.value = '';
           searchInput.dispatchEvent(new Event('input'));
+        }
+      });
+
+      closeIcon.addEventListener('click', () => {
+        searchContainer.classList.remove('visible');
+        updateSongListMargin();
+        searchInput.value = '';
+        searchInput.dispatchEvent(new Event('input'));
+      });
+
+      // Search functionality
+      searchInput.addEventListener('input', () => {
+        const query = normalizeText(searchInput.value);
+        const activeTab = document.querySelector('.tab-content.active');
+        const tabId = activeTab.id;
+        console.log('Active tab:', tabId);
+        const songsToFilter = tabId === 'tab1-content' ? allSongs :
+                              tabId === 'tab2-content' ? mayoresSongs :
+                              menoresSongs;
+        activeTab.innerHTML = '';
+        songsToFilter.forEach(song => {
+          if (!query || song.dataset.normalizedTitle.includes(query)) {
+            activeTab.appendChild(song.cloneNode(true));
+          }
         });
+      });
 
-        // Search functionality
-        searchInput.addEventListener('input', () => {
-          const query = normalizeText(searchInput.value);
-          const activeTab = document.querySelector('.tab-content.active');
-          const tabId = activeTab.id;
-          console.log('Active tab:', tabId);
-          const songsToFilter = tabId === 'tab1-content' ? allSongs : :
-            tabId === 'tab2-content' ? : mayoresSongs : :
-            menoresSongs;
-            activeTab.innerHTML = '';
-            songsToFilter.forEach(song => {
-              if (!query || song.dataset.normalizedTitle.includes(query)) {
-                activeTab.appendChild(song.cloneNode(true));
-              }
-            });
+      // Scroll shadow listener
+      let activeTab = document.querySelector('.tab-content.active');
+      const updateScrollListener = () => {
+        if (activeTab) {
+          activeTab.removeEventListener('scroll', scrollListener);
+        }
+        activeTab = document.querySelector('.tab-content.active');
+        if (activeTab) {
+          activeTab.addEventListener('scroll', scrollListener);
+        }
+      };
+
+      const scrollListener = () => {
+        console.log('ScrollTop:', activeTab.scrollTop);
+        songList.classList.toggle('scrolled', activeTab.scrollTop > 0);
+      };
+
+      // Tab switching
+      const tabs = [
+        { id: 'tab1', content: 'tab1-content', class: 'tab1-selected' },
+        { id: 'tab2', content: 'tab2-content', class: 'tab2-selected' },
+        { id: 'tab3', content: 'tab3-content', class: 'tab3-selected' }
+      ];
+
+      const pillContainer = document.querySelector('.pill-container');
+
+      tabs.forEach((tab, index) => {
+        const button = document.getElementById(tab.id);
+        const content = document.getElementById(tab.content);
+
+        const switchTab = () => {
+          console.log(`Switching to tab ${index + 1}`);
+          tabs.forEach(t => {
+            document.getElementById(t.id).classList.remove('selected');
+            document.getElementById(t.content).classList.remove('active');
+            pillContainer.classList.remove(t.class);
           });
+          button.classList.add('selected');
+          content.classList.add('active');
+          pillContainer.classList.add(tab.class);
+          searchInput.dispatchEvent(new Event('input'));
+          updateScrollListener();
+        };
 
-          // Scroll shadow listener
-          let activeTab = document.querySelector('.tab-content.active');
-          const updateScrollListener = () => {
-            if (activeTab) {
-              activeTab.removeEventListener('scroll', scrollListener);
-            }
-            activeTab = document.querySelector('.tab-content.active');
-            activeTab.addEventListener('scroll', () => {
-              console.log('ScrollTop:', activeTab.scrollTop); // Debug
-              songList.classList.toggle('scrolled', activeTab.scrollTop > 10);
-            });
-          };
+        button.addEventListener('click', switchTab);
+        button.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          switchTab();
+        });
+      });
 
-          // Tab switching to update scroll listener
-          const tabs = [
-            { id: 'tab1', content': 'tab1-content', class: 'tab1-selected' },
-            { id: 'tab2', content': 'tab2-content', class: 'tab2-selected' },
-            { id: 'tab3', content: 'tab3-content', class: 'tab3-selected' }
-          ];
+      // Force initial tab state
+      document.getElementById('tab1-content').classList.add('active');
+      document.getElementById('tab1').classList.add('selected');
+      pillContainer.classList.add('tab1-selected');
 
-          const pillContainer = document.querySelector('.pill-container');
+      // Fullscreen toggle
+      const titleText = document.querySelector('.title-text');
 
-          tabs.forEach((tab, index) => {
-            tabs.forEach((tab, index) => {
-              const button = document.getElementById(tab.id);
-              const content = document.getElementById(tab.content);
+      const enterFullscreen = (elem) => {
+        console.log('Attempting to enter fullscreen');
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen().catch(err => console.error('Fullscreen error:', err));
+        } else if (elem.webkitRequestFullscreen) {
+          elem.webkitRequestFullscreen().catch(err => console.error('Webkit fullscreen error:', err));
+        } else if (elem.msRequestFullscreen) {
+          elem.msRequestFullscreen().catch(err => console.error('MS fullscreen error:', err));
+        } else {
+          console.warn('Fullscreen API not supported');
+        }
+      };
 
-              const switchTab = () => {
-                console.log('Switching to tab ${index + 1}');
-                tabs.forEach(t => {
-                  document.getElementById(t.id).classList.remove('selected');
-                  document.getElementById(t.content).classList.remove('active');
-                  pillContainer.classList.remove(t.class);
-                });
-                button.classList.add('selected');
-                content.classList.add('active');
-                pillContainer.classList.add(tab.class);
-                searchInput.dispatchEvent(new Event('input'));
-                updateScrollListener();
-              });
+      const exitFullscreen = () => {
+        console.log('Attempting to exit fullscreen');
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(err => console.error('Exit fullscreen error:', err));
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen().catch(err => console.error('Webkit exit fullscreen error:', err));
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen().catch(err => console.error('MS exit fullscreen error:', err));
+        } else {
+          console.warn('Exit fullscreen API not supported');
+        }
+      };
 
-                button.addEventListener('click', switchTab);
-                button.addEventListener('touchstart', (e) => {
-                   e.preventDefault();
-                   switchTab();
-                 });
-              });
+      const toggleFullscreen = (e) => {
+        e.stopPropagation();
+        console.log('Toggling fullscreen');
+        const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+        isFullscreen ? exitFullscreen() : enterFullscreen(document.documentElement);
+      };
 
-              // Force initial tab state
-              document.getElementById('tab1-content').classList.add('active');
-             document.getElementById('tab1').classList.add('selected');
-             pillContainer.classList.add('tab1-selected');
+      titleText.addEventListener('click', toggleFullscreen);
+      titleText.addEventListener('touchend', toggleFullscreen);
 
-             // Fullscreen toggle
-             const titleText = document.querySelector('.title-text');
-
-             const enterFullscreen = (elem) => {
-               console.log('Attempting to enter fullscreen');
-               if (elem.requestFullscreen) {
-                 elem.requestFullscreen().catch(err => console.error('Fullscreen error:', err));
-               } else if (elem.webkitRequestFullscreen) {
-                 elem.webkitRequestFullscreen().catch(err => console.error('Webkit fullscreen error:', err));
-               } else if (elem.msRequestFullscreen) {
-                 elem.msRequestFullscreen().catch(err => console.error('MS fullscreen error:', err));
-               } else {
-                 console.warn('Fullscreen API not supported');
-               }
-             };
-
-             const exitFullscreen = () => {
-               console.log('Attempting to exit fullscreen');
-               if (document.exitFullscreen) {
-                   document.exitFullscreen().catch(err => console.error('Exit fullscreen error:', err));
-               } else if (document.webkitExitFullscreen) {
-                 document.webkitExitFullscreen().catch(err => console.error('Webkit exit fullscreen error:', err));
-               } else if (document.msExitFullscreen) {
-                 document.msExitFullscreen().catch(err => console.error('MS exit fullscreen error:', err));
-               } else {
-                   console.warn('Exit fullscreen API not supported');
-               }
-             });
-
-               const toggleFullscreen = (e) => {
-                 e.stopPropagation();
-                 console.log('Toggling fullscreen');
-                 const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
-                 isFullscreen ? exitFullscreen() : enterFullscreen(document.documentElement);
-               });
-
-               titleText.addEventListener('click', toggleFullscreen);
-               titleText.addEventListener('touchend', toggleFullscreen);
-
-               // Dark mode toggle
-               settingsIcon.addEventListener('click', () => {
-                 console.log('Toggling dark mode');
-                 document.body.classList.toggle('dark-mode');
-                 const isDarkMode = document.body.classList.contains('dark-mode');
-                 localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-                 settingsIcon.querySelector('.material-symbols-outlined').textContent = isDarkMode ? 'dark_mode' : 'light_mode');
-               });
-             });
-           </script>
-         </body>
-         </html>
+      // Dark mode toggle
+      settingsIcon.addEventListener('click', () => {
+        console.log('Toggling dark mode');
+        document.body.classList.toggle('dark-mode');
+        const isDarkMode = document.body.classList.contains('dark-mode');
+        localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+        settingsIcon.querySelector('.material-symbols-outlined').textContent = isDarkMode ? 'dark_mode' : 'light_mode';
+      });
+    });
+  </script>
+</body>
+</html>
