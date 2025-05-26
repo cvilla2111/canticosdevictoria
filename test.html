@@ -327,7 +327,7 @@
         .song-list {
             color: #333;
             margin-top: 194px;
-            max-height: calc(100vh - 194px); /* Explicit max-height */
+            max-height: calc(100vh - 194px);
             overflow-y: auto;
             padding-top: 0;
             transition: color 0.3s ease, margin-top 0.3s ease;
@@ -350,14 +350,14 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 20px;
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent);
+            height: 12px; /* Reduced size */
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), transparent); /* Subtler gradient */
             z-index: 6;
             pointer-events: none;
         }
 
         .song-list.scrolled {
-            box-shadow: 0 -14px 28px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 -8px 12px rgba(0, 0, 0, 0.3); /* Top-only, smaller shadow */
         }
 
         body.dark-mode .song-list {
@@ -365,16 +365,16 @@
         }
 
         body.dark-mode .song-list.scrolled::before {
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent);
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent); /* Subtler dark mode gradient */
         }
 
         body.dark-mode .song-list.scrolled {
-            box-shadow: 0 -14px 28px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 -8px 12px rgba(0, 0, 0, 0.5); /* Top-only, smaller dark mode shadow */
         }
 
         .tab-content {
             display: none;
-            min-height: 3000px; /* Increased to ensure scroll */
+            min-height: 3000px;
         }
 
         .tab-content.active {
@@ -439,7 +439,7 @@
             <h1 id="title" onselectstart="return false" draggable="false">
                 <span class="title-text">
                     <span class="first-line">Cánticos de</span>
-                    <span class="second-line">Victoria</span>
+                    <span class="second-line">Victoria.</span>
                 </span>
             </h1>
             <div class="icons">
@@ -621,7 +621,6 @@
             };
 
             songList.addEventListener('scroll', updateScrollShadow);
-            // Fallback for touch devices
             songList.addEventListener('touchmove', updateScrollShadow);
 
             // Tab switching
@@ -646,10 +645,8 @@
                     });
                     button.classList.add('selected');
                     content.classList.add('active');
-                    pillContainer.classList.add(tab.class);
-                    searchInput.dispatchEvent(new Event('input'));
-                    // Log scrollability after tab switch
                     setTimeout(() => {
+                        searchInput.dispatchEvent(new Event('input'));
                         console.log('After tab switch - ScrollHeight:', songList.scrollHeight, 'ClientHeight:', songList.clientHeight, 'Scrollable:', songList.scrollHeight > songList.clientHeight);
                     }, 100);
                 };
@@ -674,11 +671,9 @@
                 if (elem.requestFullscreen) {
                     elem.requestFullscreen().catch(err => console.error('Fullscreen error:', err));
                 } else if (elem.webkitRequestFullscreen) {
-                    elem.webkitRequestFullscreen().catch(err => console.error('Webkit fullscreen error:', err));
+                    elem.webkitRequestFullscreen().catch(err => console.error('Fullscreen error:', err));
                 } else if (elem.msRequestFullscreen) {
                     elem.msRequestFullscreen().catch(err => console.error('MS fullscreen error:', err));
-                } else {
-                    console.warn('Fullscreen API not supported');
                 }
             };
 
@@ -690,8 +685,6 @@
                     document.webkitExitFullscreen().catch(err => console.error('Webkit exit fullscreen error:', err));
                 } else if (document.msExitFullscreen) {
                     document.msExitFullscreen().catch(err => console.error('MS exit fullscreen error:', err));
-                } else {
-                    console.warn('Exit fullscreen API not supported');
                 }
             };
 
