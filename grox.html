@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Responsive Web App</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -19,113 +17,103 @@
       },
     };
   </script>
+  <style>
+    .header-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 50;
+    }
+    .header-content {
+      position: relative;
+    }
+    .header-content.scrolled::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: rgba(0, 0, 0, 0.2);
+      box-shadow: 0 2px 2px rgba(0, 0, 0, 0.15);
+    }
+  </style>
 </head>
-<body>
-  <div id="root"></div>
-  <script type="text/babel">
-    const Header = () => {
-      const [isScrolled, setIsScrolled] = React.useState(false);
-
-      React.useEffect(() => {
-        const handleScroll = () => {
-          setIsScrolled(window.scrollY > 0);
-        };
-
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-      }, []);
-
-      return (
-        <header className="fixed top-0 left-0 w-full z-50 flex justify-center">
-          <div className={`w-full md:max-w-3xl bg-blue-200 px-4 py-4 ${isScrolled ? 'shadow-md' : ''}`}>
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">
-              Responsive Web App
-            </h1>
-          </div>
-        </header>
-      );
-    };
-
-    const ResolutionLabel = () => {
-      return (
-        <div className="fixed bottom-0 left-0 bg-gray-800 text-white px-2 py-1 z-50">
-          <span className="text-xs">
-            Resolution: 
-            <span className="inline-block sm:hidden">XSmall</span>
-            <span className="hidden sm:inline-block md:hidden">Small</span>
-            <span className="hidden md:inline-block lg:hidden">Medium</span>
-            <span className="hidden lg:inline-block xl:hidden">Large</span>
-            <span className="hidden xl:inline-block">Extra Large</span>
-          </span>
-        </div>
-      );
-    };
-
-    const App = () => {
-      const christianSongs = [
-        "Amazing Grace",
-        "How Great Is Our God",
-        "10,000 Reasons (Bless the Lord)",
-        "Mighty to Save",
-        "What a Friend We Have in Jesus",
-        "Jesus Paid It All",
-        "In the Garden",
-        "The Old Rugged Cross",
-        "Great Is Thy Faithfulness",
-        "Blessed Assurance",
-        "Holy Forever",
-        "Goodness of God",
-        "Way Maker",
-        "To God Be the Glory",
-        "I Can Only Imagine",
-        "Reckless Love",
-        "A Mighty Fortress Is Our God",
-        "Take My Life and Let It Be",
-        "What a Beautiful Name",
-        "Onward Christian Soldiers",
-        "Oceans (Where Feet May Fail)",
-        "How Deep the Father's Love for Us",
-        "Here I Am to Worship",
-        "Cornerstone",
-        "Be Thou My Vision",
-        "Shout to the Lord",
-        "In Christ Alone",
-        "Build My Life",
-        "Come Thou Fount of Every Blessing",
-        "Revelation Song",
-        "Holy Spirit",
-        "It Is Well with My Soul",
-        "Lord, I Need You",
-        "This Is Amazing Grace",
-        "Good Good Father",
-        "At the Cross",
-        "Forever",
-        "Jesus Messiah",
-        "Our God",
-        "Open the Eyes of My Heart"
-      ];
-
-      return (
-        <div className="bg-gray-100 flex justify-center">
-          <div className="w-full md:max-w-3xl">
-            <Header />
-            <main className="mx-auto px-4 pt-20 pb-16">
-              <section className="mt-4">
-                <ul className="mt-2 text-sm sm:text-base md:text-lg text-gray-600 list-disc pl-5">
-                  {christianSongs.map((song, index) => (
-                    <li key={index}>{song}</li>
-                  ))}
-                </ul>
-              </section>
-            </main>
-            <ResolutionLabel />
-          </div>
-        </div>
-      );
-    };
-
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
+<body class="bg-gray-100 flex justify-center">
+  <div class="w-full md:max-w-3xl">
+    <header id="header" class="header-container flex justify-center">
+      <div class="header-content w-full md:max-w-3xl bg-blue-200 px-4 py-4">
+        <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">Responsive Web App</h1>
+      </div>
+    </header>
+    <main class="mx-auto px-4 pt-20 pb-16">
+      <section class="mt-4">
+        <ul class="mt-2 text-sm sm:text-base md:text-lg text-gray-600 list-disc pl-5">
+          <li>Amazing Grace</li>
+          <li>How Great Is Our God</li>
+          <li>10,000 Reasons (Bless the Lord)</li>
+          <li>Mighty to Save</li>
+          <li>What a Friend We Have in Jesus</li>
+          <li>Jesus Paid It All</li>
+          <li>In the Garden</li>
+          <li>The Old Rugged Cross</li>
+          <li>Great Is Thy Faithfulness</li>
+          <li>Blessed Assurance</li>
+          <li>Holy Forever</li>
+          <li>Goodness of God</li>
+          <li>Way Maker</li>
+          <li>To God Be the Glory</li>
+          <li>I Can Only Imagine</li>
+          <li>Reckless Love</li>
+          <li>A Mighty Fortress Is Our God</li>
+          <li>Take My Life and Let It Be</li>
+          <li>What a Beautiful Name</li>
+          <li>Onward Christian Soldiers</li>
+          <li>Oceans (Where Feet May Fail)</li>
+          <li>How Deep the Father's Love for Us</li>
+          <li>Here I Am to Worship</li>
+          <li>Cornerstone</li>
+          <li>Be Thou My Vision</li>
+          <li>Shout to the Lord</li>
+          <li>In Christ Alone</li>
+          <li>Build My Life</li>
+          <li>Come Thou Fount of Every Blessing</li>
+          <li>Revelation Song</li>
+          <li>Holy Spirit</li>
+          <li>It Is Well with My Soul</li>
+          <li>Lord, I Need You</li>
+          <li>This Is Amazing Grace</li>
+          <li>Good Good Father</li>
+          <li>At the Cross</li>
+          <li>Forever</li>
+          <li>Jesus Messiah</li>
+          <li>Our God</li>
+          <li>Open the Eyes of My Heart</li>
+        </ul>
+      </section>
+    </main>
+    <div class="fixed bottom-0 left-0 bg-gray-800 text-white px-2 py-1 z-50">
+      <span class="text-xs">
+        Resolution: 
+        <span class="inline-block sm:hidden">XSmall</span>
+        <span class="hidden sm:inline-block md:hidden">Small</span>
+        <span class="hidden md:inline-block lg:hidden">Medium</span>
+        <span class="hidden lg:inline-block xl:hidden">Large</span>
+        <span class="hidden xl:inline-block">Extra Large</span>
+      </span>
+    </div>
+  </div>
+  <script>
+    const header = document.getElementById('header');
+    window.addEventListener('scroll', () => {
+      const headerContent = header.querySelector('.header-content');
+      if (window.scrollY > 0) {
+        headerContent.classList.add('scrolled');
+      } else {
+        headerContent.classList.remove('scrolled');
+      }
+    });
   </script>
 </body>
 </html>
