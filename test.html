@@ -196,6 +196,30 @@
             background-color: #333333;
         }
 
+        .pill-container.scrolled::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 12px;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), transparent);
+            z-index: 9;
+            pointer-events: none;
+        }
+
+        .pill-container.scrolled {
+            box-shadow: 0 -8px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-mode .pill-container.scrolled::before {
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent);
+        }
+
+        body.dark-mode .pill-container.scrolled {
+            box-shadow: 0 -8px 12px rgba(0, 0, 0, 0.5);
+        }
+
         .pill-container::before {
             background-color: #584cd7;
             border-radius: 20px;
@@ -344,32 +368,8 @@
             max-height: calc(100vh - 234px);
         }
 
-        .song-list.scrolled::before {
-            content: '';
-            position: sticky;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 12px; /* Reduced size */
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), transparent); /* Subtler gradient */
-            z-index: 6;
-            pointer-events: none;
-        }
-
-        .song-list.scrolled {
-            box-shadow: 0 -8px 12px rgba(0, 0, 0, 0.3); /* Top-only, smaller shadow */
-        }
-
         body.dark-mode .song-list {
             color: #e0e0e0;
-        }
-
-        body.dark-mode .song-list.scrolled::before {
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent); /* Subtler dark mode gradient */
-        }
-
-        body.dark-mode .song-list.scrolled {
-            box-shadow: 0 -8px 12px rgba(0, 0, 0, 0.5); /* Top-only, smaller dark mode shadow */
         }
 
         .tab-content {
@@ -439,7 +439,7 @@
             <h1 id="title" onselectstart="return false" draggable="false">
                 <span class="title-text">
                     <span class="first-line">Cánticos de</span>
-                    <span class="second-line">Victoria.</span>
+                    <span class="second-line">Victoria</span>
                 </span>
             </h1>
             <div class="icons">
@@ -614,10 +614,11 @@
             });
 
             // Scroll shadow listener
+            const pillContainer = document.querySelector('.pill-container');
             const updateScrollShadow = () => {
                 const scrollTop = songList.scrollTop;
                 console.log('Scroll event - ScrollTop:', scrollTop);
-                songList.classList.toggle('scrolled', scrollTop > 0);
+                pillContainer.classList.toggle('scrolled', scrollTop > 0);
             };
 
             songList.addEventListener('scroll', updateScrollShadow);
@@ -629,8 +630,6 @@
                 { id: 'tab2', content: 'tab2-content', class: 'tab2-selected' },
                 { id: 'tab3', content: 'tab3-content', class: 'tab3-selected' }
             ];
-
-            const pillContainer = document.querySelector('.pill-container');
 
             tabs.forEach((tab, index) => {
                 const button = document.getElementById(tab.id);
@@ -645,6 +644,7 @@
                     });
                     button.classList.add('selected');
                     content.classList.add('active');
+                    pillContainer.classList.add(tab.class);
                     setTimeout(() => {
                         searchInput.dispatchEvent(new Event('input'));
                         console.log('After tab switch - ScrollHeight:', songList.scrollHeight, 'ClientHeight:', songList.clientHeight, 'Scrollable:', songList.scrollHeight > songList.clientHeight);
