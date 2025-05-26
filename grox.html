@@ -14,6 +14,9 @@
           fontFamily: {
             sans: ['Poppins', 'sans-serif'],
           },
+          colors: {
+            'tab-button': '#574cd6',
+          },
         },
       },
     };
@@ -106,11 +109,17 @@
       </div>
     </header>
     <header id="subheader" class="subheader-container flex justify-center">
-      <div class="subheader-content w-full md:max-w-3xl bg-red-100 px-6 py-4 flex justify-center items-center">
-        <div class="bg-gray-300 rounded-full h-[38.4px] w-full mx-[-16px]"></div>
+      <div class="subheader-content relative w-full md:max-w-3xl bg-red-100 px-6 py-4 flex justify-center items-center">
+        <div class="bg-gray-300 rounded-full h-[42.2px] sm:h-[48.3px] md:h-[54.3px] w-full mx-[-16px] relative p-px">
+          <div class="flex h-full">
+            <div class="flex-1 bg-tab-button rounded-full h-[40.2px] sm:h-[46.3px] md:h-[52.3px] flex justify-center items-center text-white text-sm sm:text-base md:text-lg font-semibold cursor-pointer" role="button" aria-label="Todos tab">Todos</div>
+            <div class="flex-1 bg-tab-button rounded-full h-[40.2px] sm:h-[46.3px] md:h-[52.3px] flex justify-center items-center text-white text-sm sm:text-base md:text-lg font-semibold cursor-pointer" role="button" aria-label="Mayores tab">Mayores</div>
+            <div class="flex-1 bg-tab-button rounded-full h-[40.2px] sm:h-[46.3px] md:h-[52.3px] flex justify-center items-center text-white text-sm sm:text-base md:text-lg font-semibold cursor-pointer" role="button" aria-label="Menores tab">Menores</div>
+          </div>
+        </div>
       </div>
     </header>
-    <main class="mx-auto px-4 pt-36 pb-16">
+    <main class="mx-auto px-4 pt-36 sm:pt-[164.6px] md:pt-[185.2px] pb-16">
       <section class="mt-4">
         <ul class="mt-2 text-sm sm:text-base md:text-lg text-gray-600 list-disc pl-5">
           <li>Amazing Grace</li>
@@ -171,7 +180,7 @@
     const header = document.getElementById('header');
     const subheader = document.getElementById('subheader');
     window.addEventListener('scroll', () => {
-      const subheaderContent = subheader.querySelector('.subheader-content');
+      const subheaderContent = document.querySelector('.subheader-content');
       if (window.scrollY > 0) {
         subheaderContent.classList.add('scrolled');
       } else {
