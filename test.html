@@ -29,15 +29,15 @@
             top: 0;
             left: 0;
             width: 100%;
-            z-index: 3;
+            z-index: 10; /* Increased to ensure header is above all content */
             display: flex;
             flex-direction: column;
-            background-color: #f0f0f0;
+            background-color: #f0f0f0 !important; /* Explicit background */
             transition: background-color 0.3s ease;
         }
 
         body.dark-mode .fixed-header {
-            background-color: #1f1f1f;
+            background-color: #1f1f1f !important; /* Explicit dark mode background */
         }
 
         .fixed-header .header,
@@ -187,7 +187,7 @@
             background-color: #e0e0e0;
             border-radius: 20px;
             display: flex;
-            z-index: 2;
+            z-index: 8; /* Below header */
             transition: background-color 0.3s ease;
             box-sizing: border-box;
         }
@@ -252,7 +252,7 @@
         .search-container {
             position: sticky;
             top: 122px;
-            z-index: 2;
+            z-index: 7; /* Below tabs */
             opacity: 0;
             transform: translateY(-10px);
             visibility: hidden;
@@ -336,7 +336,7 @@
             width: 100%;
             flex: 1;
             position: relative;
-            z-index: 3;
+            z-index: 5; /* Below search */
         }
 
         .song-list.search-visible {
@@ -350,14 +350,14 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 12px;
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), transparent);
-            z-index: 2;
+            height: 16px;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), transparent);
+            z-index: 6; /* Above content, below search */
             pointer-events: none;
         }
 
         .song-list.scrolled {
-            box-shadow: 0 -10px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 -12px 24px rgba(0, 0, 0, 0.4);
         }
 
         body.dark-mode .song-list {
@@ -365,22 +365,22 @@
         }
 
         body.dark-mode .song-list.scrolled::before {
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), transparent);
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), transparent);
         }
 
         body.dark-mode .song-list.scrolled {
-            box-shadow: 0 -10px 20px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 -12px 24px rgba(0, 0, 0, 0.7);
         }
 
         .tab-content {
             display: none;
+            min-height: 2000px; /* Force scrollable height */
         }
 
         .tab-content.active {
             display: block;
             visibility: visible;
             opacity: 1;
-            height: 100%;
         }
 
         .song-item {
@@ -439,7 +439,7 @@
             <h1 id="title" onselectstart="return false" draggable="false">
                 <span class="title-text">
                     <span class="first-line">Cánticos de</span>
-                    <span class="second-line">Victoria</span>
+                    <span class="second-line">Victoria.</span>
                 </span>
             </h1>
             <div class="icons">
@@ -613,14 +613,10 @@
                 }, 100);
             });
 
-            // Scroll shadow listener with debouncing
-            let isScrolling;
+            // Scroll shadow listener
             songList.addEventListener('scroll', () => {
-                clearTimeout(isScrolling);
-                isScrolling = setTimeout(() => {
-                    console.log('SongList ScrollTop:', songList.scrollTop);
-                    songList.classList.toggle('scrolled', songList.scrollTop > 0);
-                }, 50);
+                console.log('SongList ScrollTop:', songList.scrollTop);
+                songList.classList.toggle('scrolled', songList.scrollTop > 0);
             });
 
             // Tab switching
