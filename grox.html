@@ -26,10 +26,27 @@
       width: 100%;
       z-index: 50;
     }
-    .header-content {
+    .subheader-container {
+      position: fixed;
+      top: 80px;
+      left: 0;
+      width: 100%;
+      z-index: 49;
+    }
+    @media (min-width: 640px) {
+      .subheader-container {
+        top: 88px;
+      }
+    }
+    @media (min-width: 768px) {
+      .subheader-container {
+        top: 96px;
+      }
+    }
+    .header-content, .subheader-content {
       position: relative;
     }
-    .header-content.scrolled::after {
+    .subheader-content.scrolled::after {
       content: '';
       position: absolute;
       bottom: 0;
@@ -84,7 +101,12 @@
         </div>
       </div>
     </header>
-    <main class="mx-auto px-4 pt-24 pb-16">
+    <header id="subheader" class="subheader-container flex justify-center">
+      <div class="subheader-content w-full md:max-w-3xl bg-red-100 px-6 py-4 flex justify-center items-center">
+        <div class="bg-gray-300 rounded-full h-8 w-full mx-[-24px]"></div>
+      </div>
+    </header>
+    <main class="mx-auto px-4 pt-36 pb-16">
       <section class="mt-4">
         <ul class="mt-2 text-sm sm:text-base md:text-lg text-gray-600 list-disc pl-5">
           <li>Amazing Grace</li>
@@ -143,12 +165,13 @@
   </div>
   <script>
     const header = document.getElementById('header');
+    const subheader = document.getElementById('subheader');
     window.addEventListener('scroll', () => {
-      const headerContent = header.querySelector('.header-content');
+      const subheaderContent = subheader.querySelector('.subheader-content');
       if (window.scrollY > 0) {
-        headerContent.classList.add('scrolled');
+        subheaderContent.classList.add('scrolled');
       } else {
-        headerContent.classList.remove('scrolled');
+        subheaderContent.classList.remove('scrolled');
       }
     });
   </script>
