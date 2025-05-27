@@ -93,6 +93,24 @@
       padding-left: 1rem;
       padding-right: 1rem;
     }
+    .button-with-selector {
+      position: relative;
+      z-index: 1;
+    }
+    .button-selector {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #564DD6;
+      opacity: 0.8;
+      z-index: 2;
+    }
+    .button-content {
+      position: relative;
+      z-index: 3;
+    }
   </style>
 </head>
 <body class="bg-gray-100 flex justify-center">
@@ -110,12 +128,13 @@
     </header>
     <header id="subheader" class="subheader-container flex justify-center">
       <div class="subheader-content relative w-full md:max-w-3xl bg-red-100 px-6 py-4 flex justify-center items-center">
-        <div class="bg-gray-300 rounded-full h-[42.2px] sm:h-[48.3px] md:h-[54.3px] w-full mx-[-16px] relative p-px">
-          <div class="flex h-full">
-            <div class="flex-1 bg-tab-button rounded-full h-[40.2px] sm:h-[46.3px] md:h-[52.3px] flex justify-center items-center text-white text-sm sm:text-base md:text-lg font-semibold cursor-pointer" role="button" aria-label="Todos tab">Todos</div>
-            <div class="flex-1 bg-tab-button rounded-full h-[40.2px] sm:h-[46.3px] md:h-[52.3px] flex justify-center items-center text-white text-sm sm:text-base md:text-lg font-semibold cursor-pointer" role="button" aria-label="Mayores tab">Mayores</div>
-            <div class="flex-1 bg-tab-button rounded-full h-[40.2px] sm:h-[46.3px] md:h-[52.3px] flex justify-center items-center text-white text-sm sm:text-base md:text-lg font-semibold cursor-pointer" role="button" aria-label="Menores tab">Menores</div>
+        <div class="flex w-full justify-between items-center">
+          <div class="button-with-selector w-[33.33%] h-[50px] sm:h-[60px] md:h-[70px]">
+            <div class="button-selector"></div>
+            <button class="button-content bg-[#E9E8F5] w-full h-full flex justify-center items-center text-[#A4A4A4] text-sm sm:text-base md:text-lg font-semibold" aria-label="Todos button">Todos</button>
           </div>
+          <button class="bg-[#E9E8F5] w-[33.33%] h-[50px] sm:h-[60px] md:h-[70px] flex justify-center items-center text-[#A4A4A4] text-sm sm:text-base md:text-lg font-semibold" aria-label="Mayores button">Mayores</button>
+          <button class="bg-[#E9E8F5] w-[33.33%] h-[50px] sm:h-[60px] md:h-[70px] flex justify-center items-center text-[#A4A4A4] text-sm sm:text-base md:text-lg font-semibold" aria-label="Menores button">Menores</button>
         </div>
       </div>
     </header>
