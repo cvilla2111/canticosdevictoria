@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cánticos de Victoria</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=search" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -119,12 +119,12 @@
           <span class="block text-2xl sm:text-3xl md:text-4xl">Victoria</span>
         </h1>
         <div class="search-circle">
-          <span class="material-symbols-outlined text-gray-800 text-xl sm:text-2xl md:text-3xl">search</span>
+          <i class="material-icons text-gray-800 text-xl sm:text-2xl md:text-3xl">search</i>
         </div>
       </div>
     </header>
     <header id="subheader" class="subheader-container flex justify-center">
-      <div class="subheader-content relative w-full md:max-w-3xl bg-red-100 px-6 py-3 flex justify-center items-center">
+      <div class="subheader-content relative w-full md:max-w-3xl bg-red-100 px-6 py-12 flex justify-center items-center">
         <div id="tabContainer" style="background-color: #F2F2F2;" class="rounded-full flex justify-center items-center w-full py-2 relative overflow-hidden">
           <button data-tab="todos" class="tab-btn active py-1.5 px-4 flex-1 text-center font-medium text-sm sm:text-base transition-all duration-300 z-10">Todos</button>
           <button data-tab="mayores" class="tab-btn py-1.5 px-4 flex-1 text-center font-medium text-sm sm:text-base transition-all duration-300 z-10">Mayores</button>
@@ -133,11 +133,11 @@
         </div>
       </div>
     </header>
-    <main class="mx-auto px-4 pt-52 sm:pt-56 md:pt-60 pb-16">
+    <main class="mx-auto px-4 pt-80 sm:pt-84 md:pt-88 pb-16">
       <section class="mt-4">
         <ul class="mt-2 text-base sm:text-lg md:text-xl text-gray-600 list-disc pl-5">
-          <li>Amazing Grace</li>
-          <li>How Great Is Our God</li>
+          <li class="flex items-center"><i class="material-icons text-tab-button mr-2">play_circle_filled</i> Amazing Grace</li>
+          <li class="flex items-center"><i class="material-icons text-tab-button mr-2">play_circle_filled</i> How Great Is Our God</li>
           <li>10,000 Reasons (Bless the Lord)</li>
           <li>Mighty to Save</li>
           <li>What a Friend We Have in Jesus</li>
