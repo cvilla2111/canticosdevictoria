@@ -93,23 +93,20 @@
       padding-left: 1rem;
       padding-right: 1rem;
     }
-    .button-with-selector {
+    /* Tab Selector Styles */
+    .tab-btn {
+      background-color: transparent;
+      color: #4B5563; /* gray-700 */
       position: relative;
-      z-index: 1;
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-    .button-selector {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: #564DD6;
-      opacity: 0.8;
-      z-index: 2;
+    .tab-btn.active {
+      color: white;
+      font-weight: 600;
+      transform: scale(1.05);
     }
-    .button-content {
-      position: relative;
-      z-index: 3;
+    #tabIndicator {
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
   </style>
 </head>
@@ -128,13 +125,11 @@
     </header>
     <header id="subheader" class="subheader-container flex justify-center">
       <div class="subheader-content relative w-full md:max-w-3xl bg-red-100 px-6 py-4 flex justify-center items-center">
-        <div class="flex w-full justify-between items-center">
-          <div class="button-with-selector w-[33.33%] h-[50px] sm:h-[60px] md:h-[70px]">
-            <div class="button-selector"></div>
-            <button class="button-content bg-[#E9E8F5] w-full h-full flex justify-center items-center text-[#A4A4A4] text-sm sm:text-base md:text-lg font-semibold" aria-label="Todos button">Todos</button>
-          </div>
-          <button class="bg-[#E9E8F5] w-[33.33%] h-[50px] sm:h-[60px] md:h-[70px] flex justify-center items-center text-[#A4A4A4] text-sm sm:text-base md:text-lg font-semibold" aria-label="Mayores button">Mayores</button>
-          <button class="bg-[#E9E8F5] w-[33.33%] h-[50px] sm:h-[60px] md:h-[70px] flex justify-center items-center text-[#A4A4A4] text-sm sm:text-base md:text-lg font-semibold" aria-label="Menores button">Menores</button>
+        <div id="tabContainer" style="background-color: #F2F2F2;" class="rounded-full flex justify-center items-center w-full py-3 relative overflow-hidden">
+          <button data-tab="todos" class="tab-btn active py-2 px-4 flex-1 text-center font-medium text-sm sm:text-base transition-all duration-300 z-10">Todos</button>
+          <button data-tab="mayores" class="tab-btn py-2 px-4 flex-1 text-center font-medium text-sm sm:text-base transition-all duration-300 z-10">Mayores</button>
+          <button data-tab="menores" class="tab-btn py-2 px-4 flex-1 text-center font-medium text-sm sm:text-base transition-all duration-300 z-10">Menores</button>
+          <div id="tabIndicator" class="absolute h-full bg-tab-button transition-all duration-500 ease-in-out z-0"></div>
         </div>
       </div>
     </header>
@@ -198,6 +193,72 @@
   <script>
     const header = document.getElementById('header');
     const subheader = document.getElementById('subheader');
+    
+    // Tab selector functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const tabButtons = document.querySelectorAll('.tab-btn');
+      const tabIndicator = document.getElementById('tabIndicator');
+      const tabContainer = document.getElementById('tabContainer');
+      
+      // Initialize tab indicator position and width
+      function setTabIndicator(activeTab) {
+        if (!activeTab) return;
+        
+        const tabRect = activeTab.getBoundingClientRect();
+        const containerRect = tabContainer.getBoundingClientRect();
+        
+        // Set the width and position of the indicator
+        tabIndicator.style.width = `${tabRect.width}px`;
+        tabIndicator.style.left = `${tabRect.left - containerRect.left}px`;
+        
+        // Always keep the indicator fully rounded on both sides
+        tabIndicator.classList.add('rounded-full');
+      }
+      
+      // Set initial indicator position
+      const activeTab = document.querySelector('.tab-btn.active');
+      setTimeout(() => setTabIndicator(activeTab), 100); // Small delay to ensure elements are rendered
+      
+      // Add click event to each tab button
+      tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          if (this.classList.contains('active')) return;
+          
+          // Add fancy transition effect to indicator
+          tabIndicator.style.transform = 'scale(0.95)';
+          tabIndicator.style.opacity = '0.9';
+          
+          setTimeout(() => {
+            // Remove active class from all tabs
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Add active class to clicked tab
+            this.classList.add('active');
+            
+            // Update indicator position
+            setTabIndicator(this);
+            
+            // Reset indicator after position is updated
+            setTimeout(() => {
+              tabIndicator.style.transform = 'scale(1)';
+              tabIndicator.style.opacity = '1';
+            }, 50);
+            
+            // Here you would typically show/hide content based on the selected tab
+            const tabName = this.getAttribute('data-tab');
+            console.log(`Tab selected: ${tabName}`);
+            // Example: showTabContent(tabName);
+          }, 150);
+        });
+      });
+      
+      // Handle window resize
+      window.addEventListener('resize', () => {
+        setTabIndicator(document.querySelector('.tab-btn.active'));
+      });
+    });
+    
+    // Scroll effect for subheader
     window.addEventListener('scroll', () => {
       const subheaderContent = document.querySelector('.subheader-content');
       if (window.scrollY > 0) {
