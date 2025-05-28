@@ -114,9 +114,9 @@
   <div class="w-full md:max-w-3xl">
     <header id="header" class="header-container flex justify-center">
       <div class="header-content w-full md:max-w-3xl bg-white shadow-sm px-6 pt-3.5 pb-5 flex justify-between items-center">
-        <h1 class="font-bold text-gray-800 leading-tight">
-          <span class="block text-base sm:text-lg md:text-xl">Cánticos de</span>
-          <span class="block text-2xl sm:text-3xl md:text-4xl">Victoria</span>
+        <h1 class="font-bold leading-tight">
+          <span class="block text-base sm:text-lg md:text-xl text-gray-400">Cánticos de</span>
+          <span class="block text-2xl sm:text-3xl md:text-4xl text-gray-800">Victoria</span>
         </h1>
         <div class="search-circle">
           <i class="material-icons text-gray-800 text-xl sm:text-2xl md:text-3xl">search</i>
@@ -124,12 +124,21 @@
       </div>
     </header>
     <header id="subheader" class="subheader-container flex justify-center">
-      <div class="subheader-content relative w-full md:max-w-3xl bg-white shadow-sm px-6 pt-6 pb-16 flex justify-center items-start">
+      <div class="subheader-content relative w-full md:max-w-3xl bg-white shadow-sm px-6 pt-6 pb-16 flex flex-col justify-center items-start">
         <div id="tabContainer" style="background-color: #F2F2F2;" class="rounded-full flex justify-center items-center w-full py-2 relative overflow-hidden">
           <button data-tab="todos" class="tab-btn active py-1.5 px-4 flex-1 text-center font-medium text-sm sm:text-base transition-all duration-300 z-10">Todos</button>
           <button data-tab="mayores" class="tab-btn py-1.5 px-4 flex-1 text-center font-medium text-sm sm:text-base transition-all duration-300 z-10">Mayores</button>
           <button data-tab="menores" class="tab-btn py-1.5 px-4 flex-1 text-center font-medium text-sm sm:text-base transition-all duration-300 z-10">Menores</button>
           <div id="tabIndicator" class="absolute h-full bg-tab-button transition-all duration-500 ease-in-out z-0"></div>
+        </div>
+        <div id="searchContainer" class="absolute left-0 right-0 px-6 mt-4 transition-opacity duration-300 ease-in-out opacity-0 pointer-events-none" style="top: 60px;">
+          <div class="flex items-center bg-gray-100 rounded-full px-4 py-2">
+            <i class="material-icons text-gray-500 mr-2">search</i>
+            <input id="searchInput" type="text" placeholder="Buscar canción..." class="bg-transparent w-full outline-none text-base text-gray-800">
+            <button id="clearSearch" class="text-gray-500 ml-2 opacity-0 transition-opacity duration-200">
+              <i class="material-icons">close</i>
+            </button>
+          </div>
         </div>
       </div>
     </header>
@@ -255,6 +264,80 @@
       // Handle window resize
       window.addEventListener('resize', () => {
         setTabIndicator(document.querySelector('.tab-btn.active'));
+      });
+      
+      // Search functionality
+      const searchCircle = document.querySelector('.search-circle');
+      const searchContainer = document.getElementById('searchContainer');
+      const searchInput = document.getElementById('searchInput');
+      const clearSearch = document.getElementById('clearSearch');
+      const songItems = document.querySelectorAll('main ul li');
+      let isSearchVisible = false;
+      
+      // Function to toggle search bar visibility
+      function toggleSearch() {
+        isSearchVisible = !isSearchVisible;
+        
+        if (isSearchVisible) {
+          // Show search bar with opacity and enable interaction
+          searchContainer.style.opacity = '1';
+          searchContainer.style.pointerEvents = 'auto';
+          setTimeout(() => {
+            searchInput.focus();
+          }, 300);
+        } else {
+          // Hide search bar
+          searchContainer.style.opacity = '0';
+          searchContainer.style.pointerEvents = 'none';
+          searchInput.value = '';
+          clearSearch.style.opacity = '0';
+          resetSearch();
+        }
+      }
+      
+      // Function to filter songs based on search query
+      function filterSongs(query) {
+        query = query.toLowerCase().trim();
+        
+        songItems.forEach(item => {
+          const songText = item.textContent.toLowerCase();
+          if (songText.includes(query)) {
+            item.style.display = '';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+        
+        // Show clear button if we have a query
+        clearSearch.style.opacity = query.length > 0 ? '1' : '0';
+      }
+      
+      // Function to reset search and show all songs
+      function resetSearch() {
+        songItems.forEach(item => {
+          item.style.display = '';
+        });
+      }
+      
+      // Add event listeners for search functionality
+      searchCircle.addEventListener('click', toggleSearch);
+      
+      searchInput.addEventListener('input', () => {
+        filterSongs(searchInput.value);
+      });
+      
+      clearSearch.addEventListener('click', () => {
+        searchInput.value = '';
+        clearSearch.style.opacity = '0';
+        resetSearch();
+        searchInput.focus();
+      });
+      
+      // Close search on ESC key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && isSearchVisible) {
+          toggleSearch();
+        }
       });
     });
     
