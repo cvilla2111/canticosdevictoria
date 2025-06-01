@@ -481,6 +481,34 @@
         </div>
     </div>
     
+    <!-- Fixed Bottom Tab Bar -->
+    <div id="bottomTabBar" class="fixed bottom-4 left-1/2 transform -translate-x-1/2 w-1/2 max-w-md z-40 bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-200 dark:border-gray-600 px-2 py-2">
+        <div class="flex justify-between items-center">
+            <button id="tabHome" class="flex-1 flex flex-col items-center justify-center py-2 px-3 rounded-full transition-all duration-200 text-primary bg-primary bg-opacity-10" onclick="switchTab('home')">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v6H8V5z" />
+                </svg>
+                <span class="text-xs font-medium">Lista</span>
+            </button>
+            
+            <button id="tabSearch" class="flex-1 flex flex-col items-center justify-center py-2 px-3 rounded-full transition-all duration-200 text-gray-600 dark:text-gray-400 hover:text-primary hover:bg-gray-100 dark:hover:bg-gray-700 active:scale-95" onclick="switchTab('search')">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <span class="text-xs font-medium">Buscar</span>
+            </button>
+            
+            <button id="tabSettings" class="flex-1 flex flex-col items-center justify-center py-2 px-3 rounded-full transition-all duration-200 text-gray-600 dark:text-gray-400 hover:text-primary hover:bg-gray-100 dark:hover:bg-gray-700 active:scale-95" onclick="switchTab('settings')">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span class="text-xs font-medium">Config</span>
+            </button>
+        </div>
+    </div>
+    
     <!-- Hidden Audio Element for Clave -->
     <audio id="claveAudio" preload="auto" loop>
         <source src="clave240bpm.mp3" type="audio/mpeg">
@@ -526,6 +554,9 @@
         let letterSections = []; // Store letter sections with their positions
         let scrollTimer = null;  // Timer for debouncing scroll actions
         let isScrolling = false; // Track if a scroll is in progress
+        
+        // Tab bar state
+        let currentActiveTab = 'home';
         
         // Debugging
         let debugMode = false;
@@ -793,6 +824,55 @@
                 document.documentElement.classList.remove('dark');
                 localStorage.setItem('theme', 'light');
             }
+        }
+        
+        /********************************
+         * TAB BAR FUNCTIONALITY
+         ********************************/
+        function switchTab(tabName) {
+            // Update button states
+            updateTabButtonStates(tabName);
+            
+            // Handle tab-specific functionality
+            switch(tabName) {
+                case 'home':
+                    // Already showing the song list - no action needed
+                    break;
+                case 'search':
+                    // Focus the search input
+                    const searchInput = document.getElementById('searchInput');
+                    if (searchInput) {
+                        searchInput.focus();
+                    }
+                    break;
+                case 'settings':
+                    // Could open a settings modal or panel in the future
+                    // For now, just toggle the theme as a demo
+                    const themeToggle = document.getElementById('themeToggle');
+                    if (themeToggle) {
+                        themeToggle.click();
+                    }
+                    break;
+            }
+            
+            currentActiveTab = tabName;
+        }
+        
+        function updateTabButtonStates(activeTab) {
+            const tabs = ['home', 'search', 'settings'];
+            
+            tabs.forEach(tab => {
+                const tabButton = document.getElementById(`tab${tab.charAt(0).toUpperCase() + tab.slice(1)}`);
+                if (tabButton) {
+                    if (tab === activeTab) {
+                        // Active state
+                        tabButton.className = 'flex-1 flex flex-col items-center justify-center py-2 px-3 rounded-full transition-all duration-200 text-primary bg-primary bg-opacity-10';
+                    } else {
+                        // Inactive state
+                        tabButton.className = 'flex-1 flex flex-col items-center justify-center py-2 px-3 rounded-full transition-all duration-200 text-gray-600 dark:text-gray-400 hover:text-primary hover:bg-gray-100 dark:hover:bg-gray-700 active:scale-95';
+                    }
+                }
+            });
         }
         
         /********************************
